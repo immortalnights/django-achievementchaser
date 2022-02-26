@@ -10,3 +10,8 @@
 
 * python
 * docker
+
+### Dev Credentials
+
+db "postgres:password"
+superuser "andrew:andrew"
