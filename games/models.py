@@ -12,14 +12,14 @@ class Game(models.Model):
     resynchronization_required = models.BooleanField(default=False)
 
 
-class GameAchievements(models.ManyToManyField):
-    game = models.ForeignKey(Game)
-    achievement = models.ForeignKey(Achievement)
+class GameAchievement(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
 
 
-class GameOwners(models.Model):
-    game = models.ForeignKey(Game)
-    player = models.ForeignKey(Player)
-    added = models.DateTimeField()
+class GameOwner(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    added = models.DateTimeField(auto_now_add=True)
     playtime_forever = models.PositiveIntegerField()
     playtime = models.JSONField()

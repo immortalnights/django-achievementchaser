@@ -13,6 +13,6 @@ class Player(models.Model):
     resynchronization_required = models.BooleanField(default=False)
 
 
-class Friends(models.ManyToManyField):
-    player = models.ForeignKey(Player)
-    friend = models.ForeignKey(Player)
+class Friend(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_player")
+    friend = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="friends")

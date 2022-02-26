@@ -14,6 +14,6 @@ class Achievement(models.Model):
     global_percentage = models.FloatField()
 
 
-class AchievementAchievers(models.ManyToManyField):
-    achievement = models.ForeignKey(Achievement)
-    player = models.ForeignKey(Player)
+class AchievementAchiever(models.Model):
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
