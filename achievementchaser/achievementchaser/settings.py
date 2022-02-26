@@ -31,9 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'achievementchaser.__init__.AppConfig',
     'achievements.apps.AchievementsConfig',
     'games.apps.GamesConfig',
     'players.apps.PlayersConfig',
+    'graphene_django',
+    'django_filters',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -78,11 +81,12 @@ WSGI_APPLICATION = 'achievementchaser.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'OPTIONS': {
-            'service': 'my_service',
-            'passfile': '.db'
-        }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'HOST': 'localhost',
+        'USER': 'postgres',
+        'PASSWORD': 'password',
+        'NAME': 'achievementchaser',
+        'PORT': 5432,
     }
 }
 
@@ -127,3 +131,5 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GRAPHENE = { "SCHEMA": "core.schema.schema", }
