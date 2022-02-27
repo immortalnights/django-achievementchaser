@@ -36,7 +36,6 @@ environ.Env.read_env()
 # Application definition
 
 INSTALLED_APPS = [
-    'achievementchaser.__init__.AppConfig',
     'achievements.apps.AchievementsConfig',
     'games.apps.GamesConfig',
     'players.apps.PlayersConfig',
@@ -138,6 +137,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 GRAPHENE = { "SCHEMA": "core.schema.schema", }
+
+CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_RESULT_BACKEND = 'rpc://'
+# CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
+CELERY_TASK_SERIALIZER = 'json'
 
 LOGGING = {
     'version': 1,
