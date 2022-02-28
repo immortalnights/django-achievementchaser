@@ -1,58 +1,14 @@
-import typing
-import urllib
-import os
-import json
 import logging
-from urllib import response
+from achievementchaser import steam
 
 
-_STEAM_API = "api.steampowered.com"
 logger = logging.getLogger()
-
-
-def _get_api_key():
-    return os.environ["STEAM_API_KEY"] if "STEAM_API_KEY" in os.environ else ""
-
-
-def _request(path: str, query: typing.Dict, response_data_key: str):
-    response = None
-
-    # Always add the API key and response format
-    default_query_string = urllib.parse.urlencode({
-        "key": _get_api_key(),
-        "format": "json",
-    })
-    query_string = urllib.parse.urlencode(query)
-    url = f"http://{_STEAM_API}/{path}?{default_query_string}&{query_string}"
-    logger.debug(f"GET {url}")
-    try:
-        with urllib.request.urlopen(url) as resp:
-            try:
-                resp_json = json.loads(resp.read().decode("utf8"))
-                # logging.info(resp_json)
-
-                if response_data_key in resp_json:
-                    response = resp_json[response_data_key]
-                else:
-                    raise ValueError(f"Expected root object {response_data_key} missing")
-            except json.JSONDecodeError as e:
-                logger.exception("Failed to parse response")
-    except urllib.error.URLError as e:
-        logger.exception("Steam request failed")
-    except urllib.error.HTTPError as e:
-        logger.exception("Steam request failed")
-
-    return response
-
-
-def is_player_id(identity: str):
-    return False
 
 
 def resolve_vanity_url(name: str):
     steam_id = None
     try:
-        response = _request("ISteamUser/ResolveVanityURL/v0001", {
+        response = steam.request("ISteamUser/ResolveVanityURL/v0001", {
             "vanityurl": name,
         }, "response")
 
@@ -71,7 +27,7 @@ def resolve_vanity_url(name: str):
 def load_player_summary(steam_id: str):
     summary = None
     try:
-        response = _request("ISteamUser/GetPlayerSummaries/v0002/", {
+        response = steam.request("ISteamUser/GetPlayerSummaries/v0002/", {
             "steamids": steam_id,
         }, "response")
 
@@ -80,6 +36,27 @@ def load_player_summary(steam_id: str):
             logger.info(summary)
             # TODO check the profile is visible
     except Exception as e:
-        logger.exception("Failed to load player summary")
+        logger.exception(f"Failed to load player summary for {steam_id}")
 
     return summary
+
+
+def get_friends(steam_id: str):
+    pass
+
+
+def get_owned_games(steam_id: str):
+    games = None
+    try:
+        response = steam.request("IPlayerService/GetOwnedGames/v0001/", {
+            "steamid": steam_id,
+            "include_appinfo": 1,
+            "include_played_free_games": 1,
+        }, "response")
+
+        if response and "games" in response:
+            games = response["games"]
+    except Exception as e:
+        logger.exception(f"Failed to get player games for {steam_id}")
+
+    return games

@@ -6,7 +6,8 @@ from graphene_django.filter import DjangoFilterConnectionField
 # from .tasks import resynchronize_player
 from .management.commands.resynchronize_player import resynchronize_player
 from .models import Player, Friend
-from . import steam
+from achievementchaser import steam
+from .steam import resolve_vanity_url, load_player_summary
 
 
 logger = logging.getLogger()
@@ -54,7 +55,7 @@ class CreatePlayer(graphene.Mutation):
         else:
             # Lookup player by url name
             logger.info(f"Identified '{identity}' as name, performing lookup")
-            steam_id = steam.resolve_vanity_url(identity)
+            steam_id = resolve_vanity_url(identity)
 
         ok = False
         player = None
@@ -65,7 +66,7 @@ class CreatePlayer(graphene.Mutation):
                 # FIXME if create is attempted, an error should be returned (along with the Player ID?)
                 player_instance = Player.objects.get(id=steam_id)
             except Player.DoesNotExist as e:
-                summary = steam.load_player_summary(steam_id)
+                summary = load_player_summary(steam_id)
                 if summary:
                     player_instance = Player(
                         id=summary["steamid"],
