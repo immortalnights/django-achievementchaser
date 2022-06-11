@@ -1,12 +1,12 @@
-import time
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from players.models import Player, OwnedGame
+from players.steam import load_player_summary, get_owned_games
 from games.models import Game
-from ...steam import load_player_summary, get_owned_games
+from achievementchaser.management.lib.command_logger import CommandLogger
 # from players.tasks import resynchronize_player
 
 
-def resynchronize_player(logger, identity):
+def resynchronize_player(logger: CommandLogger, identity):
     """
     :param logger: logger instance of command logger wrapper
     """
@@ -49,25 +49,6 @@ def resynchronize_player(logger, identity):
 
     logger.info("done")
     return ok
-
-
-class CommandLogger:
-    cmd = None
-
-    def __init__(self, cmd):
-        self.cmd = cmd
-
-    def debug(self, message: str) -> None:
-        self.cmd.stdout.write(message)
-
-    def info(self, message: str) -> None:
-        self.cmd.stdout.write(message)
-
-    def warning(self, message: str) -> None:
-        self.cmd.stdout.write(message)
-
-    def error(self, message: str) -> None:
-        self.cmd.stderr.write(message)
 
 
 class Command(BaseCommand):
