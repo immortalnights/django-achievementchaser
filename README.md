@@ -16,7 +16,7 @@
 ### Dev Credentials
 
 db "postgres:password"
-superuser "andrew:andrew"
+superuser "admin:password"
 
 ## Migrations
 `python .\manage.py makemigrations games`
