@@ -28,4 +28,6 @@ write_to = "src/_version.py"
 
 [tool.black]
 line-length = 120
-extend-exclude = ''
+extend-exclude = '''
+src/_version.py
+'''
