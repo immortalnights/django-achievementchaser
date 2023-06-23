@@ -1,9 +1,14 @@
 [project]
 name = "achievementchaser"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Achievement Chaser"
 dependencies = [
-    "django"
+    "django",
+    "psycopg2",
+    "graphene",
+    "django",
+    "django_filter",
+    "celery",
 ]
 
 [project.optional-dependencies]
@@ -11,11 +16,15 @@ dev = [
     "black",
     "flake8",
     "pytest",
+    "mypy",
 ]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/_version.py"
 
 [tool.black]
 line-length = 120
