@@ -22,5 +22,5 @@ jobs:
 
     - name: Check Formatting
       run: |
-        echo $pwd
+        $pwd
         python -m black . --check
