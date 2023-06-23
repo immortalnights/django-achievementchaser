@@ -4,6 +4,7 @@ dynamic = ["version"]
 description = "Achievement Chaser"
 dependencies = [
     "django",
+    "environ",
     "psycopg2",
     "graphene",
     "django",
