@@ -13,6 +13,7 @@ class Game(models.Model):
 
 class GameAchievement(models.Model):
     class Meta:
-        unique_together = (('game', 'achievement'),)
+        unique_together = (("game", "achievement"),)
+
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)

@@ -14,10 +14,7 @@ class Query(
     pass
 
 
-class Mutation(
-    players.schema.Mutation,
-    graphene.ObjectType
-):
+class Mutation(players.schema.Mutation, graphene.ObjectType):
     pass
 
 

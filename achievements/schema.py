@@ -15,4 +15,3 @@ class Query(graphene.ObjectType):
     def resolve_achievements(root, info, **kwargs):
         # Querying a list
         return Achievement.objects.all()
-

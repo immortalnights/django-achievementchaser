@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'achievementchaser.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "achievementchaser.settings")
 
 application = get_wsgi_application()

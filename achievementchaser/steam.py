@@ -20,10 +20,12 @@ def request(path: str, query: typing.Dict, response_data_key: str):
     response = None
 
     # Always add the API key and response format
-    default_query_string = urllib.parse.urlencode({
-        "key": _get_api_key(),
-        "format": "json",
-    })
+    default_query_string = urllib.parse.urlencode(
+        {
+            "key": _get_api_key(),
+            "format": "json",
+        }
+    )
     query_string = urllib.parse.urlencode(query)
     url = f"http://{STEAM_API_URL}/{path}?{default_query_string}&{query_string}"
     logger.debug(f"GET {url}")
@@ -33,7 +35,7 @@ def request(path: str, query: typing.Dict, response_data_key: str):
                 resp_json = json.loads(resp.read().decode("utf8"))
                 # logging.info(resp_json)
 
-                file_name = urllib.parse.quote(url, safe='')
+                file_name = urllib.parse.quote(url, safe="")
                 os.makedirs("_request_cache", exist_ok=True)
                 with open(os.path.join("_request_cache", file_name + ".json"), "w") as f:
                     f.write(json.dumps(resp_json, indent=2))

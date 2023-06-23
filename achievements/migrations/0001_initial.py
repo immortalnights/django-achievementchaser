@@ -9,29 +9,32 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('players', '0001_initial'),
+        ("players", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Achievement',
+            name="Achievement",
             fields=[
-                ('name', models.CharField(max_length=255, primary_key=True, serialize=False)),
-                ('default_value', models.IntegerField()),
-                ('display_name', models.CharField(max_length=255)),
-                ('hidden', models.BooleanField(default=False)),
-                ('description', models.TextField()),
-                ('icon_url', models.CharField(max_length=255)),
-                ('icon_gray_url', models.CharField(max_length=255)),
-                ('global_percentage', models.FloatField()),
+                ("name", models.CharField(max_length=255, primary_key=True, serialize=False)),
+                ("default_value", models.IntegerField()),
+                ("display_name", models.CharField(max_length=255)),
+                ("hidden", models.BooleanField(default=False)),
+                ("description", models.TextField()),
+                ("icon_url", models.CharField(max_length=255)),
+                ("icon_gray_url", models.CharField(max_length=255)),
+                ("global_percentage", models.FloatField()),
             ],
         ),
         migrations.CreateModel(
-            name='AchievementAchievers',
+            name="AchievementAchievers",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('achievement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='achievements.achievement')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "achievement",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="achievements.achievement"),
+                ),
+                ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),
             ],
         ),
     ]

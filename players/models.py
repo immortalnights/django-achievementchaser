@@ -22,7 +22,8 @@ class Player(models.Model):
 
 class OwnedGame(models.Model):
     class Meta:
-        unique_together = (('game', 'player'),)
+        unique_together = (("game", "player"),)
+
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     added = models.DateTimeField(auto_now_add=True)
@@ -39,13 +40,15 @@ class GamePlaytime(models.Model):
 
 class AchievementAchieved(models.Model):
     class Meta:
-        unique_together = (('achievement', 'player'),)
+        unique_together = (("achievement", "player"),)
+
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
 
 
 class Friend(models.Model):
     class Meta:
-        unique_together = (('player', 'friend'),)
+        unique_together = (("player", "friend"),)
+
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_player")
     friend = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="friends")

@@ -8,28 +8,39 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Player',
+            name="Player",
             fields=[
-                ('id', models.PositiveBigIntegerField(primary_key=True, serialize=False)),
-                ('personaname', models.CharField(max_length=255)),
-                ('added', models.DateTimeField()),
-                ('updated', models.DateTimeField()),
-                ('resynchronized', models.DateTimeField()),
-                ('steam', models.TextField()),
-                ('resynchronization_required', models.BooleanField(default=False)),
+                ("id", models.PositiveBigIntegerField(primary_key=True, serialize=False)),
+                ("personaname", models.CharField(max_length=255)),
+                ("added", models.DateTimeField()),
+                ("updated", models.DateTimeField()),
+                ("resynchronized", models.DateTimeField()),
+                ("steam", models.TextField()),
+                ("resynchronization_required", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
-            name='Friends',
+            name="Friends",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('friend', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friends', to='players.player')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player_to_player', to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "friend",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="friends", to="players.player"
+                    ),
+                ),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="player_to_player",
+                        to="players.player",
+                    ),
+                ),
             ],
         ),
     ]

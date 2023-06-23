@@ -3,6 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from players.models import Player, OwnedGame
 from games.models import Game
 from ...steam import load_player_summary, get_owned_games
+
 # from players.tasks import resynchronize_player
 
 
@@ -37,7 +38,9 @@ def resynchronize_player(logger, identity):
             #     updated = models.DateTimeField(auto_now_add=True)
             #     playtime_forever = models.PositiveIntegerField()
 
-            logger.debug(f"Add / update game {game_instance.name} ({game_instance.id}) for {player_instance.personaname} ({player_instance.id})")
+            logger.debug(
+                f"Add / update game {game_instance.name} ({game_instance.id}) for {player_instance.personaname} ({player_instance.id})"
+            )
             OwnedGame(
                 game=game_instance,
                 player=player_instance,
@@ -74,7 +77,7 @@ class Command(BaseCommand):
     help = "Resynchronize player"
 
     def add_arguments(self, parser) -> None:
-        parser.add_argument('identity', nargs=1, type=str)
+        parser.add_argument("identity", nargs=1, type=str)
 
     def handle(self, *args, **options):
         logger = CommandLogger(self)

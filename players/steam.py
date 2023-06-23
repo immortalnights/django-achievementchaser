@@ -8,9 +8,13 @@ logger = logging.getLogger()
 def resolve_vanity_url(name: str):
     steam_id = None
     try:
-        response = steam.request("ISteamUser/ResolveVanityURL/v0001", {
-            "vanityurl": name,
-        }, "response")
+        response = steam.request(
+            "ISteamUser/ResolveVanityURL/v0001",
+            {
+                "vanityurl": name,
+            },
+            "response",
+        )
 
         if "success" in response and response["success"] == 1:
             steam_id = response["steamid"]
@@ -27,9 +31,13 @@ def resolve_vanity_url(name: str):
 def load_player_summary(steam_id: str):
     summary = None
     try:
-        response = steam.request("ISteamUser/GetPlayerSummaries/v0002/", {
-            "steamids": steam_id,
-        }, "response")
+        response = steam.request(
+            "ISteamUser/GetPlayerSummaries/v0002/",
+            {
+                "steamids": steam_id,
+            },
+            "response",
+        )
 
         if response and "players" in response and len(response["players"]) == 1:
             summary = response["players"][0]
@@ -48,11 +56,15 @@ def get_friends(steam_id: str):
 def get_owned_games(steam_id: str):
     games = None
     try:
-        response = steam.request("IPlayerService/GetOwnedGames/v0001/", {
-            "steamid": steam_id,
-            "include_appinfo": 1,
-            "include_played_free_games": 1,
-        }, "response")
+        response = steam.request(
+            "IPlayerService/GetOwnedGames/v0001/",
+            {
+                "steamid": steam_id,
+                "include_appinfo": 1,
+                "include_played_free_games": 1,
+            },
+            "response",
+        )
 
         if response and "games" in response:
             games = response["games"]

@@ -6,57 +6,57 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('players', '0002_rename_friends_friend'),
+        ("players", "0002_rename_friends_friend"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='player',
-            name='steam',
+            model_name="player",
+            name="steam",
         ),
         migrations.AddField(
-            model_name='player',
-            name='avatar_large_url',
-            field=models.CharField(default='', max_length=255),
+            model_name="player",
+            name="avatar_large_url",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='player',
-            name='avatar_medium_url',
-            field=models.CharField(default='', max_length=255),
+            model_name="player",
+            name="avatar_medium_url",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='player',
-            name='avatar_small_url',
-            field=models.CharField(default='', max_length=255),
+            model_name="player",
+            name="avatar_small_url",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AddField(
-            model_name='player',
-            name='created',
+            model_name="player",
+            name="created",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='player',
-            name='profile_url',
-            field=models.CharField(default='', max_length=255),
+            model_name="player",
+            name="profile_url",
+            field=models.CharField(default="", max_length=255),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='added',
+            model_name="player",
+            name="added",
             field=models.DateTimeField(auto_now_add=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='resynchronization_required',
+            model_name="player",
+            name="resynchronization_required",
             field=models.BooleanField(default=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='resynchronized',
+            model_name="player",
+            name="resynchronized",
             field=models.DateTimeField(null=True),
         ),
         migrations.AlterField(
-            model_name='player',
-            name='updated',
+            model_name="player",
+            name="updated",
             field=models.DateTimeField(auto_now_add=True),
         ),
     ]
