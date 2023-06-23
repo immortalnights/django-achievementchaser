@@ -3,11 +3,10 @@ name = "achievementchaser"
 dynamic = ["version"]
 description = "Achievement Chaser"
 dependencies = [
-    "django",
-    "environ",
     "psycopg2",
     "graphene",
     "django",
+    "django-environ",
     "django_filter",
     "celery",
 ]
