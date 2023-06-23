@@ -3,6 +3,7 @@ import logging
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+
 # from .tasks import resynchronize_player
 from .management.commands.resynchronize_player import resynchronize_player
 from .models import Player, Friend
@@ -43,7 +44,7 @@ class CreatePlayer(graphene.Mutation):
         identity = graphene.String()
 
     ok = graphene.Boolean(False)
-    player = graphene.String() # graphene.Field(lambda: Player)
+    player = graphene.String()  # graphene.Field(lambda: Player)
 
     @staticmethod
     def mutate(root, info, identity):

@@ -6,22 +6,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('achievements', '0003_delete_achievementachiever'),
-        ('games', '0005_alter_gameachievement_unique_together'),
-        ('players', '0004_ownedgame_gameplaytime_achievementachieved'),
+        ("achievements", "0003_delete_achievementachiever"),
+        ("games", "0005_alter_gameachievement_unique_together"),
+        ("players", "0004_ownedgame_gameplaytime_achievementachieved"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='achievementachieved',
-            unique_together={('achievement', 'player')},
+            name="achievementachieved",
+            unique_together={("achievement", "player")},
         ),
         migrations.AlterUniqueTogether(
-            name='friend',
-            unique_together={('player', 'friend')},
+            name="friend",
+            unique_together={("player", "friend")},
         ),
         migrations.AlterUniqueTogether(
-            name='ownedgame',
-            unique_together={('game', 'player')},
+            name="ownedgame",
+            unique_together={("game", "player")},
         ),
     ]

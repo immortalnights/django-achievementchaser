@@ -9,39 +9,42 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('players', '0001_initial'),
-        ('achievements', '0001_initial'),
+        ("players", "0001_initial"),
+        ("achievements", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Game',
+            name="Game",
             fields=[
-                ('id', models.PositiveIntegerField(primary_key=True, serialize=False)),
-                ('resynchronized', models.DateTimeField()),
-                ('name', models.CharField(max_length=255)),
-                ('img_icon_url', models.CharField(max_length=255)),
-                ('img_logo_url', models.CharField(max_length=255)),
-                ('resynchronization_required', models.BooleanField(default=False)),
+                ("id", models.PositiveIntegerField(primary_key=True, serialize=False)),
+                ("resynchronized", models.DateTimeField()),
+                ("name", models.CharField(max_length=255)),
+                ("img_icon_url", models.CharField(max_length=255)),
+                ("img_logo_url", models.CharField(max_length=255)),
+                ("resynchronization_required", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
-            name='GameOwners',
+            name="GameOwners",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('added', models.DateTimeField()),
-                ('playtime_forever', models.PositiveIntegerField()),
-                ('playtime', models.JSONField()),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='games.game')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("added", models.DateTimeField()),
+                ("playtime_forever", models.PositiveIntegerField()),
+                ("playtime", models.JSONField()),
+                ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
+                ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),
             ],
         ),
         migrations.CreateModel(
-            name='GameAchievements',
+            name="GameAchievements",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('achievement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='achievements.achievement')),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='games.game')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "achievement",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="achievements.achievement"),
+                ),
+                ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
             ],
         ),
     ]
