@@ -153,4 +153,5 @@ cython_debug/
 #.idea/
 
 _request_cache
+src/_version.py
 Notes.md
