@@ -1,6 +1,5 @@
-from telnetlib import GA
 from django.contrib import admin
-from .models import Player, GamePlaytime, OwnedGame, AchievementAchieved, Friend
+from .models import Player, GamePlaytime, OwnedGame, Friend
 
 
 @admin.register(Player)

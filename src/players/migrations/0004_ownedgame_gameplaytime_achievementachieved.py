@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("achievements", "0003_delete_achievementachiever"),
         ("games", "0004_alter_game_resynchronized_delete_gameowner"),

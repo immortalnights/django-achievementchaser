@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("players", "0002_rename_friends_friend"),
         ("achievements", "0002_rename_achievementachievers_achievementachiever"),

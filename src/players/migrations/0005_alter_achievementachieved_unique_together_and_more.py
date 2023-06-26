@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("achievements", "0003_delete_achievementachiever"),
         ("games", "0005_alter_gameachievement_unique_together"),

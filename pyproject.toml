@@ -3,18 +3,18 @@ name = "achievementchaser"
 dynamic = ["version"]
 description = "Achievement Chaser"
 dependencies = [
-    "django",
     "psycopg2",
-    "graphene",
     "django",
+    "django-environ",
     "django_filter",
+    "graphene_django",
     "celery",
 ]
 
 [project.optional-dependencies]
 dev = [
     "black",
-    "flake8",
+    "ruff",
     "pytest",
     "mypy",
 ]
@@ -28,4 +28,10 @@ write_to = "src/_version.py"
 
 [tool.black]
 line-length = 120
-extend-exclude = ''
+extend-exclude = '''
+src/_version.py
+'''
+
+[tool.ruff]
+select = ["E", "F"]
+line-length = 120
