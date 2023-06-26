@@ -1,8 +1,6 @@
-import time
-from players.models import Player
 from celery import shared_task
 import logging
-from celery.utils.log import get_task_logger
+from celery.utils.log import get_task_logger  # noqa F401
 import players.management.commands.resynchronize_player
 
 # logger = get_task_logger("players")

@@ -1,4 +1,3 @@
-from email.policy import default
 import logging
 import graphene
 from graphene_django import DjangoObjectType
@@ -6,7 +5,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 
 # from .tasks import resynchronize_player
 from .management.commands.resynchronize_player import resynchronize_player
-from .models import Player, Friend
+from .models import Player
 from achievementchaser import steam
 from .steam import resolve_vanity_url, load_player_summary
 
@@ -66,7 +65,7 @@ class CreatePlayer(graphene.Mutation):
             try:
                 # FIXME if create is attempted, an error should be returned (along with the Player ID?)
                 player_instance = Player.objects.get(id=steam_id)
-            except Player.DoesNotExist as e:
+            except Player.DoesNotExist:
                 summary = load_player_summary(steam_id)
                 if summary:
                     player_instance = Player(
@@ -95,7 +94,7 @@ class ResynchronizePlayer(graphene.Mutation):
     def mutate(root, info, id):
         try:
             logging.info(f"Get Player {id}")
-            player = Player.objects.get(id=int(id))
+            player = Player.objects.get(id=int(id))  # noqa F401
             # If the player exists, trigger the resynchronization
             ok = True
             logging.info("Scheduling resynchronize_player task")
@@ -105,7 +104,7 @@ class ResynchronizePlayer(graphene.Mutation):
             # Prod - queue the task
             r = resynchronize_player(logger, id)
             logging.info(r)
-        except Player.DoesNotExist as e:
+        except Player.DoesNotExist:
             # Return an error
             logging.warning(f"Failed to find Player {id}")
             ok = False

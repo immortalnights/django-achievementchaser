@@ -22,7 +22,7 @@ def resolve_vanity_url(name: str):
         else:
             message = response["message"] if "message" in response else "Unspecified"
             logger.error(f"Failed to resolve name: {message}")
-    except Exception as e:
+    except Exception:
         logger.exception("Failed to resolve vanity name")
 
     return steam_id
@@ -43,7 +43,7 @@ def load_player_summary(steam_id: str):
             summary = response["players"][0]
             logger.info(summary)
             # TODO check the profile is visible
-    except Exception as e:
+    except Exception:
         logger.exception(f"Failed to load player summary for {steam_id}")
 
     return summary
@@ -68,7 +68,7 @@ def get_owned_games(steam_id: str):
 
         if response and "games" in response:
             games = response["games"]
-    except Exception as e:
+    except Exception:
         logger.exception(f"Failed to get player games for {steam_id}")
 
     return games

@@ -1,5 +1,4 @@
-import time
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from players.models import Player, OwnedGame
 from games.models import Game
 from ...steam import load_player_summary, get_owned_games
@@ -17,7 +16,7 @@ def resynchronize_player(logger, identity):
         logger.info(f"Beginning resynchronization of Player {player_instance.personaname} {identity}")
 
         # TODO update player summary data and make sure the profile is still public
-        summary = load_player_summary(identity)
+        summary = load_player_summary(identity)  # noqa F841
         games = get_owned_games(identity)
 
         for game in games:
@@ -39,7 +38,8 @@ def resynchronize_player(logger, identity):
             #     playtime_forever = models.PositiveIntegerField()
 
             logger.debug(
-                f"Add / update game {game_instance.name} ({game_instance.id}) for {player_instance.personaname} ({player_instance.id})"
+                f"Add / update game {game_instance.name} ({game_instance.id}) "
+                f"for {player_instance.personaname} ({player_instance.id})"
             )
             OwnedGame(
                 game=game_instance,

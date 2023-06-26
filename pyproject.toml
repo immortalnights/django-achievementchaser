@@ -14,7 +14,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "black",
-    "flake8",
+    "ruff",
     "pytest",
     "mypy",
 ]
@@ -31,3 +31,7 @@ line-length = 120
 extend-exclude = '''
 src/_version.py
 '''
+
+[tool.ruff]
+select = ["E", "F"]
+line-length = 120

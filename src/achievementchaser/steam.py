@@ -1,11 +1,9 @@
 """Steam Interface layer"""
 import os
 import logging
-from textwrap import indent
 import typing
 import urllib
 import json
-from urllib import response
 
 logger = logging.getLogger()
 
@@ -46,9 +44,9 @@ def request(path: str, query: typing.Dict, response_data_key: str):
                     raise ValueError(f"Expected root object {response_data_key} missing")
             except json.JSONDecodeError as e:
                 logger.exception("Failed to parse response")
-    except urllib.error.URLError as e:
+    except urllib.error.URLError:
         logger.exception("Steam request failed")
-    except urllib.error.HTTPError as e:
+    except urllib.error.HTTPError:
         logger.exception("Steam request failed")
 
     return response

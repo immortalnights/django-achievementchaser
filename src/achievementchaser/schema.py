@@ -1,5 +1,5 @@
 import graphene
-from graphene_django import DjangoObjectType
+from graphene_django import DjangoObjectType  # noqa F401
 import players.schema
 import games.schema
 import achievements.schema
