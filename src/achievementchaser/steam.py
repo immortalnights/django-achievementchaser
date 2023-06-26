@@ -42,7 +42,7 @@ def request(path: str, query: typing.Dict, response_data_key: str):
                     response = resp_json[response_data_key]
                 else:
                     raise ValueError(f"Expected root object {response_data_key} missing")
-            except json.JSONDecodeError as e:
+            except json.JSONDecodeError:
                 logger.exception("Failed to parse response")
     except urllib.error.URLError:
         logger.exception("Steam request failed")
