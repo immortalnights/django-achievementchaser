@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from players.models import Player, OwnedGame
 from players.steam import load_player_summary, get_owned_games
 from games.models import Game
-from management.lib.command_logger import CommandLogger
+from achievementchaser.management.lib.command_logger import CommandLogger
 
 # from players.tasks import resynchronize_player
 

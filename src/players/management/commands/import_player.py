@@ -1,7 +1,7 @@
 import importlib
 from django.core.management.base import BaseCommand, CommandError
 from players.models import Player
-from management.lib.command_logger import CommandLogger
+from achievementchaser.management.lib.command_logger import CommandLogger
 
 # from ...steam import load_player_summary, get_owned_games
 
