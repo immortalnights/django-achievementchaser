@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("games", "0002_gameowner_rename_gameachievements_gameachievement_and_more"),
     ]
