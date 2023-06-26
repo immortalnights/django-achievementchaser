@@ -1,4 +1,3 @@
-
 class CommandLogger:
     cmd = None
 
