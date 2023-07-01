@@ -1,8 +1,9 @@
 {
     "editor.tabSize": 4,
     "files.eol": "\n",
+    "files.insertFinalNewline": true,
     "python.testing.pytestArgs": [
-        "achievementchaser"
+        "src/achievementchaser"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

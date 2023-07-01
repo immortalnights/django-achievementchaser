@@ -2,11 +2,18 @@
 
 ## Running
 
-`docker-compose up`
+```
+docker-compose up
+```
 
-`python .\manage.py runserver`
+```
+python .\src\manage.py runserver
+```
 
-`celery --app achievementchaser worker --loglevel DEBUG -P solo`
+```
+cd src
+celery --app achievementchaser worker --loglevel DEBUG -P solo
+```
 
 ## Requirements
 
@@ -19,8 +26,9 @@ db "postgres:password"
 superuser "admin:password"
 
 ## Migrations
-`python .\manage.py makemigrations games`
 
-`python .\manage.py sqlmigrate games xxxx`
+`python .\src\manage.py makemigrations games`
 
-`python .\manage.py migrate`
+`python .\src\manage.py sqlmigrate games xxxx`
+
+`python .\src\manage.py migrate`
