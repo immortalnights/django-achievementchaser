@@ -10,9 +10,6 @@ from achievementchaser import steam
 from .steam import resolve_vanity_url, load_player_summary
 
 
-logger = logging.getLogger()
-
-
 class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
@@ -32,7 +29,7 @@ class Query(graphene.ObjectType):
         try:
             resp = Player.objects.get(id=id, personaname=name)
         except Player.DoesNotExist:
-            logger.warning(f"Could not find Player with ID={id} or name={name}")
+            logging.warning(f"Could not find Player with ID={id} or name={name}")
             resp = None
 
         return resp
@@ -50,11 +47,11 @@ class CreatePlayer(graphene.Mutation):
         steam_id = None
         if steam.is_player_id(identity):
             # Create player based on Steam ID
-            logger.info(f"Identified {identity} as Steam ID, fetching player details")
+            logging.info(f"Identified {identity} as Steam ID, fetching player details")
             steam_id = identity
         else:
             # Lookup player by url name
-            logger.info(f"Identified '{identity}' as name, performing lookup")
+            logging.info(f"Identified '{identity}' as name, performing lookup")
             steam_id = resolve_vanity_url(identity)
 
         ok = False
