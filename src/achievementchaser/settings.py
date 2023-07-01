@@ -17,6 +17,9 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Initialize environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -28,11 +31,6 @@ SECRET_KEY = "django-insecure-#0^@64$gr8toevxq2617haw%=^diz6ozsx%m3ye4nwl603$9ce
 DEBUG = True if (os.getenv("CI") is True or os.getenv("mode") == "development") else False
 
 ALLOWED_HOSTS = []
-
-# Initialize environment variables
-env = environ.Env()
-environ.Env.read_env()
-
 
 # Application definition
 

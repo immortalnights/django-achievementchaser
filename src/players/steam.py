@@ -1,11 +1,9 @@
 import logging
+import typing
 from achievementchaser import steam
 
 
-logger = logging.getLogger()
-
-
-def resolve_vanity_url(name: str):
+def resolve_vanity_url(name: str) -> typing.Union[int, None]:
     steam_id = None
     try:
         response = steam.request(
@@ -16,14 +14,18 @@ def resolve_vanity_url(name: str):
             "response",
         )
 
-        if "success" in response and response["success"] == 1:
-            steam_id = response["steamid"]
-            logger.info(f"Successfully resolved name {name} to steam id {steam_id}")
+        if "success" in response:
+            if response["success"] == 42:
+                # No Match
+                logging.error(f"No match for name '{name}'")
+            elif response["success"] == 1:
+                steam_id = int(response["steamid"])
+                logging.debug(f"Successfully resolved name {name} to steam id {steam_id}")
         else:
             message = response["message"] if "message" in response else "Unspecified"
-            logger.error(f"Failed to resolve name: {message}")
+            logging.error(f"Failed to resolve name '{name}': {message}")
     except Exception:
-        logger.exception("Failed to resolve vanity name")
+        logging.exception("Failed to resolve vanity name")
 
     return steam_id
 
@@ -41,10 +43,10 @@ def load_player_summary(steam_id: str):
 
         if response and "players" in response and len(response["players"]) == 1:
             summary = response["players"][0]
-            logger.info(summary)
+            logging.info(summary)
             # TODO check the profile is visible
     except Exception:
-        logger.exception(f"Failed to load player summary for {steam_id}")
+        logging.exception(f"Failed to load player summary for {steam_id}")
 
     return summary
 
@@ -69,6 +71,6 @@ def get_owned_games(steam_id: str):
         if response and "games" in response:
             games = response["games"]
     except Exception:
-        logger.exception(f"Failed to get player games for {steam_id}")
+        logging.exception(f"Failed to get player games for {steam_id}")
 
     return games
