@@ -27,8 +27,11 @@ environ.Env.read_env()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-#0^@64$gr8toevxq2617haw%=^diz6ozsx%m3ye4nwl603$9ce"
 
+print(os.getenv("CI"))
+print(os.getenv("MODE"))
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if (os.getenv("CI") is True or os.getenv("mode") == "development") else False
+DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development") else False
 
 ALLOWED_HOSTS = []
 
