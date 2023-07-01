@@ -99,7 +99,11 @@ class ResynchronizePlayer(graphene.Mutation):
             # r = resynchronize_player.delay(id)
             # logging.info(r.get(timeout=10))
             # Prod - queue the task
-            r = resynchronize_player(logger, id)
+
+            # FIXME interface needed. This is called from the cmdline and here,
+            # in the queue so the function doesn't know where to write too
+
+            r = resynchronize_player(logging, id)
             logging.info(r)
         except Player.DoesNotExist:
             # Return an error
