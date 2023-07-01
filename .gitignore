@@ -153,4 +153,6 @@ cython_debug/
 #.idea/
 
 _request_cache
+mongodbexports
+src/_version.py
 Notes.md
