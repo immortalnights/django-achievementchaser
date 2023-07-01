@@ -20,6 +20,10 @@ jobs:
         python -m pip install pip build --upgrade
         pip install .[dev]
 
+    - name: Run app
+      working-directory: src/
+      run: python manage.py runserver
+
     - name: Run Tests
       working-directory: src/
       run: python manage.py test
