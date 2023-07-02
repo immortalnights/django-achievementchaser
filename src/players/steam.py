@@ -43,8 +43,6 @@ def load_player_summary(steam_id: str):
 
         if response and "players" in response and len(response["players"]) == 1:
             summary = response["players"][0]
-            logging.info(summary)
-            # TODO check the profile is visible
     except Exception:
         logging.exception(f"Failed to load player summary for {steam_id}")
 
