@@ -1,4 +1,4 @@
-class CommandLogger:
+class CommandOutput:
     cmd = None
 
     def __init__(self, cmd):
