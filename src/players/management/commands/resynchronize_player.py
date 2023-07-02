@@ -11,9 +11,9 @@ def resynchronize_player(output: CommandOutput, identity):
     :param logger: logger instance of command logger wrapper
     """
     ok = False
-    player_instance = Player.formIdentity(identity)
+    player_instance = Player.load(identity)
 
-    if player_instance is None:
+    if player_instance is not None:
         output.info(f"Beginning resynchronization of Player {player_instance.personaname} ({identity})")
 
         player_instance.resynchronize()

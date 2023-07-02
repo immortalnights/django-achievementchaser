@@ -1,9 +1,13 @@
 import typing
+import logging
 from django.db import models
 from django.core.exceptions import ValidationError
-from players.steam import resolve_vanity_url
+from django.utils import timezone
 from games.models import Game
 from achievements.models import Achievement
+from .steam import load_player_summary
+from .utils import parse_identity
+from .responsedata import PlayerSummaryResponse
 
 
 class Player(models.Model):
@@ -23,49 +27,63 @@ class Player(models.Model):
     resynchronization_required = models.BooleanField(default=True)
 
     @staticmethod
-    def parse_identity(identity: typing.Union[str, int]) -> typing.Union[int, None]:
-        player_id = None
-        resolved_identity = None
-
-        if identity.startswith("https"):
-            url = identity if not identity.endswith("/") else identity[:-1]
-            parts = url.split("/")
-
-            if len(parts) != 5:
-                raise RuntimeError(f"Invalid URL provided '{url}', expected four parts (got {len(parts)})")
-            elif parts[2] != "steamcommunity.com":
-                raise RuntimeError(f"Invalid URL provided '{url}', expected steamcommunity.com domain")
-            elif parts[3] == "id":
-                # https://steamcommunity.com/id/nnnnnnnnnnnnnnn/
-                resolved_identity = parts[4]
-            elif parts[3] == "profiles":
-                # https://steamcommunity.com/profiles/00000000000000000/
-                resolved_identity = parts[4]
-            else:
-                raise RuntimeError(f"Invalid URL provided '{url}'")
-        else:
-            resolved_identity = identity
-
-        try:
-            player_id = int(resolved_identity)
-        except ValueError:
-            # logging.debug(f"Could not convert identity '{resolved_identity}' to Steam ID")
-            player_id = resolve_vanity_url(resolved_identity)
-
-        return player_id
+    def load(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
+        # Attempt to identify the user from existing data
+        # This may fail if the player has changed their persona name
+        # or URL. In such a case, resolve the identity to attempt to
+        # load by Player ID.
+        return Player.find_existing(identity) or Player.from_identity(identity)
 
     @staticmethod
-    def from_identity(identity: typing.Union[str, int]) -> typing.Union["Player", None]:
+    def create_player(identity: typing.Union[str, int]):
         instance = None
 
-        player_id = Player.parse_identity(identity)
+        try:
+            existing = Player.find_existing(identity)
+            logging.error(f"Player {existing.id} already exists")
+        except Player.DoesNotExist:
+            player_id = parse_identity(identity)
+            if player_id is not None:
+                instance = Player(id=player_id)
+                # resynchronize saves the Player
+                instance.resynchronize()
+
+        return instance
+
+    @staticmethod
+    def find_existing(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
+        player_id = None
+        try:
+            player_id = int(identity)
+        except ValueError:
+            pass
+
+        query = (
+            models.Q(id=player_id)
+            | models.Q(personaname__iexact=str(identity))
+            | models.Q(profile_url__iexact=str(identity))
+        )
+        logging.debug(query)
+
+        instance = None
+        try:
+            instance = Player.objects.get(query)
+        except Player.DoesNotExist:
+            logging.warning(f"Player {identity} does not exist")
+
+        return instance
+
+    @staticmethod
+    def from_identity(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
+        instance = None
+
+        player_id = parse_identity(identity)
 
         if player_id is not None:
             try:
                 instance = Player.objects.get(id=player_id)
             except Player.DoesNotExist:
-                instance = Player(id=player_id)
-                instance.save()
+                pass
 
         return instance
 
@@ -105,6 +123,48 @@ class Player(models.Model):
     def clean(self):
         if not self.profile_url:
             raise ValidationError("Cannot save a player without a profile URL")
+
+    def resynchronize(self) -> bool:
+        ok = False
+
+        RATE_LIMIT = 60
+
+        delta = timezone.now() - self.resynchronized if self.resynchronized is not None else -1
+        if not self.resynchronization_required and delta.seconds < RATE_LIMIT:
+            logging.error(
+                f"Cannot resynchronize player {self.personaname} again for another {RATE_LIMIT - delta.seconds} seconds"
+            )
+        else:
+            summary = load_player_summary(self.id)
+
+            if summary is None:
+                logging.error(f"Received no summary for player {self.id}")
+            else:
+                if self._parse_summary(summary):
+                    self.resynchronization_required = False
+                    self.save()
+                    ok = True
+
+        return ok
+
+    def resynchronize_games():
+        pass
+
+    def resynchronize_achievements():
+        pass
+
+    def _parse_summary(self, summary_data) -> None:
+        assert (
+            int(summary_data["steamid"]) == self.id
+        ), f"Steam ID {summary_data['steamid']} does not match model ID {self.id}"
+
+        summary = PlayerSummaryResponse(**summary_data)
+        self.personaname = summary.personaname
+        self.profile_url = summary.profileurl
+        self.avatar_small_url = summary.avatar
+        self.avatar_medium_url = summary.avatarmedium
+        self.avatar_large_url = summary.avatarfull
+        self.resynchronized = timezone.now()
 
 
 class OwnedGame(models.Model):
