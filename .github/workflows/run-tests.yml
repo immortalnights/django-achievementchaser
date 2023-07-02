@@ -20,6 +20,11 @@ jobs:
         python -m pip install pip build --upgrade
         pip install .[dev]
 
+    - name: Start postgresql
+      env:
+        POSTGRES_PASSWORD: password
+      run: sudo systemctl start postgresql.service
+
     - name: Run Tests
       working-directory: src/
       run: python manage.py test
