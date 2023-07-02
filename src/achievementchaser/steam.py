@@ -4,6 +4,7 @@ import logging
 import typing
 import urllib
 import json
+from django.conf import settings
 
 logger = logging.getLogger()
 
@@ -16,6 +17,8 @@ def _get_api_key():
 
 def _request(url: str, *, cache: bool = False) -> typing.Union[dict, None]:
     response_json = None
+
+    assert settings.TESTING is False, "Cannot make Steam requests when testing"
 
     try:
         logger.debug(f"GET {url}")
