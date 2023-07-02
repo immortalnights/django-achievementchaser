@@ -88,7 +88,6 @@ WSGI_APPLICATION = "achievementchaser.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "HOST": "localhost",
         "USER": "postgres",
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "NAME": "achievementchaser",
