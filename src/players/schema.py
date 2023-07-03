@@ -6,8 +6,6 @@ from graphene_django.filter import DjangoFilterConnectionField
 # from .tasks import resynchronize_player
 from .management.commands.resynchronize_player import resynchronize_player
 from .models import Player
-from achievementchaser import steam
-from .steam import resolve_vanity_url, load_player_summary
 
 
 class PlayerType(DjangoObjectType):
@@ -42,43 +40,11 @@ class CreatePlayer(graphene.Mutation):
     ok = graphene.Boolean(False)
     player = graphene.String()  # graphene.Field(lambda: Player)
 
-    @staticmethod
+    # @staticmethod
     def mutate(root, info, identity):
-        steam_id = None
-        if steam.is_player_id(identity):
-            # Create player based on Steam ID
-            logging.info(f"Identified {identity} as Steam ID, fetching player details")
-            steam_id = identity
-        else:
-            # Lookup player by url name
-            logging.info(f"Identified '{identity}' as name, performing lookup")
-            steam_id = resolve_vanity_url(identity)
-
-        ok = False
-        player = None
-
-        if steam_id:
-            player_instance = None
-            try:
-                # FIXME if create is attempted, an error should be returned (along with the Player ID?)
-                player_instance = Player.objects.get(id=steam_id)
-            except Player.DoesNotExist:
-                summary = load_player_summary(steam_id)
-                if summary:
-                    player_instance = Player(
-                        id=summary["steamid"],
-                        personaname=summary["personaname"],
-                        profile_url=summary["profileurl"],
-                        avatar_small_url=summary["avatar"],
-                        avatar_medium_url=summary["avatarmedium"],
-                        avatar_large_url=summary["avatarfull"],
-                        created=summary["timecreated"],
-                    )
-                    player_instance.save()
-
-            player = player_instance.id if player_instance else None
-
-        return CreatePlayer(player=player, ok=ok)
+        instance = Player.create_player(identity)
+        player_id = instance.id if instance else None
+        return CreatePlayer(player=player_id, ok=instance is not None)
 
 
 class ResynchronizePlayer(graphene.Mutation):
@@ -89,30 +55,18 @@ class ResynchronizePlayer(graphene.Mutation):
 
     @staticmethod
     def mutate(root, info, id):
+        ok = False
         try:
-            logging.info(f"Get Player {id}")
-            player = Player.objects.get(id=int(id))  # noqa F401
-            # If the player exists, trigger the resynchronization
-            ok = True
             logging.info("Scheduling resynchronize_player task")
-            # Debug - call the command
-            # r = resynchronize_player.delay(id)
-            # logging.info(r.get(timeout=10))
-            # Prod - queue the task
-
-            # FIXME interface needed. This is called from the cmdline and here,
-            # in the queue so the function doesn't know where to write too
-
-            r = resynchronize_player(logging, id)
-            logging.info(r)
+            r = resynchronize_player.delay(id)
+            ok = r.get(timeout=10)
         except Player.DoesNotExist:
             # Return an error
             logging.warning(f"Failed to find Player {id}")
-            ok = False
 
         return ResynchronizePlayer(ok=ok)
 
 
 class Mutation(graphene.ObjectType):
-    create_player = CreatePlayer.Field()
+    # create_player = CreatePlayer.Field()
     resynchronize_player = ResynchronizePlayer.Field()

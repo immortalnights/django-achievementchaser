@@ -129,7 +129,7 @@ class Player(models.Model):
 
         RATE_LIMIT = 60
 
-        delta = timezone.now() - self.resynchronized if self.resynchronized is not None else -1
+        delta = (timezone.now() - self.resynchronized) if self.resynchronized is not None else -1
         if not self.resynchronization_required and delta.seconds < RATE_LIMIT:
             logging.error(
                 f"Cannot resynchronize player {self.personaname} again for another {RATE_LIMIT - delta.seconds} seconds"
@@ -140,10 +140,10 @@ class Player(models.Model):
             if summary is None:
                 logging.error(f"Received no summary for player {self.id}")
             else:
-                if self._parse_summary(summary):
-                    self.resynchronization_required = False
-                    self.save()
-                    ok = True
+                self._parse_summary(summary)
+                self.resynchronization_required = False
+                self.save()
+                ok = True
 
         return ok
 
