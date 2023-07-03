@@ -15,9 +15,11 @@ def resynchronize_player(output: IOutput, identity: typing.Union[str, int]):
     if player_instance is not None:
         output.info(f"Beginning resynchronization of Player {player_instance.personaname} ({identity})")
 
-        player_instance.resynchronize()
-
-        output.info("Done")
+        if player_instance.resynchronize():
+            output.info(f"Resynchronization of player {player_instance.personaname} complete")
+            ok = True
+        else:
+            output.info(f"Resynchronization of player {player_instance.personaname} failed")
 
     return ok
 
