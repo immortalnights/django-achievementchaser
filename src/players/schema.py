@@ -74,3 +74,6 @@ class ResynchronizePlayer(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     # create_player = CreatePlayer.Field()
     resynchronize_player = ResynchronizePlayer.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

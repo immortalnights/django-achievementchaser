@@ -1,4 +1,5 @@
 from django.test import TestCase
+from graphene_django.utils.testing import GraphQLTestCase
 from unittest.mock import patch
 from .models import Player
 from .utils import parse_identity
@@ -142,3 +143,24 @@ class PlayerSummaryTests(TestCase):
 
             # Player should have been resynchronized
             self.assertIsNotNone(player.resynchronized)
+
+
+class PlayerAPITests(GraphQLTestCase):
+    def setUp(self):
+        self.GRAPHQL_URL = "/graphql/"
+
+    def test_resynchronization_request1(self):
+        with patch("players.tasks.resynchronize_player_task.delay") as mock_request:
+            self.query(
+                """
+    mutation TestMutation {
+        resynchronizePlayer(identifier: "TestUser") {
+            id
+            resynchronized
+            personaname
+            ok
+        }
+    }
+"""
+            )
+            mock_request.assert_called_once_with("TestUser")
