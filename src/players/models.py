@@ -5,9 +5,8 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from games.models import Game
 from achievements.models import Achievement
-from .steam import load_player_summary
+from .steam import load_player_summary, get_owned_games
 from .utils import parse_identity
-from .responsedata import PlayerSummaryResponse
 
 
 class Player(models.Model):
@@ -87,44 +86,18 @@ class Player(models.Model):
 
         return instance
 
-        # # TODO update player summary data and make sure the profile is still public
-        # summary = load_player_summary(player_id)  # noqa F841
-        # games = get_owned_games(player_id)
-
-        # logger.debug(f"Player {player_instance.personaname} has {len(games)} games")
-        # for game in games:
-        #     logger.debug(f"Add / update game {game['name']} ({game['appid']})")
-        #     game_instance = Game(
-        #         id=game["appid"],
-        #         name=game["name"],
-        #         img_icon_url=game["img_icon_url"],
-        #         img_logo_url=game["img_logo_url"],
-        #         resynchronization_required=True,
-        #     )
-        #     game_instance.save()
-
-        #     # class OwnedGame(models.Model):
-        #     #     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-        #     #     player = models.ForeignKey(Player, on_delete=models.CASCADE)
-        #     #     added = models.DateTimeField(auto_now_add=True)
-        #     #     updated = models.DateTimeField(auto_now_add=True)
-        #     #     playtime_forever = models.PositiveIntegerField()
-
-        #     logger.debug(
-        #         f"Add / update game {game_instance.name} ({game_instance.id}) "
-        #         f"for {player_instance.personaname} ({player_instance.id})"
-        #     )
-        #     OwnedGame(
-        #         game=game_instance,
-        #         player=player_instance,
-        #         playtime_forever=game["playtime_forever"],
-        #     ).save()
-
     def clean(self):
         if not self.profile_url:
             raise ValidationError("Cannot save a player without a profile URL")
 
     def resynchronize(self) -> bool:
+        ok = self.resynchronize_profile()
+        ok &= self.resynchronize_games()
+        ok &= self.resynchronize_achievements()
+
+        return ok
+
+    def resynchronize_profile(self) -> bool:
         ok = False
 
         RATE_LIMIT = 60
@@ -140,25 +113,45 @@ class Player(models.Model):
             if summary is None:
                 logging.error(f"Received no summary for player {self.id}")
             else:
-                self._parse_summary(summary)
+                self._apply_player_summary(summary)
                 self.resynchronization_required = False
                 self.save()
                 ok = True
 
         return ok
 
-    def resynchronize_games():
+    def resynchronize_games(self):
+        ok = False
+
+        owned_games = get_owned_games(self.id)
+        logging.info(f"Player {self.personaname} has {len(owned_games)} games")
+
+        # Add / update the Game in the Game table
+        for owned_game in owned_games:
+            game_instance = Game(
+                id=owned_game.appid,
+                name=owned_game.name,
+                img_icon_url=owned_game.img_icon_url,
+            )
+            game_instance.save()
+
+            owned_game_instance = OwnedGame(
+                game=game_instance, player=self, playtime_forever=owned_game.playtime_forever
+            )
+            owned_game_instance.save()
+
+            if owned_game.playtime_2weeks is not None:
+                owned_game_playtime = GamePlaytime(game=game_instance, player=self, playtime=owned_game.playtime_2weeks)
+                owned_game_playtime.save()
+
+        return ok
+
+    def resynchronize_achievements(self):
         pass
 
-    def resynchronize_achievements():
-        pass
+    def _apply_player_summary(self, summary) -> None:
+        assert int(summary.steamid) == self.id, f"Steam ID {summary.steamid} does not match model ID {self.id}"
 
-    def _parse_summary(self, summary_data) -> None:
-        assert (
-            int(summary_data["steamid"]) == self.id
-        ), f"Steam ID {summary_data['steamid']} does not match model ID {self.id}"
-
-        summary = PlayerSummaryResponse(**summary_data)
         self.personaname = summary.personaname
         self.profile_url = summary.profileurl
         self.avatar_small_url = summary.avatar
@@ -174,7 +167,7 @@ class OwnedGame(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     added = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     playtime_forever = models.PositiveIntegerField()
 
 

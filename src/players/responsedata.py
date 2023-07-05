@@ -31,3 +31,18 @@ class PlayerSummaryResponse:
     gameid: Optional[str] = None
     gameextrainfo: Optional[str] = None
     gameserverip: Optional[str] = None
+
+
+@dataclass
+class PlayerOwnedGame:
+    appid: int
+    name: str
+    playtime_forever: int
+    img_icon_url: str
+    playtime_windows_forever: int
+    playtime_mac_forever: int
+    playtime_linux_forever: int
+    rtime_last_played: int
+    playtime_disconnected: int
+    playtime_2weeks: Optional[int] = None
+    has_community_visible_stats: Optional[bool] = None

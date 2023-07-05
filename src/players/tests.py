@@ -3,7 +3,7 @@ from graphene_django.utils.testing import GraphQLTestCase
 from unittest.mock import patch
 from .models import Player
 from .utils import parse_identity
-from .testdata import mock_player_summary
+from .testdata import mock_player_summary, mock_player_owned_games
 
 
 class PlayerIdentityTests(TestCase):
@@ -149,7 +149,10 @@ class PlayerAPITests(GraphQLTestCase):
     def setUp(self):
         self.GRAPHQL_URL = "/graphql/"
 
-    def test_resynchronization_request1(self):
+    def test_query_player(self):
+        pass
+
+    def test_resynchronize_player_request(self):
         with patch("players.tasks.resynchronize_player_task.delay") as mock_request:
             self.query(
                 """
@@ -164,3 +167,11 @@ class PlayerAPITests(GraphQLTestCase):
 """
             )
             mock_request.assert_called_once_with("TestUser")
+
+
+class PlayerOwnedGamesTests(TestCase):
+    def test_load_owned_games(self):
+        player = Player.objects.create(id=1)
+        with patch("achievementchaser.steam._request") as mock_request:
+            mock_request.return_value = mock_player_owned_games
+            player.resynchronize_games()

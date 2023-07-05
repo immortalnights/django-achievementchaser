@@ -7,8 +7,7 @@ class Game(models.Model):
     resynchronized = models.DateTimeField(null=True)
     name = models.CharField(max_length=255)
     img_icon_url = models.CharField(max_length=255)
-    img_logo_url = models.CharField(max_length=255)
-    resynchronization_required = models.BooleanField(default=False)
+    resynchronization_required = models.BooleanField(default=True)
 
 
 class GameAchievement(models.Model):
