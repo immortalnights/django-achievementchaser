@@ -23,6 +23,7 @@ def resynchronize_game(game: Game) -> bool:
         else:
             _apply_game_schema(game, schema)
             save_achievements(game, schema.availableGameStats.achievements)
+            game.resynchronized = timezone.now()
             game.resynchronization_required = False
             game.save()
             ok = True
@@ -35,4 +36,3 @@ def _apply_game_schema(game: Game, schema: GameSchema) -> None:
         game.name = schema.gameName
 
     # gameVersion is currently not saved
-    game.resynchronized = timezone.now()

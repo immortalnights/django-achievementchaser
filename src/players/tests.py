@@ -94,6 +94,7 @@ class PlayerTests(TestCase):
             mock_request.assert_called_once()
 
             self.assertIsNotNone(instance)
+            # persona name isn't updated unless the player is resynchronized
 
     def test_player_changed_url(self):
         Player.objects.create(id=1, personaname="oldName", profile_url="https://example.com/profiles/oldURL")
@@ -143,6 +144,7 @@ class PlayerSummaryTests(TestCase):
 
             # Player should have been resynchronized
             self.assertIsNotNone(player.resynchronized)
+            self.assertEqual(player.personaname, "testName")
 
 
 class PlayerAPITests(GraphQLTestCase):

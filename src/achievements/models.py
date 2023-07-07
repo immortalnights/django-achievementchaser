@@ -1,10 +1,9 @@
 from django.db import models
-from games.models import Game
 
 
 class Achievement(models.Model):
     name = models.CharField(primary_key=True, max_length=255)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey("games.Game", on_delete=models.CASCADE)
     default_value = models.IntegerField()
     display_name = models.CharField(max_length=255)
     hidden = models.BooleanField(default=False)

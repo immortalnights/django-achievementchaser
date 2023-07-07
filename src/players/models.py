@@ -95,6 +95,11 @@ class Player(models.Model):
         ok &= self.resynchronize_games()
         ok &= self.resynchronize_achievements()
 
+        if ok is True:
+            self.resynchronized = timezone.now()
+            self.resynchronization_required = False
+            self.save()
+
         return ok
 
     def resynchronize_profile(self) -> bool:
@@ -114,7 +119,6 @@ class Player(models.Model):
                 logging.error(f"Received no summary for player {self.id}")
             else:
                 self._apply_summary(summary)
-                self.resynchronization_required = False
                 self.save()
                 ok = True
 
@@ -157,7 +161,6 @@ class Player(models.Model):
         self.avatar_small_url = summary.avatar
         self.avatar_medium_url = summary.avatarmedium
         self.avatar_large_url = summary.avatarfull
-        self.resynchronized = timezone.now()
 
 
 class OwnedGame(models.Model):

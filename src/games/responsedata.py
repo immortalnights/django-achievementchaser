@@ -25,9 +25,15 @@ class AvailableGameStats:
     stats: List[GameStat]
     achievements: List[GameAchievement]
 
-    def __init__(self, stats: List, achievements: List):
-        self.stats = list(map(lambda stat: GameStat(**stat), stats))
-        self.achievements = list(map(lambda achievement: GameAchievement(**achievement), achievements))
+    def __init__(self, achievements: Optional[List] = None, stats: Optional[List] = None):
+        self.achievements = []
+        self.stats = []
+
+        if achievements:
+            list(map(lambda achievement: GameAchievement(**achievement), achievements))
+
+        if stats:
+            list(map(lambda stat: GameStat(**stat), stats))
 
 
 @dataclass
@@ -36,7 +42,11 @@ class GameSchema:
     gameVersion: str
     availableGameStats: AvailableGameStats
 
-    def __init__(self, gameName: str, gameVersion: str, availableGameStats: List):
+    def __init__(self, gameName: str, gameVersion: str, availableGameStats: Optional[Dict] = None):
         self.gameName = gameName
         self.gameVersion = gameVersion
-        self.availableGameStats = AvailableGameStats(**availableGameStats)
+
+        if availableGameStats:
+            self.availableGameStats = AvailableGameStats(**availableGameStats)
+        else:
+            self.availableGameStats = AvailableGameStats()

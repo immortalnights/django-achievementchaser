@@ -35,5 +35,5 @@ def resynchronize_game(output: IOutput, identity: str):
 
 
 @shared_task
-def resynchronize_player_task(identity: str):
+def resynchronize_game_task(identity: str):
     return resynchronize_game(logger, identity)

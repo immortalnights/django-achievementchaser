@@ -9,7 +9,6 @@ def save_achievements(game: Game, achievements: typing.List[GameAchievement]) ->
     logging.debug(f"Saving {len(achievements)} achievements for game {game.name}")
 
     for achievement in achievements:
-        pass
         achievement_instance = Achievement(
             name=achievement.name,
             game=game,
