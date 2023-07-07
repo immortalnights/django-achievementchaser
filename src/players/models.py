@@ -113,7 +113,7 @@ class Player(models.Model):
             if summary is None:
                 logging.error(f"Received no summary for player {self.id}")
             else:
-                self._apply_player_summary(summary)
+                self._apply_summary(summary)
                 self.resynchronization_required = False
                 self.save()
                 ok = True
@@ -149,7 +149,7 @@ class Player(models.Model):
     def resynchronize_achievements(self):
         pass
 
-    def _apply_player_summary(self, summary) -> None:
+    def _apply_summary(self, summary) -> None:
         assert int(summary.steamid) == self.id, f"Steam ID {summary.steamid} does not match model ID {self.id}"
 
         self.personaname = summary.personaname
