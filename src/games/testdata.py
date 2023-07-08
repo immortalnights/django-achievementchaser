@@ -60,6 +60,7 @@ mock_game_schema_no_available_game_stats = {
         "gameVersion": "1",
     }
 }
+
 mock_game_schema_empty_available_game_stats = {
     "game": {
         "gameName": "Fake Game",
@@ -67,6 +68,7 @@ mock_game_schema_empty_available_game_stats = {
         "availableGameStats": {},
     }
 }
+
 mock_game_schema_no_achievements = {
     "game": {
         "gameName": "Fake Game",
@@ -74,6 +76,7 @@ mock_game_schema_no_achievements = {
         "availableGameStats": {"stats": []},
     }
 }
+
 mock_game_schema_no_stats = {
     "game": {
         "gameName": "Fake Game",

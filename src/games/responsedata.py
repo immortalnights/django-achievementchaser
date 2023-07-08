@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
@@ -30,10 +31,10 @@ class AvailableGameStats:
         self.stats = []
 
         if achievements:
-            list(map(lambda achievement: GameAchievement(**achievement), achievements))
+            self.achievements = list(map(lambda achievement: GameAchievement(**achievement), achievements))
 
         if stats:
-            list(map(lambda stat: GameStat(**stat), stats))
+            self.stats = list(map(lambda stat: GameStat(**stat), stats))
 
 
 @dataclass
@@ -49,4 +50,5 @@ class GameSchema:
         if availableGameStats:
             self.availableGameStats = AvailableGameStats(**availableGameStats)
         else:
+            logging.debug(f"Game {self.gameName} does not have any game stats")
             self.availableGameStats = AvailableGameStats()

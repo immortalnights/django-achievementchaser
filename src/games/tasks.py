@@ -2,6 +2,7 @@ import logging
 import typing
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
+from django.utils import timezone
 from .models import Game
 from .service import resynchronize_game as resynchronize_game_service
 from achievementchaser.management.lib.IOutput import IOutput

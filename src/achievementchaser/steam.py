@@ -56,7 +56,7 @@ def request(path: str, query: typing.Dict, response_data_key: str):
     if response_data_key in response_json:
         response_data = response_json[response_data_key]
     else:
-        raise ValueError(f"Expected root object {response_data_key} missing")
+        raise ValueError(f"Expected root object '{response_data_key}' missing")
 
     return response_data
 

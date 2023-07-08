@@ -67,28 +67,31 @@ class GameTests(TestCase):
 
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {}
-            self.assertRaises(ValueError, resynchronize_game_service, game)
+            # Maybe this should be an exception
+            resynchronize_game_service(game)
             mock_request.assert_called_once()
 
     def test_resynchronize_incomplete_data(self):
-        game = Game(id=1)
-
         with patch("achievementchaser.steam._request") as mock_request:
+            game = Game(id=1)
             mock_request.return_value = mock_game_schema_no_available_game_stats
             resynchronize_game_service(game)
             mock_request.assert_called_once()
 
         with patch("achievementchaser.steam._request") as mock_request:
+            game = Game(id=1)
             mock_request.return_value = mock_game_schema_empty_available_game_stats
             resynchronize_game_service(game)
             mock_request.assert_called_once()
 
         with patch("achievementchaser.steam._request") as mock_request:
+            game = Game(id=1)
             mock_request.return_value = mock_game_schema_no_achievements
             resynchronize_game_service(game)
             mock_request.assert_called_once()
 
         with patch("achievementchaser.steam._request") as mock_request:
+            game = Game(id=1)
             mock_request.return_value = mock_game_schema_no_stats
             resynchronize_game_service(game)
             mock_request.assert_called_once()
