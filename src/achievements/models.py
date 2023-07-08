@@ -11,5 +11,5 @@ class Achievement(models.Model):
     icon_url = models.CharField(max_length=255)
     icon_gray_url = models.CharField(max_length=255)
     global_percentage = models.FloatField(null=True)
-    resynchronized = models.DateTimeField(null=True)
-    resynchronization_required = models.BooleanField(default=True)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)

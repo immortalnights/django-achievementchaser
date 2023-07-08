@@ -7,7 +7,7 @@ from achievements.models import Achievement
 class GameAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("name", "achievements", "resynchronized", "up_to_date")
+    list_display = ("name", "achievements", "resynchronized", "up_to_date", "added", "updated")
     search_fields = ["name"]
 
     @admin.display(description="Up to Date")

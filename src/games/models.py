@@ -6,6 +6,9 @@ class Game(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     img_icon_url = models.CharField(max_length=255)
+    added = models.DateTimeField(auto_now_add=True)
+    # FIXME why updated and resynchronized?
+    updated = models.DateTimeField(auto_now_add=True)
     resynchronized = models.DateTimeField(null=True)
     resynchronization_required = models.BooleanField(default=True)
 

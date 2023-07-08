@@ -23,7 +23,8 @@ celery --app achievementchaser worker --loglevel DEBUG -P solo
 ### Dev Credentials
 
 db "postgres:password"
-superuser "admin:password"
+superuser "admin:password" (.\manage.py createsuperuser)
+pgadmin "admin@example.com:password"
 
 ## Migrations
 

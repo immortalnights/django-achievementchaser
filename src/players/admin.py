@@ -6,7 +6,15 @@ from .models import Player, GamePlaytime, OwnedGame, Friend
 class PlayerAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("personaname", "profile_url", "added", "resynchronized", "resynchronization_required")
+    list_display = (
+        "personaname",
+        "profile_url",
+        "added",
+        "resynchronized",
+        "resynchronization_required",
+        "added",
+        "updated",
+    )
 
 
 @admin.register(OwnedGame)

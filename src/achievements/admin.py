@@ -6,7 +6,7 @@ from .models import Achievement
 class AchievementAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("display_name", "game_name", "description", "resynchronized", "resynchronization_required")
+    list_display = ("display_name", "game_name", "description", "added", "updated")
 
     @admin.display(description="Game")
     def game_name(self, obj):
