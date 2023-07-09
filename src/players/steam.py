@@ -55,8 +55,8 @@ def get_friends(steam_id: str):
     pass
 
 
-def get_owned_games(steam_id: str) -> typing.Optional[typing.List[PlayerOwnedGame]]:
-    owned_games = None
+def get_owned_games(steam_id: str) -> typing.List[PlayerOwnedGame]:
+    owned_games = []
     try:
         response = steam.request(
             "IPlayerService/GetOwnedGames/v0001/",
@@ -69,9 +69,11 @@ def get_owned_games(steam_id: str) -> typing.Optional[typing.List[PlayerOwnedGam
         )
 
         if response and "games" in response and isinstance(response["games"], list):
-            owned_games = []
-            for game in response["games"]:
-                owned_games.append(PlayerOwnedGame(**game))
+            try:
+                for game in response["games"]:
+                    owned_games.append(PlayerOwnedGame(**game))
+            except TypeError:
+                logging.exception(f"Failed to parse game\n{game}")
     except Exception:
         logging.exception(f"Failed to get player games for {steam_id}")
 

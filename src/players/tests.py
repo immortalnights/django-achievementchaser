@@ -2,11 +2,14 @@ from django.test import TestCase
 from graphene_django.utils.testing import GraphQLTestCase
 from unittest.mock import patch
 from .models import Player
-from .utils import parse_identity
-from .testdata import mock_player_summary, mock_player_owned_games
+from .service import parse_identity
+from .testdata import mock_vanity_response, mock_player_summary, mock_player_owned_games
+from .responsedata import PlayerSummaryResponse
 
 
 class PlayerIdentityTests(TestCase):
+    """Test parse_identity utility"""
+
     def test_player_from_id(self):
         """Given a valid Steam ID, return a Player ID"""
         player_id = parse_identity("10000000000000001")
@@ -16,7 +19,7 @@ class PlayerIdentityTests(TestCase):
         """Given a valid Friendly Name, create a new Player"""
         player_id = None
         with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"steamid": "10000000000000001", "success": 1}}
+            mock_request.return_value = mock_vanity_response
             player_id = parse_identity("anonymous")
             mock_request.assert_called_once()
 
@@ -28,7 +31,7 @@ class PlayerIdentityTests(TestCase):
         self.assertEqual(player_id, 76561197993451745)
 
         with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"steamid": "10000000000000001", "success": 1}}
+            mock_request.return_value = mock_vanity_response
             player_id = parse_identity("https://steamcommunity.com/id/anonymous/")
             mock_request.assert_called_once()
 
@@ -41,7 +44,7 @@ class PlayerIdentityTests(TestCase):
 
         player = None
         with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"steamid": "10000000000000001", "success": 1}}
+            mock_request.return_value = mock_vanity_response
             player_id = parse_identity("https://steamcommunity.com/id/anonymous/")
             mock_request.assert_called_once()
 
@@ -70,7 +73,7 @@ class PlayerTests(TestCase):
         self.assertRaises(RuntimeError, Player.from_identity, "https://google.com")
 
     def test_player_existing_true(self):
-        Player.objects.create(id=1, personaname="rndTest", profile_url="https://example.com/id/1")
+        Player.objects.create(id=1, name="rndTest", profile_url="https://example.com/id/1")
 
         player = Player.find_existing(1)
         self.assertIsNotNone(player)
@@ -85,8 +88,8 @@ class PlayerTests(TestCase):
         player = Player.find_existing(1)
         self.assertIsNone(player)
 
-    def test_player_changed_personaname(self):
-        Player.objects.create(id=1, personaname="oldName", profile_url="https://example.com/profiles/oldURL")
+    def test_player_changed_name(self):
+        Player.objects.create(id=1, name="oldName", profile_url="https://example.com/profiles/oldURL")
 
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"steamid": "1", "success": 1}}
@@ -97,7 +100,7 @@ class PlayerTests(TestCase):
             # persona name isn't updated unless the player is resynchronized
 
     def test_player_changed_url(self):
-        Player.objects.create(id=1, personaname="oldName", profile_url="https://example.com/profiles/oldURL")
+        Player.objects.create(id=1, name="oldName", profile_url="https://example.com/profiles/oldURL")
 
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"steamid": "1", "success": 1}}
@@ -108,43 +111,63 @@ class PlayerTests(TestCase):
 
 
 class PlayerSummaryTests(TestCase):
-    def test_parse_summary(self):
-        player = Player(id=1)
-        # Raises due to missing "steamid"
-        self.assertRaises(KeyError, player._parse_summary, {})
-        # Raises due to mismatching Player IDs
-        self.assertRaises(AssertionError, player._parse_summary, {"steamid": 2})
-        # Raises due to missing arguments
-        self.assertRaises(TypeError, player._parse_summary, {"steamid": 1})
+    """Test resynchronization/parsing player summary"""
 
-        player._parse_summary(mock_player_summary)
-        self.assertEqual(player.personaname, "testName")
+    def test_parse_summary(self):
+        player = Player(id=2)
+        # Raises due to missing "steamid"
+        self.assertRaises(AttributeError, player._apply_summary, {})
+        # Raises due to mismatching Player IDs
+        self.assertRaises(AssertionError, player._apply_summary, PlayerSummaryResponse(**mock_player_summary))
+
+        player = Player(id=1)
+        player._apply_summary(PlayerSummaryResponse(**mock_player_summary))
+        self.assertEqual(player.name, "testName")
         self.assertEqual(player.profile_url, "testURL")
         self.assertEqual(player.avatar_large_url, "testAvatarL")
         self.assertEqual(player.avatar_medium_url, "testAvatarM")
         self.assertEqual(player.avatar_small_url, "testAvatarS")
-        self.assertTrue(player.resynchronized)
 
-    def test_resynchronize_invalid_player(self):
+    def test_resynchronize_profile_invalid_player(self):
         player = Player.objects.create(id=1)
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"players": []}}
-            player.resynchronize()
+            player.resynchronize_profile()
             mock_request.assert_called_once()
 
             # Player should not have been resynchronized
             self.assertIsNone(player.resynchronized)
 
-    def test_resynchronize_player(self):
+    def test_resynchronize_profile_player(self):
         player = Player.objects.create(id=1)
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"players": [mock_player_summary]}}
-            player.resynchronize()
+            player.resynchronize_profile()
             mock_request.assert_called_once()
 
-            # Player should have been resynchronized
-            self.assertIsNotNone(player.resynchronized)
-            self.assertEqual(player.personaname, "testName")
+            self.assertEqual(player.name, "testName")
+            self.assertEqual(player.profile_url, "testURL")
+            self.assertEqual(player.avatar_small_url, "testAvatarS")
+            self.assertEqual(player.avatar_medium_url, "testAvatarM")
+            self.assertEqual(player.avatar_large_url, "testAvatarL")
+
+
+class TestPlayerResynchronizeGames(TestCase):
+    """Test resynchronization/parsing player games"""
+
+    pass
+
+
+class TestPlayerResynchronizeAchievements(TestCase):
+    """Test resynchronization/parsing player achievements"""
+
+    pass
+
+
+class TestPlayerResynchronize(TestCase):
+    """Test resynchronization of player"""
+
+    pass
 
 
 class PlayerAPITests(GraphQLTestCase):
@@ -156,19 +179,38 @@ class PlayerAPITests(GraphQLTestCase):
 
     def test_resynchronize_player_request(self):
         with patch("players.tasks.resynchronize_player_task.delay") as mock_request:
-            self.query(
+            response = self.query(
                 """
     mutation TestMutation {
         resynchronizePlayer(identifier: "TestUser") {
-            id
-            resynchronized
-            personaname
             ok
+            id
+            name
+            error
         }
     }
 """
             )
             mock_request.assert_called_once_with("TestUser")
+            print(response)
+
+    def test_resynchronize_unknown_player_request(self):
+        with patch("achievementchaser.steam._request") as mock_request:
+            mock_request.return_value = mock_vanity_response
+            response = self.query(
+                """
+    mutation TestMutation {
+        resynchronizePlayer(identifier: "TestUser") {
+            ok
+            id
+            name
+            error
+        }
+    }
+"""
+            )
+            mock_request.assert_called_once_with("TestUser")
+            print(response)
 
 
 class PlayerOwnedGamesTests(TestCase):

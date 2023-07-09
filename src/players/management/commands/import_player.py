@@ -42,7 +42,7 @@ def import_player(logger: CommandLogger, identity: str):
         except Player.DoesNotExist:
             new_record = Player(
                 id=record["_id"],
-                personaname=record["personaname"],
+                namd=record["personaname"],
                 profile_url=record["steam"]["profileurl"],
             )
             new_record.save()

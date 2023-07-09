@@ -3,27 +3,28 @@ import typing
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
 from players.models import Player
-from achievementchaser.management.lib.IOutput import IOutput
+from players.service import load_player, can_resynchronize_player, resynchronize_player
 
 logger = logging.getLogger()
 
 
-def resynchronize_player(output: IOutput, identity: typing.Union[str, int]):
+@shared_task
+def resynchronize_player_task(identity: typing.Union[str, int]) -> typing.Union[bool, Exception]:
     ok = False
-    player_instance = Player.load(identity)
 
-    if player_instance is not None:
-        output.info(f"Beginning resynchronization of Player {player_instance.personaname} ({identity})")
+    player = load_player(identity)
 
-        if player_instance.resynchronize():
-            output.info(f"Resynchronization of player {player_instance.personaname} complete")
-            ok = True
+    if player is None:
+        raise Player.DoesNotExist(f"Player '{identity}' does not exist")
+    else:
+        logging.info(f"Beginning resynchronization of Player {player.name} ({identity})")
+
+        if not can_resynchronize_player(player):
+            logging.warning(f"Resynchronization of player {player.name} blocked")
+        elif not resynchronize_player(player):
+            logging.warning(f"Resynchronization of player {player.name} failed")
         else:
-            output.info(f"Resynchronization of player {player_instance.personaname} failed")
+            logging.info(f"Resynchronization of player {player.name} complete")
+            ok = True
 
     return ok
-
-
-@shared_task
-def resynchronize_player_task(identity: typing.Union[str, int]):
-    return resynchronize_player(logger, identity)

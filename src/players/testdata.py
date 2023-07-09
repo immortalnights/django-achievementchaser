@@ -1,3 +1,5 @@
+mock_vanity_response = {"response": {"steamid": "10000000000000001", "success": 1}}
+
 mock_player_summary = {
     "steamid": "1",
     "communityvisibilitystate": 0,

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 
 @dataclass
@@ -39,10 +39,12 @@ class PlayerOwnedGame:
     name: str
     playtime_forever: int
     img_icon_url: str
-    playtime_windows_forever: int
-    playtime_mac_forever: int
-    playtime_linux_forever: int
-    rtime_last_played: int
-    playtime_disconnected: int
+    playtime_windows_forever: int = 0
+    playtime_mac_forever: int = 0
+    playtime_linux_forever: int = 0
+    rtime_last_played: int = 0
+    playtime_disconnected: int = 0
+    has_leaderboards: Optional[bool] = None
     playtime_2weeks: Optional[int] = None
     has_community_visible_stats: Optional[bool] = None
+    content_descriptorids: Optional[List[int]] = None

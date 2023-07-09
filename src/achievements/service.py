@@ -10,7 +10,7 @@ def save_achievements(game: Game, achievements: typing.List[GameAchievement]) ->
     logging.debug(f"Saving {len(achievements)} achievements for game {game.name}")
 
     for achievement in achievements:
-        achievement_instance = Achievement(
+        achievement_instance, achievement_created = Achievement.objects.update_or_create(
             name=achievement.name,
             game=game,
             default_value=achievement.defaultvalue,
@@ -20,7 +20,6 @@ def save_achievements(game: Game, achievements: typing.List[GameAchievement]) ->
             icon_url=achievement.icon,
             icon_gray_url=achievement.icongray,
         )
-        achievement_instance.save()
 
 
 def resynchronize_game_achievements(game: Game) -> bool:
@@ -32,8 +31,8 @@ def resynchronize_game_achievements(game: Game) -> bool:
         for achievement in achievement_percentages.achievements:
             try:
                 instance = Achievement.objects.get(name=achievement.name)
-                instance.global_percentage = achievement.percentage
-                instance.save()
+                instance.global_percentage = achievement.percent
+                instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
                 logging.error(f"Achievement {achievement.name} not found for game {game.name} ({game.id})")
 

@@ -5,7 +5,7 @@ from typing import List, Dict
 @dataclass
 class AchievementPercentage:
     name: str
-    percentage: float
+    percent: float
 
 
 @dataclass
@@ -16,4 +16,4 @@ class AchievementPercentages:
         self.achievements = []
 
         for achievement in achievements:
-            self.achievements.append(**AchievementPercentage)
+            self.achievements.append(AchievementPercentage(**achievement))
