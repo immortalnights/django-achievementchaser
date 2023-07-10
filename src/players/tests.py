@@ -1,8 +1,17 @@
+from dataclasses import dataclass
 from django.test import TestCase
 from graphene_django.utils.testing import GraphQLTestCase
 from unittest.mock import patch
 from .models import Player
-from .service import parse_identity
+from .service import (
+    parse_identity,
+    load_player,
+    find_existing_player,
+    player_from_identity,
+    resynchronize_player_profile,
+    resynchronize_player_games,
+    resynchronize_player_achievements,
+)
 from .testdata import mock_vanity_response, mock_player_summary, mock_player_owned_games
 from .responsedata import PlayerSummaryResponse
 
@@ -55,7 +64,7 @@ class PlayerIdentityTests(TestCase):
 class PlayerTests(TestCase):
     def test_player_from_invalid_id(self):
         """Given an invalid Steam ID, return None"""
-        player = Player.from_identity("0")
+        player = player_from_identity("0")
         self.assertIsNone(player)
 
     def test_player_from_invalid_friendly_name(self):
@@ -63,29 +72,29 @@ class PlayerTests(TestCase):
         player = None
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"success": 42, "message": "No match"}}
-            player = Player.from_identity("invalid")
+            player = player_from_identity("invalid")
             mock_request.assert_called_once()
 
         self.assertIsNone(player)
 
     def test_player_from_invalid_url(self):
         """Given an invalid user URL, return an error"""
-        self.assertRaises(RuntimeError, Player.from_identity, "https://google.com")
+        self.assertRaises(RuntimeError, player_from_identity, "https://google.com")
 
     def test_player_existing_true(self):
         Player.objects.create(id=1, name="rndTest", profile_url="https://example.com/id/1")
 
-        player = Player.find_existing(1)
+        player = find_existing_player(1)
         self.assertIsNotNone(player)
 
-        player = Player.find_existing("rndTest")
+        player = find_existing_player("rndTest")
         self.assertIsNotNone(player)
 
-        player = Player.find_existing("https://example.com/id/1")
+        player = find_existing_player("https://example.com/id/1")
         self.assertIsNotNone(player)
 
     def test_player_existing_false(self):
-        player = Player.find_existing(1)
+        player = find_existing_player(1)
         self.assertIsNone(player)
 
     def test_player_changed_name(self):
@@ -93,7 +102,7 @@ class PlayerTests(TestCase):
 
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"steamid": "1", "success": 1}}
-            instance = Player.load("newName")
+            instance = load_player("newName")
             mock_request.assert_called_once()
 
             self.assertIsNotNone(instance)
@@ -104,35 +113,20 @@ class PlayerTests(TestCase):
 
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"steamid": "1", "success": 1}}
-            instance = Player.load("https://steamcommunity.com/profiles/newURL/")
+            instance = load_player("https://steamcommunity.com/profiles/newURL/")
             mock_request.assert_called_once()
 
             self.assertIsNotNone(instance)
 
 
-class PlayerSummaryTests(TestCase):
+class PlayerProfileTests(TestCase):
     """Test resynchronization/parsing player summary"""
-
-    def test_parse_summary(self):
-        player = Player(id=2)
-        # Raises due to missing "steamid"
-        self.assertRaises(AttributeError, player._apply_summary, {})
-        # Raises due to mismatching Player IDs
-        self.assertRaises(AssertionError, player._apply_summary, PlayerSummaryResponse(**mock_player_summary))
-
-        player = Player(id=1)
-        player._apply_summary(PlayerSummaryResponse(**mock_player_summary))
-        self.assertEqual(player.name, "testName")
-        self.assertEqual(player.profile_url, "testURL")
-        self.assertEqual(player.avatar_large_url, "testAvatarL")
-        self.assertEqual(player.avatar_medium_url, "testAvatarM")
-        self.assertEqual(player.avatar_small_url, "testAvatarS")
 
     def test_resynchronize_profile_invalid_player(self):
         player = Player.objects.create(id=1)
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"players": []}}
-            player.resynchronize_profile()
+            resynchronize_player_profile(player)
             mock_request.assert_called_once()
 
             # Player should not have been resynchronized
@@ -142,7 +136,7 @@ class PlayerSummaryTests(TestCase):
         player = Player.objects.create(id=1)
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = {"response": {"players": [mock_player_summary]}}
-            player.resynchronize_profile()
+            resynchronize_player_profile(player)
             mock_request.assert_called_once()
 
             self.assertEqual(player.name, "testName")
@@ -152,22 +146,55 @@ class PlayerSummaryTests(TestCase):
             self.assertEqual(player.avatar_large_url, "testAvatarL")
 
 
-class TestPlayerResynchronizeGames(TestCase):
+class PlayerResynchronizeGamesTests(TestCase):
     """Test resynchronization/parsing player games"""
 
-    pass
+    def test_load_owned_games(self):
+        player = Player.objects.create(id=1)
+        with patch("achievementchaser.steam._request") as mock_request:
+            mock_request.return_value = mock_player_owned_games
+            resynchronize_player_games(player)
 
 
-class TestPlayerResynchronizeAchievements(TestCase):
+class PlayerResynchronizeAchievementsTests(TestCase):
     """Test resynchronization/parsing player achievements"""
 
     pass
 
 
-class TestPlayerResynchronize(TestCase):
+class PlayerResynchronizeTests(TestCase):
     """Test resynchronization of player"""
 
     pass
+
+
+class MockTask:
+    return_value: None
+
+    def __init__(self, return_value):
+        self.return_value = return_value
+
+    def get(self, timeout: int = 0):
+        return self.return_value
+
+
+@dataclass
+class ResynchronizePlayerResponse:
+    ok: bool
+    id: str = ""
+    name: str = ""
+    resynchronized: bool = False
+    error: str = ""
+
+    @staticmethod
+    def parse_response(response):
+        result = None
+        response_json = response.json()
+        response_data = response_json["data"] if "data" in response_json else None
+        if response_data:
+            result = ResynchronizePlayerResponse(**response_data["resynchronizePlayer"])
+
+        return result
 
 
 class PlayerAPITests(GraphQLTestCase):
@@ -178,9 +205,13 @@ class PlayerAPITests(GraphQLTestCase):
         pass
 
     def test_resynchronize_player_request(self):
-        with patch("players.tasks.resynchronize_player_task.delay") as mock_request:
-            response = self.query(
-                """
+        with patch("players.schema.find_existing_player") as mock_request:
+            mock_request.return_value = Player(id=1, name="TestUser", resynchronized=True)
+
+            with patch("players.tasks.resynchronize_player_task.delay") as mock_task_request:
+                mock_task_request.return_value = MockTask(True)
+                response = self.query(
+                    """
     mutation TestMutation {
         resynchronizePlayer(identifier: "TestUser") {
             ok
@@ -190,9 +221,15 @@ class PlayerAPITests(GraphQLTestCase):
         }
     }
 """
-            )
-            mock_request.assert_called_once_with("TestUser")
-            print(response)
+                )
+                mock_task_request.assert_called_once_with("TestUser")
+                mock_request.assert_called_once_with("TestUser")
+
+                data = ResynchronizePlayerResponse.parse_response(response)
+                self.assertIsInstance(data, ResynchronizePlayerResponse)
+                self.assertTrue(data.ok)
+                self.assertEqual(data.id, "1")
+                self.assertEqual(data.name, "TestUser")
 
     def test_resynchronize_unknown_player_request(self):
         with patch("achievementchaser.steam._request") as mock_request:
@@ -209,13 +246,8 @@ class PlayerAPITests(GraphQLTestCase):
     }
 """
             )
-            mock_request.assert_called_once_with("TestUser")
-            print(response)
 
-
-class PlayerOwnedGamesTests(TestCase):
-    def test_load_owned_games(self):
-        player = Player.objects.create(id=1)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_player_owned_games
-            player.resynchronize_games()
+            data = ResynchronizePlayerResponse.parse_response(response)
+            self.assertIsInstance(data, ResynchronizePlayerResponse)
+            self.assertFalse(data.ok)
+            self.assertEqual(data.error, "Player 'TestUser' does not exist")

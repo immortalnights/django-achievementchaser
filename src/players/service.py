@@ -49,22 +49,6 @@ def load_player(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
     return find_existing_player(identity) or player_from_identity(identity)
 
 
-# def create_player(identity: typing.Union[str, int]):
-#     instance = None
-
-#     try:
-#         existing = Player.find_existing(identity)
-#         logging.error(f"Player {existing.id} already exists")
-#     except Player.DoesNotExist:
-#         player_id = parse_identity(identity)
-#         if player_id is not None:
-#             instance = Player(id=player_id)
-#             # resynchronize saves the Player
-#             instance.resynchronize()
-
-#     return instance
-
-
 def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
     """Loads an existing player from the database given a player identity"""
     player_id = None
