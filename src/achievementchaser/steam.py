@@ -34,9 +34,9 @@ def _request(url: str, *, cache: bool = False) -> typing.Union[dict, None]:
             except json.JSONDecodeError:
                 logger.exception("Failed to parse response")
     except urllib.error.URLError:
-        logger.exception("Steam request failed")
+        logger.exception("Steam request failed (URL ERROR)")
     except urllib.error.HTTPError:
-        logger.exception("Steam request failed")
+        logger.exception("Steam request failed (HTTP ERROR)")
 
     return response_json
 
