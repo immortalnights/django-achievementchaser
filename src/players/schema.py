@@ -2,12 +2,9 @@ import logging
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-
-# from .tasks import resynchronize_player
-from .management.commands.resynchronize_player import resynchronize_player
+from .tasks import resynchronize_player_task
 from .models import Player
-from achievementchaser import steam
-from .steam import resolve_vanity_url, load_player_summary
+from .service import find_existing_player
 
 
 class PlayerType(DjangoObjectType):
@@ -17,7 +14,7 @@ class PlayerType(DjangoObjectType):
         fields = "__all__"
         filter_fields = [
             "id",
-            "personaname",
+            "name",
         ]
 
 
@@ -27,7 +24,7 @@ class Query(graphene.ObjectType):
 
     def resolve_player(root, info, id=None, name=None):
         try:
-            resp = Player.objects.get(id=id, personaname=name)
+            resp = Player.objects.get(id=id, name=name)
         except Player.DoesNotExist:
             logging.warning(f"Could not find Player with ID={id} or name={name}")
             resp = None
@@ -35,84 +32,41 @@ class Query(graphene.ObjectType):
         return resp
 
 
-class CreatePlayer(graphene.Mutation):
-    class Arguments:
-        identity = graphene.String()
-
-    ok = graphene.Boolean(False)
-    player = graphene.String()  # graphene.Field(lambda: Player)
-
-    @staticmethod
-    def mutate(root, info, identity):
-        steam_id = None
-        if steam.is_player_id(identity):
-            # Create player based on Steam ID
-            logging.info(f"Identified {identity} as Steam ID, fetching player details")
-            steam_id = identity
-        else:
-            # Lookup player by url name
-            logging.info(f"Identified '{identity}' as name, performing lookup")
-            steam_id = resolve_vanity_url(identity)
-
-        ok = False
-        player = None
-
-        if steam_id:
-            player_instance = None
-            try:
-                # FIXME if create is attempted, an error should be returned (along with the Player ID?)
-                player_instance = Player.objects.get(id=steam_id)
-            except Player.DoesNotExist:
-                summary = load_player_summary(steam_id)
-                if summary:
-                    player_instance = Player(
-                        id=summary["steamid"],
-                        personaname=summary["personaname"],
-                        profile_url=summary["profileurl"],
-                        avatar_small_url=summary["avatar"],
-                        avatar_medium_url=summary["avatarmedium"],
-                        avatar_large_url=summary["avatarfull"],
-                        created=summary["timecreated"],
-                    )
-                    player_instance.save()
-
-            player = player_instance.id if player_instance else None
-
-        return CreatePlayer(player=player, ok=ok)
-
-
 class ResynchronizePlayer(graphene.Mutation):
     class Arguments:
-        id = graphene.String()
+        identifier = graphene.String()
 
     ok = graphene.Boolean()
+    id = graphene.String()
+    name = graphene.String()
+    error = graphene.String()
+    resynchronized = graphene.String()
 
     @staticmethod
-    def mutate(root, info, id):
+    def mutate(root, info, identifier):
         try:
-            logging.info(f"Get Player {id}")
-            player = Player.objects.get(id=int(id))  # noqa F401
-            # If the player exists, trigger the resynchronization
-            ok = True
-            logging.info("Scheduling resynchronize_player task")
-            # Debug - call the command
-            # r = resynchronize_player.delay(id)
-            # logging.info(r.get(timeout=10))
-            # Prod - queue the task
+            logging.info("Scheduling resynchronize_player_task")
+            # FIXME it would be good if this was dynamic...
+            task = resynchronize_player_task.delay(identifier)
+            result = task.get(timeout=10)
 
-            # FIXME interface needed. This is called from the cmdline and here,
-            # in the queue so the function doesn't know where to write too
+            response = {"ok": result}
+            if result is True:
+                player = find_existing_player(identifier)
+                response["id"] = str(player.id)
+                response["name"] = player.name
+                response["resynchronized"] = player.resynchronized
 
-            r = resynchronize_player(logging, id)
-            logging.info(r)
-        except Player.DoesNotExist:
-            # Return an error
-            logging.warning(f"Failed to find Player {id}")
-            ok = False
+        except Player.DoesNotExist as ex:
+            response = {"ok": False, "error": ex.args[0]}
 
-        return ResynchronizePlayer(ok=ok)
+        logging.info(response)
+        return ResynchronizePlayer(**response)
 
 
 class Mutation(graphene.ObjectType):
-    create_player = CreatePlayer.Field()
+    # create_player = CreatePlayer.Field()
     resynchronize_player = ResynchronizePlayer.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

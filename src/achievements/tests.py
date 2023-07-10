@@ -1,3 +1,6 @@
-from django.test import TestCase  # noqa F401
+from django.test import TestCase
 
-# Create your tests here.
+
+class TestAchievements(TestCase):
+    def test_save_achievements(self):
+        self.assertTrue(False)

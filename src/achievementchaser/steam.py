@@ -4,6 +4,7 @@ import logging
 import typing
 import urllib
 import json
+from django.conf import settings
 
 logger = logging.getLogger()
 
@@ -16,6 +17,8 @@ def _get_api_key():
 
 def _request(url: str, *, cache: bool = False) -> typing.Union[dict, None]:
     response_json = None
+
+    assert settings.TESTING is False, "Cannot make Steam requests when testing"
 
     try:
         logger.debug(f"GET {url}")
@@ -31,9 +34,9 @@ def _request(url: str, *, cache: bool = False) -> typing.Union[dict, None]:
             except json.JSONDecodeError:
                 logger.exception("Failed to parse response")
     except urllib.error.URLError:
-        logger.exception("Steam request failed")
+        logger.exception("Steam request failed (URL ERROR)")
     except urllib.error.HTTPError:
-        logger.exception("Steam request failed")
+        logger.exception("Steam request failed (HTTP ERROR)")
 
     return response_json
 
@@ -53,7 +56,7 @@ def request(path: str, query: typing.Dict, response_data_key: str):
     if response_data_key in response_json:
         response_data = response_json[response_data_key]
     else:
-        raise ValueError(f"Expected root object {response_data_key} missing")
+        raise ValueError(f"Expected root object '{response_data_key}' missing")
 
     return response_data
 

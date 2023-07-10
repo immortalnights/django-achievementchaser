@@ -4,16 +4,17 @@ from achievements.models import Achievement
 
 class Game(models.Model):
     id = models.PositiveIntegerField(primary_key=True)
-    resynchronized = models.DateTimeField(null=True)
     name = models.CharField(max_length=255)
     img_icon_url = models.CharField(max_length=255)
-    img_logo_url = models.CharField(max_length=255)
-    resynchronization_required = models.BooleanField(default=False)
+    added = models.DateTimeField(auto_now_add=True)
+    # FIXME why updated and resynchronized?
+    updated = models.DateTimeField(auto_now=True)
+    resynchronized = models.DateTimeField(null=True)
+    resynchronization_required = models.BooleanField(default=True)
 
+    def __str__(self):
+        return f"{self.name} ({self.id})"
 
-class GameAchievement(models.Model):
-    class Meta:
-        unique_together = (("game", "achievement"),)
-
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    @property
+    def achievements(self):
+        return Achievement.objects.filter(game=self)

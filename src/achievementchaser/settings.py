@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import environ
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,11 +28,10 @@ environ.Env.read_env()
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-#0^@64$gr8toevxq2617haw%=^diz6ozsx%m3ye4nwl603$9ce"
 
-print(os.getenv("CI"))
-print(os.getenv("MODE"))
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development") else False
+
+TESTING = "test" in sys.argv
 
 ALLOWED_HOSTS = []
 
@@ -91,6 +91,7 @@ DATABASES = {
         "USER": "postgres",
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "NAME": "achievementchaser",
+        "HOSTNAME": "127.0.0.1",
         "PORT": 5432,
     }
 }

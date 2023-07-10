@@ -6,24 +6,44 @@ from .models import Player, GamePlaytime, OwnedGame, Friend
 class PlayerAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("personaname", "profile_url", "added", "resynchronized", "resynchronization_required")
+    list_display = (
+        "name",
+        "profile_url",
+        "games",
+        "added",
+        "resynchronized",
+        "resynchronization_required",
+        "added",
+        "updated",
+    )
+
+    @admin.display(description="Games")
+    def games(self, obj):
+        return OwnedGame.objects.filter(player=obj).count()
 
 
 @admin.register(OwnedGame)
 class OwnedGameAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("game_name", "player_name", "added", "playtime_forever")
+    list_display = ("edit", "game", "player", "added", "playtime_forever")
+    search_fields = ["game__name"]
 
-    @admin.display(description="Game")
-    def game_name(self, obj):
-        return obj.game.name
-
-    @admin.display(description="Player")
-    def player_name(self, obj):
-        return obj.player.personaname
+    @admin.display(description="Edit")
+    def edit(self, obj):
+        return "Edit"
 
 
-# Register your models here.
-admin.site.register(GamePlaytime)
+@admin.register(GamePlaytime)
+class GamePlaytimeAdmin(admin.ModelAdmin):
+    """"""
+
+    list_display = ("edit", "game", "player", "playtime", "datetime")
+    search_fields = ["game__name"]
+
+    @admin.display(description="Edit")
+    def edit(self, obj):
+        return "Edit"
+
+
 admin.site.register(Friend)
