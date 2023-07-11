@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Player, GamePlaytime, OwnedGame, Friend
+from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement, Friend
 
 
 @admin.register(Player)
@@ -19,10 +19,10 @@ class PlayerAdmin(admin.ModelAdmin):
 
     @admin.display(description="Games")
     def games(self, obj):
-        return OwnedGame.objects.filter(player=obj).count()
+        return PlayerOwnedGame.objects.filter(player=obj).count()
 
 
-@admin.register(OwnedGame)
+@admin.register(PlayerOwnedGame)
 class OwnedGameAdmin(admin.ModelAdmin):
     """"""
 
@@ -34,7 +34,7 @@ class OwnedGameAdmin(admin.ModelAdmin):
         return "Edit"
 
 
-@admin.register(GamePlaytime)
+@admin.register(PlayerGamePlaytime)
 class GamePlaytimeAdmin(admin.ModelAdmin):
     """"""
 
@@ -47,3 +47,4 @@ class GamePlaytimeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Friend)
+admin.site.register(PlayerUnlockedAchievement)

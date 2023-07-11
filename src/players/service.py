@@ -3,7 +3,7 @@ import logging
 from django.db import models
 from django.utils import timezone
 from games.models import Game
-from .models import Player, OwnedGame, GamePlaytime
+from .models import Player, PlayerOwnedGame, PlayerGamePlaytime
 from .steam import resolve_vanity_url, load_player_summary, get_owned_games
 
 
@@ -150,14 +150,16 @@ def resynchronize_player_games(player: Player) -> bool:
             img_icon_url=owned_game.img_icon_url,
         )
 
-        owned_game_instance, owned_game_created = OwnedGame.objects.update_or_create(
+        owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance, player=player, playtime_forever=owned_game.playtime_forever
         )
 
         if owned_game.playtime_2weeks is not None:
             # FIXME only add if the play time is different and
             # the last record was more than an hour ago
-            owned_game_playtime = GamePlaytime(game=game_instance, player=player, playtime=owned_game.playtime_2weeks)
+            owned_game_playtime = PlayerGamePlaytime(
+                game=game_instance, player=player, playtime=owned_game.playtime_2weeks
+            )
             owned_game_playtime.save()
 
     return ok

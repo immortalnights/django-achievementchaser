@@ -1,3 +1,9 @@
+mock_game_achievement_percentages_empty = {"achievementpercentages": {"achievements": []}}
+
+mock_game_achievement_percentages_no_achievements = {"achievementpercentages": {}}
+
+mock_game_achievement_percentages_invalid = {}
+
 mock_game_achievement_percentages = {
     "achievementpercentages": {
         "achievements": [
@@ -8,4 +14,8 @@ mock_game_achievement_percentages = {
             {"name": "ACHIEVE_CHAP_5_COMPLETE", "percent": 66.5},
         ]
     }
+}
+
+mock_fake_game_achievement_percentages = {
+    "achievementpercentages": {"achievements": [{"name": "FakeAchievement", "percent": 99.99}]}
 }

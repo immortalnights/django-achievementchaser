@@ -23,7 +23,7 @@ class Player(models.Model):
         return f"{self.name} ({self.id})"
 
 
-class OwnedGame(models.Model):
+class PlayerOwnedGame(models.Model):
     class Meta:
         unique_together = (("game", "player"),)
 
@@ -34,19 +34,20 @@ class OwnedGame(models.Model):
     playtime_forever = models.PositiveIntegerField()
 
 
-class GamePlaytime(models.Model):
+class PlayerGamePlaytime(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     datetime = models.DateTimeField(auto_now_add=True)
     playtime = models.PositiveIntegerField()
 
 
-class AchievementAchieved(models.Model):
+class PlayerUnlockedAchievement(models.Model):
     class Meta:
-        unique_together = (("achievement", "player"),)
+        unique_together = (("player", "achievement"),)
 
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    datetime = models.DateTimeField(auto_now_add=True)
 
 
 class Friend(models.Model):

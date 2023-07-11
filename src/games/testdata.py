@@ -1,4 +1,25 @@
-mock_game_schema = {
+mock_fake_game_schema = {
+    "game": {
+        "gameName": "Fake Game",
+        "gameVersion": "1",
+        "availableGameStats": {
+            "stats": [],
+            "achievements": [
+                {
+                    "name": "FakeAchievement",
+                    "defaultvalue": 0,
+                    "displayName": "Fake Achievement",
+                    "hidden": 0,
+                    "description": "This is a fake achievement",
+                    "icon": "(url)",
+                    "icongray": "(url)",
+                }
+            ],
+        },
+    }
+}
+
+mock_real_game_schema = {
     "game": {
         "gameName": "The Room",
         "gameVersion": "8",
