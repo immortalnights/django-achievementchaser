@@ -1,12 +1,12 @@
 import logging
 import typing
 from games.models import Game
-from games.responsedata import GameAchievement
+from games.responsedata import GameAchievementResponse
 from .models import Achievement
 from .steam import load_game_achievement_percentages
 
 
-def save_achievements(game: Game, achievements: typing.List[GameAchievement]) -> None:
+def save_achievements(game: Game, achievements: typing.List[GameAchievementResponse]) -> None:
     logging.debug(f"Saving {len(achievements)} achievements for game {game.name}")
 
     for achievement in achievements:

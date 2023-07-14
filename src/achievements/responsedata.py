@@ -3,17 +3,17 @@ from typing import List, Dict
 
 
 @dataclass
-class AchievementPercentage:
+class AchievementPercentageResponse:
     name: str
     percent: float
 
 
 @dataclass
-class AchievementPercentages:
-    achievements: List[AchievementPercentage]
+class AchievementPercentagesResponse:
+    achievements: List[AchievementPercentageResponse]
 
     def __init__(self, achievements: Dict):
         self.achievements = []
 
         for achievement in achievements:
-            self.achievements.append(AchievementPercentage(**achievement))
+            self.achievements.append(AchievementPercentageResponse(**achievement))

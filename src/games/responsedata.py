@@ -11,7 +11,7 @@ class GameStat:
 
 
 @dataclass
-class GameAchievement:
+class GameAchievementResponse:
     name: str
     defaultvalue: int
     displayName: str
@@ -22,33 +22,33 @@ class GameAchievement:
 
 
 @dataclass
-class AvailableGameStats:
+class AvailableGameStatsResponse:
     stats: List[GameStat]
-    achievements: List[GameAchievement]
+    achievements: List[GameAchievementResponse]
 
     def __init__(self, achievements: Optional[List] = None, stats: Optional[List] = None):
         self.achievements = []
         self.stats = []
 
         if achievements:
-            self.achievements = list(map(lambda achievement: GameAchievement(**achievement), achievements))
+            self.achievements = list(map(lambda achievement: GameAchievementResponse(**achievement), achievements))
 
         if stats:
             self.stats = list(map(lambda stat: GameStat(**stat), stats))
 
 
 @dataclass
-class GameSchema:
+class GameSchemaResponse:
     gameName: str
     gameVersion: str
-    availableGameStats: AvailableGameStats
+    availableGameStats: AvailableGameStatsResponse
 
     def __init__(self, gameName: str, gameVersion: str, availableGameStats: Optional[Dict] = None):
         self.gameName = gameName
         self.gameVersion = gameVersion
 
         if availableGameStats:
-            self.availableGameStats = AvailableGameStats(**availableGameStats)
+            self.availableGameStats = AvailableGameStatsResponse(**availableGameStats)
         else:
             logging.debug(f"Game {self.gameName} does not have any game stats")
-            self.availableGameStats = AvailableGameStats()
+            self.availableGameStats = AvailableGameStatsResponse()
