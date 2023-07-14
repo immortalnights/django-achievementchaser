@@ -2,6 +2,7 @@ import logging
 from django.utils import timezone
 from .models import Game
 
+
 def can_resynchronize_game(game: Game) -> bool:
     ok = False
     RATE_LIMIT = 60

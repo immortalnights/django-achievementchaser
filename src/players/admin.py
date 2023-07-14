@@ -26,7 +26,16 @@ class PlayerAdmin(admin.ModelAdmin):
 class PlayerOwnedGameAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("edit", "game", "player", "playtime_forever", "achievements_resynchronized", "achievements_up_to_date", "added", "updated")
+    list_display = (
+        "edit",
+        "game",
+        "player",
+        "playtime_forever",
+        "achievements_resynchronized",
+        "achievements_up_to_date",
+        "added",
+        "updated",
+    )
     search_fields = ["game__name"]
 
     @admin.display(description="Edit")

@@ -9,6 +9,7 @@ from games.models import Game
 
 logger = logging.getLogger()
 
+
 @shared_task
 def resynchronize_player_task(identity: typing.Union[str, int]) -> typing.Optional[bool]:
     ok = False
@@ -30,15 +31,20 @@ def resynchronize_player_task(identity: typing.Union[str, int]) -> typing.Option
 
     return ok
 
+
 @shared_task
 def resynchronize_player_game_task(player: int, game: int) -> typing.Optional[bool]:
+    ok = False
 
     try:
         player = Player.objects.get(id=player)
         game = Game.objects.get(id=game)
 
         resynchronize_player_achievements_for_game(player, game)
+        ok = True
     except Player.DoesNotExist:
         logging.error(f"Failed to find player {player}")
     except Game.DoesNotExist:
         logging.error(f"Failed to find game {game}")
+
+    return ok
