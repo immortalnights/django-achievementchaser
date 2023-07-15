@@ -4,7 +4,6 @@ from achievements.models import Achievement
 
 
 class Player(models.Model):
-    # Steam fields
     id = models.PositiveBigIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     profile_url = models.CharField(default="", max_length=255)
@@ -12,9 +11,7 @@ class Player(models.Model):
     avatar_medium_url = models.CharField(default="", max_length=255)
     avatar_large_url = models.CharField(default="", max_length=255)
     created = models.IntegerField(default=0)
-    # End steam
     added = models.DateTimeField(auto_now_add=True)
-    # Why updated and resynchronized?
     updated = models.DateTimeField(auto_now=True)
     resynchronized = models.DateTimeField(null=True)
     resynchronization_required = models.BooleanField(default=True)
@@ -23,30 +20,34 @@ class Player(models.Model):
         return f"{self.name} ({self.id})"
 
 
-class OwnedGame(models.Model):
+class PlayerOwnedGame(models.Model):
     class Meta:
         unique_together = (("game", "player"),)
 
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    playtime_forever = models.PositiveIntegerField()
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    playtime_forever = models.PositiveIntegerField()
+    achievements_resynchronized = models.DateTimeField(null=True)
+    achievements_resynchronization_required = models.BooleanField(default=True)
 
 
-class GamePlaytime(models.Model):
+class PlayerGamePlaytime(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    datetime = models.DateTimeField(auto_now_add=True)
     playtime = models.PositiveIntegerField()
+    datetime = models.DateTimeField(auto_now_add=True)
 
 
-class AchievementAchieved(models.Model):
+class PlayerUnlockedAchievement(models.Model):
     class Meta:
-        unique_together = (("achievement", "player"),)
+        unique_together = (("player", "game", "achievement"),)
 
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    datetime = models.DateTimeField()
 
 
 class Friend(models.Model):

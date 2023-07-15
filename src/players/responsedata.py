@@ -34,7 +34,7 @@ class PlayerSummaryResponse:
 
 
 @dataclass
-class PlayerOwnedGame:
+class PlayerOwnedGameResponse:
     appid: int
     name: str
     playtime_forever: int
@@ -48,3 +48,10 @@ class PlayerOwnedGame:
     playtime_2weeks: Optional[int] = None
     has_community_visible_stats: Optional[bool] = None
     content_descriptorids: Optional[List[int]] = None
+
+
+@dataclass
+class PlayerUnlockedAchievementResponse:
+    achieved: int
+    apiname: str
+    unlocktime: int
