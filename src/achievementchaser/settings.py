@@ -33,11 +33,15 @@ DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development"
 
 TESTING = "test" in sys.argv
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS: list[str] = ["127.0.0.1"]
+
+CSRF_TRUSTED_ORIGINS: list[str] = []
+CORS_ALLOWED_ORIGINS: list[str] = []
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "achievements.apps.AchievementsConfig",
     "games.apps.GamesConfig",
     "players.apps.PlayersConfig",
@@ -52,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
