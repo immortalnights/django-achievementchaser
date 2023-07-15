@@ -1,17 +1,20 @@
 import typing
 import logging
+from datetime import datetime, timedelta
 from django.db import models
 from django.utils import timezone
 from games.models import Game
-from .models import Player, OwnedGame, GamePlaytime
-from .steam import resolve_vanity_url, load_player_summary, get_owned_games
+from games.service import resynchronize_game
+from achievements.models import Achievement
+from .models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
+from .steam import resolve_vanity_url, load_player_summary, get_owned_games, get_player_achievements_for_game
 
 
 def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
     player_id = None
-    resolved_identity = None
+    resolved_identity: typing.Union[str, int, None] = None
 
-    if identity.startswith("https"):
+    if isinstance(identity, str) and identity.startswith("https"):
         url = identity if not identity.endswith("/") else identity[:-1]
         parts = url.split("/")
 
@@ -39,7 +42,7 @@ def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
     return player_id
 
 
-def load_player(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
+def load_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
     """
     Attempt to identify the user from existing data
     This may fail if the player has changed their persona name
@@ -49,23 +52,7 @@ def load_player(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
     return find_existing_player(identity) or player_from_identity(identity)
 
 
-# def create_player(identity: typing.Union[str, int]):
-#     instance = None
-
-#     try:
-#         existing = Player.find_existing(identity)
-#         logging.error(f"Player {existing.id} already exists")
-#     except Player.DoesNotExist:
-#         player_id = parse_identity(identity)
-#         if player_id is not None:
-#             instance = Player(id=player_id)
-#             # resynchronize saves the Player
-#             instance.resynchronize()
-
-#     return instance
-
-
-def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
+def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
     """Loads an existing player from the database given a player identity"""
     player_id = None
     try:
@@ -100,29 +87,13 @@ def player_from_identity(identity: typing.Union[str, int]) -> typing.Optional["P
     return instance
 
 
-def can_resynchronize_player(player: Player) -> bool:
-    ok = False
-
-    RATE_LIMIT = 60
-
-    delta = (timezone.now() - player.resynchronized) if player.resynchronized is not None else -1
-    if not player.resynchronization_required and delta.seconds < RATE_LIMIT:
-        logging.error(
-            f"Cannot resynchronize player {player.name} again for another {RATE_LIMIT - delta.seconds} seconds"
-        )
-    else:
-        ok = True
-
-    return ok
-
-
 def resynchronize_player(player: Player) -> bool:
     ok = False
 
     try:
         ok = resynchronize_player_profile(player)
         ok &= resynchronize_player_games(player)
-        ok &= resynchronize_player_achievements(player)
+        ok &= resynchronize_player_achievements_recent_games(player)
 
         if ok is True:
             player.resynchronized = timezone.now()
@@ -152,6 +123,17 @@ def resynchronize_player_profile(player: Player) -> bool:
     return ok
 
 
+def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int, *, maximum_frequency=60) -> int:
+    delta = timezone.now() - playtime.datetime
+    save = delta.seconds > (maximum_frequency * 60)
+    if not save:
+        logging.debug(
+            f"Not saving playtime record for {playtime.game.name} last recorded {delta.seconds / 60:0.0f} minutes ago"
+        )
+
+    return save
+
+
 def resynchronize_player_games(player: Player) -> bool:
     ok = False
 
@@ -159,6 +141,8 @@ def resynchronize_player_games(player: Player) -> bool:
     logging.info(f"Player {player.name} has {len(owned_games)} games")
 
     # Add / update the Game in the Game table
+    # This could be optimized by getting all the IDs of the games the player already owns
+    # and bulk updating/creating as required.
     for owned_game in owned_games:
         game_instance, game_created = Game.objects.update_or_create(
             id=owned_game.appid,
@@ -166,18 +150,114 @@ def resynchronize_player_games(player: Player) -> bool:
             img_icon_url=owned_game.img_icon_url,
         )
 
-        owned_game_instance, owned_game_created = OwnedGame.objects.update_or_create(
-            game=game_instance, player=player, playtime_forever=owned_game.playtime_forever
+        owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
+            game=game_instance,
+            player=player,
+            playtime_forever=owned_game.playtime_forever,
         )
 
         if owned_game.playtime_2weeks is not None:
-            # FIXME only add if the play time is different and
-            # the last record was more than an hour ago
-            owned_game_playtime = GamePlaytime(game=game_instance, player=player, playtime=owned_game.playtime_2weeks)
-            owned_game_playtime.save()
+            # Get latest game playtime
+            owned_game_playtime = PlayerGamePlaytime.objects.filter(player=player, game=game_instance).latest(
+                "datetime"
+            )
+
+            if owned_game_playtime is None or should_save_playtime_record(
+                owned_game_playtime, owned_game.playtime_2weeks
+            ):
+                logging.debug(
+                    f"Saving playtime record for {player.name} game {game_instance.name} ({owned_game.playtime_2weeks})"
+                )
+                new_owned_game_playtime = PlayerGamePlaytime(
+                    game=game_instance, player=player, playtime=owned_game.playtime_2weeks
+                )
+                new_owned_game_playtime.save()
 
     return ok
 
 
-def resynchronize_player_achievements(self) -> bool:
-    return True
+def resynchronize_player_achievements(player: Player) -> bool:
+    """Resynchronize player achievements for recently played games"""
+    ok = False
+
+    player_games = PlayerOwnedGame.objects.filter(player=player)
+    logging.debug(f"Resynchronizing achievements for {len(player_games)} games for {player.name}")
+
+    for record in player_games:
+        game = record.game
+        resynchronize_game(game)
+        resynchronize_player_achievements_for_game(player, game)
+
+    return ok
+
+
+def resynchronize_player_achievements_recent_games(player: Player) -> bool:
+    """Resynchronize player achievements for recently played games"""
+    ok = False
+
+    q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=4))
+    recent_played_games = PlayerGamePlaytime.objects.filter(q).distinct("game")
+    # logging.debug(recent_games.query)
+    logging.debug(f"Resynchronizing achievements for {len(recent_played_games)} games for {player.name}")
+
+    for record in recent_played_games:
+        game = record.game
+        resynchronize_game(game)
+        resynchronize_player_achievements_for_game(player, game)
+
+    return ok
+
+
+def resynchronize_player_achievements_for_game(player: Player, game: Game):
+    logging.debug(f"Collecting player {player.name} achievements for '{game.name}'")
+    player_achievements = get_player_achievements_for_game(player.id, game.id)
+    unlocked = list(filter(lambda achievement: achievement.achieved == 1, player_achievements))
+
+    if len(player_achievements) > 0:
+        logging.debug(
+            f"Player {player.name} has unlocked {len(unlocked)} of "
+            f"{len(player_achievements)} achievements in {game.name}"
+        )
+    else:
+        logging.debug(f"Game {game.name} does not have any achievements")
+
+    game_resynchronization_required = False
+
+    if len(unlocked) > 0:
+        # Get all known game achievements
+        game_achievements = Achievement.objects.filter(game=game.id)
+
+        for player_achievement in unlocked:
+            assert (
+                player_achievement.achieved == 1
+            ), f"Unexpected achieved value {player_achievement.achieved} for player achievement {player_achievement.apiname}"
+
+            game_achievement = next(
+                filter(lambda achievement: achievement.name == player_achievement.apiname, game_achievements), None
+            )
+            if game_achievement is not None:
+                PlayerUnlockedAchievement.objects.update_or_create(
+                    player=player,
+                    game=game,
+                    achievement=game_achievement,
+                    datetime=timezone.make_aware(datetime.utcfromtimestamp(player_achievement.unlocktime)),
+                )
+            else:
+                game_resynchronization_required = True
+                logging.error(
+                    f"Achievement {player_achievement.apiname} does not " f"exist for game {game.name} ({game.id})"
+                )
+
+    # Update the game resynchronization time
+    game.resynchronized = timezone.now()
+    game.resynchronization_required = game_resynchronization_required
+    game.save(update_fields=["resynchronized", "resynchronization_required"])
+
+    # Update the owned game resynchronization time
+    try:
+        owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
+        owned_game.achievements_resynchronized = timezone.now()
+        owned_game.achievements_resynchronization_required = game_resynchronization_required
+        owned_game.save(update_fields=["achievements_resynchronized", "achievements_resynchronization_required"])
+    except PlayerOwnedGame.DoesNotExist:
+        pass

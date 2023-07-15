@@ -2,7 +2,7 @@
 import os
 import logging
 import typing
-import urllib
+from urllib import request as urllib_request, parse, error
 import json
 from django.conf import settings
 
@@ -15,50 +15,56 @@ def _get_api_key():
     return os.environ["STEAM_API_KEY"] if "STEAM_API_KEY" in os.environ else ""
 
 
-def _request(url: str, *, cache: bool = False) -> typing.Union[dict, None]:
-    response_json = None
+def _request(url: str, *, cache: bool = False) -> tuple[bool, typing.Union[dict, None]]:
+    response_json: typing.Union[dict, None] = None
+    ok: bool = False
 
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
 
     try:
         logger.debug(f"GET {url}")
-        with urllib.request.urlopen(url) as resp:
+        with urllib_request.urlopen(url) as resp:
             try:
-                response_json = json.loads(resp.read().decode("utf8"))
+                if resp.headers.get_content_type() == "application/json":
+                    response_json = json.loads(resp.read().decode("utf8"))
+                    ok = True
 
-                if cache:
-                    file_name = urllib.parse.quote(url, safe="")
+                if cache and response_json is not None:
+                    file_name = parse.quote(url, safe="")
                     os.makedirs("_request_cache", exist_ok=True)
                     with open(os.path.join("_request_cache", file_name + ".json"), "w") as f:
                         f.write(json.dumps(response_json, indent=2))
             except json.JSONDecodeError:
                 logger.exception("Failed to parse response")
-    except urllib.error.URLError:
+    except error.HTTPError as err:
+        # logger.exception("Steam request failed (HTTP ERROR)")
+        logging.warning(f"HTTP {err.code}")
+        if err.headers.get_content_type() == "application/json":
+            response_json = json.loads(err.read().decode("utf8"))
+    except error.URLError:
         logger.exception("Steam request failed (URL ERROR)")
-    except urllib.error.HTTPError:
-        logger.exception("Steam request failed (HTTP ERROR)")
 
-    return response_json
+    return ok, response_json
 
 
-def request(path: str, query: typing.Dict, response_data_key: str):
+def request(path: str, query: dict, response_data_key: str) -> tuple[bool, dict]:
     # Always add the API key and response format
-    default_query_string = urllib.parse.urlencode(
+    default_query_string = parse.urlencode(
         {
             "key": _get_api_key(),
             "format": "json",
         }
     )
-    query_string = urllib.parse.urlencode(query)
+    query_string = parse.urlencode(query)
     url = f"http://{STEAM_API_URL}/{path}?{default_query_string}&{query_string}"
-    response_json = _request(url, cache=True)
+    ok, response_json = _request(url, cache=True)
 
-    if response_data_key in response_json:
+    if response_json is not None and response_data_key in response_json:
         response_data = response_json[response_data_key]
     else:
         raise ValueError(f"Expected root object '{response_data_key}' missing")
 
-    return response_data
+    return ok, response_data
 
 
 def is_player_id(identity: str):

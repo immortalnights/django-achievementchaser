@@ -1,13 +1,13 @@
 import logging
 import typing
 from achievementchaser import steam
-from .responsedata import AchievementPercentages
+from .responsedata import AchievementPercentagesResponse
 
 
-def load_game_achievement_percentages(id: int) -> typing.Optional[AchievementPercentages]:
+def load_game_achievement_percentages(id: int) -> typing.Optional[AchievementPercentagesResponse]:
     schema = None
     try:
-        response = steam.request(
+        ok, response = steam.request(
             "ISteamUserStats/GetGlobalAchievementPercentagesForApp/v2/",
             {
                 "gameid": id,
@@ -16,7 +16,7 @@ def load_game_achievement_percentages(id: int) -> typing.Optional[AchievementPer
         )
 
         if response and "achievements" in response:
-            schema = AchievementPercentages(**response)
+            schema = AchievementPercentagesResponse(**response)
     except Exception:
         logging.exception(f"Failed to load game achievement percentages for {id}")
 

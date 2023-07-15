@@ -1,13 +1,18 @@
 import logging
 import typing
 from achievementchaser import steam
-from .responsedata import VanityResponse, PlayerSummaryResponse, PlayerOwnedGame
+from .responsedata import (
+    VanityResponse,
+    PlayerSummaryResponse,
+    PlayerOwnedGameResponse,
+    PlayerUnlockedAchievementResponse,
+)
 
 
 def resolve_vanity_url(name: str) -> typing.Union[int, None]:
     steam_id = None
     try:
-        response = steam.request(
+        ok, response = steam.request(
             "ISteamUser/ResolveVanityURL/v0001",
             {
                 "vanityurl": name,
@@ -32,10 +37,10 @@ def resolve_vanity_url(name: str) -> typing.Union[int, None]:
     return steam_id
 
 
-def load_player_summary(steam_id: str) -> typing.Optional[PlayerSummaryResponse]:
+def load_player_summary(steam_id: int) -> typing.Optional[PlayerSummaryResponse]:
     summary = None
     try:
-        response = steam.request(
+        ok, response = steam.request(
             "ISteamUser/GetPlayerSummaries/v0002/",
             {
                 "steamids": steam_id,
@@ -51,14 +56,14 @@ def load_player_summary(steam_id: str) -> typing.Optional[PlayerSummaryResponse]
     return summary
 
 
-def get_friends(steam_id: str):
+def get_friends(steam_id: int):
     pass
 
 
-def get_owned_games(steam_id: str) -> typing.List[PlayerOwnedGame]:
+def get_owned_games(steam_id: int) -> typing.List[PlayerOwnedGameResponse]:
     owned_games = []
     try:
-        response = steam.request(
+        ok, response = steam.request(
             "IPlayerService/GetOwnedGames/v0001/",
             {
                 "steamid": steam_id,
@@ -71,10 +76,35 @@ def get_owned_games(steam_id: str) -> typing.List[PlayerOwnedGame]:
         if response and "games" in response and isinstance(response["games"], list):
             try:
                 for game in response["games"]:
-                    owned_games.append(PlayerOwnedGame(**game))
+                    owned_games.append(PlayerOwnedGameResponse(**game))
             except TypeError:
                 logging.exception(f"Failed to parse game\n{game}")
     except Exception:
         logging.exception(f"Failed to get player games for {steam_id}")
 
     return owned_games
+
+
+def get_player_achievements_for_game(steam_id: int, game_id: int) -> typing.List[PlayerUnlockedAchievementResponse]:
+    achievements = []
+    try:
+        ok, response = steam.request(
+            "ISteamUserStats/GetPlayerAchievements/v0001/",
+            {
+                "steamid": steam_id,
+                "appid": game_id,
+            },
+            "playerstats",
+        )
+
+        if response and "success" in response:
+            if "achievements" in response and isinstance(response["achievements"], list):
+                try:
+                    for achievement in response["achievements"]:
+                        achievements.append(PlayerUnlockedAchievementResponse(**achievement))
+                except TypeError:
+                    logging.exception(f"Failed to parse game\n{achievement}")
+    except Exception:
+        logging.exception(f"Failed to get player games for {steam_id}")
+
+    return achievements
