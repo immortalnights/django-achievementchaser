@@ -18,6 +18,7 @@ dev = [
     "pytest",
     "mypy",
     "pymongo",
+    "django-cors-headers"
 ]
 
 [build-system]

@@ -1,14 +1,16 @@
 {
-    "editor.tabSize": 4,
-    "files.eol": "\n",
-    "files.insertFinalNewline": true,
-    "python.testing.pytestArgs": [
-        "src/achievementchaser"
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true,
-    "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "editor.formatOnSave": true
-    }
+  "editor.tabSize": 4,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "python.testing.pytestArgs": ["src/achievementchaser"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": false
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false
 }
