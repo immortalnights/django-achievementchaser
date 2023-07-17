@@ -10,7 +10,6 @@ from .service import find_existing_player
 class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
-        interfaces = (graphene.Node,)
         fields = "__all__"
         filter_fields = [
             "id",
@@ -20,7 +19,7 @@ class PlayerType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.Int(), name=graphene.String())
-    players = DjangoFilterConnectionField(PlayerType)
+    players = graphene.List(PlayerType)
 
     def resolve_player(root, info, id=None, name=None):
         try:
@@ -30,6 +29,9 @@ class Query(graphene.ObjectType):
             resp = None
 
         return resp
+
+    def resolve_players(root, info, **kwargs):
+        return Player.objects.all()
 
 
 class ResynchronizePlayer(graphene.Mutation):
