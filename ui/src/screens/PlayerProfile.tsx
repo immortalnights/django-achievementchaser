@@ -80,13 +80,13 @@ interface PlayerSummary {
 interface PlayerProfile {
     id: string
     name: string
-    avatarM: string
+    avatarLargeUrl?: string
     profileUrl?: string
-    summary: PlayerSummary
-    highestCompletionGame: unknown[]
-    lowestCompletionGame: unknown[]
-    easiestGames: unknown[]
-    easiestAchievements: unknown
+    summary?: PlayerSummary
+    highestCompletionGame?: unknown[]
+    lowestCompletionGame?: unknown[]
+    easiestGames?: unknown[]
+    easiestAchievements?: unknown
 }
 
 interface PlayerProfileResponse {
@@ -96,13 +96,13 @@ interface PlayerProfileResponse {
 const PlayerHeader = ({
     id,
     name,
-    avatarM,
+    avatarLargeUrl,
     profileUrl,
     summary,
 }: {
     id: string
     name?: string
-    avatarM?: string
+    avatarLargeUrl?: string
     profileUrl?: string
     summary?: PlayerSummary
 }) => {
@@ -110,7 +110,7 @@ const PlayerHeader = ({
         <div>
             <div>
                 <h2>{name}</h2>
-                <img src={avatarM}></img>
+                <img src={avatarLargeUrl} />
             </div>
             <div>
                 <PlayerStatistics {...summary} />
@@ -138,6 +138,7 @@ const PlayerProfileContent = (profile: PlayerProfile) => {
             <PlayerHeader
                 id={profile.id}
                 name={profile.name}
+                avatarLargeUrl={profile.avatarLargeUrl}
                 {...profile.summary}
             />
             <h4>Almost There</h4>
@@ -166,15 +167,9 @@ const PlayerProfileScreen = () => {
                     profile(id: ${id}) {
                         id
                         name
-                        imgIconUrl
-                        achievements {
-                          name
-                          displayName
-                          description
-                          iconUrl
-                          globalPercentage
-                        }
-                      }
+                        profileUrl
+                        avatarLargeUrl
+                    }
                 }
             `
         )
