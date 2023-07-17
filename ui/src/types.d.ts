@@ -1,3 +1,4 @@
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 interface Player {
     id: string
     name?: string
@@ -14,9 +15,18 @@ interface Player {
 
 interface Game {
     id: number
+    name?: string
+    achievements?: Achievement[]
+    iconUrl?: string
+}
+
+interface Achievement {
     name: string
-    achievementCount: number
-    iconUrl: string
+    displayName?: string
+    description?: string
+    iconUrl?: string
+    greyIconUrl?: string
+    globalPercentage?: number
 }
 
 interface PlayersResponse {

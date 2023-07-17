@@ -6,19 +6,51 @@ const GameHeader = ({
     id,
     name,
     image,
-    achievementCount = 0,
+    achievements = [],
 }: {
     id: number
     name: string
     image: string
-    achievementCount?: number
+    achievements?: WithRequired<Achievement, "globalPercentage">[]
 }) => {
+    const min = achievements.reduce<number | undefined>(
+        (min, achievement) =>
+            min && min < achievement.globalPercentage
+                ? min
+                : achievement.globalPercentage,
+        0
+    )
+    const max = achievements.reduce(
+        (max, achievement) =>
+            max < achievement.globalPercentage
+                ? achievement.globalPercentage
+                : max,
+        0
+    )
     return (
-        <div>
-            <div>
-                <h3>{name}</h3>
-                <p>Total Achievements {achievementCount}</p>
-                <p>Difficulty: ?% to ?%</p>
+        <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{ flexGrow: 1, textAlign: "left" }}>
+                <h3 style={{ margin: 4 }}>{name}</h3>
+                <p style={{ margin: 4 }}>
+                    Total Achievements {achievements.length}
+                </p>
+                <p style={{ margin: 4 }}>
+                    Difficulty: {min?.toFixed(2)}% to {max.toFixed(2)}%
+                </p>
+            </div>
+            <div
+                style={{
+                    margin: 8,
+                    fontSize: "small",
+                    alignContent: "flex-start",
+                }}
+            >
+                <a
+                    href={`http://store.steampowered.com/app/${id}`}
+                    target="_blank"
+                >
+                    View on Steam
+                </a>
             </div>
             <div>
                 <img
@@ -29,10 +61,77 @@ const GameHeader = ({
     )
 }
 
-const GameDetails = ({ game }: { game: Game }) => {
+const AchievementItem = ({
+    name,
+    displayName,
+    description,
+    iconUrl,
+    globalPercentage,
+}: Achievement) => {
+    return (
+        <li style={{ display: "flex", margin: "0.25em" }}>
+            <img src={iconUrl} style={{ width: 64, height: 64 }} />
+            <div
+                style={{
+                    display: "flex",
+                    flexGrow: 1,
+                    border: "1px solid white",
+                    borderRadius: 5,
+                    marginLeft: "0.5em",
+                }}
+            >
+                <div
+                    style={{
+                        flexGrow: 1,
+                        textAlign: "left",
+                        position: "relative",
+                    }}
+                >
+                    <div
+                        style={{
+                            position: "absolute",
+                            top: 0,
+                            bottom: 0,
+                            zIndex: -1,
+                            backgroundColor: "#607d8b",
+                            margin: "4px",
+                            height: "54px",
+                            borderRadius: "3px",
+                            width: `${globalPercentage}%`,
+                        }}
+                    ></div>
+                    <h4 style={{ margin: "0.125em 0 0 0.5em" }}>
+                        {displayName}
+                    </h4>
+                    <p style={{ margin: "0.125em 0 0 0.5em" }}>{description}</p>
+                </div>
+                <div>
+                    <span>{globalPercentage?.toFixed(2)}%</span>
+                </div>
+            </div>
+        </li>
+    )
+}
+
+const GameDetails = ({
+    game,
+}: {
+    game: WithRequired<Game, "name" | "iconUrl" | "achievements">
+}) => {
     return (
         <>
-            <GameHeader id={game.id} name={game.name} image={game.iconUrl} />
+            <GameHeader
+                id={game.id}
+                name={game.name}
+                achievements={game.achievements}
+                image={game.iconUrl}
+            />
+            <hr />
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {game.achievements.map((achievement) => (
+                    <AchievementItem key={achievement.name} {...achievement} />
+                ))}
+            </ul>
         </>
     )
 }
@@ -49,24 +148,22 @@ const GameScreen = () => {
             "/graphql/",
             gql`
                 {
-                    game(id: 221810) {
+                    game(id: ${id}) {
                         id
                         name
                         imgIconUrl
-                        achievementSet {
-                            id
-                            name
-                            displayName
-                            description
-                            iconGrayUrl
-                            globalPercentage
+                        achievements {
+                          name
+                          displayName
+                          description
+                          iconUrl
+                          globalPercentage
                         }
-                    }
+                      }
                 }
             `
         )
             .then((resp) => {
-                console.log(resp)
                 setLoading(false)
                 setGame(resp.game)
             })
