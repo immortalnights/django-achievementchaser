@@ -5,6 +5,7 @@ from graphene_django.filter import DjangoFilterConnectionField
 from .tasks import resynchronize_player_task
 from .models import Player
 from .service import find_existing_player
+from .queries import get_total_playtime
 from games.schema import GameType
 
 
@@ -18,6 +19,17 @@ class PlayerType(DjangoObjectType):
         ]
 
 
+class ProfileGameSummaryType(graphene.ObjectType):
+    highest_completion_game = graphene.List(GameType)
+    lowest_completion_game = graphene.List(GameType)
+    easiest_games = graphene.List(GameType)
+    # easiest_achievements = graphene.List()
+
+
+class PlayerInput(graphene.InputObjectType):
+    id = graphene.String()
+
+
 class ProfileSummaryType(graphene.ObjectType):
     recent_games = graphene.List(GameType)
     # recent_achievements = graphene.List()
@@ -29,6 +41,10 @@ class ProfileSummaryType(graphene.ObjectType):
     played_games_count = graphene.Int()
     total_playtime = graphene.Int()
 
+    def resolve_total_playtime(root, info):
+        print("resolve_total_playtime", root)
+        return get_total_playtime(Player(id=root.id))
+
 
 class ProfileType(graphene.ObjectType):
     id = graphene.String()
@@ -37,11 +53,21 @@ class ProfileType(graphene.ObjectType):
     avatar_medium_url = graphene.String()
     avatar_large_url = graphene.String()
     profile_url = graphene.String()
-    summary = graphene.Field(ProfileSummaryType)
-    highest_completion_game = graphene.List(GameType)
-    lowest_completion_game = graphene.List(GameType)
-    easiest_games = graphene.List(GameType)
-    # easiest_achievements = graphene.List()
+    summary = graphene.Field(ProfileSummaryType, id=graphene.BigInt())
+    game_summary = graphene.Field(ProfileGameSummaryType)
+
+    def resolve_summary(player, info):
+        print("resolve_summary", player)
+
+        profile = ProfileType()
+        profile.id = player.id
+        profile.name = player.name
+        profile.avatar_small_url = player.avatar_small_url
+        profile.avatar_medium_url = player.avatar_medium_url
+        profile.avatar_large_url = player.avatar_large_url
+        profile.profile_url = player.profile_url
+
+        return profile
 
 
 class Query(graphene.ObjectType):
@@ -61,15 +87,33 @@ class Query(graphene.ObjectType):
     def resolve_players(root, info):
         return Player.objects.all()
 
-    def resolve_profile(root, info, id=None):
-        print(id)
+    def resolve_profile(root, info, id=None, **kwargs):
+        profile = {}
         player = None
         try:
             player = Player.objects.get(id=id)
+            profile["id"] = player.id
+            profile["name"] = player.name
+            profile["avatar_small_url"] = player.avatar_small_url
+            profile["avatar_medium_url"] = player.avatar_medium_url
+            profile["avatar_large_url"] = player.avatar_large_url
+            profile["profile_url"] = player.profile_url
+
+            summary = ProfileSummaryType()
+            summary.recent_games
+            # summary.recent_achievements
+            summary.perfect_games_count = 0
+            summary.achievements_unlocked_count = 0
+            summary.total_achievement_count = 0
+            # summary.friends
+            summary.total_game_count = 0
+            summary.played_games_count = 0
+            # summary.total_playtime = 0
+
+            # profile.summary = summary
         except Player.DoesNotExist:
             logging.warning(f"Could not find Player with id={id}")
-            resp = None
-        print(f"player={player}")
+
         return player
 
 
