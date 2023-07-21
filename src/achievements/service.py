@@ -13,12 +13,14 @@ def save_achievements(game: Game, achievements: typing.List[GameAchievementRespo
         achievement_instance, achievement_created = Achievement.objects.update_or_create(
             name=achievement.name,
             game=game,
-            default_value=achievement.defaultvalue,
-            display_name=achievement.displayName,
-            hidden=achievement.hidden,
-            description=achievement.description,
-            icon_url=achievement.icon,
-            icon_gray_url=achievement.icongray,
+            defaults={
+                "default_value": achievement.defaultvalue,
+                "display_name": achievement.displayName,
+                "hidden": achievement.hidden,
+                "description": achievement.description,
+                "icon_url": achievement.icon,
+                "icon_gray_url": achievement.icongray,
+            },
         )
 
 

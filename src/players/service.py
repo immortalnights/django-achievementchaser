@@ -146,21 +146,30 @@ def resynchronize_player_games(player: Player) -> bool:
     for owned_game in owned_games:
         game_instance, game_created = Game.objects.update_or_create(
             id=owned_game.appid,
-            name=owned_game.name,
-            img_icon_url=owned_game.img_icon_url,
+            defaults={
+                "name": owned_game.name,
+                "img_icon_url": owned_game.img_icon_url,
+            },
         )
 
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
             player=player,
-            playtime_forever=owned_game.playtime_forever,
+            defaults={
+                "playtime_forever": owned_game.playtime_forever,
+            },
         )
 
         if owned_game.playtime_2weeks is not None:
             # Get latest game playtime
-            owned_game_playtime = PlayerGamePlaytime.objects.filter(player=player, game=game_instance).latest(
-                "datetime"
-            )
+            owned_game_playtime = None
+
+            try:
+                owned_game_playtime = PlayerGamePlaytime.objects.filter(player=player, game=game_instance).latest(
+                    "datetime"
+                )
+            except PlayerGamePlaytime.DoesNotExist:
+                pass
 
             if owned_game_playtime is None or should_save_playtime_record(
                 owned_game_playtime, owned_game.playtime_2weeks

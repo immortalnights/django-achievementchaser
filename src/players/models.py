@@ -16,6 +16,9 @@ class Player(models.Model):
     resynchronized = models.DateTimeField(null=True)
     resynchronization_required = models.BooleanField(default=True)
 
+    games = models.ManyToManyField(Game, through="PlayerOwnedGame", related_name="player_games")
+    played_games = models.ManyToManyField(Game, through="PlayerGamePlaytime", related_name="player_played_games")
+
     def __str__(self):
         return f"{self.name} ({self.id})"
 

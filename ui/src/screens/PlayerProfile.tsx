@@ -3,19 +3,19 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 const PlayerPrivateStatistics = ({
-    totalGames,
-    playedGames,
+    totalGamesCount,
+    playedGamesCount,
     totalPlaytime,
-}: {
-    totalGames?: number
-    playedGames?: number
-    totalPlaytime?: number
-}) => {
+}: Pick<
+    PlayerSummary,
+    "totalGamesCount" | "playedGamesCount" | "totalPlaytime"
+>) => {
+    console.log(totalGamesCount)
     return (
         <>
-            <dd>{totalGames}</dd>
+            <dd>{totalGamesCount}</dd>
             <dt>Games</dt>
-            <dd>{playedGames}</dd>
+            <dd>{playedGamesCount}</dd>
             <dt>Played</dt>
             <dd>{totalPlaytime}</dd>
             <dt>Playtime</dt>
@@ -28,23 +28,15 @@ const PlayerStatistics = ({
     achievementsUnlocked,
     totalAchievements,
     friends,
-    totalGames,
-    playedGames,
+    totalGamesCount,
+    playedGamesCount,
     totalPlaytime,
-}: {
-    perfectGamesCount?: number
-    achievementsUnlocked?: number
-    totalAchievements?: number
-    friends?: PlayerFriend[]
-    totalGames?: number
-    playedGames?: number
-    totalPlaytime?: number
-}) => {
+}: PlayerSummary) => {
     return (
         <dl>
             <PlayerPrivateStatistics
-                totalGames={totalGames}
-                playedGames={playedGames}
+                totalGamesCount={totalGamesCount}
+                playedGamesCount={playedGamesCount}
                 totalPlaytime={totalPlaytime}
             />
             <dd>{perfectGamesCount}</dd>
@@ -59,6 +51,10 @@ const PlayerStatistics = ({
     )
 }
 
+interface Game {}
+
+interface Achievement {}
+
 interface PlayerFriend {
     id: string
     name: string
@@ -66,14 +62,14 @@ interface PlayerFriend {
 }
 
 interface PlayerSummary {
-    recentGames: unknown[]
-    recentAchievements: unknown[]
+    recentGames?: Game[]
+    recentAchievements?: Achievement[]
     perfectGamesCount?: number
     achievementsUnlocked?: number
     totalAchievements?: number
     friends?: PlayerFriend[]
-    totalGames?: number
-    playedGames?: number
+    totalGamesCount?: number
+    playedGamesCount?: number
     totalPlaytime?: number
 }
 
@@ -139,7 +135,7 @@ const PlayerProfileContent = (profile: PlayerProfile) => {
                 id={profile.id}
                 name={profile.name}
                 avatarLargeUrl={profile.avatarLargeUrl}
-                {...profile.summary}
+                summary={profile.summary}
             />
             <h4>Almost There</h4>
             <GameList />
@@ -169,6 +165,11 @@ const PlayerProfileScreen = () => {
                         name
                         profileUrl
                         avatarLargeUrl
+                        summary {
+                            totalPlaytime
+                            totalGamesCount
+                            playedGamesCount
+                        }
                     }
                 }
             `
