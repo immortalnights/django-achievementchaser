@@ -15,7 +15,11 @@ const PlayerPrivateStatistics = ({
         <>
             <dd>{totalGamesCount}</dd>
             <dt>Games</dt>
-            <dd>{playedGamesCount}</dd>
+            <dd title={`${playedGamesCount} of ${totalGamesCount}`}>
+                {totalGamesCount && playedGamesCount
+                    ? `${(totalGamesCount / playedGamesCount).toFixed(2)}%`
+                    : "-"}
+            </dd>
             <dt>Played</dt>
             <dd>{totalPlaytime}</dd>
             <dt>Playtime</dt>
@@ -25,8 +29,8 @@ const PlayerPrivateStatistics = ({
 
 const PlayerStatistics = ({
     perfectGamesCount,
-    achievementsUnlocked,
-    totalAchievements,
+    achievementsUnlockedCount,
+    totalAchievementCount,
     friends,
     totalGamesCount,
     playedGamesCount,
@@ -39,21 +43,45 @@ const PlayerStatistics = ({
                 playedGamesCount={playedGamesCount}
                 totalPlaytime={totalPlaytime}
             />
-            <dd>{perfectGamesCount}</dd>
+            <dd>{perfectGamesCount ?? "-"}</dd>
             <dt>Perfect Games</dt>
-            <dd>
-                {achievementsUnlocked} of {totalAchievements}
+            <dd
+                title={`${achievementsUnlockedCount} of ${totalAchievementCount}`}
+            >
+                {totalAchievementCount && achievementsUnlockedCount
+                    ? `${(
+                          achievementsUnlockedCount / totalAchievementCount
+                      ).toFixed(2)}%`
+                    : "-"}
             </dd>
             <dt>Achievements Unlocked</dt>
-            <dd>{friends?.length}</dd>
+            <dd>{friends?.length ?? "-"}</dd>
             <dt>Friends</dt>
         </dl>
     )
 }
 
-interface Game {}
+interface Game {
+    id: string
+    name: string
+    imgIconUrl: string
+    lastPlayed: string
+    playtime: number
+}
 
-interface Achievement {}
+interface Achievement {
+    name: string
+    displayName: string
+    iconUrl: string
+    iconGrayUrl: string
+    game?: Game
+}
+
+interface UnlockedAchievement {
+    game: Pick<Game, "id" | "name">
+    achievement: Achievement
+    datetime: string
+}
 
 interface PlayerFriend {
     id: string
@@ -63,10 +91,10 @@ interface PlayerFriend {
 
 interface PlayerSummary {
     recentGames?: Game[]
-    recentAchievements?: Achievement[]
+    recentAchievements?: UnlockedAchievement[]
     perfectGamesCount?: number
-    achievementsUnlocked?: number
-    totalAchievements?: number
+    achievementsUnlockedCount?: number
+    totalAchievementCount?: number
     friends?: PlayerFriend[]
     totalGamesCount?: number
     playedGamesCount?: number
@@ -111,9 +139,56 @@ const PlayerHeader = ({
             <div>
                 <PlayerStatistics {...summary} />
                 <dl>
-                    <dd>games</dd>
+                    <dd>
+                        <ul
+                            style={{
+                                listStyle: "none",
+                                margin: 0,
+                                padding: 0,
+                                display: "flex",
+                                gap: 8,
+                            }}
+                        >
+                            {summary?.recentGames?.map((game) => (
+                                <li>
+                                    <a
+                                        href={`/player/${id}/game/${game.id}`}
+                                        title={game.name}
+                                    >
+                                        <img
+                                            src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
+                                        />
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </dd>
                     <dt>Recently Played</dt>
-                    <dd>achievements</dd>
+                    <dd>
+                        <ul
+                            style={{
+                                listStyle: "none",
+                                margin: 0,
+                                padding: 0,
+                                display: "flex",
+                                gap: 8,
+                            }}
+                        >
+                            {summary?.recentAchievements?.map((item) => (
+                                <li>
+                                    <a
+                                        href={`/player/${id}/game/${item.game.id}`}
+                                        title={`${item.achievement.displayName} from ${item.game.name}`}
+                                    >
+                                        <img
+                                            src={`${item.achievement.iconUrl}`}
+                                            style={{ width: 32, height: 32 }}
+                                        />
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </dd>
                     <dt>Recently Unlocked</dt>
                 </dl>
             </div>
@@ -169,6 +244,27 @@ const PlayerProfileScreen = () => {
                             totalPlaytime
                             totalGamesCount
                             playedGamesCount
+                            totalAchievementCount
+                            achievementsUnlockedCount
+                            recentGames {
+                                id
+                                name
+                                imgIconUrl
+                                lastPlayed
+                                playtime
+                            }
+                            recentAchievements {
+                                game {
+                                    name
+                                    id
+                                }
+                                achievement {
+                                    name
+                                    iconUrl
+                                    displayName
+                                }
+                                datetime
+                            }
                         }
                     }
                 }

@@ -1,8 +1,8 @@
 import logging
 from dataclasses import dataclass
-from typing import Optional, TypedDict
+from typing import Optional, List, TypedDict
 from django.db.models import Q, Sum, Max, Subquery, OuterRef, CharField
-from .models import Player, PlayerGamePlaytime, PlayerOwnedGame
+from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Game
 from achievements.models import Achievement
 
@@ -17,25 +17,9 @@ PlayerGameOptions = TypedDict(
 )
 
 
-PlayerAchievementOptions = TypedDict(
-    "PlayerAchievementOptions",
-    {
-        "unlocked_only": bool,
-    },
-    total=False,
-)
-
-
-def get_player_recent_games(player: Player, limit: Optional[int] = None):
-    played_games = (
-        PlayerGamePlaytime.objects.select_related("game")
-        .filter(player=player)
-        .distinct("game")
-        .order_by("game", "-datetime")
-    )
-
-    q = played_games
-    q = PlayerGamePlaytime.objects.filter(pk__in=played_games.values("pk")).order_by("-datetime")
+def get_player_recent_games(player: Player, limit: Optional[int] = None) -> List[PlayerOwnedGame]:
+    owned_games = PlayerOwnedGame.objects.filter(player=player)
+    q = PlayerGamePlaytime.objects.filter(game__in=owned_games.values("game")).order_by("-datetime")
 
     if limit:
         q = q[:limit]
@@ -43,30 +27,36 @@ def get_player_recent_games(player: Player, limit: Optional[int] = None):
     return q
 
 
-def get_player_recent_achievements(player: Player):
-    pass
+def get_player_unlocked_achievements(player: Player, limit: Optional[int] = None) -> List[PlayerUnlockedAchievement]:
+    res = (
+        PlayerUnlockedAchievement.objects.select_related("game", "achievement")
+        .filter(player=player)
+        .order_by("-datetime")
+    )
+
+    if limit:
+        res = res[:limit]
+
+    return res
 
 
-def get_player_achievements(
-    player: Player, options: Optional[PlayerAchievementOptions] = None, limit: Optional[int] = None
-):
-    q = Q(player=player)
+def get_player_achievements(player: Player, limit: Optional[int] = None) -> List[PlayerOwnedGame]:
+    owned_games = PlayerOwnedGame.objects.filter(player=player)
+    res = Achievement.objects.filter(game__in=owned_games.values("game"))
 
-    if options:
-        if options["unlocked_only"]:
-            q.AND()
+    if limit:
+        res = res[:limit]
 
-    if limit is not None:
-        q = q[:limit]
-
-    return PlayerOwnedGame.objects.filter(q)
+    return res
 
 
 def get_player_friends(player: Player):
     pass
 
 
-def get_player_games(player: Player, options: Optional[PlayerGameOptions] = None, limit: Optional[int] = None):
+def get_player_games(
+    player: Player, options: Optional[PlayerGameOptions] = None, limit: Optional[int] = None
+) -> List[PlayerOwnedGame]:
     """Player games"""
     q = Q(player=player)
 
@@ -82,7 +72,7 @@ def get_player_games(player: Player, options: Optional[PlayerGameOptions] = None
     return PlayerOwnedGame.objects.filter(q)
 
 
-def get_player_total_playtime(player: Player):
+def get_player_total_playtime(player: Player) -> int:
     """Total playtime"""
     res = get_player_games(player, {"played_only": True}).aggregate(Sum("playtime_forever"))
     return res["playtime_forever__sum"]

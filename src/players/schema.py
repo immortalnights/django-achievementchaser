@@ -4,15 +4,15 @@ from django.forms.models import model_to_dict
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from .tasks import resynchronize_player_task
-from .models import Player, PlayerGamePlaytime
+from .models import Player, PlayerGamePlaytime, PlayerUnlockedAchievement
 from .service import find_existing_player
 from .queries import (
     get_player_recent_games,
-    get_player_recent_achievements,
-    get_player_achievements,
-    get_player_friends,
+    get_player_unlocked_achievements,
     get_player_games,
+    get_player_achievements,
     get_player_total_playtime,
+    get_player_friends,
 )
 from games.models import Game
 from games.schema import GameType
@@ -36,7 +36,7 @@ class ProfileGameSummaryType(graphene.ObjectType):
 
 
 class RecentGameType(graphene.ObjectType):
-    id = graphene.String(required=True)
+    id = graphene.String()
     name = graphene.String()
     # achievements = graphene.String()
     img_icon_url = graphene.String()
@@ -44,9 +44,24 @@ class RecentGameType(graphene.ObjectType):
     last_played = graphene.DateTime()
 
 
+class UnlockedAchievementType(DjangoObjectType):
+    class Meta:
+        model = PlayerUnlockedAchievement
+        fields = "__all__"
+        filter_fields = ["id"]
+
+    # name = graphene.String()
+    # display_name = graphene.String()
+    # game = graphene.Field(GameType)
+    # description = graphene.String()
+    # icon_url = graphene.String()
+    # icon_gray_url = graphene.String()
+    # unlocked = graphene.DateTime()
+
+
 class ProfileSummaryType(graphene.ObjectType):
     recent_games = graphene.List(RecentGameType)
-    # recent_achievements = graphene.List()
+    recent_achievements = graphene.List(UnlockedAchievementType)
     perfect_games_count = graphene.Int()
     achievements_unlocked_count = graphene.Int()
     total_achievement_count = graphene.Int()
@@ -58,8 +73,6 @@ class ProfileSummaryType(graphene.ObjectType):
     def resolve_recent_games(root, info):
         player_games = get_player_recent_games(Player(id=root.id), limit=5)
 
-        print(player_games)
-
         def make_response(playtime: PlayerGamePlaytime):
             data = model_to_dict(playtime.game)
             data["playtime"] = playtime.playtime
@@ -69,14 +82,15 @@ class ProfileSummaryType(graphene.ObjectType):
         return map(make_response, player_games)
 
     def resolve_recent_achievements(root, info):
-        pass
+        achievements = get_player_unlocked_achievements(Player(id=root.id), limit=5)
+        return achievements
 
     def resolve_perfect_games_count(root, info):
         # games = get_player_games(Player(id=root.id), {"played_only": True})
         return None  # games.count()
 
     def resolve_achievements_unlocked_count(root, info):
-        achievements = get_player_achievements(Player(id=root.id), unlocked_only=True)
+        achievements = get_player_unlocked_achievements(Player(id=root.id))
         return achievements.count()
 
     def resolve_total_achievement_count(root, info):

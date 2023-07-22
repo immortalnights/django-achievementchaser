@@ -125,11 +125,15 @@ def resynchronize_player_profile(player: Player) -> bool:
 
 def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int, *, maximum_frequency=60) -> int:
     delta = timezone.now() - playtime.datetime
-    save = delta.seconds > (maximum_frequency * 60)
-    if not save:
+    save = False
+    if delta.seconds < (maximum_frequency * 60):
         logging.debug(
-            f"Not saving playtime record for {playtime.game.name} last recorded {delta.seconds / 60:0.0f} minutes ago"
+            f"Not saving playtime record for '{playtime.game.name}' last recorded {delta.seconds / 60:0.0f} minutes ago"
         )
+    elif new_playtime == playtime.playtime:
+        logging.debug(f"Not saving playtime record for '{playtime.game.name}' playtime has not changed")
+    else:
+        save = True
 
     return save
 
