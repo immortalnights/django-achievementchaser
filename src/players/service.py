@@ -125,11 +125,15 @@ def resynchronize_player_profile(player: Player) -> bool:
 
 def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int, *, maximum_frequency=60) -> int:
     delta = timezone.now() - playtime.datetime
-    save = delta.seconds > (maximum_frequency * 60)
-    if not save:
+    save = False
+    if delta.seconds < (maximum_frequency * 60):
         logging.debug(
-            f"Not saving playtime record for {playtime.game.name} last recorded {delta.seconds / 60:0.0f} minutes ago"
+            f"Not saving playtime record for '{playtime.game.name}' last recorded {delta.seconds / 60:0.0f} minutes ago"
         )
+    elif new_playtime == playtime.playtime:
+        logging.debug(f"Not saving playtime record for '{playtime.game.name}' playtime has not changed")
+    else:
+        save = True
 
     return save
 
@@ -146,21 +150,30 @@ def resynchronize_player_games(player: Player) -> bool:
     for owned_game in owned_games:
         game_instance, game_created = Game.objects.update_or_create(
             id=owned_game.appid,
-            name=owned_game.name,
-            img_icon_url=owned_game.img_icon_url,
+            defaults={
+                "name": owned_game.name,
+                "img_icon_url": owned_game.img_icon_url,
+            },
         )
 
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
             player=player,
-            playtime_forever=owned_game.playtime_forever,
+            defaults={
+                "playtime_forever": owned_game.playtime_forever,
+            },
         )
 
         if owned_game.playtime_2weeks is not None:
             # Get latest game playtime
-            owned_game_playtime = PlayerGamePlaytime.objects.filter(player=player, game=game_instance).latest(
-                "datetime"
-            )
+            owned_game_playtime = None
+
+            try:
+                owned_game_playtime = PlayerGamePlaytime.objects.filter(player=player, game=game_instance).latest(
+                    "datetime"
+                )
+            except PlayerGamePlaytime.DoesNotExist:
+                pass
 
             if owned_game_playtime is None or should_save_playtime_record(
                 owned_game_playtime, owned_game.playtime_2weeks
@@ -247,6 +260,15 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
                 logging.error(
                     f"Achievement {player_achievement.apiname} does not " f"exist for game {game.name} ({game.id})"
                 )
+
+        # Update the player owned game completion percentage
+        try:
+            owned_game = PlayerOwnedGame.objects.get(player=player, game=game)
+            owned_game.completion_percentage = len(unlocked) / len(player_achievements)
+            logging.debug(f"Player completion percentage of {owned_game.completion_percentage} for {game.name}")
+            owned_game.save(update_fields=["completion_percentage"])
+        except PlayerOwnedGame.DoesNotExist:
+            logging.error(f"Failed to get PlayerOwnedGame for {player.name} / {game.name}")
 
     # Update the game resynchronization time
     game.resynchronized = timezone.now()

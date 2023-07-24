@@ -16,9 +16,9 @@ class GameAchievementResponse:
     defaultvalue: int
     displayName: str
     hidden: bool
-    description: str
     icon: str
     icongray: str
+    description: Optional[str] = ""
 
 
 @dataclass
