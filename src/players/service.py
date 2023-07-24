@@ -261,6 +261,15 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
                     f"Achievement {player_achievement.apiname} does not " f"exist for game {game.name} ({game.id})"
                 )
 
+        # Update the player owned game completion percentage
+        try:
+            owned_game = PlayerOwnedGame.objects.get(player=player, game=game)
+            owned_game.completion_percentage = len(unlocked) / len(player_achievements)
+            logging.debug(f"Player completion percentage of {owned_game.completion_percentage} for {game.name}")
+            owned_game.save(update_fields=["completion_percentage"])
+        except PlayerOwnedGame.DoesNotExist:
+            logging.error(f"Failed to get PlayerOwnedGame for {player.name} / {game.name}")
+
     # Update the game resynchronization time
     game.resynchronized = timezone.now()
     game.resynchronization_required = game_resynchronization_required

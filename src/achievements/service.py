@@ -7,7 +7,7 @@ from .steam import load_game_achievement_percentages
 
 
 def save_achievements(game: Game, achievements: typing.List[GameAchievementResponse]) -> None:
-    logging.debug(f"Saving {len(achievements)} achievements for game {game.name}")
+    logging.debug(f"Saving {len(achievements)} achievements for game {game.name} ({game.id})")
 
     for achievement in achievements:
         achievement_instance, achievement_created = Achievement.objects.update_or_create(
@@ -29,14 +29,20 @@ def resynchronize_game_achievements(game: Game) -> bool:
     achievement_percentages = load_game_achievement_percentages(game.id)
 
     if achievement_percentages is not None:
+        total_percentage = 0
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
+            total_percentage += achievement.percent
+
             try:
                 instance = Achievement.objects.get(name=achievement.name)
                 instance.global_percentage = achievement.percent
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
                 logging.error(f"Achievement {achievement.name} not found for game {game.name} ({game.id})")
+
+        game.difficulty_percentage = total_percentage / len(achievement_percentages.achievements)
+        game.save(update_fields=["difficulty_percentage"])
 
         ok = True
 

@@ -43,7 +43,15 @@ const PlayerStatistics = ({
                 playedGamesCount={playedGamesCount}
                 totalPlaytime={totalPlaytime}
             />
-            <dd>{perfectGamesCount ?? "-"}</dd>
+            <dd
+                title={`${
+                    perfectGamesCount && totalGamesCount
+                        ? perfectGamesCount / totalGamesCount
+                        : 0
+                }%`}
+            >
+                {perfectGamesCount ?? "-"}
+            </dd>
             <dt>Perfect Games</dt>
             <dd
                 title={`${achievementsUnlockedCount} of ${totalAchievementCount}`}
@@ -244,6 +252,7 @@ const PlayerProfileScreen = () => {
                             totalPlaytime
                             totalGamesCount
                             playedGamesCount
+                            perfectGamesCount
                             totalAchievementCount
                             achievementsUnlockedCount
                             recentGames {

@@ -38,7 +38,6 @@ class ProfileGameSummaryType(graphene.ObjectType):
 class RecentGameType(graphene.ObjectType):
     id = graphene.String()
     name = graphene.String()
-    # achievements = graphene.String()
     img_icon_url = graphene.String()
     playtime = graphene.Int()
     last_played = graphene.DateTime()
@@ -49,14 +48,6 @@ class UnlockedAchievementType(DjangoObjectType):
         model = PlayerUnlockedAchievement
         fields = "__all__"
         filter_fields = ["id"]
-
-    # name = graphene.String()
-    # display_name = graphene.String()
-    # game = graphene.Field(GameType)
-    # description = graphene.String()
-    # icon_url = graphene.String()
-    # icon_gray_url = graphene.String()
-    # unlocked = graphene.DateTime()
 
 
 class ProfileSummaryType(graphene.ObjectType):
@@ -86,8 +77,8 @@ class ProfileSummaryType(graphene.ObjectType):
         return achievements
 
     def resolve_perfect_games_count(root, info):
-        # games = get_player_games(Player(id=root.id), {"played_only": True})
-        return None  # games.count()
+        games = get_player_games(Player(id=root.id), {"perfect_only": True})
+        return games.count()
 
     def resolve_achievements_unlocked_count(root, info):
         achievements = get_player_unlocked_achievements(Player(id=root.id))

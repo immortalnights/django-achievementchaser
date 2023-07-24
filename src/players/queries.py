@@ -54,17 +54,17 @@ def get_player_friends(player: Player):
     pass
 
 
-def get_player_games(
-    player: Player, options: Optional[PlayerGameOptions] = None, limit: Optional[int] = None
-) -> List[PlayerOwnedGame]:
+def get_player_games(player: Player, options: Optional[PlayerGameOptions] = None, limit: Optional[int] = None):
     """Player games"""
     q = Q(player=player)
 
     if options:
-        if options["played_only"]:
+        if "played_only" in options and options["played_only"]:
             q &= Q(playtime_forever__gt=0)
 
-        # if options["perfect_only"]:
+        if "perfect_only" in options and options["perfect_only"]:
+            q &= Q(completion_percentage=100)
+            print(PlayerOwnedGame.objects.filter(q).query)
 
     if limit is not None:
         q = q[:limit]

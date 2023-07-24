@@ -1,5 +1,4 @@
 import logging
-import typing
 from django.utils import timezone
 from .models import Game
 from .steam import load_game_schema
