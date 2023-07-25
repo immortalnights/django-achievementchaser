@@ -8,13 +8,13 @@ class Command(BaseCommand):
     help = "Resynchronize player"
 
     def add_arguments(self, parser) -> None:
-        parser.add_argument("identity", help="Resynchronize the Player")
+        parser.add_argument("player", help="Resynchronize the Player")
         parser.add_argument("--create", action="store_true", help="Create the Player if unknown")
 
     def handle(self, *args, **options):
         """Perform the resynchronization of a player."""
         output = CommandOutput(self)
-        identity = options["identity"]
+        identity = options["player"]
         create = options["create"]
 
         player = load_player(identity)

@@ -67,7 +67,7 @@ def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Pl
     try:
         instance = Player.objects.get(query)
     except Player.DoesNotExist:
-        logging.warning(f"Player {identity} does not exist")
+        logging.warning(f"Player '{identity}' does not exist")
 
     return instance
 
@@ -82,7 +82,7 @@ def player_from_identity(identity: typing.Union[str, int]) -> typing.Optional["P
         try:
             instance = Player.objects.get(id=player_id)
         except Player.DoesNotExist:
-            logging.warning(f"Player {identity} does not exist")
+            logging.warning(f"Player {player_id} (as {identity}) does not exist")
 
     return instance
 
@@ -93,7 +93,7 @@ def resynchronize_player(player: Player) -> bool:
     try:
         ok = resynchronize_player_profile(player)
         ok &= resynchronize_player_games(player)
-        ok &= resynchronize_player_achievements_recent_games(player)
+        ok &= resynchronize_recent_player_game_achievements_recent_games(player)
 
         if ok is True:
             player.resynchronized = timezone.now()
@@ -189,7 +189,7 @@ def resynchronize_player_games(player: Player) -> bool:
     return ok
 
 
-def resynchronize_player_achievements(player: Player) -> bool:
+def resynchronize_all_player_game_achievements(player: Player) -> bool:
     """Resynchronize player achievements for recently played games"""
     ok = False
 
@@ -204,7 +204,7 @@ def resynchronize_player_achievements(player: Player) -> bool:
     return ok
 
 
-def resynchronize_player_achievements_recent_games(player: Player) -> bool:
+def resynchronize_recent_player_game_achievements_recent_games(player: Player) -> bool:
     """Resynchronize player achievements for recently played games"""
     ok = False
 
@@ -222,64 +222,79 @@ def resynchronize_player_achievements_recent_games(player: Player) -> bool:
 
 
 def resynchronize_player_achievements_for_game(player: Player, game: Game):
+    ok = False
+    game_achievements = game_achievements = Achievement.objects.filter(game=game.id)
     logging.debug(f"Collecting player {player.name} achievements for '{game.name}'")
     player_achievements = get_player_achievements_for_game(player.id, game.id)
     unlocked = list(filter(lambda achievement: achievement.achieved == 1, player_achievements))
 
-    if len(player_achievements) > 0:
+    # When the game was last resynchronized there might not have been any achievements.
+    # If the player has not unlocked any achievements assume, for now, that the game
+    # really doesn't have any achievements
+    if len(game_achievements) == 0 and len(player_achievements) == 0:
+        logging.debug(f"Game '{game.name}' does not have any achievements")
+    else:
+        # Check that all unlocked achievements exist in the game achievement list; if not
+        # resynchronize the game. This is highly unlikely as most paths to this function
+        # resynchronize the game before resynchronizing the player achievements.
+
         logging.debug(
             f"Player {player.name} has unlocked {len(unlocked)} of "
             f"{len(player_achievements)} achievements in {game.name}"
         )
-    else:
-        logging.debug(f"Game {game.name} does not have any achievements")
 
-    game_resynchronization_required = False
+        game_resynchronization_required = False
+        completion_percentage = 0.0
 
-    if len(unlocked) > 0:
-        # Get all known game achievements
-        game_achievements = Achievement.objects.filter(game=game.id)
+        if len(unlocked) > 0:
+            # Get all known game achievements
 
-        for player_achievement in unlocked:
-            assert (
-                player_achievement.achieved == 1
-            ), f"Unexpected achieved value {player_achievement.achieved} for player achievement {player_achievement.apiname}"
+            for player_achievement in unlocked:
+                assert (
+                    player_achievement.achieved == 1
+                ), f"Unexpected achieved value {player_achievement.achieved} for player achievement {player_achievement.apiname}"
 
-            game_achievement = next(
-                filter(lambda achievement: achievement.name == player_achievement.apiname, game_achievements), None
-            )
-            if game_achievement is not None:
-                PlayerUnlockedAchievement.objects.update_or_create(
-                    player=player,
-                    game=game,
-                    achievement=game_achievement,
-                    datetime=timezone.make_aware(datetime.utcfromtimestamp(player_achievement.unlocktime)),
-                )
-            else:
-                game_resynchronization_required = True
-                logging.error(
-                    f"Achievement {player_achievement.apiname} does not " f"exist for game {game.name} ({game.id})"
+                game_achievement = next(
+                    filter(lambda achievement: achievement.name == player_achievement.apiname, game_achievements), None
                 )
 
-        # Update the player owned game completion percentage
+                if game_achievement is not None:
+                    PlayerUnlockedAchievement.objects.update_or_create(
+                        player=player,
+                        game=game,
+                        achievement=game_achievement,
+                        datetime=timezone.make_aware(datetime.utcfromtimestamp(player_achievement.unlocktime)),
+                    )
+                else:
+                    game_resynchronization_required = True
+                    logging.error(
+                        f"Achievement {player_achievement.apiname} does not exist for game '{game.name}' ({game.id})"
+                    )
+
+            completion_percentage = len(unlocked) / len(player_achievements)
+            logging.debug(f"Player completion percentage of {completion_percentage} for '{game.name}'")
+
+        # Update the game resynchronization time
+        game.resynchronized = timezone.now()
+        # Ensure resynchronization doesn't get stuck in a loop
+        game.resynchronization_required = not game.resynchronization_required and game_resynchronization_required
+        game.save(update_fields=["resynchronized", "resynchronization_required"])
+
+        # Update the player owned game completion percentage and resynchronization time
         try:
-            owned_game = PlayerOwnedGame.objects.get(player=player, game=game)
-            owned_game.completion_percentage = len(unlocked) / len(player_achievements)
-            logging.debug(f"Player completion percentage of {owned_game.completion_percentage} for {game.name}")
-            owned_game.save(update_fields=["completion_percentage"])
+            owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
+            owned_game.completion_percentage = completion_percentage
+            owned_game.achievements_resynchronized = timezone.now()
+            owned_game.achievements_resynchronization_required = game_resynchronization_required
+            owned_game.save(
+                update_fields=[
+                    "completion_percentage",
+                    "achievements_resynchronized",
+                    "achievements_resynchronization_required",
+                ]
+            )
+            ok &= True
         except PlayerOwnedGame.DoesNotExist:
-            logging.error(f"Failed to get PlayerOwnedGame for {player.name} / {game.name}")
+            pass
 
-    # Update the game resynchronization time
-    game.resynchronized = timezone.now()
-    game.resynchronization_required = game_resynchronization_required
-    game.save(update_fields=["resynchronized", "resynchronization_required"])
-
-    # Update the owned game resynchronization time
-    try:
-        owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
-        owned_game.achievements_resynchronized = timezone.now()
-        owned_game.achievements_resynchronization_required = game_resynchronization_required
-        owned_game.save(update_fields=["achievements_resynchronized", "achievements_resynchronization_required"])
-    except PlayerOwnedGame.DoesNotExist:
-        pass
+    return ok

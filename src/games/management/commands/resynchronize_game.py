@@ -8,12 +8,12 @@ class Command(BaseCommand):
     help = "Resynchronize game"
 
     def add_arguments(self, parser) -> None:
-        parser.add_argument("identity", help="")
+        parser.add_argument("game", help="")
 
     def handle(self, *args, **options):
         """Perform the resynchronization directly of a game."""
         output = CommandOutput(self)
-        identity = options["identity"]
+        identity = options["game"]
 
         try:
             game = Game.objects.get(id=identity)
