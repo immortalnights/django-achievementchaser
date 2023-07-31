@@ -2,6 +2,23 @@ import request, { gql } from "graphql-request"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
+const Playtime = ({ playtime }: { playtime: number }) => {
+    const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
+    const keys = Object.keys(units) as unknown as keyof typeof units
+    let value = playtime
+    let index = 0
+    for (; index < keys.length; index++) {
+        const divider = units[keys[index] as keyof typeof units]
+        if (value > divider) {
+            value = value / divider
+        } else {
+            break
+        }
+    }
+
+    return `${index > 1 ? value.toFixed(2) : value} ${keys[index - 1] ?? ""}`
+}
+
 const PlayerPrivateStatistics = ({
     totalGamesCount,
     playedGamesCount,
@@ -10,7 +27,6 @@ const PlayerPrivateStatistics = ({
     PlayerSummary,
     "totalGamesCount" | "playedGamesCount" | "totalPlaytime"
 >) => {
-    console.log(totalGamesCount)
     return (
         <>
             <dd>{totalGamesCount}</dd>
@@ -21,7 +37,9 @@ const PlayerPrivateStatistics = ({
                     : "-"}
             </dd>
             <dt>Played</dt>
-            <dd>{totalPlaytime}</dd>
+            <dd>
+                <Playtime playtime={0} />
+            </dd>
             <dt>Playtime</dt>
         </>
     )
@@ -46,7 +64,7 @@ const PlayerStatistics = ({
             <dd
                 title={`${
                     perfectGamesCount && totalGamesCount
-                        ? perfectGamesCount / totalGamesCount
+                        ? (perfectGamesCount / totalGamesCount).toFixed(2)
                         : 0
                 }%`}
             >
@@ -158,7 +176,7 @@ const PlayerHeader = ({
                             }}
                         >
                             {summary?.recentGames?.map((game) => (
-                                <li>
+                                <li key={game.id}>
                                     <a
                                         href={`/player/${id}/game/${game.id}`}
                                         title={game.name}
@@ -183,7 +201,9 @@ const PlayerHeader = ({
                             }}
                         >
                             {summary?.recentAchievements?.map((item) => (
-                                <li>
+                                <li
+                                    key={`${item.game.id}/${item.achievement.name}`}
+                                >
                                     <a
                                         href={`/player/${id}/game/${item.game.id}`}
                                         title={`${item.achievement.displayName} from ${item.game.name}`}

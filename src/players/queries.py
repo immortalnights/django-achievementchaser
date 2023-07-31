@@ -63,7 +63,7 @@ def get_player_games(player: Player, options: Optional[PlayerGameOptions] = None
             q &= Q(playtime_forever__gt=0)
 
         if "perfect_only" in options and options["perfect_only"]:
-            q &= Q(completion_percentage=100)
+            q &= Q(completion_percentage=1)
             print(PlayerOwnedGame.objects.filter(q).query)
 
     if limit is not None:
