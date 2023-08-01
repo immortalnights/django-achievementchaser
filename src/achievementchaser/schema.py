@@ -1,14 +1,13 @@
 import graphene
 from graphene_django import DjangoObjectType  # noqa F401
-from players.schema import PlayerQuery, ProfileQuery, ResynchronizePlayer, ResynchronizePlayerGame
-from games.schema import GameQuery, ResynchronizeGame
+from players.schema import Queries as PlayerQueries, ResynchronizePlayer, ResynchronizePlayerGame
+from games.schema import Queries as GameQueries, ResynchronizeGame
 import achievements.schema
 
 
 class Queries(
-    PlayerQuery,
-    ProfileQuery,
-    GameQuery,
+    PlayerQueries,
+    GameQueries,
     graphene.ObjectType,
 ):
     pass
