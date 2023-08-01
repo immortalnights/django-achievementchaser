@@ -4,7 +4,9 @@ from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
 from .models import Game
 from .service import load_game, resynchronize_game
-from .utilities import can_resynchronize_game
+from achievementchaser.utilities import can_resynchronize_model
+
+# from .utilities import can_resynchronize_game
 
 logger = logging.getLogger()
 
@@ -29,7 +31,7 @@ def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameRespo
         raise Game.DoesNotExist(f"Game '{identity}' does not exist")
     else:
         logging.info(f"Beginning resynchronization of game {game.name} ({identity})")
-        if can_resynchronize_game(game):
+        if can_resynchronize_model(game):
             logging.warning(f"Resynchronization of game {game.name} blocked")
         if resynchronize_game(game):
             logging.info(f"Resynchronization of game {game.name} complete")

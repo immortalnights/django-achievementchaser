@@ -2,7 +2,9 @@ import logging
 import celery
 from games.models import Game
 from .models import Player
-from .utilities import can_resynchronize_player, can_resynchronize_player_game
+from achievementchaser.utilities import can_resynchronize_model
+
+# from .utilities import can_resynchronize_player, can_resynchronize_player_game
 
 
 def queue_resynchronize_player(player: Player):

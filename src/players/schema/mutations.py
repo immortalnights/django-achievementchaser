@@ -1,12 +1,17 @@
 import logging
 import graphene
-from ..tasks import resynchronize_player_task
+from ..tasks import resynchronize_player_task, resynchronize_player_game_task
 from ..models import Player
 from ..service import find_existing_player
-from games.schema import GameMinimalType
 
 
 class PlayerMinimalType(graphene.ObjectType):
+    id = graphene.BigInt()
+    name = graphene.String()
+    resynchronized = graphene.String()
+
+
+class OwnedGameMinimalType(graphene.ObjectType):
     id = graphene.BigInt()
     name = graphene.String()
     resynchronized = graphene.String()
@@ -47,9 +52,11 @@ class ResynchronizePlayerGame(graphene.Mutation):
 
     ok = graphene.Boolean()
     player = graphene.Field(PlayerMinimalType)
-    game = graphene.Field(GameMinimalType)
+    owned_game = graphene.Field(OwnedGameMinimalType)
     error = graphene.String()
 
     @staticmethod
     def mutate(root, info, player, game):
-        pass
+        logging.info(f"Scheduling resynchronize_player_game_task for '{player}' '{game}'")
+        task = resynchronize_player_game_task.delay(player, game)
+        return task.get(timeout=30)
