@@ -37,8 +37,9 @@ class PlayerOwnedGame(models.Model):
     completion_percentage = models.FloatField(default=0)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
-    achievements_resynchronized = models.DateTimeField(null=True)
-    achievements_resynchronization_required = models.BooleanField(default=True)
+    # Player game achievements resynchronized
+    resynchronized = models.DateTimeField(null=True)
+    resynchronization_required = models.BooleanField(default=True)
 
 
 class PlayerGamePlaytime(models.Model):

@@ -283,13 +283,13 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
         try:
             owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
             owned_game.completion_percentage = completion_percentage
-            owned_game.achievements_resynchronized = timezone.now()
-            owned_game.achievements_resynchronization_required = game_resynchronization_required
+            owned_game.resynchronized = timezone.now()
+            owned_game.resynchronization_required = game_resynchronization_required
             owned_game.save(
                 update_fields=[
                     "completion_percentage",
-                    "achievements_resynchronized",
-                    "achievements_resynchronization_required",
+                    "resynchronized",
+                    "resynchronization_required",
                 ]
             )
             ok &= True

@@ -31,7 +31,7 @@ class PlayerOwnedGameAdmin(admin.ModelAdmin):
         "game",
         "player",
         "playtime_forever",
-        "achievements_resynchronized",
+        "resynchronized",
         "achievements_up_to_date",
         "added",
         "updated",
@@ -44,7 +44,7 @@ class PlayerOwnedGameAdmin(admin.ModelAdmin):
 
     @admin.display(description="Up to Date")
     def achievements_up_to_date(self, obj):
-        return not obj.achievements_resynchronization_required
+        return not obj.resynchronization_required
 
 
 @admin.register(PlayerGamePlaytime)

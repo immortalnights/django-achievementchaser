@@ -92,7 +92,7 @@ def resynchronize_player_game_task(
         "owned_game": {
             "id": game.id,
             "name": game.name,
-            "resynchronized": owned_game.achievements_resynchronized,
+            "resynchronized": owned_game.resynchronized,
         },
         "error": None,
     }
