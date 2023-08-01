@@ -1,32 +1,49 @@
 import logging
-import typing
+from typing import TypedDict, Optional, Union
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
 from .models import Game
-from .service import resynchronize_game
-from .utilities import can_resynchronize_game
-from players.models import Player
+from .service import load_game, resynchronize_game
+from achievementchaser.utilities import can_resynchronize_model
+
+# from .utilities import can_resynchronize_game
 
 logger = logging.getLogger()
 
+GameResponse = TypedDict("GameResponse", {"id": int, "name": str, "resynchronized": str})
+
+ResynchronizeGameResponse = TypedDict(
+    "ResynchronizeGameResponse", {"ok": bool, "game": Optional[GameResponse], "error": Optional[str]}, total=False
+)
+
 
 @shared_task
-def resynchronize_game_task(identity: str) -> typing.Union[bool]:
-    ok = False
+def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameResponse:
+    """Resolves `identity` to a Game and attempts to resynchronize it.
 
-    game_instance = None
-    try:
-        game_instance = Game.objects.get(id=identity)
+    The resolution is done here so it's in the worker thread."""
 
-        logging.info(f"Beginning resynchronization of Game {game_instance.name} ({identity})")
-        if can_resynchronize_game(game_instance):
-            logging.warning(f"Resynchronization of game {game_instance.name} blocked")
-        if resynchronize_game(game_instance):
-            logging.info(f"Resynchronization of game {game_instance.name} complete")
-            ok = True
+    resp: ResynchronizeGameResponse = {"ok": False}
+
+    game = load_game(identity)
+
+    if game is None:
+        raise Game.DoesNotExist(f"Game '{identity}' does not exist")
+    else:
+        logging.info(f"Beginning resynchronization of game {game.name} ({identity})")
+        if can_resynchronize_model(game):
+            logging.warning(f"Resynchronization of game {game.name} blocked")
+        if resynchronize_game(game):
+            logging.info(f"Resynchronization of game {game.name} complete")
+            resp = {
+                "ok": True,
+                "game": {
+                    "id": game.id,
+                    "name": game.name,
+                    "resynchronized": game.resynchronized,
+                },
+            }
         else:
-            logging.info(f"Resynchronization of game {game_instance.name} failed")
-    except Game.DoesNotExist:
-        logging.error(f"Game '{identity}' does not exist")
+            logging.info(f"Resynchronization of game {game.name} failed")
 
-    return ok
+    return resp
