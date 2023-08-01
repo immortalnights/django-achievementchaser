@@ -61,7 +61,6 @@ def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Pl
         pass
 
     query = models.Q(id=player_id) | models.Q(name__iexact=str(identity)) | models.Q(profile_url__iexact=str(identity))
-    logging.debug(query)
 
     instance = None
     try:
@@ -139,7 +138,7 @@ def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int,
 
 
 def resynchronize_player_games(player: Player) -> bool:
-    ok = False
+    ok = True
 
     owned_games = get_owned_games(player.id)
     logging.info(f"Player {player.name} has {len(owned_games)} games")
@@ -206,7 +205,7 @@ def resynchronize_all_player_game_achievements(player: Player) -> bool:
 
 def resynchronize_recent_player_game_achievements_recent_games(player: Player) -> bool:
     """Resynchronize player achievements for recently played games"""
-    ok = False
+    ok = True
 
     q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=4))
     recent_played_games = PlayerGamePlaytime.objects.filter(q).distinct("game")

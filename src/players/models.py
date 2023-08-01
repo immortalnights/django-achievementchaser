@@ -15,8 +15,13 @@ class Player(models.Model):
     updated = models.DateTimeField(auto_now=True)
     resynchronized = models.DateTimeField(null=True)
     resynchronization_required = models.BooleanField(default=True)
+    # Owned games
     games = models.ManyToManyField(Game, through="PlayerOwnedGame", related_name="player_games")
     played_games = models.ManyToManyField(Game, through="PlayerGamePlaytime", related_name="player_played_games")
+    unlocked_achievements = models.ManyToManyField(
+        Achievement, through="PlayerUnlockedAchievement", related_name="player_unlocked_achievements"
+    )
+    friends = models.ManyToManyField("Player", through="Friend", related_name="player_friends")
 
     def __str__(self):
         return f"{self.name} ({self.id})"
@@ -57,5 +62,5 @@ class Friend(models.Model):
     class Meta:
         unique_together = (("player", "friend"),)
 
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_player")
-    friend = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="friends")
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_friend")
+    friend = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="friend_to_player")

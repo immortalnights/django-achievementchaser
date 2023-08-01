@@ -1,8 +1,26 @@
 import logging
+from typing import Union, Optional
+from django.db.models import Q
 from django.utils import timezone
 from .models import Game
 from .steam import load_game_schema
 from achievements.service import save_achievements, resynchronize_game_achievements
+
+
+def load_game(identity: Union[int, str]) -> Optional[Game]:
+    query = None
+    try:
+        query = Q(id=int(identity))
+    except ValueError:
+        query = Q(name__iexact=identity)
+    logging.debug(query)
+
+    try:
+        instance = Game.objects.get(query)
+    except Game.DoesNotExist:
+        logging.warning(f"Game '{identity}' does not exist")
+
+    return instance
 
 
 def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -> bool:

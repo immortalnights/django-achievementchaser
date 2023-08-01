@@ -1,21 +1,23 @@
 import graphene
 from graphene_django import DjangoObjectType  # noqa F401
-import players.schema
-import games.schema
+from players.schema import PlayerQuery, ProfileQuery, ResynchronizePlayer, ResynchronizePlayerGame
+from games.schema import GameQuery, ResynchronizeGame
 import achievements.schema
 
 
-class Query(
-    players.schema.Query,
-    games.schema.Query,
-    achievements.schema.Query,
+class Queries(
+    PlayerQuery,
+    ProfileQuery,
+    GameQuery,
     graphene.ObjectType,
 ):
     pass
 
 
-class Mutation(players.schema.Mutation, graphene.ObjectType):
-    pass
+class Mutations(graphene.ObjectType):
+    resynchronize_player = ResynchronizePlayer.Field()
+    resynchronize_player_game = ResynchronizePlayerGame.Field()
+    resynchronize_game = ResynchronizeGame.Field()
 
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = graphene.Schema(query=Queries, mutation=Mutations)
