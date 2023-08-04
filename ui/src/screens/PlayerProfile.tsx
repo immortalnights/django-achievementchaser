@@ -143,6 +143,21 @@ interface PlayerProfileResponse {
     profile: PlayerProfile
 }
 
+interface OwnedGame {
+    game: {
+        id: number
+        name: string
+        imgIconUrl: string
+        difficultyPercentage: number
+    }
+    id: string
+    completionPercentage: number
+}
+
+interface PlayerOwnedGameResponse {
+    ownedGames: OwnedGame[]
+}
+
 const PlayerHeader = ({
     id,
     name,
@@ -172,6 +187,7 @@ const PlayerHeader = ({
                                 margin: 0,
                                 padding: 0,
                                 display: "flex",
+                                justifyContent: "center",
                                 gap: 8,
                             }}
                         >
@@ -197,6 +213,7 @@ const PlayerHeader = ({
                                 margin: 0,
                                 padding: 0,
                                 display: "flex",
+                                justifyContent: "center",
                                 gap: 8,
                             }}
                         >
@@ -224,11 +241,189 @@ const PlayerHeader = ({
     )
 }
 
-const GameList = () => {
+const OwnedGameList = ({ games }: { games: OwnedGame[] }) => {
+    const set = games.slice(0, 12)
+
+    return (
+        <ul
+            style={{
+                listStyle: "none",
+                padding: 0,
+                margin: 0,
+                display: "flex",
+                flexWrap: "wrap",
+                justifyContent: "space-evenly",
+                gap: "0.5em",
+            }}
+        >
+            {set.map((game) => (
+                <li>
+                    <img
+                        src={`https://media.steampowered.com/steam/apps/${game.game.id}/capsule_184x69.jpg`}
+                        title={`${
+                            game.game.name
+                        } - x of y (${game.completionPercentage.toFixed(2)}%)`}
+                    />
+                </li>
+            ))}
+        </ul>
+    )
+}
+const PlayerGameAchievementList = () => {
     return null
 }
-const GameAchievementList = () => {
-    return null
+
+const PlayerAlmostThereGames = ({ player }: { player: string }) => {
+    const [ownedGames, setOwnedGames] = useState<OwnedGame[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string>()
+
+    useEffect(() => {
+        // ignoreComplete: true
+        // ignoreGames: []
+        // limit: 12
+        request<PlayerOwnedGameResponse>(
+            "/graphql/",
+            gql`
+                {
+                    ownedGames(
+                        player: ${player}
+                        orderBy: "completionPercentage"
+                    ) {
+                        game {
+                            id
+                            name
+                            imgIconUrl
+                            difficultyPercentage
+                        }
+                        id
+                        completionPercentage
+                    }
+                }
+            `
+        )
+            .then((resp) => {
+                setLoading(false)
+                setOwnedGames(resp.ownedGames)
+            })
+            .catch((err) => {
+                setLoading(false)
+                setError("Failed")
+            })
+    }, [])
+
+    let content
+    if (loading) {
+        content = <div>Loading...</div>
+    } else if (ownedGames.length > 0) {
+        content = <OwnedGameList games={ownedGames} />
+    } else if (error) {
+        content = <div>Error.</div>
+    }
+
+    return <div>{content}</div>
+}
+
+const PlayerJustStartedGames = ({ player }: { player: string }) => {
+    const [ownedGames, setOwnedGames] = useState<OwnedGame[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string>()
+
+    useEffect(() => {
+        // ignoreComplete: true
+        // ignoreGames: []
+        // limit: 12
+        request<PlayerOwnedGameResponse>(
+            "/graphql/",
+            gql`
+                {
+                    ownedGames(
+                        player: ${player}
+                        orderBy: "difficultyPercentage ASC"
+                    ) {
+                        game {
+                            id
+                            name
+                            imgIconUrl
+                            difficultyPercentage
+                        }
+                        id
+                        completionPercentage
+                    }
+                }
+            `
+        )
+            .then((resp) => {
+                setLoading(false)
+                setOwnedGames(resp.ownedGames)
+            })
+            .catch((err) => {
+                setLoading(false)
+                setError("Failed")
+            })
+    }, [])
+
+    let content
+    if (loading) {
+        content = <div>Loading...</div>
+    } else if (ownedGames.length > 0) {
+        content = <OwnedGameList games={ownedGames} />
+    } else if (error) {
+        content = <div>Error.</div>
+    }
+
+    return <div>{content}</div>
+}
+
+const PlayerEasiestGames = ({ player }: { player: string }) => {
+    const [ownedGames, setOwnedGames] = useState<OwnedGame[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string>()
+
+    useEffect(() => {
+        // ignoreComplete: true
+        // ignoreGames: []
+        // limit: 12
+        request<PlayerOwnedGameResponse>(
+            "/graphql/",
+            gql`
+                {
+                    ownedGames(
+                        player: ${player}
+                        orderBy: "difficultyPercentage DESC"
+                    ) {
+                        game {
+                            id
+                            name
+                            imgIconUrl
+                            difficultyPercentage
+                        }
+                        id
+                        completionPercentage
+                    }
+                }
+            `
+        )
+            .then((resp) => {
+                setLoading(false)
+                setOwnedGames(resp.ownedGames)
+            })
+            .catch((err) => {
+                setLoading(false)
+                setError("Failed")
+            })
+    }, [])
+
+    let content
+    if (loading) {
+        content = <div>Loading...</div>
+    } else if (ownedGames.length > 0) {
+        content = <OwnedGameList games={ownedGames} />
+    } else if (error) {
+        content = <div>Error.</div>
+    }
+
+    return <div>{content}</div>
 }
 
 const PlayerProfileContent = (profile: PlayerProfile) => {
@@ -241,13 +436,13 @@ const PlayerProfileContent = (profile: PlayerProfile) => {
                 summary={profile.summary}
             />
             <h4>Almost There</h4>
-            <GameList />
+            <PlayerAlmostThereGames player={profile.id} />
             <h4>Just Started</h4>
-            <GameList />
+            <PlayerJustStartedGames player={profile.id} />
             <h4>Next Game</h4>
-            <GameList />
+            <PlayerEasiestGames player={profile.id} />
             <h4>Next Achievement</h4>
-            <GameAchievementList />
+            <PlayerGameAchievementList />
         </>
     )
 }
