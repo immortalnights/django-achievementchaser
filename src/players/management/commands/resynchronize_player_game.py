@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 from achievementchaser.management.lib.command_output import CommandOutput
+from achievementchaser.utilities import can_resynchronize_model
 from players.service import (
     load_player,
     resynchronize_player_achievements_for_game,
@@ -25,29 +26,34 @@ class Command(BaseCommand):
         player = load_player(identity)
 
         if player is not None:
-            try:
-                identity_query = Q(id=game_identity) if game_identity.isdigit() else Q(game__name=game_identity)
+            identity_query = Q(game=int(game_identity)) if game_identity.isdigit() else Q(game__name=game_identity)
 
-                owned_games = PlayerOwnedGame.objects.filter(Q(player=player) & identity_query).select_related("game")
-                if len(owned_games) == 1:
-                    game = owned_games.first().game
+            owned_games = PlayerOwnedGame.objects.filter(Q(player=player) & identity_query).select_related("game")
 
-                    if resynchronize_game(game) and resynchronize_player_achievements_for_game(player, game):
-                        output.info(f"Resynchronization of player game '{game.name}' succeeded")
+            if len(owned_games) == 1:
+                owned_game = owned_games.first().game
+
+                if can_resynchronize_model(owned_game):
+                    if resynchronize_game(owned_game) and resynchronize_player_achievements_for_game(
+                        player, owned_game
+                    ):
+                        output.info(f"Resynchronization of player game '{owned_game.name}' succeeded")
                     else:
-                        output.info(f"Resynchronization of player game '{game.name}' failed")
-                elif len(owned_games) == 0:
-                    output.error(
-                        f"Game '{game_identity}' for {player.name} did not resolve to any games. "
-                        "Game names are an exact match."
-                    )
+                        output.info(f"Resynchronization of player game '{owned_game.name}' failed")
                 else:
-                    output.error(
-                        f"Game '{game_identity}' for {player.name} resolved to multiple games {len(owned_games)}, "
-                        f"must specify one game"
+                    output.warning(
+                        f"Resynchronization of player {player.name} owned game game {owned_game.name} blocked"
                     )
-            except PlayerOwnedGame.DoesNotExist:
-                output.error(f"Game '{game_identity}' does not exist as a player owned game")
+            elif len(owned_games) == 0:
+                output.error(
+                    f"Game '{game_identity}' for {player.name} did not resolve to any games. "
+                    "Game names are an exact match."
+                )
+            else:
+                output.error(
+                    f"Game '{game_identity}' for {player.name} resolved to multiple games {len(owned_games)}, "
+                    f"must specify one game"
+                )
 
         else:
             output.error(f"Player '{identity}' does not exist")
