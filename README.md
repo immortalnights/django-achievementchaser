@@ -13,12 +13,13 @@ python .\src\manage.py runserver
 ```
 cd src
 celery --app achievementchaser worker --loglevel DEBUG -P solo
+celery --app achievementchaser beat
 ```
 
 ## Requirements
 
-* python
-* docker
+- python
+- docker
 
 ### Dev Credentials
 
@@ -36,16 +37,16 @@ pgadmin "admin@example.com:password"
 
 ## Importing Mongodb Data
 
-* Connect to host
-* Create new directory for database dump, cd into directory
-* Run
+- Connect to host
+- Create new directory for database dump, cd into directory
+- Run
 
 ```
 mongodump --gzip
 ```
 
-* Use WinSCP (or similar) to download dump files to local system.
-* Import dump files to docker container (may need to make target directory first) using cmd prompt
+- Use WinSCP (or similar) to download dump files to local system.
+- Import dump files to docker container (may need to make target directory first) using cmd prompt
 
 ```
 docker cp players.bson.gz mongo-achievementchaser:/home/dump
@@ -54,7 +55,7 @@ docker cp games.bson.gz mongo-achievementchaser:/home/dump
 docker cp games.metadata.gz mongo-achievementchaser:/home/dump
 ```
 
-* Restore databases to mongo (from _root_ home, might need to go up a few directories)
+- Restore databases to mongo (from _root_ home, might need to go up a few directories)
 
 ```
 cd ~/
@@ -63,7 +64,6 @@ mongorestore dump/games.bson.gz --gzip --drop
 ```
 
 That will upload the data to a "dump" database, replacing what may have already existed.
-
 
 ## Trouble Shooting
 
