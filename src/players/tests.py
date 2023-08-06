@@ -192,7 +192,6 @@ class PlayerAPITests(GraphQLTestCase):
 """
             )
             mock_request.assert_called_once_with("TestUser")
-            print(response)
 
     def test_resynchronize_unknown_player_request(self):
         with patch("achievementchaser.steam._request") as mock_request:
@@ -210,7 +209,6 @@ class PlayerAPITests(GraphQLTestCase):
 """
             )
             mock_request.assert_called_once_with("TestUser")
-            print(response)
 
 
 class PlayerOwnedGamesTests(TestCase):

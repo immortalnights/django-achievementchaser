@@ -86,7 +86,6 @@ class ProfileSummaryType(graphene.ObjectType):
         return games.count()
 
     def resolve_total_playtime(root, info):
-        # print("resolve_total_playtime", root)
         return get_player_total_playtime(Player(id=root.id))
 
 
@@ -101,8 +100,6 @@ class ProfileType(graphene.ObjectType):
     game_summary = graphene.Field(ProfileGameSummaryType)
 
     def resolve_summary(player, info):
-        # print("resolve_summary", player)
-
         profile = ProfileType()
         profile.id = player.id
         profile.name = player.name

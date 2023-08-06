@@ -153,6 +153,22 @@ CELERY_RESULT_BACKEND = "rpc://"
 # CELERY_RESULT_BACKEND = 'db+sqlite:///results.sqlite'
 CELERY_TASK_SERIALIZER = "json"
 
+CELERY_BEAT_SCHEDULE = {
+    "scheduled_resynchronize_players_task": {
+        "task": "players.tasks.scheduled_resynchronize_players_task",
+        "schedule": 3600.0,
+    },
+    "scheduled_resynchronize_games_task": {
+        "task": "games.tasks.scheduled_resynchronize_games_task",
+        "schedule": 36000.0,
+    },
+    # "scheduled_resynchronize_players_owned_games_task": {
+    #     "task": "players.tasks.scheduled_resynchronize_players_owned_games_task",
+    #     "schedule": 30,
+    # },
+}
+
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
