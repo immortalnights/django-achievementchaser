@@ -116,19 +116,19 @@ const AchievementItem = ({
 const GameDetails = ({
     game,
 }: {
-    game: WithRequired<Game, "name" | "iconUrl" | "achievements">
+    game: WithRequired<Game, "name" | "iconUrl" | "achievementSet">
 }) => {
     return (
         <>
             <GameHeader
                 id={game.id}
                 name={game.name}
-                achievements={game.achievements}
+                achievements={game.achievementSet}
                 image={game.iconUrl}
             />
             <hr />
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {game.achievements.map((achievement) => (
+                {game.achievementSet?.map((achievement) => (
                     <AchievementItem key={achievement.name} {...achievement} />
                 ))}
             </ul>
@@ -152,7 +152,7 @@ const GameScreen = () => {
                         id
                         name
                         imgIconUrl
-                        achievements {
+                        achievementSet {
                           name
                           displayName
                           description
