@@ -150,7 +150,6 @@ interface OwnedGame {
         imgIconUrl: string
         difficultyPercentage: number
     }
-    id: string
     completionPercentage: number
 }
 
@@ -241,7 +240,13 @@ const PlayerHeader = ({
     )
 }
 
-const OwnedGameList = ({ games }: { games: OwnedGame[] }) => {
+const OwnedGameList = ({
+    player,
+    games,
+}: {
+    player: string
+    games: OwnedGame[]
+}) => {
     const set = games.slice(0, 12)
 
     return (
@@ -258,12 +263,16 @@ const OwnedGameList = ({ games }: { games: OwnedGame[] }) => {
         >
             {set.map((game) => (
                 <li>
-                    <img
-                        src={`https://media.steampowered.com/steam/apps/${game.game.id}/capsule_184x69.jpg`}
-                        title={`${
-                            game.game.name
-                        } - x of y (${game.completionPercentage.toFixed(2)}%)`}
-                    />
+                    <a href={`/player/${player}/game/${game.game.id}`}>
+                        <img
+                            src={`https://media.steampowered.com/steam/apps/${game.game.id}/capsule_184x69.jpg`}
+                            title={`${
+                                game.game.name
+                            } - x of y (${game.completionPercentage.toFixed(
+                                2
+                            )}%)`}
+                        />
+                    </a>
                 </li>
             ))}
         </ul>
@@ -289,6 +298,9 @@ const PlayerAlmostThereGames = ({ player }: { player: string }) => {
                     ownedGames(
                         player: ${player}
                         orderBy: "completionPercentage"
+                        limit: 12
+                        ignoreComplete: true
+                        ignoreGames: []
                     ) {
                         game {
                             id
@@ -316,7 +328,7 @@ const PlayerAlmostThereGames = ({ player }: { player: string }) => {
     if (loading) {
         content = <div>Loading...</div>
     } else if (ownedGames.length > 0) {
-        content = <OwnedGameList games={ownedGames} />
+        content = <OwnedGameList player={player} games={ownedGames} />
     } else if (error) {
         content = <div>Error.</div>
     }
@@ -330,9 +342,6 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
     const [error, setError] = useState<string>()
 
     useEffect(() => {
-        // ignoreComplete: true
-        // ignoreGames: []
-        // limit: 12
         request<PlayerOwnedGameResponse>(
             "/graphql/",
             gql`
@@ -340,6 +349,9 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
                     ownedGames(
                         player: ${player}
                         orderBy: "difficultyPercentage ASC"
+                        limit: 12
+                        ignoreNotStarted: true
+                        ignoreGames: []
                     ) {
                         game {
                             id
@@ -367,7 +379,7 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
     if (loading) {
         content = <div>Loading...</div>
     } else if (ownedGames.length > 0) {
-        content = <OwnedGameList games={ownedGames} />
+        content = <OwnedGameList player={player} games={ownedGames} />
     } else if (error) {
         content = <div>Error.</div>
     }
@@ -381,9 +393,6 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
     const [error, setError] = useState<string>()
 
     useEffect(() => {
-        // ignoreComplete: true
-        // ignoreGames: []
-        // limit: 12
         request<PlayerOwnedGameResponse>(
             "/graphql/",
             gql`
@@ -391,6 +400,9 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
                     ownedGames(
                         player: ${player}
                         orderBy: "difficultyPercentage DESC"
+                        limit: 12
+                        ignoreComplete: true
+                        ignoreGames: []
                     ) {
                         game {
                             id
@@ -398,7 +410,6 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
                             imgIconUrl
                             difficultyPercentage
                         }
-                        id
                         completionPercentage
                     }
                 }
@@ -418,7 +429,7 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
     if (loading) {
         content = <div>Loading...</div>
     } else if (ownedGames.length > 0) {
-        content = <OwnedGameList games={ownedGames} />
+        content = <OwnedGameList player={player} games={ownedGames} />
     } else if (error) {
         content = <div>Error.</div>
     }
