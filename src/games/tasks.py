@@ -1,20 +1,43 @@
 import logging
 from typing import TypedDict, Optional, Union
+from datetime import timedelta
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
+from django.db.models import Q
+from django.utils import timezone
 from .models import Game
 from .service import load_game, resynchronize_game
 from achievementchaser.utilities import can_resynchronize_model
 
-# from .utilities import can_resynchronize_game
+logger = get_task_logger(__name__)  # logging.getLogger()
 
-logger = logging.getLogger()
 
 GameResponse = TypedDict("GameResponse", {"id": int, "name": str, "resynchronized": str})
 
 ResynchronizeGameResponse = TypedDict(
     "ResynchronizeGameResponse", {"ok": bool, "game": Optional[GameResponse], "error": Optional[str]}, total=False
 )
+
+
+@shared_task
+def scheduled_resynchronize_games_task():
+    """Resynchronize games that are flagged for resynchronization or have not been resynchronized recently"""
+    logging.debug("Begin resyncrhonization of games")
+
+    due = timezone.now() - timedelta(hours=24)
+
+    logger.debug(f"Find games last resynchronized before {due}")
+    query = Q(resynchronization_required=True) | Q(resynchronized__lt=due)
+    games = Game.objects.filter(query)
+    logging.debug(f"Found {games.count()} games which require resynchronization")
+
+    # Prevent excessive work in one event
+    limit = 10
+    games = games[:limit]
+
+    logging.debug(f"Resynchronizing {games.count()} games")
+    for game in games:
+        resynchronize_game_task.delay(game.id)
 
 
 @shared_task

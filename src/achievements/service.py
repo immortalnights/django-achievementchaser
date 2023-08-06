@@ -35,7 +35,7 @@ def resynchronize_game_achievements(game: Game) -> bool:
             total_percentage += achievement.percent
 
             try:
-                instance = Achievement.objects.get(name=achievement.name)
+                instance = Achievement.objects.get(name=achievement.name, game=game)
                 instance.global_percentage = achievement.percent
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:

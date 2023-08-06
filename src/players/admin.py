@@ -7,19 +7,25 @@ class PlayerAdmin(admin.ModelAdmin):
     """"""
 
     list_display = (
-        "name",
+        "name_with_id",
         "profile_url",
-        "games",
-        "added",
+        "game_count",
+        "up_to_date",
         "resynchronized",
-        "resynchronization_required",
         "added",
-        "updated",
     )
 
+    @admin.display(description="Name")
+    def name_with_id(self, obj):
+        return f"{obj.name} ({obj.id})"
+
     @admin.display(description="Games")
-    def games(self, obj):
+    def game_count(self, obj):
         return PlayerOwnedGame.objects.filter(player=obj).count()
+
+    @admin.display(description="Up To Date")
+    def up_to_date(self, obj):
+        return not obj.resynchronization_required
 
 
 @admin.register(PlayerOwnedGame)

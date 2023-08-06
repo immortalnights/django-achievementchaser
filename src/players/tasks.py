@@ -1,16 +1,17 @@
 import logging
 from typing import TypedDict, Union, Optional
+from datetime import timedelta
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
+from django.db.models import Q
+from django.utils import timezone
 from .models import Player, PlayerOwnedGame
 from .service import load_player, resynchronize_player, resynchronize_player_achievements_for_game
 from achievementchaser.utilities import can_resynchronize_model
-
-# from .utilities import can_resynchronize_player
 from games.service import load_game, resynchronize_game
 from games.models import Game
 
-logger = logging.getLogger()
+logger = get_task_logger(__name__)  # logging.getLogger()
 
 
 PlayerResponse = TypedDict("PlayerResponse", {"id": int, "name": str, "resynchronized": Optional[str]}, total=False)
@@ -25,6 +26,47 @@ ResynchronizePlayerGameResponse = TypedDict(
     {"ok": bool, "player": Optional[PlayerResponse], "owned_game": Optional[OwnedGameResponse], "error": Optional[str]},
     total=False,
 )
+
+
+@shared_task
+def scheduled_resynchronize_players_task():
+    """Resynchronize players that are flagged for resynchronization or have not been resynchronized recently
+    Players are resynchronized every hour (there wont ever be many players).
+    """
+    logging.debug("Begin resyncrhonization of players")
+
+    due = timezone.now() - timedelta(hours=1)
+
+    logger.debug(f"Find players last resynchronized before {due}")
+    query = Q(resynchronization_required=True) | Q(resynchronized__lt=due)
+    players = Player.objects.filter(query)
+    logging.debug(f"Found {players.count()} players which require resynchronization")
+
+    # Prevent excessive work if, somehow, there are many players
+    limit = 5
+    players = players[:limit]
+
+    logging.debug(f"Resynchronizing {players.count()} players")
+    for player in players:
+        resynchronize_player_task.delay(player.id)
+
+
+@shared_task
+def scheduled_resynchronize_players_owned_games_task():
+    """Resynchronize player owned games that are flagged for resynchronization.
+    Intended for when a new player is added.
+    """
+    logging.debug("Begin resyncrhonization of players owned games")
+    owned_games = PlayerOwnedGame.objects.filter(resynchronization_required=True)
+    logging.debug(f"Found {owned_games.count()} owned games which require resynchronization")
+
+    # Prevent excessive work in one event
+    limit = 10
+    owned_games = owned_games[:limit]
+
+    logging.debug(f"Resynchronizing {owned_games.count()} owned games")
+    for owned_game in owned_games:
+        resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
 
 
 @shared_task

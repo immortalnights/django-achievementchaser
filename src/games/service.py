@@ -27,10 +27,14 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
     ok = False
 
     try:
+        logging.debug(f"Resynchronizing game {game.name} ({game.id})")
         resynchronize_game_schema(game)
 
         if resynchronize_achievements:
-            resynchronize_game_achievements(game)
+            if len(game.achievements) > 0:
+                resynchronize_game_achievements(game)
+            else:
+                logging.debug(f"Game {game.name} does not have any achievements")
 
         # Resynchronization completed successful
         game.resynchronized = timezone.now()

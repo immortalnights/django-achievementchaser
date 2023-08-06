@@ -16,7 +16,7 @@ interface Player {
 interface Game {
     id: number
     name?: string
-    achievements?: Achievement[]
+    achievementSet?: Achievement[]
     iconUrl?: string
 }
 
