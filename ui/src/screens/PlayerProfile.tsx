@@ -38,7 +38,7 @@ const PlayerPrivateStatistics = ({
             </dd>
             <dt>Played</dt>
             <dd>
-                <Playtime playtime={0} />
+                <Playtime playtime={totalPlaytime ?? 0} />
             </dd>
             <dt>Playtime</dt>
         </>
