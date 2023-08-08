@@ -1,69 +1,22 @@
-import { useEffect, useMemo, useState } from "react"
-import "./App.css"
-import { GraphQLClient, request, gql } from "graphql-request"
+import { AppBar, Toolbar, Typography, Container } from "@mui/material"
 import { RouterProvider } from "react-router-dom"
 import router from "./router"
-
-// const PlayerProfileCard = ({
-//     id,
-//     name,
-//     profileUrl,
-//     avatarMediumUrl,
-// }: Player) => {
-//     return <img src={avatarMediumUrl} />
-// }
-
-// const PlayerProfileList = ({ players }: { players: Player[] }) => {
-//     return players.map((player) => (
-//         <PlayerProfileCard key={player.id} {...player} />
-//     ))
-// }
-
-// const PlayerProfiles = () => {
-//     const [players, setPlayers] = useState<Player[]>([])
-//     const [loading, setLoading] = useState(true)
-//     const [error, setError] = useState<string>()
-
-//     const client = useMemo(() => new GraphQLClient("/graphql/", {}), [])
-
-//     const query = gql`
-//         {
-//             players {
-//                 edges {
-//                     node {
-//                         id
-//                         name
-//                         profileUrl
-//                         avatarMediumUrl
-//                     }
-//                 }
-//             }
-//         }
-//     `
-
-//     useEffect(() => {
-//         client
-//             .request<PlayersResponse>(query)
-//             .then((res) => {
-//                 setPlayers(res.players.edges.map((item) => item.node))
-//                 setLoading(false)
-//             })
-//             .catch((err) => {
-//                 console.log(err)
-//             })
-//     }, [])
-
-//     return (
-//         <span>
-//             {loading ? "Loading..." : <PlayerProfileList players={players} />}
-//         </span>
-//     )
-// }
+import SearchField from "./components/MUISearch"
 
 function App() {
     return (
         <>
-            <RouterProvider router={router} />
+            <AppBar position="sticky">
+                <Toolbar>
+                    <Typography variant="h2" sx={{ flexGrow: 1 }}>
+                        Achievement Chaser
+                    </Typography>
+                    <SearchField placeholder="Search" ariaLabel="search" />
+                </Toolbar>
+            </AppBar>
+            <Container>
+                <RouterProvider router={router} />
+            </Container>
         </>
     )
 }

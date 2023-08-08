@@ -36,3 +36,10 @@ interface PlayersResponse {
 interface GameResponse {
     game: Game
 }
+
+interface ResponseError {}
+
+interface PlayerQueryResponse {
+    errors?: ResponseError[]
+    player: Player | null
+}
