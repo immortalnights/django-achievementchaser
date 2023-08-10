@@ -1,6 +1,10 @@
 import request, { gql } from "graphql-request"
-import { useEffect, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
+import { useQueryPlayerProfile } from "../api/queries"
+import Loader from "../components/Loader"
+import { throwExpression } from "../utilities"
+import { Box, Grid, Typography } from "@mui/material"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -19,6 +23,25 @@ const Playtime = ({ playtime }: { playtime: number }) => {
     return `${index > 1 ? value.toFixed(2) : value} ${keys[index - 1] ?? ""}`
 }
 
+const MetaData = ({
+    label,
+    value,
+    title,
+}: {
+    label: string
+    value: ReactNode | string | number
+    title?: string
+}) => (
+    <>
+        <Typography variant="subtitle1" textTransform="uppercase">
+            {label}
+        </Typography>
+        <Typography variant="body1" title={title}>
+            {value}
+        </Typography>
+    </>
+)
+
 const PlayerPrivateStatistics = ({
     totalGamesCount,
     playedGamesCount,
@@ -28,20 +51,32 @@ const PlayerPrivateStatistics = ({
     "totalGamesCount" | "playedGamesCount" | "totalPlaytime"
 >) => {
     return (
-        <>
-            <dd>{totalGamesCount}</dd>
-            <dt>Games</dt>
-            <dd title={`${playedGamesCount} of ${totalGamesCount}`}>
-                {totalGamesCount && playedGamesCount
-                    ? `${(totalGamesCount / playedGamesCount).toFixed(2)}%`
-                    : "-"}
-            </dd>
-            <dt>Played</dt>
-            <dd>
-                <Playtime playtime={totalPlaytime ?? 0} />
-            </dd>
-            <dt>Playtime</dt>
-        </>
+        <Box display={{ xs: "none", md: "block" }}>
+            <Grid container>
+                <Grid xs={false} md={4}>
+                    <MetaData label="Games" value={totalGamesCount ?? 0} />
+                </Grid>
+                <Grid xs={false} md={4}>
+                    <MetaData
+                        label="Played"
+                        value={
+                            totalGamesCount && playedGamesCount
+                                ? `${(
+                                      totalGamesCount / playedGamesCount
+                                  ).toFixed(2)}%`
+                                : "-"
+                        }
+                        title={`${playedGamesCount} of ${totalGamesCount}`}
+                    />
+                </Grid>
+                <Grid xs={false} md={4}>
+                    <MetaData
+                        label="Playtime"
+                        value={<Playtime playtime={totalPlaytime ?? 0} />}
+                    />
+                </Grid>
+            </Grid>
+        </Box>
     )
 }
 
@@ -55,106 +90,44 @@ const PlayerStatistics = ({
     totalPlaytime,
 }: PlayerSummary) => {
     return (
-        <dl>
-            <PlayerPrivateStatistics
-                totalGamesCount={totalGamesCount}
-                playedGamesCount={playedGamesCount}
-                totalPlaytime={totalPlaytime}
-            />
-            <dd
-                title={`${
-                    perfectGamesCount && totalGamesCount
-                        ? (perfectGamesCount / totalGamesCount).toFixed(2)
-                        : 0
-                }%`}
-            >
-                {perfectGamesCount ?? "-"}
-            </dd>
-            <dt>Perfect Games</dt>
-            <dd
-                title={`${achievementsUnlockedCount} of ${totalAchievementCount}`}
-            >
-                {totalAchievementCount && achievementsUnlockedCount
-                    ? `${(
-                          achievementsUnlockedCount / totalAchievementCount
-                      ).toFixed(2)}%`
-                    : "-"}
-            </dd>
-            <dt>Achievements Unlocked</dt>
-            <dd>{friends?.length ?? "-"}</dd>
-            <dt>Friends</dt>
-        </dl>
+        <Grid container>
+            <Grid xs={12}>
+                <PlayerPrivateStatistics
+                    totalGamesCount={totalGamesCount}
+                    playedGamesCount={playedGamesCount}
+                    totalPlaytime={totalPlaytime}
+                />
+            </Grid>
+            <Grid md={4}>
+                <MetaData
+                    label="Perfect Games"
+                    value={perfectGamesCount ?? "-"}
+                    title={`${
+                        perfectGamesCount && totalGamesCount
+                            ? (perfectGamesCount / totalGamesCount).toFixed(2)
+                            : 0
+                    }%`}
+                />
+            </Grid>
+            <Grid md={4}>
+                <MetaData
+                    label="Achievements Unlocked"
+                    value={
+                        totalAchievementCount && achievementsUnlockedCount
+                            ? `${(
+                                  achievementsUnlockedCount /
+                                  totalAchievementCount
+                              ).toFixed(2)}%`
+                            : "-"
+                    }
+                    title={`${achievementsUnlockedCount} of ${totalAchievementCount}`}
+                />
+            </Grid>
+            <Grid md={4}>
+                <MetaData label="Friends" value={friends?.length ?? "-"} />
+            </Grid>
+        </Grid>
     )
-}
-
-interface Game {
-    id: string
-    name: string
-    imgIconUrl: string
-    lastPlayed: string
-    playtime: number
-}
-
-interface Achievement {
-    name: string
-    displayName: string
-    iconUrl: string
-    iconGrayUrl: string
-    game?: Game
-}
-
-interface UnlockedAchievement {
-    game: Pick<Game, "id" | "name">
-    achievement: Achievement
-    datetime: string
-}
-
-interface PlayerFriend {
-    id: string
-    name: string
-    profileUrl: string
-}
-
-interface PlayerSummary {
-    recentGames?: Game[]
-    recentAchievements?: UnlockedAchievement[]
-    perfectGamesCount?: number
-    achievementsUnlockedCount?: number
-    totalAchievementCount?: number
-    friends?: PlayerFriend[]
-    totalGamesCount?: number
-    playedGamesCount?: number
-    totalPlaytime?: number
-}
-
-interface PlayerProfile {
-    id: string
-    name: string
-    avatarLargeUrl?: string
-    profileUrl?: string
-    summary?: PlayerSummary
-    highestCompletionGame?: unknown[]
-    lowestCompletionGame?: unknown[]
-    easiestGames?: unknown[]
-    easiestAchievements?: unknown
-}
-
-interface PlayerProfileResponse {
-    profile: PlayerProfile
-}
-
-interface OwnedGame {
-    game: {
-        id: number
-        name: string
-        imgIconUrl: string
-        difficultyPercentage: number
-    }
-    completionPercentage: number
-}
-
-interface PlayerOwnedGameResponse {
-    ownedGames: OwnedGame[]
 }
 
 const PlayerHeader = ({
@@ -171,72 +144,85 @@ const PlayerHeader = ({
     summary?: PlayerSummary
 }) => {
     return (
-        <div>
-            <div>
-                <h2>{name}</h2>
-                <img src={avatarLargeUrl} />
-            </div>
-            <div>
-                <PlayerStatistics {...summary} />
-                <dl>
-                    <dd>
-                        <ul
-                            style={{
-                                listStyle: "none",
-                                margin: 0,
-                                padding: 0,
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: 8,
-                            }}
-                        >
-                            {summary?.recentGames?.map((game) => (
-                                <li key={game.id}>
-                                    <a
-                                        href={`/player/${id}/game/${game.id}`}
-                                        title={game.name}
+        <>
+            <h2>{name}</h2>
+            <Grid container>
+                <Grid xs={2}>
+                    <img src={avatarLargeUrl} />
+                </Grid>
+                <Grid xs>
+                    <PlayerStatistics {...summary} />
+                    <Grid container>
+                        <Grid xs={6}>
+                            <Typography
+                                variant="subtitle1"
+                                textTransform="uppercase"
+                            >
+                                Recently Played
+                            </Typography>
+                            <ul
+                                style={{
+                                    listStyle: "none",
+                                    margin: 0,
+                                    padding: 0,
+                                    display: "flex",
+                                    gap: 8,
+                                }}
+                            >
+                                {summary?.recentGames?.map((game) => (
+                                    <li key={game.id}>
+                                        <a
+                                            href={`/player/${id}/game/${game.id}`}
+                                            title={game.name}
+                                        >
+                                            <img
+                                                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
+                                            />
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Grid>
+                        <Grid xs={6}>
+                            <Typography
+                                variant="subtitle1"
+                                textTransform="uppercase"
+                            >
+                                Recently Unlocked
+                            </Typography>
+                            <ul
+                                style={{
+                                    listStyle: "none",
+                                    margin: 0,
+                                    padding: 0,
+                                    display: "flex",
+                                    gap: 8,
+                                }}
+                            >
+                                {summary?.recentAchievements?.map((item) => (
+                                    <li
+                                        key={`${item.game.id}/${item.achievement.name}`}
                                     >
-                                        <img
-                                            src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
-                                        />
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </dd>
-                    <dt>Recently Played</dt>
-                    <dd>
-                        <ul
-                            style={{
-                                listStyle: "none",
-                                margin: 0,
-                                padding: 0,
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: 8,
-                            }}
-                        >
-                            {summary?.recentAchievements?.map((item) => (
-                                <li
-                                    key={`${item.game.id}/${item.achievement.name}`}
-                                >
-                                    <a
-                                        href={`/player/${id}/game/${item.game.id}`}
-                                        title={`${item.achievement.displayName} from ${item.game.name}`}
-                                    >
-                                        <img
-                                            src={`${item.achievement.iconUrl}`}
-                                            style={{ width: 32, height: 32 }}
-                                        />
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </dd>
-                    <dt>Recently Unlocked</dt>
-                </dl>
-            </div>
-        </div>
+                                        <a
+                                            href={`/player/${id}/game/${item.game.id}`}
+                                            title={`${item.achievement.displayName} from ${item.game.name}`}
+                                        >
+                                            <img
+                                                src={`${item.achievement.iconUrl}`}
+                                                style={{
+                                                    width: 32,
+                                                    height: 32,
+                                                }}
+                                            />
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </>
     )
 }
 
@@ -266,11 +252,9 @@ const OwnedGameList = ({
                     <a href={`/player/${player}/game/${game.game.id}`}>
                         <img
                             src={`https://media.steampowered.com/steam/apps/${game.game.id}/capsule_184x69.jpg`}
-                            title={`${
-                                game.game.name
-                            } - x of y (${game.completionPercentage.toFixed(
-                                2
-                            )}%)`}
+                            title={`${game.game.name} - ${(
+                                game.completionPercentage * 100
+                            ).toFixed(2)}%`}
                         />
                     </a>
                 </li>
@@ -278,6 +262,7 @@ const OwnedGameList = ({
         </ul>
     )
 }
+
 const PlayerGameAchievementList = () => {
     return null
 }
@@ -348,7 +333,7 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
                 {
                     ownedGames(
                         player: ${player}
-                        orderBy: "difficultyPercentage ASC"
+                        orderBy: "completionPercentage ASC"
                         limit: 12
                         ignoreNotStarted: true
                         ignoreGames: []
@@ -446,85 +431,32 @@ const PlayerProfileContent = (profile: PlayerProfile) => {
                 avatarLargeUrl={profile.avatarLargeUrl}
                 summary={profile.summary}
             />
-            <h4>Almost There</h4>
+            <Typography variant="h5">Almost There</Typography>
             <PlayerAlmostThereGames player={profile.id} />
-            <h4>Just Started</h4>
+            <Typography variant="h5">Just Started</Typography>
             <PlayerJustStartedGames player={profile.id} />
-            <h4>Next Game</h4>
+            <Typography variant="h5">Next Game</Typography>
             <PlayerEasiestGames player={profile.id} />
-            <h4>Next Achievement</h4>
+            <Typography variant="h5">Next Achievement</Typography>
             <PlayerGameAchievementList />
         </>
     )
 }
 
 const PlayerProfileScreen = () => {
-    const { id } = useParams()
-    const [profile, setProfile] = useState<PlayerProfile>()
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string>()
+    const { id = throwExpression("missing param") } = useParams()
+    const { loading, error, data } = useQueryPlayerProfile(id)
 
-    useEffect(() => {
-        request<PlayerProfileResponse>(
-            "/graphql/",
-            gql`
-                {
-                    profile(id: ${id}) {
-                        id
-                        name
-                        profileUrl
-                        avatarLargeUrl
-                        summary {
-                            totalPlaytime
-                            totalGamesCount
-                            playedGamesCount
-                            perfectGamesCount
-                            totalAchievementCount
-                            achievementsUnlockedCount
-                            recentGames {
-                                id
-                                name
-                                imgIconUrl
-                                lastPlayed
-                                playtime
-                            }
-                            recentAchievements {
-                                game {
-                                    name
-                                    id
-                                }
-                                achievement {
-                                    name
-                                    iconUrl
-                                    displayName
-                                }
-                                datetime
-                            }
-                        }
-                    }
-                }
-            `
-        )
-            .then((resp) => {
-                setLoading(false)
-                setProfile(resp.profile)
-            })
-            .catch((err) => {
-                setLoading(false)
-                setError("Failed")
-            })
-    }, [])
-
-    let content
-    if (loading) {
-        content = <div>Loading...</div>
-    } else if (profile) {
-        content = <PlayerProfileContent {...profile} />
-    } else if (error) {
-        content = <div>Error.</div>
-    }
-
-    return <div>{content}</div>
+    return (
+        <Loader
+            loading={loading}
+            error={error}
+            data={data}
+            renderer={(data) => {
+                return <PlayerProfileContent {...data} />
+            }}
+        />
+    )
 }
 
 export default PlayerProfileScreen
