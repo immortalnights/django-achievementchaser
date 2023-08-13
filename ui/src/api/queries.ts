@@ -107,3 +107,83 @@ export const useQueryPlayerProfile = (player: string) => {
 
     return { loading, error, data }
 }
+
+export const useQueryPlayerOwnedGames = ({
+    player,
+    orderBy,
+    ignoreComplete = false,
+    ignoreNotStarted = false,
+    ignoreGames = [],
+    limit = 12,
+}: {
+    player: string
+    orderBy: string
+    ignoreComplete?: boolean
+    ignoreNotStarted?: boolean
+    ignoreGames?: string[]
+    limit?: number
+}) => {
+    const { loading, error, data, trigger } = useQuery<
+        PlayerOwnedGameResponse,
+        OwnedGame[]
+    >(
+        () => gql`
+    {
+        ownedGames(
+            player: ${player}
+            orderBy: "${orderBy}"
+            limit: ${limit}
+            ignoreComplete: ${ignoreComplete ? "true" : "false"}
+            ignoreNotStarted: ${ignoreNotStarted ? "true" : "false"}
+            ignoreGames: [${ignoreGames.join(",")}]
+        ) {
+            game {
+                id
+                name
+                imgIconUrl
+                difficultyPercentage
+            }
+            id
+            completionPercentage
+        }
+
+    }
+`,
+        (response) => response.ownedGames
+    )
+
+    useEffect(() => trigger(), [])
+
+    return { loading, error, data }
+}
+
+export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
+    const { loading, error, data, trigger } = useQuery<
+        PlayerAchievementsResponse,
+        Achievement[]
+    >(
+        () => gql`
+        {
+            achievements(id: ${player} ) {
+              id
+              achievements {
+                name
+                displayName
+                iconUrl
+                globalPercentage
+                game {
+                  id
+                  name
+                }
+              }
+            }
+          }
+
+`,
+        (response) => response.achievements.achievements
+    )
+
+    useEffect(() => trigger(), [])
+
+    return { loading, error, data }
+}

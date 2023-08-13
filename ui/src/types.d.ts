@@ -116,3 +116,10 @@ interface OwnedGame {
 interface PlayerOwnedGameResponse extends BaseQueryResponse {
     ownedGames: OwnedGame[]
 }
+
+interface PlayerAchievementsResponse extends BaseQueryResponse {
+    achievements: {
+        id: string
+        achievements: Achievement[]
+    }
+}
