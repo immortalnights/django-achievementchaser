@@ -3,7 +3,7 @@ import styled from "@emotion/styled"
 const FlexUnorderedList = styled.ul(
     ({
         wrap = false,
-        justifyContent = "space-evenly",
+        justifyContent = "normal",
         gap = 8,
     }: {
         wrap?: boolean
