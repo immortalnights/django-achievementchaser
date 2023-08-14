@@ -11,6 +11,9 @@ class PlayerType(DjangoObjectType):
         model = Player
         fields = "__all__"
 
+    # Override the model ID otherwise JavaScript rounds the number
+    id = graphene.String()
+
 
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.BigInt(), name=graphene.String())

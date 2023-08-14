@@ -73,7 +73,7 @@ class PlayerUnlockedAchievementAdmin(admin.ModelAdmin):
     """"""
 
     list_display = ("edit", "achievement", "game", "player", "datetime")
-    # search_fields = ["game__name"]
+    search_fields = ["game__name"]
 
     @admin.display(description="Edit")
     def edit(self, obj):
