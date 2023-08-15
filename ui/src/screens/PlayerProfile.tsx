@@ -1,9 +1,6 @@
-import request, { gql } from "graphql-request"
-import { ReactNode, useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
-import { Paper, Box, Typography } from "@mui/material"
-import Grid from "@mui/material/Unstable_Grid2"
-import { css } from "@emotion/react"
+import { Paper, Typography } from "@mui/material"
 import {
     useQueryPlayerAchievements,
     useQueryPlayerOwnedGames,
@@ -12,7 +9,6 @@ import {
 import Loader from "../components/Loader"
 import { throwExpression } from "../utilities"
 import OwnedGameList from "../components/OwnedGameList"
-import BorderedImage from "../components/BorderedImage"
 import PlayerProfileHeader from "../components/PlayerHeader"
 import PlayerProfileContext, {
     loadFromLocalStorage,

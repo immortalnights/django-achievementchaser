@@ -22,16 +22,20 @@ const EasiestGameAchievementsList = ({
         achievements.forEach((item) => {
             const { game, ...rest } = item
 
-            if (!games[game.id]) {
-                games[game.id] = {
-                    ...game,
-                    achievements: [],
+            if (game && game.id) {
+                const key = String(game.id as keyof typeof games)
+                if (!games[key]) {
+                    games[key] = {
+                        name: "<unknown>",
+                        ...game,
+                        achievements: [],
+                    }
                 }
-            }
 
-            games[game.id].achievements.push({
-                ...rest,
-            })
+                games[key].achievements.push({
+                    ...rest,
+                })
+            }
         })
 
         return games
@@ -65,7 +69,7 @@ const EasiestGameAchievementsList = ({
                                 key={achievement.name}
                                 title={`${
                                     achievement.displayName
-                                } - ${achievement.globalPercentage.toFixed(
+                                } - ${achievement.globalPercentage?.toFixed(
                                     2
                                 )}%`}
                             >

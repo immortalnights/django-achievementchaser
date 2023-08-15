@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { request, gql, RequestDocument } from "graphql-request"
 
 interface State<T> {
@@ -33,7 +33,7 @@ const useQuery = <ResponseType extends BaseQueryResponse, DataType>(
                     data: transform(response),
                 })
             })
-            .catch((err) => {
+            .catch((_err) => {
                 setState({
                     loading: false,
                     error: true,
