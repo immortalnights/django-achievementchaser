@@ -29,7 +29,7 @@ const PlayerProfileContext = createContext<PlayerProfileContextValue>({
     hideGameStatistics: false,
     ignoredGames: [],
     toggleGameStatistics: () => {},
-    addIgnoredGame: (game: string) => {},
+    addIgnoredGame: () => {},
 })
 
 export default PlayerProfileContext

@@ -5,26 +5,29 @@ import { useEffect, useState } from "react"
 const GameHeader = ({
     id,
     name,
-    image,
     achievements = [],
 }: {
     id: number
     name: string
     image: string
-    achievements?: WithRequired<Achievement, "globalPercentage">[]
+    achievements?: Achievement[]
 }) => {
     const min = achievements.reduce<number | undefined>(
         (min, achievement) =>
-            min && min < achievement.globalPercentage
-                ? min
-                : achievement.globalPercentage,
+            achievement.globalPercentage !== undefined
+                ? min && min < achievement.globalPercentage
+                    ? min
+                    : achievement.globalPercentage
+                : 0,
         0
     )
     const max = achievements.reduce(
         (max, achievement) =>
-            max < achievement.globalPercentage
-                ? achievement.globalPercentage
-                : max,
+            achievement.globalPercentage !== undefined
+                ? max < achievement.globalPercentage
+                    ? achievement.globalPercentage
+                    : max
+                : 0,
         0
     )
     return (
@@ -62,7 +65,6 @@ const GameHeader = ({
 }
 
 const AchievementItem = ({
-    name,
     displayName,
     description,
     iconUrl,
@@ -113,18 +115,14 @@ const AchievementItem = ({
     )
 }
 
-const GameDetails = ({
-    game,
-}: {
-    game: WithRequired<Game, "name" | "iconUrl" | "achievementSet">
-}) => {
+const GameDetails = ({ game }: { game: Game }) => {
     return (
         <>
             <GameHeader
                 id={game.id}
-                name={game.name}
+                name={game.name ?? "<noname>"}
                 achievements={game.achievementSet}
-                image={game.iconUrl}
+                image={game.iconUrl ?? ""}
             />
             <hr />
             <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
@@ -137,7 +135,7 @@ const GameDetails = ({
 }
 
 const PlayerGameScreen = () => {
-    const { id } = useParams()
+    // const { id } = useParams()
     const { gameId } = useParams()
 
     const [game, setGame] = useState<Game>()
@@ -168,7 +166,7 @@ const PlayerGameScreen = () => {
                 setLoading(false)
                 setGame(resp.game)
             })
-            .catch((err) => {
+            .catch((_err) => {
                 setLoading(false)
                 setError("Failed")
             })

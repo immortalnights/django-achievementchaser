@@ -1,6 +1,5 @@
 import { ReactNode, useContext } from "react"
-import { css } from "@emotion/react"
-import { Typography, Box, Button, IconButton } from "@mui/material"
+import { Typography, Box, IconButton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
@@ -194,7 +193,6 @@ const PlayerProfileHeader = ({
     id,
     name,
     avatarLargeUrl,
-    profileUrl,
     summary,
 }: {
     id: string
@@ -208,14 +206,7 @@ const PlayerProfileHeader = ({
             <Header name={name ?? ""} />
             <Grid container gap="2em">
                 <Grid xs={2}>
-                    <BorderedImage
-                        css={css`
-                            @media (min-width: 1200px) {
-                                width: 186px;
-                            }
-                        `}
-                        src={avatarLargeUrl}
-                    />
+                    <BorderedImage src={avatarLargeUrl} />
                 </Grid>
                 <Grid xs>
                     <PlayerStatistics {...summary} />
