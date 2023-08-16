@@ -14,6 +14,7 @@ from pathlib import Path
 import environ
 import os
 import sys
+from typing import List
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,10 +34,10 @@ DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development"
 
 TESTING = "test" in sys.argv
 
-ALLOWED_HOSTS: list[str] = ["127.0.0.1"]
+ALLOWED_HOSTS: List[str] = ["127.0.0.1"]
 
-CSRF_TRUSTED_ORIGINS: list[str] = []
-CORS_ALLOWED_ORIGINS: list[str] = []
+CSRF_TRUSTED_ORIGINS: List[str] = []
+CORS_ALLOWED_ORIGINS: List[str] = []
 
 # Application definition
 
