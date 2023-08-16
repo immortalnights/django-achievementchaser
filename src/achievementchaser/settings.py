@@ -94,11 +94,11 @@ WSGI_APPLICATION = "achievementchaser.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "USER": "postgres",
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "NAME": "achievementchaser",
-        "HOSTNAME": "127.0.0.1",
-        "PORT": 5432,
+        "USER": os.getenv("PGUSER") or "postgres",
+        "PASSWORD": os.getenv("PGPASSWORD") or os.getenv("POSTGRES_PASSWORD"),
+        "NAME": os.getenv("PGDATABASE") or "achievementchaser",
+        "HOSTNAME": os.getenv("PGHOST") or "127.0.0.1",
+        "PORT": os.getenv("PGPORT") or 5432,
     }
 }
 
