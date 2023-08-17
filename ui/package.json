@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build",
-        "start": "npx http-server ./dist -a 0.0.0.0 -p 0",
+        "start": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy $PROXY",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "preview": "vite preview"
     },
