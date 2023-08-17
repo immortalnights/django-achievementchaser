@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Achievement Chaser"
 requires-python = ">=3.8.16"
 dependencies = [
+    "gunicorn",
     "psycopg2",
     "django",
     "django-environ",
