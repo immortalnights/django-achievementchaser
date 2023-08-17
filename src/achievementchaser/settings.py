@@ -34,7 +34,7 @@ DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development"
 
 TESTING = "test" in sys.argv
 
-ALLOWED_HOSTS: List[str] = ["127.0.0.1"]
+ALLOWED_HOSTS: List[str] = ["0.0.0.0"]
 
 CSRF_TRUSTED_ORIGINS: List[str] = []
 CORS_ALLOWED_ORIGINS: List[str] = []
