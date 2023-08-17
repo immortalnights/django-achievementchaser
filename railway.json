@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python src/manage.py migrate && python src/manage.py collectstatic --noinput && gunicorn achievementchaser.wsgi",
+    "startCommand": "python src/manage.py migrate && python src/manage.py collectstatic --noinput && cd src && gunicorn wsgi:application",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 2
   }
