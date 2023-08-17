@@ -39,6 +39,8 @@ ALLOWED_HOSTS: List[str] = ["127.0.0.1"]
 CSRF_TRUSTED_ORIGINS: List[str] = []
 CORS_ALLOWED_ORIGINS: List[str] = []
 
+STATIC_ROOT = "./static"
+
 # Application definition
 
 INSTALLED_APPS = [
