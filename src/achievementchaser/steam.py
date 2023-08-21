@@ -1,7 +1,7 @@
 """Steam Interface layer"""
 import os
 import logging
-import typing
+from typing import Tuple, Union
 from urllib import request as urllib_request, parse, error
 import json
 from django.conf import settings
@@ -15,8 +15,8 @@ def _get_api_key():
     return os.environ["STEAM_API_KEY"] if "STEAM_API_KEY" in os.environ else ""
 
 
-def _request(url: str, *, cache: bool = False) -> tuple[bool, typing.Union[dict, None]]:
-    response_json: typing.Union[dict, None] = None
+def _request(url: str, *, cache: bool = False) -> Tuple[bool, Union[dict, None]]:
+    response_json: Union[dict, None] = None
     ok: bool = False
 
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
@@ -47,7 +47,7 @@ def _request(url: str, *, cache: bool = False) -> tuple[bool, typing.Union[dict,
     return ok, response_json
 
 
-def request(path: str, query: dict, response_data_key: str) -> tuple[bool, dict]:
+def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, dict]:
     # Always add the API key and response format
     default_query_string = parse.urlencode(
         {

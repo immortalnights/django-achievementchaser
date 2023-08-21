@@ -1,14 +1,17 @@
 [project]
 name = "achievementchaser"
-dynamic = ["version"]
+version = "0.1.0"
 description = "Achievement Chaser"
+requires-python = ">=3.8.16"
 dependencies = [
+    "gunicorn",
     "psycopg2",
     "django",
     "django-environ",
     "django_filter",
     "graphene_django",
     "celery",
+    "django-cors-headers",
 ]
 
 [project.optional-dependencies]
@@ -18,15 +21,11 @@ dev = [
     "pytest",
     "mypy",
     "pymongo",
-    "django-cors-headers"
 ]
 
 [build-system]
-requires = ["setuptools>=68", "setuptools_scm[toml]>=6.2"]
+requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools_scm]
-write_to = "src/_version.py"
 
 [tool.black]
 line-length = 120
