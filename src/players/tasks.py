@@ -29,11 +29,11 @@ ResynchronizePlayerGameResponse = TypedDict(
 
 
 @shared_task
-def scheduled_resynchronize_players_task():
+def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
     """Resynchronize players that are flagged for resynchronization or have not been resynchronized recently
     Players are resynchronized every hour (there wont ever be many players).
     """
-    logging.debug("Begin resyncrhonization of players")
+    logging.debug("Begin resynchronization of players")
 
     due = timezone.now() - timedelta(hours=1)
 
@@ -48,15 +48,18 @@ def scheduled_resynchronize_players_task():
 
     logging.debug(f"Resynchronizing {players.count()} players")
     for player in players:
-        resynchronize_player_task.delay(player.id)
+        if asynchronous:
+            resynchronize_player_task.delay(player.id)
+        else:
+            resynchronize_player_task.apply([player.id])
 
 
 @shared_task
-def scheduled_resynchronize_players_owned_games_task():
+def scheduled_resynchronize_players_owned_games_task(*, asynchronous: bool = True):
     """Resynchronize player owned games that are flagged for resynchronization.
     Intended for when a new player is added.
     """
-    logging.debug("Begin resyncrhonization of players owned games")
+    logging.debug("Begin resynchronization of players owned games")
     owned_games = PlayerOwnedGame.objects.filter(resynchronization_required=True)
     logging.debug(f"Found {owned_games.count()} owned games which require resynchronization")
 
@@ -66,7 +69,10 @@ def scheduled_resynchronize_players_owned_games_task():
 
     logging.debug(f"Resynchronizing {owned_games.count()} owned games")
     for owned_game in owned_games:
-        resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
+        if asynchronous:
+            resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
+        else:
+            resynchronize_player_game_task.apply([owned_game.player_id, owned_game.game_id])
 
 
 @shared_task

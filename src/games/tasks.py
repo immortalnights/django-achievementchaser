@@ -20,9 +20,9 @@ ResynchronizeGameResponse = TypedDict(
 
 
 @shared_task
-def scheduled_resynchronize_games_task():
+def scheduled_resynchronize_games_task(*, asynchronous: bool = True):
     """Resynchronize games that are flagged for resynchronization or have not been resynchronized recently"""
-    logging.debug("Begin resyncrhonization of games")
+    logging.debug("Begin resynchronization of games")
 
     due = timezone.now() - timedelta(hours=24)
 
@@ -37,7 +37,10 @@ def scheduled_resynchronize_games_task():
 
     logging.debug(f"Resynchronizing {games.count()} games")
     for game in games:
-        resynchronize_game_task.delay(game.id)
+        if asynchronous:
+            resynchronize_game_task.delay(game.id)
+        else:
+            resynchronize_game_task.apply([game.id])
 
 
 @shared_task
