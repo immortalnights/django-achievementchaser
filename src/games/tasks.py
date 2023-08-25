@@ -1,6 +1,7 @@
 import logging
 from typing import TypedDict, Optional, Union
 from datetime import timedelta
+import time
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
 from django.db.models import Q
@@ -20,7 +21,7 @@ ResynchronizeGameResponse = TypedDict(
 
 
 @shared_task
-def scheduled_resynchronize_games_task(*, asynchronous: bool = True):
+def scheduled_resynchronize_games_task(*, asynchronous: bool = True, throttle_delay: Optional[int] = None):
     """Resynchronize games that are flagged for resynchronization or have not been resynchronized recently"""
     logging.debug("Begin resynchronization of games")
 
@@ -41,6 +42,9 @@ def scheduled_resynchronize_games_task(*, asynchronous: bool = True):
             resynchronize_game_task.delay(game.id)
         else:
             resynchronize_game_task.apply([game.id])
+
+        if throttle_delay:
+            time.sleep(throttle_delay)
 
 
 @shared_task

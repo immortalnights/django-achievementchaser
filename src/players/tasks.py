@@ -1,6 +1,7 @@
 import logging
 from typing import TypedDict, Union, Optional
 from datetime import timedelta
+import time
 from celery import shared_task
 from celery.utils.log import get_task_logger  # noqa F401
 from django.db.models import Q
@@ -43,7 +44,7 @@ def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
     logging.debug(f"Found {players.count()} players which require resynchronization")
 
     # Prevent excessive work if, somehow, there are many players
-    limit = 5
+    limit = 10
     players = players[:limit]
 
     logging.debug(f"Resynchronizing {players.count()} players")
@@ -55,7 +56,9 @@ def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
 
 
 @shared_task
-def scheduled_resynchronize_players_owned_games_task(*, asynchronous: bool = True):
+def scheduled_resynchronize_players_owned_games_task(
+    *, asynchronous: bool = True, throttle_delay: Optional[int] = None
+):
     """Resynchronize player owned games that are flagged for resynchronization.
     Intended for when a new player is added.
     """
@@ -64,7 +67,7 @@ def scheduled_resynchronize_players_owned_games_task(*, asynchronous: bool = Tru
     logging.debug(f"Found {owned_games.count()} owned games which require resynchronization")
 
     # Prevent excessive work in one event
-    limit = 10
+    limit = 50
     owned_games = owned_games[:limit]
 
     logging.debug(f"Resynchronizing {owned_games.count()} owned games")
@@ -73,6 +76,9 @@ def scheduled_resynchronize_players_owned_games_task(*, asynchronous: bool = Tru
             resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
         else:
             resynchronize_player_game_task.apply([owned_game.player_id, owned_game.game_id])
+
+        if throttle_delay:
+            time.sleep(throttle_delay)
 
 
 @shared_task
