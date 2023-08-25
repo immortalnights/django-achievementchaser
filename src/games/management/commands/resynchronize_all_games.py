@@ -14,5 +14,5 @@ class Command(BaseCommand):
         output = CommandOutput(self)
 
         output.info("Beginning resynchronization of all games")
-        scheduled_resynchronize_games_task.apply(None, {"asynchronous": False})
+        scheduled_resynchronize_games_task.apply(None, {"asynchronous": False, "throttle_delay": 1})
         output.info("Completed resynchronization of game")

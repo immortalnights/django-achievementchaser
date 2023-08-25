@@ -39,8 +39,6 @@ ALLOWED_HOSTS: List[str] = ["127.0.0.1", ".railway.internal"]
 CSRF_TRUSTED_ORIGINS: List[str] = []
 CORS_ALLOWED_ORIGINS: List[str] = []
 
-STATIC_ROOT = "./static"
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -140,6 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = str(BASE_DIR / "static")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
