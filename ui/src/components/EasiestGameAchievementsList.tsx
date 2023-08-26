@@ -42,8 +42,6 @@ const EasiestGameAchievementsList = ({
         return games
     }, [achievements])
 
-    console.log(groupedAchievements)
-
     return (
         <Grid container>
             {Object.entries(groupedAchievements).map(([id, item]) => (

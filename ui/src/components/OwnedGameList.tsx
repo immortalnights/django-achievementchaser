@@ -17,9 +17,11 @@ const ReactiveLink = styled(Link)``
 const OwnedGameList = ({
     player,
     games,
+    showCompletion,
 }: {
     player: string
     games: OwnedGame[]
+    showCompletion: boolean
 }) => {
     const set = games.slice(0, 12)
 
@@ -30,9 +32,10 @@ const OwnedGameList = ({
                     <ReactiveLink to={`/player/${player}/game/${game.game.id}`}>
                         <BorderedImage
                             src={`https://media.steampowered.com/steam/apps/${game.game.id}/capsule_184x69.jpg`}
-                            title={`${game.game.name} - ${(
-                                game.completionPercentage * 100
-                            ).toFixed(2)}%`}
+                            title={`${game.game.name} - ${(showCompletion
+                                ? game.completionPercentage * 100
+                                : game.game.difficultyPercentage
+                            ).toFixed(2)}% ${showCompletion ? "Complete" : ""}`}
                         />
                     </ReactiveLink>
                 </li>
