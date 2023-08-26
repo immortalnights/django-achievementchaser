@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import Grid from "@mui/material/Unstable_Grid2"
+import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 import FlexUnorderedList from "./FlexUnorderedList"
 
@@ -55,14 +56,14 @@ const EasiestGameAchievementsList = ({
                     gap={1}
                     alignItems={"center"}
                 >
-                    <a
-                        href={`/player/${player}/game/${item.id}`}
+                    <Link
+                        to={`/player/${player}/game/${item.id}`}
                         title={item.name}
                     >
                         <BorderedImage
                             src={`https://media.steampowered.com/steam/apps/${item.id}/capsule_184x69.jpg`}
                         />
-                    </a>
+                    </Link>
                     <FlexUnorderedList>
                         {item.achievements.map((achievement) => (
                             <li
