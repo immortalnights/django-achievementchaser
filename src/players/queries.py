@@ -18,8 +18,7 @@ PlayerGameOptions = TypedDict(
 
 
 def get_player_recent_games(player: Player, limit: Optional[int] = None) -> List[PlayerOwnedGame]:
-    owned_games = PlayerOwnedGame.objects.filter(player=player)
-    q = PlayerGamePlaytime.objects.filter(game__in=owned_games.values("game")).order_by("-datetime")
+    q = PlayerGamePlaytime.objects.filter(player=player).order_by("-datetime")
 
     if limit:
         q = q[:limit]
