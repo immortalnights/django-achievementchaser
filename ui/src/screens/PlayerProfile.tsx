@@ -48,7 +48,13 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return <OwnedGameList player={player} games={data} />
+                return (
+                    <OwnedGameList
+                        player={player}
+                        games={data}
+                        showCompletion={true}
+                    />
+                )
             }}
         />
     )
@@ -67,7 +73,13 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return <OwnedGameList player={player} games={data} />
+                return (
+                    <OwnedGameList
+                        player={player}
+                        games={data}
+                        showCompletion={false}
+                    />
+                )
             }}
         />
     )
