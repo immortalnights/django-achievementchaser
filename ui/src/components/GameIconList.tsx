@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 
 const GameIconList = ({ player, games }: { player: string; games: Game[] }) => {
@@ -13,14 +14,14 @@ const GameIconList = ({ player, games }: { player: string; games: Game[] }) => {
         >
             {games.map((game) => (
                 <li key={game.id}>
-                    <a
-                        href={`/player/${player}/game/${game.id}`}
+                    <Link
+                        to={`/player/${player}/game/${game.id}`}
                         title={game.name}
                     >
                         <BorderedImage
                             src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
                         />
-                    </a>
+                    </Link>
                 </li>
             ))}
         </ul>

@@ -1,4 +1,5 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createHashRouter } from "react-router-dom"
+import App from "./App"
 import {
     Home,
     PlayerProfile,
@@ -9,34 +10,44 @@ import {
     Game,
 } from "./screens"
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     {
         path: "/",
-        element: <Home />,
+        Component: App,
+        children: [
+            {
+                index: true,
+                Component: Home,
+            },
+            {
+                path: "/Player/:id",
+                Component: PlayerProfile,
+            },
+            {
+                path: "/Player/:id/PerfectGames",
+                Component: PlayerPerfectGames,
+            },
+            {
+                path: "/Player/:id/RecentAchievements",
+                Component: PlayerRecentAchievements,
+            },
+            {
+                path: "/Player/:id/Friends",
+                Component: PlayerFriends,
+            },
+            {
+                path: "/Player/:id/Game/:gameId",
+                Component: PlayerGame,
+            },
+            {
+                path: "/Game/:id",
+                Component: Game,
+            },
+        ],
     },
     {
-        path: "/Player/:id",
-        element: <PlayerProfile />,
-    },
-    {
-        path: "/Player/:id/PerfectGames",
-        element: <PlayerPerfectGames />,
-    },
-    {
-        path: "/Player/:id/RecentAchievements",
-        element: <PlayerRecentAchievements />,
-    },
-    {
-        path: "/Player/:id/Friends",
-        element: <PlayerFriends />,
-    },
-    {
-        path: "/Player/:id/Game/:gameId",
-        element: <PlayerGame />,
-    },
-    {
-        path: "/Game/:id",
-        element: <Game />,
+        path: "*",
+        element: <div>404 Not Found</div>,
     },
 ])
 
