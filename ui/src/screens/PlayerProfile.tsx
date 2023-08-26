@@ -29,7 +29,13 @@ const PlayerAlmostThereGames = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return <OwnedGameList player={player} games={data} />
+                return (
+                    <OwnedGameList
+                        player={player}
+                        games={data}
+                        showCompletion={true}
+                    />
+                )
             }}
         />
     )
