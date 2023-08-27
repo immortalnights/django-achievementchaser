@@ -1,5 +1,4 @@
 import { useMemo } from "react"
-import Grid from "@mui/material/Unstable_Grid2"
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 import FlexUnorderedList from "./FlexUnorderedList"
