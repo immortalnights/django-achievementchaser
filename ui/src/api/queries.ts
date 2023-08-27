@@ -164,7 +164,7 @@ export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
     >(
         () => gql`
         {
-            achievements(id: ${player} ) {
+            achievements(id: ${player}, limit: 12 ) {
               id
               achievements {
                 name

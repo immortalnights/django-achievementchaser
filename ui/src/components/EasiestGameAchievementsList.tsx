@@ -3,6 +3,7 @@ import Grid from "@mui/material/Unstable_Grid2"
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 import FlexUnorderedList from "./FlexUnorderedList"
+import { Box } from "@mui/material"
 
 const EasiestGameAchievementsList = ({
     player,
@@ -43,17 +44,16 @@ const EasiestGameAchievementsList = ({
     }, [achievements])
 
     return (
-        <Grid container>
+        <Box
+            sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 2,
+                justifyContent: "space-between",
+            }}
+        >
             {Object.entries(groupedAchievements).map(([id, item]) => (
-                <Grid
-                    key={id}
-                    xs={12}
-                    md={6}
-                    lg={4}
-                    display="flex"
-                    gap={1}
-                    alignItems={"center"}
-                >
+                <div style={{ maxWidth: 220, textAlign: "center" }} key={id}>
                     <Link
                         to={`/player/${player}/game/${item.id}`}
                         title={item.name}
@@ -62,10 +62,10 @@ const EasiestGameAchievementsList = ({
                             src={`https://media.steampowered.com/steam/apps/${item.id}/capsule_184x69.jpg`}
                         />
                     </Link>
-                    <FlexUnorderedList>
+                    <FlexUnorderedList justifyContent="center" wrap>
                         {item.achievements.map((achievement) => (
                             <li
-                                key={achievement.name}
+                                key={`${achievement.game?.name}-${achievement.name}`}
                                 title={`${
                                     achievement.displayName
                                 } - ${achievement.globalPercentage?.toFixed(
@@ -82,9 +82,9 @@ const EasiestGameAchievementsList = ({
                             </li>
                         ))}
                     </FlexUnorderedList>
-                </Grid>
+                </div>
             ))}
-        </Grid>
+        </Box>
     )
 }
 
