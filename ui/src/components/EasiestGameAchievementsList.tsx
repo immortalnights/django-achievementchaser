@@ -52,6 +52,7 @@ const EasiestGameAchievementsList = ({
                     md={4}
                     lg={4}
                     display="flex"
+                    alignItems="center"
                     gap={1}
                     wrap="wrap"
                 >
@@ -73,7 +74,7 @@ const EasiestGameAchievementsList = ({
                             } - ${achievement.globalPercentage?.toFixed(2)}%`}
                         >
                             <BorderedImage
-                                src={achievement.iconUrl}
+                                src={achievement.iconGrayUrl}
                                 style={{
                                     width: 64,
                                     height: 64,
