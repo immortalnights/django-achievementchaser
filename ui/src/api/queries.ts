@@ -164,12 +164,13 @@ export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
     >(
         () => gql`
         {
-            achievements(id: ${player}, limit: 12 ) {
+            achievements(id: ${player}, ignoreUnlocked: true, limit: 12 ) {
               id
               achievements {
                 name
                 displayName
                 iconUrl
+                iconGrayUrl
                 globalPercentage
                 game {
                   id
