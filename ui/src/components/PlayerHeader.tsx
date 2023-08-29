@@ -2,6 +2,7 @@ import { ReactNode, useContext } from "react"
 import { Typography, Box, IconButton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
+import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 import GameIconList from "./GameIconList"
 import AchievementIconList from "./AchievementIconList"
@@ -28,17 +29,19 @@ const MetaData = ({
     label,
     value,
     title,
+    link,
 }: {
     label: string
     value: ReactNode | string | number
     title?: string
+    link?: string
 }) => (
     <Box>
         <Typography variant="subtitle1" textTransform="uppercase">
             {label}
         </Typography>
         <Typography variant="body1" title={title}>
-            {value}
+            {link ? <Link to={link}>{value}</Link> : value}
         </Typography>
     </Box>
 )
@@ -90,7 +93,12 @@ const PlayerPrivateStatistics = ({
     )
 }
 
+interface PlayerStatisticsProps extends PlayerSummary {
+    player: string
+}
+
 const PlayerStatistics = ({
+    player,
     perfectGamesCount,
     achievementsUnlockedCount,
     totalAchievementCount,
@@ -98,7 +106,7 @@ const PlayerStatistics = ({
     totalGamesCount,
     playedGamesCount,
     totalPlaytime,
-}: PlayerSummary) => {
+}: PlayerStatisticsProps) => {
     return (
         <Grid container>
             <Grid xs={12}>
@@ -117,6 +125,7 @@ const PlayerStatistics = ({
                             ? (perfectGamesCount / totalGamesCount).toFixed(2)
                             : 0
                     }%`}
+                    link={`/player/${player}/perfectgames`}
                 />
             </Grid>
             <Grid md={4}>
@@ -176,15 +185,24 @@ const RecentIcons = ({
             </Typography>
 
             <GameIconList player={player} games={recentGames} />
+
+            <Link to={`/player/${player}/recentgames`}>
+                <Typography fontSize={"small"}>more...</Typography>
+            </Link>
         </Grid>
         <Grid xs={6}>
             <Typography variant="subtitle1" textTransform="uppercase">
                 Recently Unlocked
             </Typography>
-            <AchievementIconList
-                player={player}
-                achievements={recentAchievements}
-            />
+            <Box>
+                <AchievementIconList
+                    player={player}
+                    achievements={recentAchievements}
+                />
+                <Link to={`/player/${player}/recentachievements`}>
+                    <Typography fontSize={"small"}>more...</Typography>
+                </Link>
+            </Box>
         </Grid>
     </Grid>
 )
@@ -209,7 +227,7 @@ const PlayerProfileHeader = ({
                     <BorderedImage src={avatarLargeUrl} />
                 </Grid>
                 <Grid xs>
-                    <PlayerStatistics {...summary} />
+                    <PlayerStatistics player={id} {...summary} />
                     {summary?.recentGames && summary?.recentAchievements && (
                         <RecentIcons
                             player={id}
