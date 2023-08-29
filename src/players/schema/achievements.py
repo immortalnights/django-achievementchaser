@@ -23,6 +23,12 @@ class Query(graphene.ObjectType):
     )
 
     def resolve_achievements(root, info, id, limit, game, ignore_unlocked, **kwargs):
+        """Return achievements for a player, optionally for a game.
+
+        If `game` is provided, all achievements for that game will be provided,
+        otherwise `ignore_unlocked` will exclude unlocked achievements from the result set.
+        """
+
         resp = None
         try:
             player = Player.objects.get(id=id)
