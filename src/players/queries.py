@@ -20,10 +20,26 @@ PlayerGameOptions = TypedDict(
 def get_player_recent_games(player: Player, limit: Optional[int] = None) -> List[PlayerOwnedGame]:
     q = PlayerGamePlaytime.objects.filter(player=player).order_by("-datetime")
 
-    if limit:
-        q = q[:limit]
+    # distinct doesn't work well here as it cannot order by "datetime" without distinct representing the the pair of
+    # game_id and datetime, which would still provide duplicate games. Therefore, iterate the results until there
+    # are `limit` items.
+    # If `limit` is None, return the complete results, with duplicates.
 
-    return q
+    results = None
+    if limit is None:
+        results = q
+    else:
+        unique_games = {}
+        results = []
+        for item in q:
+            if item.game.id not in unique_games:
+                results.append(item)
+                unique_games[item.game.id] = True
+
+            if len(results) == limit:
+                break
+
+    return results
 
 
 def get_player_unlocked_achievements(player: Player, limit: Optional[int] = None) -> List[PlayerUnlockedAchievement]:
