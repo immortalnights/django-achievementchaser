@@ -51,6 +51,7 @@ const GameHeader = ({
                 <a
                     href={`http://store.steampowered.com/app/${id}`}
                     target="_blank"
+                    rel="noopener"
                 >
                     View on Steam
                 </a>
