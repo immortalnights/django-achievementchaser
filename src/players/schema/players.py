@@ -1,8 +1,9 @@
 import logging
-from typing import Optional, List
+from typing import Optional, List, Dict
 import graphene
 from graphene_django import DjangoObjectType
 from django.db.models import Q
+from achievementchaser.graphql_utils import get_field_selection_hierarchy, get_edge_fields
 from ..models import Player, PlayerOwnedGame
 from games.models import Game
 
@@ -97,9 +98,12 @@ class Query(graphene.ObjectType):
     player_games = graphene.Field(
         xPlayerGameType,
         id=graphene.BigInt(),
-        unplayed=graphene.Boolean(),
         played=graphene.Boolean(),
         perfect=graphene.Boolean(),
+        started=graphene.Boolean(),
+        has_achievements=graphene.Boolean(),
+        limit=graphene.Int(),
+        order_by=graphene.String(),
     )
     player_achievements = graphene.Field(xPlayerAchievementType, id=graphene.BigInt(), unlocked=graphene.Boolean())
 
@@ -123,88 +127,117 @@ class Query(graphene.ObjectType):
 
     def resolve_player_games(
         root,
-        info,
+        info: graphene.ResolveInfo,
         id: str,
-        unplayed: bool = False,
-        played: bool = False,
-        perfect: bool = False,
+        played: Optional[bool] = None,
+        perfect: Optional[bool] = None,
+        started: Optional[bool] = None,
+        has_achievements: Optional[bool] = None,
+        limit: Optional[int] = None,
+        order_by: Optional[str] = None,
     ):
-        result = None
-        try:
-            games = PlayerOwnedGame.objects.filter(player_id=id)
+        games = PlayerOwnedGame.objects.filter(player_id=id)
 
-            def get_field_hierarchy(fields):
-                obj = {}
-                for field in fields:
-                    if field.selection_set:
-                        obj[field.name.value] = get_field_hierarchy(field.selection_set.selections)
-                    else:
-                        obj[field.name.value] = []
+        def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data: bool = False) -> Dict:
+            node = {
+                "id": owned_game.id,
+                "game_id": owned_game.game_id,
+            }
 
-                return obj
-
-            def get_field_selection_hierarchy(fields):
-                # The root can be ignored
-                return get_field_hierarchy(info.field_nodes[0].selection_set.selections)
-
-            def get_edge_fields(fields):
-                res = None
-                if "edges" in fields:
-                    if "node" in fields["edges"]:
-                        res = list(fields["edges"]["node"].keys())
-
-                return res
-
-            selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
-            edge_fields = get_edge_fields(selected_field_hierarchy)
-
-            wants_total_count = "totalCount" in selected_field_hierarchy
-            # Only load game data if game specific fields are requested (anything but id/gameId)
-            requires_game_data = len([item for item in edge_fields if item not in ["id", "gameId"]]) > 0
-
-            # The flags only really work when mutually exclusive
-            if played:
-                games = games.filter(playtime_forever__gt=0)
-
-            if unplayed:
-                games = games.filter(playtime_forever=0)
-
-            if perfect:
-                games = games.filter(completion_percentage=1)
-
-            # If game data is required, populate the entire result object as more than one field does
-            # not effect the request speed
-            nodes = None
+            # If game data is required, populate the entire result object as more than
+            #  one field does not effect the request speed
             if requires_game_data:
-                nodes = map(
-                    lambda owned_game: {
-                        "node": {
-                            "id": owned_game.id,
-                            "game_id": owned_game.game_id,
-                            "name": owned_game.game.name,
-                            "img_url": owned_game.game.img_icon_url,
-                            "difficulty_percentage": owned_game.game.difficulty_percentage,
-                            "playtime": owned_game.playtime_forever,
-                            "completion_percentage": owned_game.completion_percentage,
-                        }
-                    },
-                    games,
+                node.update(
+                    {
+                        "name": owned_game.game.name,
+                        "img_url": owned_game.game.img_icon_url,
+                        "difficulty_percentage": owned_game.game.difficulty_percentage,
+                        "playtime": owned_game.playtime_forever,
+                        "completion_percentage": owned_game.completion_percentage,
+                    }
                 )
+
+            return node
+
+        selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
+        edge_fields = get_edge_fields(selected_field_hierarchy)
+
+        # Only load game data if game specific fields are requested (anything but id/gameId)
+        requires_game_data = (
+            len([item for item in edge_fields if item not in ["id", "gameId"]]) > 0 if edge_fields else False
+        )
+
+        # The flags only really work when mutually exclusive
+        if played is True:
+            games = games.filter(playtime_forever__gt=0)
+        elif played is False:
+            games = games.filter(playtime_forever=0)
+
+        if perfect is True:
+            games = games.filter(completion_percentage=1)
+        elif perfect is False:
+            games = games.filter(completion_percentage__lt=1)
+
+        if started is True:
+            games = games.filter(completion_percentage__gt=0)
+        elif started is False:
+            games = games.filter(completion_percentage=0)
+
+        if has_achievements is True:
+            games = games.filter(game__difficulty_percentage__isnull=False)
+        elif has_achievements is False:
+            games = games.filter(game__difficulty_percentage__isnull=True)
+
+        def parse_order_by(value: str):
+            values = order_by.split(" ")[:2]
+            if len(values) < 2:
+                values.append("ASC")
+            elif values[1] not in ("ASC", "DESC"):
+                values[1] = "ASC"
+
+            return values
+
+        if order_by:
+            (key, order) = parse_order_by(order_by)
+
+            order_modifier = "" if order == "ASC" else "-"
+
+            order_by_value = None
+            if key == "name":
+                order_by_value = f"{order_modifier}game__name"
+            elif key == "completionPercentage":
+                order_by_value = f"{order_modifier}completion_percentage"
+
+                # Only consider games with achievements
+                games = games.filter(game__difficulty_percentage__gt=0.0)
+
+            elif key == "difficultyPercentage":
+                order_by_value = f"{order_modifier}game__difficulty_percentage"
+
+                # Only consider games with achievements
+                games = games.filter(game__difficulty_percentage__gt=0.0)
             else:
-                nodes = map(
-                    lambda owned_game: {
-                        "node": {
-                            "id": owned_game.id,
-                            "game_id": owned_game.game_id,
-                        }
-                    },
-                    games,
-                )
+                logging.error(f"Unknown order by key '{key}'")
 
-            result = {"total_count": games.count() if wants_total_count else None, "edges": nodes}
+            if order_by_value:
+                games = games.order_by(order_by_value)
 
-        except Player.DoesNotExist:
-            # result = // error
-            pass
+        # Get the total count before limiting the return results, but after filtering
+        total_count = games.count() if "totalCount" in selected_field_hierarchy else None
 
-        return result
+        if limit is not None:
+            games = games[:limit]
+
+        # If game data is required, select_related optimizes the db lookup for the game data.
+        # Without it, each game is fetched as the PlayerOwnedGame is iterated.
+        # Basically; this makes it 10x faster!
+        if requires_game_data:
+            games = games.select_related("game")
+
+        return {
+            "total_count": total_count,
+            "edges": map(
+                lambda owned_game: {"node": transform_owned_game_to_node(owned_game, requires_game_data)},
+                games,
+            ),
+        }
