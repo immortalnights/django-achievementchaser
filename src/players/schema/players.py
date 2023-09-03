@@ -3,13 +3,35 @@ from typing import Optional, List, Dict
 import graphene
 from graphene_django import DjangoObjectType
 from django.db.models import Q
-from achievementchaser.graphql_utils import get_field_selection_hierarchy, get_edge_fields
-from ..models import Player, PlayerOwnedGame
+from achievementchaser.graphql_utils import parse_order_by, get_field_selection_hierarchy, get_edge_node_fields
+from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Game
+from achievements.models import Achievement
 
 
-class SimpleAchievementType(graphene.ObjectType):
-    name = graphene.String()
+def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, requires_game_data: bool):
+    obj = {
+        "id": achievement.achievement.name,
+        "game": {
+            "id": achievement.game_id,
+        },
+        "display_name": achievement.achievement.display_name,
+        "description": achievement.achievement.description,
+        "icon_url": achievement.achievement.icon_url,
+        "icon_gray_url": achievement.achievement.icon_gray_url,
+        "global_percentage": achievement.achievement.global_percentage,
+        "unlocked": achievement.datetime if achievement.datetime is not None else None,
+    }
+
+    if requires_game_data:
+        obj["game"].update(
+            {
+                "name": achievement.game.name,
+                "img_icon_url": achievement.game.img_icon_url,
+            }
+        )
+
+    return obj
 
 
 class SimpleGameType(graphene.ObjectType):
@@ -25,48 +47,16 @@ class SimpleGameType(graphene.ObjectType):
     completion_percentage = graphene.Float()
 
 
-class GameCountWithList(graphene.ObjectType):
-    count = graphene.Int()
-    games = graphene.List(SimpleGameType)
-
-
-class AchievementCountWithList(graphene.ObjectType):
-    count = graphene.Int()
-    achievements = graphene.List(SimpleAchievementType)
-
-
-class xPlayerOwnedGameType(graphene.ObjectType):
-    owned_games = graphene.Field(GameCountWithList)
-    perfect_games = graphene.Field(GameCountWithList)
-
-
-class PlayerType(graphene.ObjectType):
-    # class Meta:
-    #     model = Player
-    #     # fields = ["id", "name"]
-    #     exclude = ["resynchronization_required", "playerownedgame_set", "playerunlockedachievement_set"]
-
-    # Override the model ID otherwise JavaScript rounds the number
-    id = graphene.String()
-    name = graphene.String()
-    avatar_small_url = graphene.String()
-    avatar_medium_url = graphene.String()
-    avatar_large_url = graphene.String()
-    profile_url = graphene.String()
-    resynchronized = graphene.String()
-
-    playtime = graphene.Int()
-
-    owned_games = graphene.Field(GameCountWithList)
-    played_games = graphene.Field(GameCountWithList)
-    perfect_games = graphene.Field(GameCountWithList)
-
-    highest_completion_game = graphene.List(SimpleGameType)
-    lowest_completion_game = graphene.List(SimpleGameType)
-    easiest_games = graphene.List(SimpleGameType)
-
-    unlocked_achievements = graphene.Field(AchievementCountWithList)
-    locked_achievements = graphene.Field(AchievementCountWithList)
+class SimpleAchievementType(graphene.ObjectType):
+    id = graphene.NonNull(graphene.String)
+    display_name = graphene.String()
+    game = graphene.Field(SimpleGameType)
+    display_name = graphene.String()
+    description = graphene.String()
+    icon_url = graphene.String()
+    icon_gray_url = graphene.String()
+    global_percentage = graphene.Float()
+    unlocked = graphene.DateTime()
 
 
 class EmptyObjectType(graphene.ObjectType):
@@ -91,6 +81,35 @@ class xPlayerAchievementType(graphene.Connection):
     total_count = graphene.Int()
 
 
+class PlayerType(graphene.ObjectType):
+    # class Meta:
+    #     model = Player
+    #     # fields = ["id", "name"]
+    #     exclude = ["resynchronization_required", "playerownedgame_set", "playerunlockedachievement_set"]
+
+    # Override the model ID otherwise JavaScript rounds the number
+    id = graphene.String()
+    name = graphene.String()
+    avatar_small_url = graphene.String()
+    avatar_medium_url = graphene.String()
+    avatar_large_url = graphene.String()
+    profile_url = graphene.String()
+    resynchronized = graphene.String()
+
+    playtime = graphene.Int()
+
+    owned_games = graphene.Int()
+    played_games = graphene.Int()
+    perfect_games = graphene.Int()
+
+    highest_completion_game = graphene.List(SimpleGameType)
+    lowest_completion_game = graphene.List(SimpleGameType)
+    easiest_games = graphene.List(SimpleGameType)
+
+    unlocked_achievements = graphene.Int()
+    locked_achievements = graphene.Int()
+
+
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.BigInt(), name=graphene.String())
     players = graphene.List(PlayerType)
@@ -101,11 +120,21 @@ class Query(graphene.ObjectType):
         played=graphene.Boolean(),
         perfect=graphene.Boolean(),
         started=graphene.Boolean(),
-        has_achievements=graphene.Boolean(),
+        unlocked_achievements=graphene.Boolean(),
         limit=graphene.Int(),
         order_by=graphene.String(),
     )
-    player_achievements = graphene.Field(xPlayerAchievementType, id=graphene.BigInt(), unlocked=graphene.Boolean())
+
+    player_achievements = graphene.Field(
+        xPlayerAchievementType, id=graphene.BigInt(), unlocked=graphene.Boolean(), limit=graphene.Int()
+    )
+
+    player_achievements_for_game = graphene.Field(
+        graphene.List(SimpleAchievementType),
+        id=graphene.BigInt(),
+        game_id=graphene.BigInt(),
+        order_by=graphene.String(),
+    )
 
     def resolve_player(root, info, id: Optional[int] = None, name: Optional[str] = None) -> Optional[Player]:
         player = None
@@ -132,7 +161,7 @@ class Query(graphene.ObjectType):
         played: Optional[bool] = None,
         perfect: Optional[bool] = None,
         started: Optional[bool] = None,
-        has_achievements: Optional[bool] = None,
+        unlocked_achievements: Optional[bool] = None,
         limit: Optional[int] = None,
         order_by: Optional[str] = None,
     ):
@@ -160,11 +189,11 @@ class Query(graphene.ObjectType):
             return node
 
         selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
-        edge_fields = get_edge_fields(selected_field_hierarchy)
+        node_fields = len(get_edge_node_fields(selected_field_hierarchy).keys())
 
         # Only load game data if game specific fields are requested (anything but id/gameId)
         requires_game_data = (
-            len([item for item in edge_fields if item not in ["id", "gameId"]]) > 0 if edge_fields else False
+            len([item for item in node_fields if item not in ["id", "gameId"]]) > 0 if node_fields else False
         )
 
         # The flags only really work when mutually exclusive
@@ -183,24 +212,13 @@ class Query(graphene.ObjectType):
         elif started is False:
             games = games.filter(completion_percentage=0)
 
-        if has_achievements is True:
+        if unlocked_achievements is True:
             games = games.filter(game__difficulty_percentage__isnull=False)
-        elif has_achievements is False:
+        elif unlocked_achievements is False:
             games = games.filter(game__difficulty_percentage__isnull=True)
 
-        def parse_order_by(value: str):
-            values = order_by.split(" ")[:2]
-            if len(values) < 2:
-                values.append("ASC")
-            elif values[1] not in ("ASC", "DESC"):
-                values[1] = "ASC"
-
-            return values
-
         if order_by:
-            (key, order) = parse_order_by(order_by)
-
-            order_modifier = "" if order == "ASC" else "-"
+            (key, order_modifier) = parse_order_by(order_by)
 
             order_by_value = None
             if key == "name":
@@ -239,5 +257,121 @@ class Query(graphene.ObjectType):
             "edges": map(
                 lambda owned_game: {"node": transform_owned_game_to_node(owned_game, requires_game_data)},
                 games,
+            ),
+        }
+
+    def resolve_player_achievements_for_game(
+        root,
+        info,
+        id: str,
+        game_id: Optional[str] = None,
+        order_by: Optional[str] = None,
+    ):
+        unlocked_achievements = PlayerUnlockedAchievement.objects.filter(player_id=id, game_id=game_id)
+
+        if order_by:
+            (key, order_modifier) = parse_order_by(order_by)
+
+            if key == "datetime":
+                unlocked_achievements = unlocked_achievements.order_by(f"{order_modifier}datetime")
+            elif key == "globalPercentage":
+                unlocked_achievements = unlocked_achievements.order_by(
+                    f"{order_modifier}achievement__global_percentage"
+                )
+
+            else:
+                logging.error(f"Unknown order by key '{key}'")
+
+        return map(
+            lambda achievement: transform_unlocked_achievement(achievement, requires_game_data=False),
+            unlocked_achievements,
+        )
+
+    def resolve_player_achievements(
+        root,
+        info,
+        id: str,
+        unlocked: Optional[bool] = None,
+        limit: Optional[int] = None,
+    ):
+        selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
+        node_fields = get_edge_node_fields(selected_field_hierarchy)
+        game_fields = list(node_fields["game"].keys()) if node_fields and node_fields["game"] else []
+        requires_game_data = len([item for item in game_fields if item not in ["id"]]) > 0
+
+        owned_games = PlayerOwnedGame.objects.filter(player_id=id)
+        available_achievements = Achievement.objects.filter(game__in=owned_games.values("game"))
+        unlocked_achievements = PlayerUnlockedAchievement.objects.filter(player_id=id)
+
+        achievements = []
+        total_count = None
+
+        if unlocked is True:
+            total_count = unlocked_achievements.count() if "totalCount" in selected_field_hierarchy else None
+
+            if "edges" in selected_field_hierarchy:
+                unlocked_achievements = unlocked_achievements.order_by("-datetime").select_related("achievement")
+
+                if limit:
+                    unlocked_achievements = unlocked_achievements[:limit]
+
+                achievements = map(
+                    lambda achievement: transform_unlocked_achievement(
+                        achievement, requires_game_data=requires_game_data
+                    ),
+                    unlocked_achievements,
+                )
+
+        elif unlocked is False:
+            # only locked achievements
+            available_achievements = available_achievements.exclude(
+                id__in=unlocked_achievements.values("achievement__id")
+            )
+
+            total_count = available_achievements.count() if "totalCount" in selected_field_hierarchy else None
+
+            if "edges" in selected_field_hierarchy:
+                achievements = available_achievements.order_by("-global_percentage")
+
+                if achievements and limit:
+                    achievements = achievements[:limit]
+
+        else:
+            available_achievements = available_achievements.order_by("-global_percentage")
+            total_count = available_achievements.count() if "totalCount" in selected_field_hierarchy else None
+
+            if "edges" in selected_field_hierarchy:
+                # Index unlocked achievements
+                unlocked_achievements = unlocked_achievements.select_related("achievement")
+                indexed_unlocked_achievements = {obj.achievement.name: obj for obj in unlocked_achievements}
+
+                def create_achievement(achievement):
+                    unlocked_achievement = (
+                        indexed_unlocked_achievements[achievement.name]
+                        if (achievement.name in indexed_unlocked_achievements)
+                        else None
+                    )
+
+                    return {
+                        "id": achievement.name,
+                        "game_id": achievement.game_id,
+                        "display_name": achievement.display_name,
+                        "description": achievement.description,
+                        "icon_url": achievement.icon_url,
+                        "icon_gray_url": achievement.icon_gray_url,
+                        "global_percentage": achievement.global_percentage,
+                        "unlocked": unlocked_achievement.datetime if unlocked_achievement else None,
+                    }
+
+                if limit:
+                    available_achievements = available_achievements[:limit]
+
+                achievements = map(create_achievement, available_achievements)
+
+        return {
+            "total_count": total_count,
+            "edges": map(
+                lambda achievement: {"node": achievement},
+                achievements,
             ),
         }
