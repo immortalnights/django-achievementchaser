@@ -1,4 +1,3 @@
-import logging
 import graphene
 from graphene_django import DjangoObjectType
 from typing import Optional, List

@@ -2,7 +2,6 @@ import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import Grid from "@mui/material/Unstable_Grid2"
 import BorderedImage from "./BorderedImage"
-import FlexUnorderedList from "./FlexUnorderedList"
 import { Box } from "@mui/material"
 
 const EasiestGameAchievementsList = ({
@@ -45,7 +44,7 @@ const EasiestGameAchievementsList = ({
 
     return (
         <Grid container>
-            {Object.entries(groupedAchievements).map(([id, item]) => (
+            {Object.entries(groupedAchievements).map(([_, item]) => (
                 <Grid
                     xs={12}
                     sm={6}
@@ -68,10 +67,12 @@ const EasiestGameAchievementsList = ({
                     </Box>
                     {item.achievements.map((achievement) => (
                         <div
-                            key={`${achievement.game?.name}-${achievement.name}`}
-                            title={`${
-                                achievement.displayName
-                            } - ${achievement.globalPercentage?.toFixed(2)}%`}
+                            key={`${achievement.game?.name ?? ""}-${
+                                achievement.name
+                            }`}
+                            title={`${achievement.displayName ?? ""} - ${(
+                                achievement.globalPercentage ?? 0
+                            ).toFixed(2)}%`}
                         >
                             <BorderedImage
                                 src={achievement.iconGrayUrl}

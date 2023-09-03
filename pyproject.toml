@@ -30,9 +30,15 @@ build-backend = "setuptools.build_meta"
 [tool.black]
 line-length = 120
 extend-exclude = '''
-src/_version.py
+(
+    src/_version.py
+    | .*/migrations
+)
 '''
 
 [tool.ruff]
 select = ["E", "F"]
 line-length = 120
+extend-exclude = [
+    "src/**/migrations/"
+]
