@@ -1,9 +1,6 @@
-import logging
-from dataclasses import dataclass
 from typing import Optional, List, TypedDict
-from django.db.models import Q, Sum, Max, Subquery, OuterRef, CharField
+from django.db.models import Q, Sum
 from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
-from games.models import Game
 from achievements.models import Achievement
 
 

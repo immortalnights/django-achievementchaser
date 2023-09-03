@@ -9,7 +9,6 @@ from ..queries import (
     get_player_games,
     get_player_achievements,
     get_player_total_playtime,
-    get_player_friends,
 )
 from games.schema.games import GameType
 

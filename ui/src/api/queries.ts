@@ -10,7 +10,7 @@ interface State<T> {
 const useQuery = <ResponseType extends BaseQueryResponse, DataType>(
     doc: (...rest: string[]) => RequestDocument,
     transform: (response: ResponseType) => DataType | null | undefined,
-    lazy: boolean = false
+    lazy = false
 ) => {
     const [state, setState] = useState<State<DataType>>({
         loading: !lazy,
@@ -33,7 +33,7 @@ const useQuery = <ResponseType extends BaseQueryResponse, DataType>(
                     data: transform(response),
                 })
             })
-            .catch((_err) => {
+            .catch(() => {
                 setState({
                     loading: false,
                     error: true,
@@ -103,7 +103,11 @@ export const useQueryPlayerProfile = (player: string) => {
         (response) => response.profile
     )
 
-    useEffect(() => trigger(player), [])
+    useEffect(
+        () => trigger(player),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    )
 
     return { loading, error, data }
 }
@@ -152,7 +156,11 @@ export const useQueryPlayerOwnedGames = ({
         (response) => response.ownedGames
     )
 
-    useEffect(() => trigger(), [])
+    useEffect(
+        () => trigger(),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    )
 
     return { loading, error, data }
 }
@@ -184,7 +192,11 @@ export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
         (response) => response.achievements.achievements
     )
 
-    useEffect(() => trigger(), [])
+    useEffect(
+        () => trigger(),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    )
 
     return { loading, error, data }
 }

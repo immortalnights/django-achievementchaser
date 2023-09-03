@@ -248,9 +248,8 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
             # Get all known game achievements
 
             for player_achievement in unlocked:
-                assert (
-                    player_achievement.achieved == 1
-                ), f"Unexpected achieved value {player_achievement.achieved} for player achievement {player_achievement.apiname}"
+                assert player_achievement.achieved == 1, f"Unexpected achieved value {player_achievement.achieved} for "
+                "player achievement {player_achievement.apiname}"
 
                 game_achievement = next(
                     filter(lambda achievement: achievement.name == player_achievement.apiname, game_achievements), None

@@ -1,24 +1,41 @@
-name: ❓Check Style
+name: ❓Check Linting
 
 on:
   push:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  style:
+  backend:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install pip build --upgrade
-        pip install .[dev]
+      - name: Install Dependencies
+        run: |
+          python -m pip install pip build --upgrade
+          pip install .[dev]
 
-    - name: Check Style
-      run: python -m ruff check ./src
+      - name: Check Style
+        run: python -m ruff check ./src
+
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v3
+
+      - name: Install Dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: Build
+        working-directory: ui
+        run: npm run lint

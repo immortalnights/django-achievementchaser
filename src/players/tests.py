@@ -179,7 +179,7 @@ class PlayerAPITests(GraphQLTestCase):
 
     def test_resynchronize_player_request(self):
         with patch("players.tasks.resynchronize_player_task.delay") as mock_request:
-            response = self.query(
+            _response = self.query(
                 """
     mutation TestMutation {
         resynchronizePlayer(identifier: "TestUser") {
@@ -196,7 +196,7 @@ class PlayerAPITests(GraphQLTestCase):
     def test_resynchronize_unknown_player_request(self):
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = mock_vanity_response
-            response = self.query(
+            _response = self.query(
                 """
     mutation TestMutation {
         resynchronizePlayer(identifier: "TestUser") {

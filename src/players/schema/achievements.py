@@ -1,7 +1,5 @@
 import logging
-from django.db.models import Q
 import graphene
-from graphene_django import DjangoObjectType
 from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Game
 from achievements.models import Achievement

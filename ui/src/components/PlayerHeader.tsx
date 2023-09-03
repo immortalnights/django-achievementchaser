@@ -79,7 +79,9 @@ const PlayerPrivateStatistics = ({
                                   ).toFixed(2)}%`
                                 : "-"
                         }
-                        title={`${playedGamesCount} of ${totalGamesCount}`}
+                        title={`${playedGamesCount ?? 0} of ${
+                            totalGamesCount ?? 0
+                        }`}
                     />
                 </Grid>
                 <Grid xs={false} md={4}>
@@ -139,7 +141,9 @@ const PlayerStatistics = ({
                               ).toFixed(2)}%`
                             : "-"
                     }
-                    title={`${achievementsUnlockedCount} of ${totalAchievementCount}`}
+                    title={`${achievementsUnlockedCount ?? 0} of ${
+                        totalAchievementCount ?? 0
+                    }`}
                 />
             </Grid>
             <Grid md={4}>
