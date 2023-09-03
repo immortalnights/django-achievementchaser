@@ -155,11 +155,16 @@ def resynchronize_player_games(player: Player) -> bool:
             },
         )
 
+        last_played_time = (
+            datetime.fromtimestamp(owned_game.rtime_last_played) if owned_game.rtime_last_played > 0 else None
+        )
+
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
             player=player,
             defaults={
                 "playtime_forever": owned_game.playtime_forever,
+                "last_played": timezone.make_aware(last_played_time) if last_played_time is not None else None,
             },
         )
 
