@@ -2,7 +2,6 @@ import graphene
 from graphene_django import DjangoObjectType  # noqa F401
 from players.schema import Queries as PlayerQueries, ResynchronizePlayer, ResynchronizePlayerGame
 from games.schema import Queries as GameQueries, ResynchronizeGame
-import achievements.schema
 
 
 class Queries(
