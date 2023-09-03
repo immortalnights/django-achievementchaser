@@ -10,11 +10,12 @@ import Loader from "../components/Loader"
 import { throwExpression } from "../utilities"
 import OwnedGameList from "../components/OwnedGameList"
 import PlayerProfileHeader from "../components/PlayerHeader"
-import PlayerProfileContext, {
+import PlayerProfileContext from "../context/ProfileContext"
+import EasiestGameAchievementsList from "../components/EasiestGameAchievementsList"
+import {
     loadFromLocalStorage,
     saveToLocalStorage,
-} from "../context/ProfileContext"
-import EasiestGameAchievementsList from "../components/EasiestGameAchievementsList"
+} from "../context/localStorage"
 
 const PlayerAlmostThereGames = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerOwnedGames({

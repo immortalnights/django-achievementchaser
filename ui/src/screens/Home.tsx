@@ -26,7 +26,7 @@ const HomeScreen = () => {
         if (data && data.id) {
             navigate(`/player/${data.id}`)
         }
-    }, [data])
+    }, [data, navigate])
 
     return (
         <Box sx={{ paddingTop: "8rem", paddingBottom: "8rem" }}>

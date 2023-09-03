@@ -14,10 +14,12 @@ const AchievementIconList = ({
             <li key={`${item.game.id}-${item.achievement.name}`}>
                 <Link
                     to={`/player/${player}/game/${item.game.id}`}
-                    title={`${item.achievement.displayName} from ${item.game.name}`}
+                    title={`${item.achievement.displayName ?? ""} from ${
+                        item.game.name ?? ""
+                    }`}
                 >
                     <BorderedImage
-                        src={`${item.achievement.iconUrl}`}
+                        src={`${item.achievement.iconUrl ?? ""}`}
                         style={{
                             width: 32,
                             height: 32,

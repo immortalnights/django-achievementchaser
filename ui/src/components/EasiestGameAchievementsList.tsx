@@ -44,7 +44,7 @@ const EasiestGameAchievementsList = ({
 
     return (
         <Grid container>
-            {Object.entries(groupedAchievements).map(([_id, item]) => (
+            {Object.entries(groupedAchievements).map(([_, item]) => (
                 <Grid
                     xs={12}
                     sm={6}
@@ -67,10 +67,12 @@ const EasiestGameAchievementsList = ({
                     </Box>
                     {item.achievements.map((achievement) => (
                         <div
-                            key={`${achievement.game?.name}-${achievement.name}`}
-                            title={`${
-                                achievement.displayName
-                            } - ${achievement.globalPercentage?.toFixed(2)}%`}
+                            key={`${achievement.game?.name ?? ""}-${
+                                achievement.name
+                            }`}
+                            title={`${achievement.displayName ?? ""} - ${(
+                                achievement.globalPercentage ?? 0
+                            ).toFixed(2)}%`}
                         >
                             <BorderedImage
                                 src={achievement.iconGrayUrl}

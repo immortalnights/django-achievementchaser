@@ -100,7 +100,7 @@ const AchievementItem = ({
                             margin: "4px",
                             height: "54px",
                             borderRadius: "3px",
-                            width: `${globalPercentage}%`,
+                            width: `${globalPercentage ?? 0}%`,
                         }}
                     ></div>
                     <h4 style={{ margin: "0.125em 0 0 0.5em" }}>
@@ -166,11 +166,11 @@ const GameScreen = () => {
                 setLoading(false)
                 setGame(resp.game)
             })
-            .catch((_err) => {
+            .catch(() => {
                 setLoading(false)
                 setError("Failed")
             })
-    }, [])
+    }, [id])
 
     let content
     if (loading) {

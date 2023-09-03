@@ -1,35 +1,15 @@
 import { createContext } from "react"
-
-interface PlayerProfileSettings {
-    hideGameStatistics: boolean
-    ignoredGames: string[]
-}
-
-interface PlayerProfileContextValue extends PlayerProfileSettings {
-    toggleGameStatistics: () => void
-    addIgnoredGame: (game: string) => void
-}
-
-export const loadFromLocalStorage = () => ({
-    hideGameStatistics: localStorage.getItem("hideGameStatistics") === "true",
-    ignoredGames: JSON.parse(
-        localStorage.getItem("ignoredGames") ?? "[]"
-    ) as string[],
-})
-
-export const saveToLocalStorage = (state: PlayerProfileSettings) => {
-    localStorage.setItem(
-        "hideGameStatistics",
-        state.hideGameStatistics ? "true" : "false"
-    )
-    localStorage.setItem("ignoredGames", JSON.stringify(state.ignoredGames))
-}
+import type { PlayerProfileContextValue } from "./types"
 
 const PlayerProfileContext = createContext<PlayerProfileContextValue>({
     hideGameStatistics: false,
     ignoredGames: [],
-    toggleGameStatistics: () => {},
-    addIgnoredGame: () => {},
+    toggleGameStatistics: () => {
+        console.error("Called abstract context function `toggleGameStatistics`")
+    },
+    addIgnoredGame: () => {
+        console.error("Called abstract context function `addIgnoredGame`")
+    },
 })
 
 export default PlayerProfileContext

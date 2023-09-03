@@ -37,7 +37,9 @@ interface GameResponse {
     game: Game
 }
 
-interface ResponseError {}
+interface ResponseError {
+    error: unknown
+}
 
 interface BaseQueryResponse {
     errors?: ResponseError[]
