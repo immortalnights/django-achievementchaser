@@ -2,7 +2,6 @@ import { useMemo } from "react"
 import { Link } from "react-router-dom"
 import Grid from "@mui/material/Unstable_Grid2"
 import BorderedImage from "./BorderedImage"
-import FlexUnorderedList from "./FlexUnorderedList"
 import { Box } from "@mui/material"
 
 const EasiestGameAchievementsList = ({
@@ -45,7 +44,7 @@ const EasiestGameAchievementsList = ({
 
     return (
         <Grid container>
-            {Object.entries(groupedAchievements).map(([id, item]) => (
+            {Object.entries(groupedAchievements).map(([_id, item]) => (
                 <Grid
                     xs={12}
                     sm={6}
