@@ -2,11 +2,33 @@ import logging
 from typing import Optional, List, Dict
 import graphene
 from graphene_django import DjangoObjectType
-from django.db.models import Q
+from django.db.models import Q, Sum
 from achievementchaser.graphql_utils import parse_order_by, get_field_selection_hierarchy, get_edge_node_fields
-from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
-from games.models import Game
 from achievements.models import Achievement
+from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
+from ..queries import get_player_games2
+
+
+def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data: bool = False) -> Dict:
+    node = {
+        "id": owned_game.id,
+        "game_id": owned_game.game_id,
+        "playtime": owned_game.playtime_forever,
+        "completion_percentage": owned_game.completion_percentage,
+    }
+
+    # If game data is required, populate the entire result object as more than
+    #  one field does not effect the request speed
+    if requires_game_data:
+        node.update(
+            {
+                "name": owned_game.game.name,
+                "img_url": owned_game.game.img_icon_url,
+                "difficulty_percentage": owned_game.game.difficulty_percentage,
+            }
+        )
+
+    return node
 
 
 def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, requires_game_data: bool):
@@ -44,6 +66,7 @@ class SimpleGameType(graphene.ObjectType):
     img_url = graphene.String()
     difficulty_percentage = graphene.Float()
     playtime = graphene.Int()
+    playtime_forever = graphene.Int()
     completion_percentage = graphene.Float()
 
 
@@ -81,38 +104,55 @@ class xPlayerAchievementType(graphene.Connection):
     total_count = graphene.Int()
 
 
-class PlayerType(graphene.ObjectType):
-    # class Meta:
-    #     model = Player
-    #     # fields = ["id", "name"]
-    #     exclude = ["resynchronization_required", "playerownedgame_set", "playerunlockedachievement_set"]
+class PlayerType(DjangoObjectType):
+    class Meta:
+        model = Player
+        # fields = "__all__"
+
+        # fields = ["id", "name"]
+        exclude = ["resynchronization_required", "playerownedgame_set", "playerunlockedachievement_set"]
 
     # Override the model ID otherwise JavaScript rounds the number
     id = graphene.String()
-    name = graphene.String()
-    avatar_small_url = graphene.String()
-    avatar_medium_url = graphene.String()
-    avatar_large_url = graphene.String()
-    profile_url = graphene.String()
-    resynchronized = graphene.String()
 
-    playtime = graphene.Int()
+
+class PlayerProfile(graphene.ObjectType):
+    id = graphene.String()
+    total_playtime = graphene.Int()
 
     owned_games = graphene.Int()
     played_games = graphene.Int()
     perfect_games = graphene.Int()
 
-    highest_completion_game = graphene.List(SimpleGameType)
-    lowest_completion_game = graphene.List(SimpleGameType)
-    easiest_games = graphene.List(SimpleGameType)
-
     unlocked_achievements = graphene.Int()
     locked_achievements = graphene.Int()
+
+    def resolve_total_playtime(root, info):
+        res = get_player_games2(player=root.id, played=True).aggregate(Sum("playtime_forever"))
+        return res["playtime_forever__sum"]
+
+    def resolve_owned_games(root, info):
+        return get_player_games2(player=root.id).count()
+
+    def resolve_played_games(root, info):
+        return get_player_games2(player=root.id, played=True).count()
+
+    def resolve_perfect_games(root, info):
+        return get_player_games2(player=root.id, perfect=True).count()
+
+    def resolve_unlocked_achievements(root, info):
+        return PlayerUnlockedAchievement.objects.filter(player_id=root.id).count()
+
+    def resolve_locked_achievements(root, info):
+        owned_games = PlayerOwnedGame.objects.filter(player_id=root.id)
+        return Achievement.objects.filter(game__in=owned_games.values("game")).count()
 
 
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.BigInt(), name=graphene.String())
     players = graphene.List(PlayerType)
+
+    player_profile_summary = graphene.Field(PlayerProfile, id=graphene.BigInt())
 
     player_games = graphene.Field(
         xPlayerGameType,
@@ -123,6 +163,12 @@ class Query(graphene.ObjectType):
         unlocked_achievements=graphene.Boolean(),
         limit=graphene.Int(),
         order_by=graphene.String(),
+    )
+
+    player_game = graphene.Field(
+        SimpleGameType,
+        id=graphene.BigInt(),
+        game_id=graphene.BigInt(),
     )
 
     player_achievements = graphene.Field(
@@ -151,8 +197,8 @@ class Query(graphene.ObjectType):
     def resolve_players(root, info) -> List[Player]:
         return Player.objects.all()
 
-    def resolve_profile(root, info):
-        return EmptyObjectType()
+    def resolve_player_profile_summary(root, info, id: int):
+        return PlayerProfile(id=id)
 
     def resolve_player_games(
         root,
@@ -165,80 +211,22 @@ class Query(graphene.ObjectType):
         limit: Optional[int] = None,
         order_by: Optional[str] = None,
     ):
-        games = PlayerOwnedGame.objects.filter(player_id=id)
-
-        def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data: bool = False) -> Dict:
-            node = {
-                "id": owned_game.id,
-                "game_id": owned_game.game_id,
-            }
-
-            # If game data is required, populate the entire result object as more than
-            #  one field does not effect the request speed
-            if requires_game_data:
-                node.update(
-                    {
-                        "name": owned_game.game.name,
-                        "img_url": owned_game.game.img_icon_url,
-                        "difficulty_percentage": owned_game.game.difficulty_percentage,
-                        "playtime": owned_game.playtime_forever,
-                        "completion_percentage": owned_game.completion_percentage,
-                    }
-                )
-
-            return node
-
         selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
-        node_fields = len(get_edge_node_fields(selected_field_hierarchy).keys())
+        node_fields = list(get_edge_node_fields(selected_field_hierarchy).keys())
 
         # Only load game data if game specific fields are requested (anything but id/gameId)
         requires_game_data = (
             len([item for item in node_fields if item not in ["id", "gameId"]]) > 0 if node_fields else False
         )
 
-        # The flags only really work when mutually exclusive
-        if played is True:
-            games = games.filter(playtime_forever__gt=0)
-        elif played is False:
-            games = games.filter(playtime_forever=0)
-
-        if perfect is True:
-            games = games.filter(completion_percentage=1)
-        elif perfect is False:
-            games = games.filter(completion_percentage__lt=1)
-
-        if started is True:
-            games = games.filter(completion_percentage__gt=0)
-        elif started is False:
-            games = games.filter(completion_percentage=0)
-
-        if unlocked_achievements is True:
-            games = games.filter(game__difficulty_percentage__isnull=False)
-        elif unlocked_achievements is False:
-            games = games.filter(game__difficulty_percentage__isnull=True)
-
-        if order_by:
-            (key, order_modifier) = parse_order_by(order_by)
-
-            order_by_value = None
-            if key == "name":
-                order_by_value = f"{order_modifier}game__name"
-            elif key == "completionPercentage":
-                order_by_value = f"{order_modifier}completion_percentage"
-
-                # Only consider games with achievements
-                games = games.filter(game__difficulty_percentage__gt=0.0)
-
-            elif key == "difficultyPercentage":
-                order_by_value = f"{order_modifier}game__difficulty_percentage"
-
-                # Only consider games with achievements
-                games = games.filter(game__difficulty_percentage__gt=0.0)
-            else:
-                logging.error(f"Unknown order by key '{key}'")
-
-            if order_by_value:
-                games = games.order_by(order_by_value)
+        games = get_player_games2(
+            player=id,
+            played=played,
+            perfect=perfect,
+            started=started,
+            unlocked_achievements=unlocked_achievements,
+            order_by=order_by,
+        )
 
         # Get the total count before limiting the return results, but after filtering
         total_count = games.count() if "totalCount" in selected_field_hierarchy else None
@@ -259,6 +247,21 @@ class Query(graphene.ObjectType):
                 games,
             ),
         }
+
+    def resolve_player_game(
+        root,
+        info: graphene.ResolveInfo,
+        id: str,
+        game_id: str,
+    ):
+        game = None
+        try:
+            game = PlayerOwnedGame.objects.get(player_id=id, game_id=game_id)
+
+        except PlayerOwnedGame.DoesNotExist:
+            logging.error(f"Player {id} does not own game {game_id}")
+
+        return game
 
     def resolve_player_achievements_for_game(
         root,
@@ -296,7 +299,7 @@ class Query(graphene.ObjectType):
     ):
         selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
         node_fields = get_edge_node_fields(selected_field_hierarchy)
-        game_fields = list(node_fields["game"].keys()) if node_fields and node_fields["game"] else []
+        game_fields = list(node_fields["game"].keys()) if node_fields and "game" in node_fields else []
         requires_game_data = len([item for item in game_fields if item not in ["id"]]) > 0
 
         owned_games = PlayerOwnedGame.objects.filter(player_id=id)
@@ -323,7 +326,6 @@ class Query(graphene.ObjectType):
                 )
 
         elif unlocked is False:
-            # only locked achievements
             available_achievements = available_achievements.exclude(
                 id__in=unlocked_achievements.values("achievement__id")
             )

@@ -1,7 +1,9 @@
+import logging
 from typing import Optional, List, TypedDict
 from django.db.models import Q, Sum
 from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
 from achievements.models import Achievement
+from achievementchaser.graphql_utils import parse_order_by
 
 
 PlayerGameOptions = TypedDict(
@@ -64,6 +66,64 @@ def get_player_achievements(player: Player, limit: Optional[int] = None) -> List
 
 def get_player_friends(player: Player):
     pass
+
+
+def get_player_games2(
+    player: int,
+    *,
+    played: Optional[bool] = None,
+    perfect: Optional[bool] = None,
+    started: Optional[bool] = None,
+    unlocked_achievements: Optional[bool] = None,
+    order_by: Optional[str] = None,
+):
+    games = PlayerOwnedGame.objects.filter(player_id=player)
+
+    if played is True:
+        games = games.filter(playtime_forever__gt=0)
+    elif played is False:
+        games = games.filter(playtime_forever=0)
+
+    if perfect is True:
+        games = games.filter(completion_percentage=1)
+    elif perfect is False:
+        games = games.filter(completion_percentage__lt=1)
+
+    if started is True:
+        games = games.filter(completion_percentage__gt=0)
+    elif started is False:
+        games = games.filter(completion_percentage=0)
+
+    if unlocked_achievements is True:
+        games = games.filter(game__difficulty_percentage__isnull=False)
+    elif unlocked_achievements is False:
+        games = games.filter(game__difficulty_percentage__isnull=True)
+
+    if order_by:
+        (key, order_modifier) = parse_order_by(order_by)
+
+        order_by_value = None
+        if key == "name":
+            order_by_value = f"{order_modifier}game__name"
+        elif key == "completionPercentage":
+            order_by_value = f"{order_modifier}completion_percentage"
+
+            # Only consider games with achievements
+            games = games.filter(game__difficulty_percentage__gt=0.0)
+        elif key == "difficultyPercentage":
+            order_by_value = f"{order_modifier}game__difficulty_percentage"
+
+            # Only consider games with achievements
+            games = games.filter(game__difficulty_percentage__gt=0.0)
+        elif key == "lastPlayed":
+            order_by_value = f"{order_modifier}last_played"
+        else:
+            logging.error(f"Unknown order by key '{key}'")
+
+        if order_by_value:
+            games = games.order_by(order_by_value)
+
+    return games
 
 
 def get_player_games(player: Player, options: Optional[PlayerGameOptions] = None, limit: Optional[int] = None):
