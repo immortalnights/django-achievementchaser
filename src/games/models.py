@@ -1,5 +1,4 @@
 from django.db import models
-from achievements.models import Achievement
 
 
 class Game(models.Model):
