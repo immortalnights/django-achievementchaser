@@ -7,6 +7,12 @@ import BorderedImage from "./BorderedImage"
 import GameIconList from "./GameIconList"
 import AchievementIconList from "./AchievementIconList"
 import PlayerProfileContext from "../context/ProfileContext"
+import {
+    useQueryPlayerProfile,
+    useQueryPlayerProfileSummary,
+    useQueryPlayerRecent,
+} from "../api/queries"
+import Loader from "./Loader"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -95,61 +101,61 @@ const PlayerPrivateStatistics = ({
     )
 }
 
-interface PlayerStatisticsProps extends PlayerSummary {
+interface PlayerStatisticsContentProps extends PlayerProfileSummary {
     player: string
 }
 
-const PlayerStatistics = ({
+const PlayerStatisticsContent = ({
     player,
-    perfectGamesCount,
-    achievementsUnlockedCount,
-    totalAchievementCount,
-    friends,
-    totalGamesCount,
-    playedGamesCount,
+    ownedGames,
+    perfectGames,
+    playedGames,
     totalPlaytime,
-}: PlayerStatisticsProps) => {
+    unlockedAchievements,
+    lockedAchievements,
+}: PlayerStatisticsContentProps) => {
     return (
         <Grid container>
             <Grid xs={12}>
                 <PlayerPrivateStatistics
-                    totalGamesCount={totalGamesCount}
-                    playedGamesCount={playedGamesCount}
+                    totalGamesCount={ownedGames}
+                    playedGamesCount={playedGames}
                     totalPlaytime={totalPlaytime}
                 />
             </Grid>
             <Grid md={4}>
                 <MetaData
                     label="Perfect Games"
-                    value={perfectGamesCount ?? "-"}
-                    title={`${
-                        perfectGamesCount && totalGamesCount
-                            ? (perfectGamesCount / totalGamesCount).toFixed(2)
-                            : 0
-                    }%`}
+                    value={perfectGames}
+                    title={`${(perfectGames / ownedGames).toFixed(2)}%`}
                     link={`/player/${player}/perfectgames`}
                 />
             </Grid>
             <Grid md={4}>
                 <MetaData
                     label="Achievements Unlocked"
-                    value={
-                        totalAchievementCount && achievementsUnlockedCount
-                            ? `${(
-                                  achievementsUnlockedCount /
-                                  totalAchievementCount
-                              ).toFixed(2)}%`
-                            : "-"
-                    }
-                    title={`${achievementsUnlockedCount ?? 0} of ${
-                        totalAchievementCount ?? 0
-                    }`}
+                    value={`${(
+                        unlockedAchievements / lockedAchievements
+                    ).toFixed(2)}%`}
+                    title={`${unlockedAchievements} of ${lockedAchievements}`}
                 />
             </Grid>
-            <Grid md={4}>
-                <MetaData label="Friends" value={friends?.length ?? "-"} />
-            </Grid>
         </Grid>
+    )
+}
+
+const PlayerStatistics = ({ player }: { player: string }) => {
+    const { loading, error, data } = useQueryPlayerProfileSummary(player)
+
+    return (
+        <Loader
+            loading={loading}
+            error={error}
+            data={data}
+            renderer={(data) => {
+                return <PlayerStatisticsContent player={player} {...data} />
+            }}
+        />
     )
 }
 
@@ -173,7 +179,7 @@ const Header = ({ name }: { name: string }) => {
     )
 }
 
-const RecentIcons = ({
+const RecentIconsContent = ({
     player,
     recentGames,
     recentAchievements,
@@ -211,17 +217,30 @@ const RecentIcons = ({
     </Grid>
 )
 
+const RecentIcons = ({ player }: { player: string }) => {
+    const { loading, error, data } = useQueryPlayerRecent(player)
+
+    return (
+        <Loader
+            loading={loading}
+            error={error}
+            data={data}
+            renderer={(data) => {
+                return <div>OK</div> // <PlayerStatisticsContent player={player} {...data} />
+            }}
+        />
+    )
+}
+
 const PlayerProfileHeader = ({
     id,
     name,
     avatarLargeUrl,
-    summary,
 }: {
     id: string
     name?: string
     avatarLargeUrl?: string
     profileUrl?: string
-    summary?: PlayerSummary
 }) => {
     return (
         <>
@@ -231,14 +250,8 @@ const PlayerProfileHeader = ({
                     <BorderedImage src={avatarLargeUrl} />
                 </Grid>
                 <Grid xs>
-                    <PlayerStatistics player={id} {...summary} />
-                    {summary?.recentGames && summary?.recentAchievements && (
-                        <RecentIcons
-                            player={id}
-                            recentGames={summary.recentGames}
-                            recentAchievements={summary.recentAchievements}
-                        />
-                    )}
+                    <PlayerStatistics player={id} />
+                    <RecentIcons player={id} />
                 </Grid>
             </Grid>
         </>

@@ -3,6 +3,9 @@ import { gql } from "graphql-request"
 export const player = (player: string) => gql`
 player(id: ${player}) {
     id
+    name
+    avatarLargeUrl
+    profileUrl
 }
 `
 
@@ -53,6 +56,7 @@ playerGames(
             gameId
             name
             completionPercentage
+            imgUrl
         }
     }
 }`
@@ -71,6 +75,7 @@ playerGames(
             gameId
             name
             completionPercentage
+            imgUrl
         }
     }
 }`
@@ -118,3 +123,15 @@ playerAchievementsForGame(
     id
     unlocked
 }`
+
+export default {
+    player,
+    playerProfileSummary,
+    recentGames,
+    recentAchievements,
+    almostCompleteGames,
+    justStartedGames,
+    nextGames,
+    game,
+    playerGame,
+}
