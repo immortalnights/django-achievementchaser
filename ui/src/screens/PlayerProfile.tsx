@@ -159,7 +159,7 @@ const PlayerProfileContent = (player: Player) => {
                 <Typography variant="h5">Next Game</Typography>
                 <PlayerEasiestGames player={player.id} />
                 <Typography variant="h5">Next Achievement</Typography>
-                {/* <PlayerGameAchievementList player={player.id} /> */}
+                <PlayerGameAchievementList player={player.id} />
             </Paper>
         </PlayerProfileContext.Provider>
     )

@@ -115,9 +115,9 @@ interface PlayerProfile {
 }
 
 interface OwnedGame {
-    gameId: number
+    id: number
     name: string
-    imgUrl: string
+    imgIconUrl: string
     completionPercentage: number
     difficultyPercentage: number
 }
@@ -129,9 +129,20 @@ interface PlayerOwnedGameResponse extends BaseQueryResponse {
     }
 }
 
-interface PlayerAchievementsResponse extends BaseQueryResponse {
-    achievements: {
+interface RecentAchievement {
+    id: string
+    displayName: string
+    iconUrl: string
+    iconGrayUrl: string
+    globalPercentage: number
+    unlocked: string
+    game: {
         id: string
-        achievements: Achievement[]
+        name: string
+    }
+}
+interface PlayerAchievementsResponse extends BaseQueryResponse {
+    playerAchievements: {
+        edges: { node: RecentAchievement }[]
     }
 }

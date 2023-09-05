@@ -8,7 +8,8 @@ import GameIconList from "./GameIconList"
 import AchievementIconList from "./AchievementIconList"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
-    useQueryPlayerProfile,
+    RecentAchievement,
+    RecentGame,
     useQueryPlayerProfileSummary,
     useQueryPlayerRecent,
 } from "../api/queries"
@@ -185,8 +186,8 @@ const RecentIconsContent = ({
     recentAchievements,
 }: {
     player: string
-    recentGames: Game[]
-    recentAchievements: UnlockedAchievement[]
+    recentGames: RecentGame[]
+    recentAchievements: RecentAchievement[]
 }) => (
     <Grid container>
         <Grid xs={6}>
@@ -226,7 +227,15 @@ const RecentIcons = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return <div>OK</div> // <PlayerStatisticsContent player={player} {...data} />
+                return (
+                    <>
+                        <RecentIconsContent
+                            player={player}
+                            recentGames={data.games}
+                            recentAchievements={data.achievements}
+                        />
+                    </>
+                )
             }}
         />
     )

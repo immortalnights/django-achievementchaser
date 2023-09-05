@@ -1,9 +1,7 @@
 import { useEffect } from "react"
 import { gql } from "graphql-request"
-import gqlDocument from "./graphql-documents"
+import gqlDocument, { boolToString } from "./graphql-documents"
 import { useQuery } from "./base-query"
-
-const boolToString = (bool: boolean) => (bool ? "true" : "false")
 
 export const useLazyQueryPlayers = () => {
     return useQuery<PlayerQueryResponse, Player>(
@@ -99,9 +97,9 @@ export const useQueryPlayerOwnedGames = ({
         ) {
             edges {
                 node {
-                    gameId
+                    id
                     name
-                    imgUrl
+                    imgIconUrl
                     difficultyPercentage
                     completionPercentage
                 }
@@ -120,42 +118,42 @@ export const useQueryPlayerOwnedGames = ({
     return { loading, error, data }
 }
 
-interface PlayerRecentResponse {
+export interface RecentGame {
+    id: string
+    name: string
+    imgIconUrl: string
+    difficultyPercentage: number
+    completionPercentage: number
+}
+interface PlayerRecentResponse extends BaseQueryResponse {
     playerGames: {
-        nodes: {
-            gameId: string
-            name: string
-            imgUrl: string
-            difficultyPercentage: number
-            completionPercentage: number
-        }
-    }[]
+        edges: { node: RecentGame }[]
+    }
     playerAchievements: {
-        nodes: {
-            displayName: string
-            id: string
-            unlocked: string
-        }
-    }[]
+        edges: { node: RecentAchievement }[]
+    }
+}
+
+interface RecentGamesAndAchievements {
+    games: RecentGame[]
+    achievements: RecentAchievement[]
 }
 
 export const useQueryPlayerRecent = (player: string) => {
     const { loading, error, data, trigger } = useQuery<
         PlayerRecentResponse,
-        Achievement[]
+        RecentGamesAndAchievements
     >(
         (player: string) => [
             gqlDocument.recentGames(player),
-            gqlDocument.recentAchievements(player),
+            gqlDocument.recentAchievements(player, true, 6),
         ],
-        (response) => {
-            return {
-                games: response.playerGames.edges.map((node) => node.node),
-                achievements: response.playerAchievements.edges.map(
-                    (node) => node.node
-                ),
-            }
-        }
+        (response) => ({
+            games: response.playerGames.edges.map((edge) => edge.node),
+            achievements: response.playerAchievements.edges.map(
+                (edge) => edge.node
+            ),
+        })
     )
 
     useEffect(
@@ -170,32 +168,14 @@ export const useQueryPlayerRecent = (player: string) => {
 export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
     const { loading, error, data, trigger } = useQuery<
         PlayerAchievementsResponse,
-        Achievement[]
+        RecentAchievement[]
     >(
-        () => gql`
-        {
-            achievements(id: ${player}, ignoreUnlocked: true, limit: 12 ) {
-              id
-              achievements {
-                name
-                displayName
-                iconUrl
-                iconGrayUrl
-                globalPercentage
-                game {
-                  id
-                  name
-                }
-              }
-            }
-          }
-
-`,
-        (response) => response.achievements.achievements
+        (player) => gqlDocument.recentAchievements(player, false, 12),
+        (response) => response.playerAchievements.edges.map((edge) => edge.node)
     )
 
     useEffect(
-        () => trigger(),
+        () => trigger(player),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     )

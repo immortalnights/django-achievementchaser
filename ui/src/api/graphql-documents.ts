@@ -1,5 +1,7 @@
 import { gql } from "graphql-request"
 
+export const boolToString = (bool: boolean) => (bool ? "true" : "false")
+
 export const player = (player: string) => gql`
 player(id: ${player}) {
     id
@@ -20,23 +22,38 @@ playerProfileSummary(id: ${player}) {
 }`
 
 export const recentGames = (player: string) => gql`
-playerGames(id: ${player}, played: true, orderBy: "lastPlayed DESC") {
+playerGames(id: ${player}, played: true, orderBy: "lastPlayed DESC", limit: 6) {
     edges {
         node {
-            gameId
+            id
             name
-            imgUrl
+            imgIconUrl
         }
     }
 }`
 
-export const recentAchievements = (player: string) => gql`
-playerAchievements(id: ${player}, limit: 6, unlocked: true) {
+export const recentAchievements = (
+    player: string,
+    unlocked: boolean,
+    limit: number
+) => gql`
+playerAchievements(
+    id: ${player}
+    unlocked: ${boolToString(unlocked)}
+    limit: ${limit}
+) {
     edges {
         node {
             id
             displayName
+            iconUrl,
+            iconGrayUrl,
+            globalPercentage
             unlocked
+            game {
+                id
+                name
+            }
         }
     }
 }`
@@ -53,10 +70,10 @@ playerGames(
     totalCount
     edges {
         node {
-            gameId
+            id
             name
             completionPercentage
-            imgUrl
+            imgIconUrl
         }
     }
 }`
@@ -72,10 +89,10 @@ playerGames(
     totalCount
     edges {
         node {
-            gameId
+            id
             name
             completionPercentage
-            imgUrl
+            imgIconUrl
         }
     }
 }`
@@ -89,9 +106,9 @@ playerGames(
 ) {
     edges {
         node {
-            gameId
+            id
             name
-            imgUrl
+            imgIconUrl
         }
     }
 }`
@@ -116,10 +133,8 @@ playerGame(id: ${player}, gameId: ${game}) {
     last_played
 }
 playerAchievementsForGame(
-    id: ${player}
-    gameId: ${game}
-    orderBy: "globalPercentage DESC"
-  ) {
+    id: ${player}, gameId: ${game}, orderBy: "globalPercentage DESC"
+) {
     id
     unlocked
 }`

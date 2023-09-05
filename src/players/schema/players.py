@@ -11,8 +11,7 @@ from ..queries import get_player_games2
 
 def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data: bool = False) -> Dict:
     node = {
-        "id": owned_game.id,
-        "game_id": owned_game.game_id,
+        "id": owned_game.game_id,
         "playtime": owned_game.playtime_forever,
         "completion_percentage": owned_game.completion_percentage,
     }
@@ -23,7 +22,7 @@ def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data
         node.update(
             {
                 "name": owned_game.game.name,
-                "img_url": owned_game.game.img_icon_url,
+                "img_icon_url": owned_game.game.img_icon_url,
                 "difficulty_percentage": owned_game.game.difficulty_percentage,
             }
         )
@@ -61,9 +60,8 @@ class SimpleGameType(graphene.ObjectType):
         interfaces = (graphene.Node,)
 
     id = graphene.NonNull(graphene.ID)
-    game_id = graphene.NonNull(graphene.String)
     name = graphene.String()
-    img_url = graphene.String()
+    img_icon_url = graphene.String()
     difficulty_percentage = graphene.Float()
     playtime = graphene.Int()
     playtime_forever = graphene.Int()
@@ -214,10 +212,8 @@ class Query(graphene.ObjectType):
         selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
         node_fields = list(get_edge_node_fields(selected_field_hierarchy).keys())
 
-        # Only load game data if game specific fields are requested (anything but id/gameId)
-        requires_game_data = (
-            len([item for item in node_fields if item not in ["id", "gameId"]]) > 0 if node_fields else False
-        )
+        # Only load game data if game specific fields are requested (anything but id)
+        requires_game_data = len([item for item in node_fields if item not in ["id"]]) > 0 if node_fields else False
 
         games = get_player_games2(
             player=id,

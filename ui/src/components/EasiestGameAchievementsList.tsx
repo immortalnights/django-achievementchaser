@@ -9,14 +9,14 @@ const EasiestGameAchievementsList = ({
     achievements,
 }: {
     player: string
-    achievements: Achievement[]
+    achievements: RecentAchievement[]
 }) => {
     const groupedAchievements = useMemo(() => {
         const games: {
             [key: string]: {
-                id: number
+                id: string
                 name: string
-                achievements: Achievement[]
+                achievements: Omit<RecentAchievement, "game">[]
             }
         } = {}
 
@@ -27,7 +27,6 @@ const EasiestGameAchievementsList = ({
                 const key = String(game.id as keyof typeof games)
                 if (!games[key]) {
                     games[key] = {
-                        name: "<unknown>",
                         ...game,
                         achievements: [],
                     }
@@ -67,12 +66,10 @@ const EasiestGameAchievementsList = ({
                     </Box>
                     {item.achievements.map((achievement) => (
                         <div
-                            key={`${achievement.game?.name ?? ""}-${
-                                achievement.name
-                            }`}
-                            title={`${achievement.displayName ?? ""} - ${(
-                                achievement.globalPercentage ?? 0
-                            ).toFixed(2)}%`}
+                            key={`${item.name}-${achievement.id}`}
+                            title={`${
+                                achievement.displayName
+                            } - ${achievement.globalPercentage.toFixed(2)}%`}
                         >
                             <BorderedImage
                                 src={achievement.iconGrayUrl}
