@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 import FlexUnorderedList from "./FlexUnorderedList"
-import { RecentAchievement } from "../api/queries"
 
 const AchievementIconList = ({
     player,

@@ -5,7 +5,6 @@ import {
     useQueryPlayer,
     useQueryPlayerAchievements,
     useQueryPlayerOwnedGames,
-    useQueryPlayerProfile,
 } from "../api/queries"
 import Loader from "../components/Loader"
 import { throwExpression } from "../utilities"
