@@ -8,8 +8,6 @@ import GameIconList from "./GameIconList"
 import AchievementIconList from "./AchievementIconList"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
-    RecentAchievement,
-    RecentGame,
     useQueryPlayerProfileSummary,
     useQueryPlayerRecent,
 } from "../api/queries"

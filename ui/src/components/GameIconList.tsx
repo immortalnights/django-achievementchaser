@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
-import { RecentGame } from "../api/queries"
 
 const GameIconList = ({
     player,

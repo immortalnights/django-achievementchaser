@@ -141,6 +141,15 @@ interface RecentAchievement {
         name: string
     }
 }
+
+interface RecentGame {
+    id: string
+    name: string
+    imgIconUrl: string
+    difficultyPercentage: number
+    completionPercentage: number
+}
+
 interface PlayerAchievementsResponse extends BaseQueryResponse {
     playerAchievements: {
         edges: { node: RecentAchievement }[]

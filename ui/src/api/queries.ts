@@ -118,13 +118,6 @@ export const useQueryPlayerOwnedGames = ({
     return { loading, error, data }
 }
 
-export interface RecentGame {
-    id: string
-    name: string
-    imgIconUrl: string
-    difficultyPercentage: number
-    completionPercentage: number
-}
 interface PlayerRecentResponse extends BaseQueryResponse {
     playerGames: {
         edges: { node: RecentGame }[]
