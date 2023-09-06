@@ -53,6 +53,7 @@ const EasiestGameAchievementsList = ({
                     alignItems="center"
                     gap={1}
                     wrap="wrap"
+                    key={item.id}
                 >
                     <Box>
                         <Link
@@ -66,7 +67,7 @@ const EasiestGameAchievementsList = ({
                     </Box>
                     {item.achievements.map((achievement) => (
                         <div
-                            key={`${item.name}-${achievement.id}`}
+                            key={`${item.id}-${achievement.id}`}
                             title={`${
                                 achievement.displayName
                             } - ${achievement.globalPercentage.toFixed(2)}%`}

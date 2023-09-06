@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 from typing import Optional, List, Dict
 import graphene
 from graphene_django import DjangoObjectType
@@ -255,7 +255,7 @@ class Query(graphene.ObjectType):
             game = PlayerOwnedGame.objects.get(player_id=id, game_id=game_id)
 
         except PlayerOwnedGame.DoesNotExist:
-            logging.error(f"Player {id} does not own game {game_id}")
+            logger.error(f"Player {id} does not own game {game_id}")
 
         return game
 
@@ -279,7 +279,7 @@ class Query(graphene.ObjectType):
                 )
 
             else:
-                logging.error(f"Unknown order by key '{key}'")
+                logger.error(f"Unknown order by key '{key}'")
 
         return map(
             lambda achievement: transform_unlocked_achievement(achievement, requires_game_data=False),
@@ -329,10 +329,12 @@ class Query(graphene.ObjectType):
             total_count = available_achievements.count() if "totalCount" in selected_field_hierarchy else None
 
             if "edges" in selected_field_hierarchy:
-                achievements = available_achievements.order_by("-global_percentage")
+                available_achievements = available_achievements.order_by("-global_percentage")
 
-                if achievements and limit:
-                    achievements = achievements[:limit]
+                if limit:
+                    available_achievements = available_achievements[:limit]
+
+            achievements = available_achievements
 
         else:
             available_achievements = available_achievements.order_by("-global_percentage")
