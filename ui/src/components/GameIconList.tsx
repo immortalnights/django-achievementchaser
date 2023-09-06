@@ -25,6 +25,7 @@ const GameIconList = ({
                         title={game.name}
                     >
                         <BorderedImage
+                            title={`Last played ${game.lastPlayed}`}
                             src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
                         />
                     </Link>

@@ -4,8 +4,6 @@ import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
-import GameIconList from "./GameIconList"
-import AchievementIconList from "./AchievementIconList"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
     useQueryPlayerProfileSummary,
@@ -51,55 +49,6 @@ const MetaData = ({
     </Box>
 )
 
-const PlayerPrivateStatistics = ({
-    totalGamesCount,
-    playedGamesCount,
-    totalPlaytime,
-}: Pick<
-    PlayerSummary,
-    "totalGamesCount" | "playedGamesCount" | "totalPlaytime"
->) => {
-    const { hideGameStatistics } = useContext(PlayerProfileContext)
-
-    const displayMap = hideGameStatistics
-        ? { xs: "none" }
-        : {
-              xs: "none",
-              md: "block",
-          }
-
-    return (
-        <Box display={displayMap}>
-            <Grid container>
-                <Grid xs={false} md={4}>
-                    <MetaData label="Games" value={totalGamesCount ?? 0} />
-                </Grid>
-                <Grid xs={false} md={4}>
-                    <MetaData
-                        label="Played"
-                        value={
-                            totalGamesCount && playedGamesCount
-                                ? `${(
-                                      totalGamesCount / playedGamesCount
-                                  ).toFixed(2)}%`
-                                : "-"
-                        }
-                        title={`${playedGamesCount ?? 0} of ${
-                            totalGamesCount ?? 0
-                        }`}
-                    />
-                </Grid>
-                <Grid xs={false} md={4}>
-                    <MetaData
-                        label="Playtime"
-                        value={<Playtime playtime={totalPlaytime ?? 0} />}
-                    />
-                </Grid>
-            </Grid>
-        </Box>
-    )
-}
-
 interface PlayerStatisticsContentProps extends PlayerProfileSummary {
     player: string
 }
@@ -113,16 +62,49 @@ const PlayerStatisticsContent = ({
     unlockedAchievements,
     lockedAchievements,
 }: PlayerStatisticsContentProps) => {
+    const { hideGameStatistics } = useContext(PlayerProfileContext)
+
     return (
         <Grid container>
-            <Grid xs={12}>
-                <PlayerPrivateStatistics
-                    totalGamesCount={ownedGames}
-                    playedGamesCount={playedGames}
-                    totalPlaytime={totalPlaytime}
+            <Grid
+                lg={2}
+                md={3}
+                sm={4}
+                xs={6}
+                sx={{ display: hideGameStatistics ? "none" : "block" }}
+            >
+                <MetaData label="Games" value={ownedGames ?? 0} />
+            </Grid>
+            <Grid
+                lg={2}
+                md={3}
+                sm={4}
+                xs={6}
+                sx={{ display: hideGameStatistics ? "none" : "block" }}
+            >
+                <MetaData
+                    label="Played"
+                    value={
+                        ownedGames && playedGames
+                            ? `${(ownedGames / playedGames).toFixed(2)}%`
+                            : "-"
+                    }
+                    title={`${playedGames ?? 0} of ${ownedGames ?? 0}`}
                 />
             </Grid>
-            <Grid md={4}>
+            <Grid
+                lg={2}
+                md={3}
+                sm={4}
+                xs={6}
+                sx={{ display: hideGameStatistics ? "none" : "block" }}
+            >
+                <MetaData
+                    label="Playtime"
+                    value={<Playtime playtime={totalPlaytime ?? 0} />}
+                />
+            </Grid>
+            <Grid lg={2} md={4} sm={4} xs={6}>
                 <MetaData
                     label="Perfect Games"
                     value={perfectGames}
@@ -130,7 +112,7 @@ const PlayerStatisticsContent = ({
                     link={`/player/${player}/perfectgames`}
                 />
             </Grid>
-            <Grid md={4}>
+            <Grid lg={3} md={4} sm={6} xs={12}>
                 <MetaData
                     label="Achievements Unlocked"
                     value={`${(
@@ -187,33 +169,83 @@ const RecentIconsContent = ({
     recentGames: RecentGame[]
     recentAchievements: RecentAchievement[]
 }) => (
-    <Grid container>
-        <Grid xs={6}>
-            <Typography variant="subtitle1" textTransform="uppercase">
-                Recently Played
-            </Typography>
+    <>
+        <Typography variant="subtitle1" textTransform="uppercase">
+            Recently Played
+        </Typography>
 
-            <GameIconList player={player} games={recentGames} />
+        <ul
+            style={{
+                listStyle: "none",
+                margin: 0,
+                padding: 0,
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+            }}
+        >
+            {recentGames.map((game) => (
+                <li key={game.id}>
+                    <Link
+                        to={`/player/${player}/game/${game.id}`}
+                        title={game.name}
+                    >
+                        <BorderedImage
+                            title={`Last played ${game.lastPlayed}`}
+                            src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
+                            style={{ display: "block" }}
+                        />
+                    </Link>
+                </li>
+            ))}
+            <li>
+                <Link to={`/player/${player}/recentgames`}>
+                    <Typography fontSize={"small"}>more...</Typography>
+                </Link>
+            </li>
+        </ul>
 
-            <Link to={`/player/${player}/recentgames`}>
-                <Typography fontSize={"small"}>more...</Typography>
-            </Link>
-        </Grid>
-        <Grid xs={6}>
-            <Typography variant="subtitle1" textTransform="uppercase">
-                Recently Unlocked
-            </Typography>
-            <Box>
-                <AchievementIconList
-                    player={player}
-                    achievements={recentAchievements}
-                />
+        <Typography variant="subtitle1" textTransform="uppercase">
+            Recently Unlocked
+        </Typography>
+
+        <ul
+            style={{
+                listStyle: "none",
+                margin: 0,
+                padding: 0,
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
+            }}
+        >
+            {recentAchievements.map((item) => (
+                <li
+                    key={`${item.game.id}-${item.id}`}
+                    style={{ paddingRight: 2 }}
+                >
+                    <Link
+                        to={`/player/${player}/game/${item.game.id}`}
+                        title={`${item.displayName} from ${item.game.name}`}
+                    >
+                        <BorderedImage
+                            src={`${item.iconUrl}`}
+                            style={{
+                                width: 32,
+                                height: 32,
+                                display: "block",
+                            }}
+                        />
+                    </Link>
+                </li>
+            ))}
+            <li>
                 <Link to={`/player/${player}/recentachievements`}>
                     <Typography fontSize={"small"}>more...</Typography>
                 </Link>
-            </Box>
-        </Grid>
-    </Grid>
+            </li>
+        </ul>
+    </>
 )
 
 const RecentIcons = ({ player }: { player: string }) => {
@@ -239,6 +271,20 @@ const RecentIcons = ({ player }: { player: string }) => {
     )
 }
 
+const Timeline = () => {
+    return (
+        <div
+            style={{
+                // backgroundColor: "yellow",
+                minWidth: 400,
+                width: "100%",
+                height: 160,
+                margin: 5,
+            }}
+        ></div>
+    )
+}
+
 const PlayerProfileHeader = ({
     id,
     name,
@@ -252,13 +298,32 @@ const PlayerProfileHeader = ({
     return (
         <>
             <Header name={name ?? ""} />
-            <Grid container gap="2em">
-                <Grid xs={2}>
-                    <BorderedImage src={avatarLargeUrl} />
+            <Grid container>
+                <Grid
+                    xs={12}
+                    sm={2}
+                    display={{ xs: "none", sm: "none", md: "block" }}
+                    paddingRight="1em"
+                >
+                    <BorderedImage
+                        src={avatarLargeUrl}
+                        style={{
+                            width: "100%",
+                            maxWidth: "184px",
+                            margin: "auto",
+                        }}
+                    />
                 </Grid>
-                <Grid xs>
+                <Grid xs={12} sm={10}>
                     <PlayerStatistics player={id} />
-                    <RecentIcons player={id} />
+                    <Grid container>
+                        <Grid xs={6}>
+                            <RecentIcons player={id} />
+                        </Grid>
+                        <Grid xs={6} flexGrow={1}>
+                            <Timeline />
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </>
