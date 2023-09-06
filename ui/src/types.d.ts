@@ -49,8 +49,17 @@ interface PlayerQueryResponse extends BaseQueryResponse {
     player: Player | null
 }
 
-interface PlayerProfileResponse extends BaseQueryResponse {
-    profile: PlayerProfile
+interface PlayerProfileSummary {
+    ownedGames: number
+    perfectGames: number
+    playedGames: number
+    totalPlaytime: number
+    unlockedAchievements: number
+    lockedAchievements: number
+}
+
+interface PlayerProfileSummaryResponse extends BaseQueryResponse {
+    playerProfileSummary: PlayerProfileSummary
 }
 
 interface Game {
@@ -106,22 +115,43 @@ interface PlayerProfile {
 }
 
 interface OwnedGame {
-    game: {
-        id: number
-        name: string
-        imgIconUrl: string
-        difficultyPercentage: number
-    }
+    id: number
+    name: string
+    imgIconUrl: string
     completionPercentage: number
+    difficultyPercentage: number
 }
 
 interface PlayerOwnedGameResponse extends BaseQueryResponse {
-    ownedGames: OwnedGame[]
+    playerGames: {
+        edges?: { node: OwnedGame }[]
+        totalCount?: number
+    }
+}
+
+interface RecentAchievement {
+    id: string
+    displayName: string
+    iconUrl: string
+    iconGrayUrl: string
+    globalPercentage: number
+    unlocked: string
+    game: {
+        id: string
+        name: string
+    }
+}
+
+interface RecentGame {
+    id: string
+    name: string
+    imgIconUrl: string
+    difficultyPercentage: number
+    completionPercentage: number
 }
 
 interface PlayerAchievementsResponse extends BaseQueryResponse {
-    achievements: {
-        id: string
-        achievements: Achievement[]
+    playerAchievements: {
+        edges: { node: RecentAchievement }[]
     }
 }

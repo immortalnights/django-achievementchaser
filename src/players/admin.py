@@ -36,6 +36,7 @@ class PlayerOwnedGameAdmin(admin.ModelAdmin):
         "edit",
         "game",
         "player",
+        "last_played",
         "playtime_forever",
         "resynchronized",
         "achievements_up_to_date",

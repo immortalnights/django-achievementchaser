@@ -1,5 +1,4 @@
 from django.db import models
-from achievements.models import Achievement
 
 
 class Game(models.Model):
@@ -15,7 +14,3 @@ class Game(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.id})"
-
-    @property
-    def achievements(self):
-        return Achievement.objects.filter(game=self).order_by("-global_percentage")

@@ -7,19 +7,17 @@ const AchievementIconList = ({
     achievements,
 }: {
     player: string
-    achievements: UnlockedAchievement[]
+    achievements: RecentAchievement[]
 }) => (
     <FlexUnorderedList>
         {achievements.map((item) => (
-            <li key={`${item.game.id}-${item.achievement.name}`}>
+            <li key={`${item.game.id}-${item.id}`}>
                 <Link
                     to={`/player/${player}/game/${item.game.id}`}
-                    title={`${item.achievement.displayName ?? ""} from ${
-                        item.game.name ?? ""
-                    }`}
+                    title={`${item.displayName} from ${item.game.name}`}
                 >
                     <BorderedImage
-                        src={`${item.achievement.iconUrl ?? ""}`}
+                        src={`${item.iconUrl}`}
                         style={{
                             width: 32,
                             height: 32,

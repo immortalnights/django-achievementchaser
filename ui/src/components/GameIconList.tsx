@@ -1,7 +1,13 @@
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 
-const GameIconList = ({ player, games }: { player: string; games: Game[] }) => {
+const GameIconList = ({
+    player,
+    games,
+}: {
+    player: string
+    games: RecentGame[]
+}) => {
     return (
         <ul
             style={{

@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Paper, Typography } from "@mui/material"
 import {
+    useQueryPlayer,
     useQueryPlayerAchievements,
     useQueryPlayerOwnedGames,
-    useQueryPlayerProfile,
 } from "../api/queries"
 import Loader from "../components/Loader"
 import { throwExpression } from "../utilities"
@@ -20,8 +20,11 @@ import {
 const PlayerAlmostThereGames = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerOwnedGames({
         player,
-        orderBy: "completionPercentage",
-        ignoreComplete: true,
+        played: true,
+        started: true,
+        perfect: false,
+        limit: 12,
+        orderBy: "completionPercentage DESC",
     })
 
     return (
@@ -45,8 +48,10 @@ const PlayerAlmostThereGames = ({ player }: { player: string }) => {
 const PlayerJustStartedGames = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerOwnedGames({
         player,
+        played: true,
+        started: true,
+        limit: 12,
         orderBy: "completionPercentage ASC",
-        ignoreNotStarted: true,
     })
 
     return (
@@ -70,8 +75,9 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
 const PlayerEasiestGames = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerOwnedGames({
         player,
+        perfect: false,
+        limit: 12,
         orderBy: "difficultyPercentage DESC",
-        ignoreComplete: true,
     })
 
     return (
@@ -115,7 +121,7 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
     return null
 }
 
-const PlayerProfileContent = (profile: PlayerProfile) => {
+const PlayerProfileContent = (player: Player) => {
     const [contextState, setContextState] = useState(loadFromLocalStorage())
 
     const contextValue = useMemo(
@@ -144,20 +150,15 @@ const PlayerProfileContent = (profile: PlayerProfile) => {
     return (
         <PlayerProfileContext.Provider value={contextValue}>
             <Paper sx={{ marginTop: "1em" }} elevation={0}>
-                <PlayerProfileHeader
-                    id={profile.id}
-                    name={profile.name}
-                    avatarLargeUrl={profile.avatarLargeUrl}
-                    summary={profile.summary}
-                />
+                <PlayerProfileHeader {...player} />
                 <Typography variant="h5">Almost There</Typography>
-                <PlayerAlmostThereGames player={profile.id} />
+                <PlayerAlmostThereGames player={player.id} />
                 <Typography variant="h5">Just Started</Typography>
-                <PlayerJustStartedGames player={profile.id} />
+                <PlayerJustStartedGames player={player.id} />
                 <Typography variant="h5">Next Game</Typography>
-                <PlayerEasiestGames player={profile.id} />
+                <PlayerEasiestGames player={player.id} />
                 <Typography variant="h5">Next Achievement</Typography>
-                <PlayerGameAchievementList player={profile.id} />
+                <PlayerGameAchievementList player={player.id} />
             </Paper>
         </PlayerProfileContext.Provider>
     )
@@ -165,7 +166,7 @@ const PlayerProfileContent = (profile: PlayerProfile) => {
 
 const PlayerProfileScreen = () => {
     const { id = throwExpression("missing param") } = useParams()
-    const { loading, error, data } = useQueryPlayerProfile(id)
+    const { loading, error, data } = useQueryPlayer(id)
 
     return (
         <Loader

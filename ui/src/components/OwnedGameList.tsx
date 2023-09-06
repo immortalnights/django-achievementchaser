@@ -28,13 +28,13 @@ const OwnedGameList = ({
     return (
         <FlexWrappedList>
             {set.map((game) => (
-                <li key={game.game.id}>
-                    <ReactiveLink to={`/player/${player}/game/${game.game.id}`}>
+                <li key={game.id}>
+                    <ReactiveLink to={`/player/${player}/game/${game.id}`}>
                         <BorderedImage
-                            src={`https://media.steampowered.com/steam/apps/${game.game.id}/capsule_184x69.jpg`}
-                            title={`${game.game.name} - ${(showCompletion
+                            src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
+                            title={`${game.name} - ${(showCompletion
                                 ? game.completionPercentage * 100
-                                : game.game.difficultyPercentage
+                                : game.difficultyPercentage
                             ).toFixed(2)}% ${showCompletion ? "Complete" : ""}`}
                         />
                     </ReactiveLink>
