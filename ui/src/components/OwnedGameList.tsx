@@ -14,6 +14,34 @@ const FlexWrappedList = styled.ul`
 
 const ReactiveLink = styled(Link)``
 
+const GameItem = ({
+    player,
+    game,
+    showCompletion,
+}: {
+    player: string
+    game: OwnedGame
+    showCompletion: boolean
+}) => {
+    let title = `${game.name}`
+    if (showCompletion && game.completionPercentage) {
+        title += ` - ${(game.completionPercentage * 100).toFixed(2)}% Complete`
+    } else if (game.difficultyPercentage) {
+        title += ` - ${game.difficultyPercentage.toFixed(2)}`
+    }
+
+    return (
+        <li>
+            <ReactiveLink to={`/player/${player}/game/${game.id}`}>
+                <BorderedImage
+                    src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
+                    title={title}
+                />
+            </ReactiveLink>
+        </li>
+    )
+}
+
 const OwnedGameList = ({
     player,
     games,
@@ -23,21 +51,15 @@ const OwnedGameList = ({
     games: OwnedGame[]
     showCompletion: boolean
 }) => {
-    const set = games.slice(0, 12)
-
     return (
         <FlexWrappedList>
-            {set.map((game) => (
+            {games.map((game) => (
                 <li key={game.id}>
-                    <ReactiveLink to={`/player/${player}/game/${game.id}`}>
-                        <BorderedImage
-                            src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
-                            title={`${game.name} - ${(showCompletion
-                                ? game.completionPercentage * 100
-                                : game.difficultyPercentage
-                            ).toFixed(2)}% ${showCompletion ? "Complete" : ""}`}
-                        />
-                    </ReactiveLink>
+                    <GameItem
+                        player={player}
+                        game={game}
+                        showCompletion={showCompletion}
+                    />
                 </li>
             ))}
         </FlexWrappedList>
