@@ -17,6 +17,7 @@
         "@fontsource/roboto": "^5.0.8",
         "@mui/icons-material": "^5.14.3",
         "@mui/material": "^5.14.3",
+        "dayjs": "^1.11.9",
         "graphql": "^16.7.1",
         "graphql-request": "^6.1.0",
         "msw": "^1.2.2",
