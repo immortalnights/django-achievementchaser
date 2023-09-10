@@ -60,7 +60,7 @@ const PlayerRecentGamesContent = ({
     return (
         <Paper sx={{ marginTop: "1em" }} elevation={0}>
             <PlayerHeader player={player} />
-            <Typography variant="h5">Perfect Games</Typography>
+            <Typography variant="h5">Recent Games</Typography>
             <OwnedGameList
                 player={player}
                 games={games}

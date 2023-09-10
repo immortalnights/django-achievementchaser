@@ -27,18 +27,16 @@ const GameItem = ({
     if (showCompletion && game.completionPercentage) {
         title += ` - ${(game.completionPercentage * 100).toFixed(2)}% Complete`
     } else if (game.difficultyPercentage) {
-        title += ` - ${game.difficultyPercentage.toFixed(2)}`
+        title += ` - ${game.difficultyPercentage.toFixed(2)}%`
     }
 
     return (
-        <li>
-            <ReactiveLink to={`/player/${player}/game/${game.id}`}>
-                <BorderedImage
-                    src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
-                    title={title}
-                />
-            </ReactiveLink>
-        </li>
+        <ReactiveLink to={`/player/${player}/game/${game.id}`}>
+            <BorderedImage
+                src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
+                title={title}
+            />
+        </ReactiveLink>
     )
 }
 

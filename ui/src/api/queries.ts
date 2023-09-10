@@ -100,6 +100,7 @@ export const useQueryPlayerOwnedGames = ({
                     id
                     name
                     imgIconUrl
+                    lastPlayed
                     difficultyPercentage
                     completionPercentage
                 }
