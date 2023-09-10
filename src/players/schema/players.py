@@ -172,7 +172,12 @@ class Query(graphene.ObjectType):
     )
 
     player_achievements = graphene.Field(
-        xPlayerAchievementType, id=graphene.BigInt(), unlocked=graphene.Boolean(), limit=graphene.Int()
+        xPlayerAchievementType,
+        id=graphene.BigInt(),
+        unlocked=graphene.Boolean(),
+        limit=graphene.Int(),
+        after=graphene.Int(),
+        before=graphene.Int(),
     )
 
     player_achievements_for_game = graphene.Field(
@@ -294,6 +299,8 @@ class Query(graphene.ObjectType):
         id: str,
         unlocked: Optional[bool] = None,
         limit: Optional[int] = None,
+        after: Optional[int] = None,
+        before: Optional[int] = None,
     ):
         selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
         node_fields = get_edge_node_fields(selected_field_hierarchy)
@@ -308,6 +315,15 @@ class Query(graphene.ObjectType):
         total_count = None
 
         if unlocked is True:
+            if after and before:
+                unlocked_achievements = unlocked_achievements.filter(
+                    datetime__year__gte=after, datetime__year__lte=before
+                )
+            elif after:
+                unlocked_achievements = unlocked_achievements.filter(datetime__year__gte=after)
+            elif before:
+                unlocked_achievements = unlocked_achievements.filter(datetime__year__lte=before)
+
             total_count = unlocked_achievements.count() if "totalCount" in selected_field_hierarchy else None
 
             if "edges" in selected_field_hierarchy:
