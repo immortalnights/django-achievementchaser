@@ -320,9 +320,9 @@ class Query(graphene.ObjectType):
                     datetime__year__gte=after, datetime__year__lte=before
                 )
             elif after:
-                unlocked_achievements = unlocked_achievements.filter(datetime__year__gte=after)
+                unlocked_achievements = unlocked_achievements.filter(datetime__year__gt=after)
             elif before:
-                unlocked_achievements = unlocked_achievements.filter(datetime__year__lte=before)
+                unlocked_achievements = unlocked_achievements.filter(datetime__year__lt=before)
 
             total_count = unlocked_achievements.count() if "totalCount" in selected_field_hierarchy else None
 

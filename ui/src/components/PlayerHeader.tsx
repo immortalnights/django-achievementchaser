@@ -308,7 +308,7 @@ const PlayerProfileHeader = ({
                             <RecentIcons player={id} />
                         </Grid>
                         <Grid xs={6}>
-                            <Timeline />
+                            <Timeline player={id} />
                         </Grid>
                     </Grid>
                 </Grid>

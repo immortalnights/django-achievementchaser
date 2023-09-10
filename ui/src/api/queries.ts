@@ -176,3 +176,27 @@ export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
 
     return { loading, error, data }
 }
+
+export const useQueryPlayerTimelineAchievements = ({
+    player,
+    year,
+}: {
+    player: string
+    year: number
+}) => {
+    const { loading, error, data, trigger } = useQuery<
+        PlayerAchievementsResponse,
+        RecentAchievement[]
+    >(
+        (player) => gqlDocument.timelineAchievements(player, year),
+        (response) => response.playerAchievements.edges.map((edge) => edge.node)
+    )
+
+    useEffect(
+        () => trigger(player),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [year]
+    )
+
+    return { loading, error, data }
+}

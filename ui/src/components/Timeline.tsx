@@ -1,68 +1,10 @@
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
-import { useState } from "react"
-const VerticalCalendar = () => {
-    // Get the current month and year
-    const currentDate = dayjs()
-    const currentMonth = currentDate.month()
-    const currentYear = currentDate.year()
-
-    // Function to generate and display the vertical calendar
-    const displayVerticalCalendar = (month, year) => {
-        const startDate = dayjs(`${year}-${month + 1}-01`)
-        const daysInMonth = startDate.daysInMonth()
-
-        const calendarWeeks = []
-        let currentWeek = []
-
-        const startDayOfWeek = Number(startDate.format("d"))
-        console.log(startDayOfWeek)
-        for (let i = startDayOfWeek; i > 1; i--) {
-            currentWeek.push(
-                <div key={i} className="day">
-                    -
-                </div>
-            )
-        }
-
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = dayjs(`${year}-${month + 1}-${day}`)
-            currentWeek.push(
-                <div key={date.format("YYYY-MM-DD")} className="day">
-                    {date.format("ddd D")}
-                </div>
-            )
-
-            // Check if it's the last day of the week (Sunday) or the last day of the month
-            if (date.day() === 0 || day === daysInMonth) {
-                if (currentWeek.length < 7) {
-                    for (let i = currentWeek.length; i < 7; i++) {
-                        currentWeek.push(
-                            <div key={i} className="day">
-                                -
-                            </div>
-                        )
-                    }
-                }
-
-                calendarWeeks.push(
-                    <div key={date.format("YYYY-MM-DD")} className="week">
-                        {currentWeek}
-                    </div>
-                )
-                currentWeek = []
-            }
-        }
-
-        return calendarWeeks
-    }
-
-    return (
-        <div className="calendar">
-            {displayVerticalCalendar(currentMonth, currentYear)}
-        </div>
-    )
-}
+import { useMemo, useState } from "react"
+import {
+    useQueryPlayerAchievements,
+    useQueryPlayerTimelineAchievements,
+} from "../api/queries"
 
 const YearSelector = ({
     selected,
@@ -98,64 +40,122 @@ const YearSelector = ({
     )
 }
 
-const Timeline = () => {
+const Calendar = ({
+    year,
+    achievements,
+}: {
+    year: number
+    achievements: RecentAchievement[]
+}) => {
+    console.log("Calendar", year)
+    const yearDate = dayjs(`01-01-${year}`)
+
+    // Make all achievements have a dayjs object
+    const unlockedAchievementDates = useMemo(
+        () => achievements.map((achievement) => dayjs(achievement.unlocked)),
+        [achievements]
+    )
+
+    const getAchievementCount = (date: dayjs.Dayjs) =>
+        unlockedAchievementDates.filter((item) => item.isSame(date, "day"))
+            .length
+
+    const calendar = useMemo(() => {
+        console.time("Building calendar")
+        const startOfTimeline = yearDate.startOf("year")
+        const endOfTimeline = yearDate.endOf("year")
+        const totalDays = endOfTimeline.diff(startOfTimeline, "days")
+
+        const calendar: { [key: number]: React.JSX.Element[] } = {
+            0: [], // sunday
+            1: [], // monday
+            2: [], // tuesday
+            3: [], // wednesday
+            4: [], // thursday
+            5: [], // friday
+            6: [], // saturday
+        }
+
+        let currentDate = dayjs(startOfTimeline)
+        let day = Number(currentDate.format("d"))
+
+        for (let index = 0; index < day; index++) {
+            calendar[index].push(<td key={day + index}></td>)
+        }
+
+        for (let index = 0; index <= totalDays; index++) {
+            const count = getAchievementCount(currentDate)
+
+            let colorClassName = "none"
+            if (count > 0 && count < 6) {
+                colorClassName = "low"
+            } else if (count > 6 && count < 20) {
+                colorClassName = "med"
+            } else if (count > 20) {
+                colorClassName = "high"
+            }
+
+            const dateString = currentDate.format("DD/MM/YYYY")
+
+            calendar[day].push(
+                <td
+                    key={dateString}
+                    className={["day", colorClassName, "light"].join(" ")}
+                    style={{ border: "none" }}
+                    title={`${count} achievements on ${dateString}`}
+                >
+                    <span className="sr-only">{dateString}</span>
+                </td>
+            )
+
+            currentDate = currentDate.add(1, "day")
+            day = Number(currentDate.format("d"))
+        }
+
+        console.timeEnd("Building calendar")
+        return calendar
+    }, [yearDate])
+
+    return (
+        <table className="">
+            <tbody>
+                {[...Array(8).keys()].map((index) => (
+                    <tr key={index}>{calendar[index]}</tr>
+                ))}
+            </tbody>
+        </table>
+    )
+}
+
+const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
-    const year = dayjs(`01-01-${selectedYear}`)
-    const startOfTimeline = year.startOf("year")
-    const endOfTimeline = year.endOf("year")
-    const totalDays = endOfTimeline.diff(startOfTimeline, "days")
+    const { loading, error, data } = useQueryPlayerTimelineAchievements({
+        player,
+        year: selectedYear,
+    })
 
-    console.log(startOfTimeline, endOfTimeline)
-
-    const calendar: { [key: number]: React.JSX.Element } = {
-        0: [], // sunday
-        1: [], // monday
-        2: [], // tuesday
-        3: [], // wednesday
-        4: [], // thursday
-        5: [], // friday
-        6: [], // saturday
-    }
-
-    let currentDate = dayjs(startOfTimeline)
-    let day = Number(currentDate.format("d"))
-
-    for (let index = 0; index < day; index++) {
-        calendar[index].push(<td></td>)
-    }
-
-    for (let index = 0; index <= totalDays; index++) {
-        calendar[day].push(
-            <td className="day" title={currentDate.toString()}>
-                <span className="sr-only">DATE</span>
-            </td>
-        )
-
-        currentDate = currentDate.add(1, "day")
-        day = Number(currentDate.format("d"))
-    }
+    const achievements = data ? data : ([] as RecentAchievement[])
 
     return (
         <div>
             <div
+                className="calendar-container"
                 style={{
-                    // backgroundColor: "yellow",
-                    minWidth: 400,
+                    width: 650,
                     margin: 5,
-                    border: "1px solid lightgray",
                     padding: 5,
+                    minHeight: 130,
                 }}
             >
                 <YearSelector
                     selected={selectedYear}
                     onChange={(year) => setSelectedYear(year)}
                 />
-                <table className="">
-                    {[...Array(8).keys()].map((index) => (
-                        <tr>{calendar[index]}</tr>
-                    ))}
-                </table>
-                {/* <VerticalCalendar /> */}
+                {loading ? (
+                    <div>Loading...</div>
+                ) : (
+                    <Calendar year={selectedYear} achievements={achievements} />
+                )}
             </div>
         </div>
     )
