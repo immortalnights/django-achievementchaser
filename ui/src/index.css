@@ -6,3 +6,33 @@ body {
 #root {
     height: 100vh;
 }
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+}
+
+.week {
+    display: flex;
+}
+
+.day {
+    border: 1px solid black;
+    background-color: lightgray;
+    height: 11px; /* somehow don't set this? */
+    width: 11px;
+    line-height: 21px;
+    font-size: 14px;
+    border-radius: 2px;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    word-wrap: normal;
+    border: 0;
+}
