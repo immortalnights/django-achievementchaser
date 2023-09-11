@@ -36,8 +36,7 @@ const PlayerHeaderContent = ({ player }: { player: Player }) => {
 }
 
 const PlayerHeader = ({ player }: { player: string }) => {
-    const { id = throwExpression("missing param") } = useParams()
-    const { loading, error, data } = useQueryPlayer(id)
+    const { loading, error, data } = useQueryPlayer(player)
 
     return (
         <Loader

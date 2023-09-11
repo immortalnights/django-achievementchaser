@@ -1,10 +1,6 @@
 import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
 import { useMemo, useState } from "react"
-import {
-    useQueryPlayerAchievements,
-    useQueryPlayerTimelineAchievements,
-} from "../api/queries"
+import { useQueryPlayerTimelineAchievements } from "../api/queries"
 
 const YearSelector = ({
     selected,
@@ -68,9 +64,12 @@ const Calendar = ({
         [achievements]
     )
 
-    const getAchievementCount = (date: dayjs.Dayjs) =>
-        unlockedAchievementDates.filter((item) => item.isSame(date, "day"))
-            .length
+    const getAchievementCount = useMemo(
+        () => (date: dayjs.Dayjs) =>
+            unlockedAchievementDates.filter((item) => item.isSame(date, "day"))
+                .length,
+        [unlockedAchievementDates]
+    )
 
     const calendar = useMemo(() => {
         console.time("Building calendar")
@@ -126,7 +125,7 @@ const Calendar = ({
 
         console.timeEnd("Building calendar")
         return calendar
-    }, [yearDate])
+    }, [getAchievementCount, yearDate])
 
     return (
         <table className="">
@@ -141,7 +140,7 @@ const Calendar = ({
 
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
-    const { loading, error, data } = useQueryPlayerTimelineAchievements({
+    const { loading, _error, data } = useQueryPlayerTimelineAchievements({
         player,
         year: selectedYear,
     })
