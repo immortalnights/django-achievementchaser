@@ -13,9 +13,21 @@ const YearSelector = ({
     selected: number
     onChange: (year: number) => void
 }) => {
-    const years = [...Array(6).keys()].map((count) => selected - 5 + count)
+    const displayCount = 7
     const minYear = 2000
     const maxYear = dayjs().year()
+    let startYear: number
+
+    if (selected - Math.ceil(displayCount / 2) < minYear) {
+        startYear = minYear
+    } else if (selected + Math.floor(displayCount / 2) > maxYear) {
+        startYear = maxYear - displayCount + 1
+    } else {
+        startYear = selected - Math.floor(displayCount / 2)
+    }
+    const years = [...Array(displayCount).keys()].map(
+        (count) => startYear + count
+    )
 
     const handlePreviousClick = () => onChange(selected - 1)
     const handleNextClick = () => onChange(selected + 1)
