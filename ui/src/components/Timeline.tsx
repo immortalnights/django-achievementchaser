@@ -140,7 +140,7 @@ const Calendar = ({
 
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
-    const { loading, _error, data } = useQueryPlayerTimelineAchievements({
+    const { loading, data } = useQueryPlayerTimelineAchievements({
         player,
         year: selectedYear,
     })
