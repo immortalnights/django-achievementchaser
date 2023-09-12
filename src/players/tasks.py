@@ -1,9 +1,7 @@
-import logging
+from loguru import logger
 from typing import TypedDict, Union, Optional
 from datetime import timedelta
 import time
-from celery import shared_task
-from celery.utils.log import get_task_logger  # noqa F401
 from django.db.models import Q
 from django.utils import timezone
 from .models import Player, PlayerOwnedGame
@@ -11,8 +9,6 @@ from .service import load_player, resynchronize_player, resynchronize_player_ach
 from achievementchaser.utilities import can_resynchronize_model
 from games.service import load_game, resynchronize_game
 from games.models import Game
-
-logger = get_task_logger(__name__)  # logging.getLogger()
 
 
 PlayerResponse = TypedDict("PlayerResponse", {"id": int, "name": str, "resynchronized": Optional[str]}, total=False)
@@ -29,25 +25,24 @@ ResynchronizePlayerGameResponse = TypedDict(
 )
 
 
-@shared_task
 def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
     """Resynchronize players that are flagged for resynchronization or have not been resynchronized recently
     Players are resynchronized every hour (there wont ever be many players).
     """
-    logging.debug("Begin resynchronization of players")
+    logger.debug("Begin resynchronization of players")
 
     due = timezone.now() - timedelta(hours=1)
 
     logger.debug(f"Find players last resynchronized before {due}")
     query = Q(resynchronization_required=True) | Q(resynchronized__lt=due)
     players = Player.objects.filter(query)
-    logging.debug(f"Found {players.count()} players which require resynchronization")
+    logger.debug(f"Found {players.count()} players which require resynchronization")
 
     # Prevent excessive work if, somehow, there are many players
     limit = 10
     players = players[:limit]
 
-    logging.debug(f"Resynchronizing {players.count()} players")
+    logger.debug(f"Resynchronizing {players.count()} players")
     for player in players:
         if asynchronous:
             resynchronize_player_task.delay(player.id)
@@ -55,22 +50,21 @@ def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
             resynchronize_player_task.apply([player.id])
 
 
-@shared_task
 def scheduled_resynchronize_players_owned_games_task(
     *, asynchronous: bool = True, throttle_delay: Optional[int] = None
 ):
     """Resynchronize player owned games that are flagged for resynchronization.
     Intended for when a new player is added.
     """
-    logging.debug("Begin resynchronization of players owned games")
+    logger.debug("Begin resynchronization of players owned games")
     owned_games = PlayerOwnedGame.objects.filter(resynchronization_required=True)
-    logging.debug(f"Found {owned_games.count()} owned games which require resynchronization")
+    logger.debug(f"Found {owned_games.count()} owned games which require resynchronization")
 
     # Prevent excessive work in one event
     limit = 50
     owned_games = owned_games[:limit]
 
-    logging.debug(f"Resynchronizing {owned_games.count()} owned games")
+    logger.debug(f"Resynchronizing {owned_games.count()} owned games")
     for owned_game in owned_games:
         if asynchronous:
             resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
@@ -81,7 +75,6 @@ def scheduled_resynchronize_players_owned_games_task(
             time.sleep(throttle_delay)
 
 
-@shared_task
 def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
     """Resolves `identity` to a Player and attempts to resynchronize them.
 
@@ -93,20 +86,19 @@ def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
     if player is None:
         raise Player.DoesNotExist(f"Player '{identity}' does not exist")
     else:
-        logging.info(f"Beginning resynchronization of Player {player.name} ({player.id})")
+        logger.info(f"Beginning resynchronization of Player {player.name} ({player.id})")
 
         if not can_resynchronize_model(player):
-            logging.warning(f"Resynchronization of player {player.name} blocked")
+            logger.warning(f"Resynchronization of player {player.name} blocked")
         elif not resynchronize_player(player):
-            logging.warning(f"Resynchronization of player {player.name} failed")
+            logger.warning(f"Resynchronization of player {player.name} failed")
         else:
-            logging.info(f"Resynchronization of player {player.name} complete")
+            logger.info(f"Resynchronization of player {player.name} complete")
             ok = True
 
     return ok
 
 
-@shared_task
 def resynchronize_player_game_task(
     player_identifier: Union[str, int], game_identifier: Union[str, int]
 ) -> ResynchronizePlayerGameResponse:
@@ -129,13 +121,13 @@ def resynchronize_player_game_task(
             owned_game.refresh_from_db()
             ok = True
         else:
-            logging.warning(f"Resynchronization of player {player.name} owned game game {game.name} blocked")
+            logger.warning(f"Resynchronization of player {player.name} owned game game {game.name} blocked")
     except Player.DoesNotExist:
-        logging.error(f"Failed to find player {player}")
+        logger.error(f"Failed to find player {player}")
     except Game.DoesNotExist:
-        logging.error(f"Failed to find game {game}")
+        logger.error(f"Failed to find game {game}")
     except PlayerOwnedGame.DoesNotExist:
-        logging.error(f"Failed to find player {player.name} game {game.name}")
+        logger.error(f"Failed to find player {player.name} game {game.name}")
 
     return {
         "ok": ok,
