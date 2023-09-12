@@ -1,5 +1,6 @@
+import { ChangeEvent, useMemo, useState } from "react"
 import dayjs from "dayjs"
-import { useMemo, useState } from "react"
+import { InputLabel, NativeSelect, Skeleton } from "@mui/material"
 import { useQueryPlayerTimelineAchievements } from "../api/queries"
 
 const YearSelector = ({
@@ -9,41 +10,57 @@ const YearSelector = ({
     selected: number
     onChange: (year: number) => void
 }) => {
-    const displayCount = 7
-    const minYear = 2000
+    const minYear = 2008
     const maxYear = dayjs().year()
-    let startYear: number
+    let startYear: number = minYear
 
-    if (selected - Math.ceil(displayCount / 2) < minYear) {
-        startYear = minYear
-    } else if (selected + Math.floor(displayCount / 2) > maxYear) {
-        startYear = maxYear - displayCount + 1
-    } else {
-        startYear = selected - Math.floor(displayCount / 2)
-    }
-    const years = [...Array(displayCount).keys()].map(
-        (count) => startYear + count
+    const years = [...Array(maxYear - minYear + 1).keys()].map(
+        (index) => startYear + index
     )
 
-    const handlePreviousClick = () => onChange(selected - 1)
-    const handleNextClick = () => onChange(selected + 1)
+    const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+        onChange(Number(e.target.value))
+    }
 
     return (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <button
-                onClick={handlePreviousClick}
-                disabled={selected === minYear}
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+            }}
+        >
+            <div style={{ marginLeft: 5 }}>Jan</div>
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                }}
             >
-                &lt;
-            </button>
-            {years.map((year) => (
-                <div key={`year-${year}`} onClick={() => onChange(year)}>
-                    {selected === year ? <strong>{year}</strong> : year}
-                </div>
-            ))}
-            <button onClick={handleNextClick} disabled={selected === maxYear}>
-                &gt;
-            </button>
+                <InputLabel
+                    variant="standard"
+                    htmlFor="year-select"
+                    style={{ marginRight: 10 }}
+                >
+                    Year
+                </InputLabel>
+                <NativeSelect
+                    defaultValue={selected.toFixed(0)}
+                    onChange={handleChange}
+                    inputProps={{
+                        name: "year",
+                        id: "year-select",
+                    }}
+                >
+                    {years.map((year) => (
+                        <option key={year} value={year.toFixed(0)}>
+                            {year}
+                        </option>
+                    ))}
+                </NativeSelect>
+            </div>
+            <div style={{ marginRight: "2em" }}>Dec</div>
         </div>
     )
 }
@@ -59,17 +76,22 @@ const Calendar = ({
     const yearDate = dayjs(`01-01-${year}`)
 
     // Make all achievements have a dayjs object
-    const unlockedAchievementDates = useMemo(
-        () => achievements.map((achievement) => dayjs(achievement.unlocked)),
-        [achievements]
-    )
+    const unlockedAchievementIndex = useMemo(() => {
+        const index: { [key: string]: number } = {}
+        achievements.forEach((achievement) => {
+            const date = dayjs(achievement.unlocked).format("DD-MM-YYYY")
+            if (!index[date]) {
+                index[date] = 0
+            }
 
-    const getAchievementCount = useMemo(
-        () => (date: dayjs.Dayjs) =>
-            unlockedAchievementDates.filter((item) => item.isSame(date, "day"))
-                .length,
-        [unlockedAchievementDates]
-    )
+            index[date] += 1
+        })
+
+        return index
+    }, [achievements])
+
+    const getAchievementCount = (date: dayjs.Dayjs) =>
+        unlockedAchievementIndex[date.format("DD-MM-YYYY")] ?? 0
 
     const calendar = useMemo(() => {
         console.time("Building calendar")
@@ -155,7 +177,6 @@ const Timeline = ({ player }: { player: string }) => {
                     width: 650,
                     margin: 5,
                     padding: 5,
-                    minHeight: 130,
                 }}
             >
                 <YearSelector
@@ -163,7 +184,7 @@ const Timeline = ({ player }: { player: string }) => {
                     onChange={(year) => setSelectedYear(year)}
                 />
                 {loading ? (
-                    <div>Loading...</div>
+                    <Calendar year={selectedYear} achievements={[]} />
                 ) : (
                     <Calendar year={selectedYear} achievements={achievements} />
                 )}
