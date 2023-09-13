@@ -1,6 +1,6 @@
-import { ChangeEvent, useMemo, useState } from "react"
+import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import dayjs from "dayjs"
-import { InputLabel, NativeSelect, Skeleton } from "@mui/material"
+import { InputLabel, NativeSelect } from "@mui/material"
 import { useQueryPlayerTimelineAchievements } from "../api/queries"
 
 const YearSelector = ({
@@ -10,11 +10,10 @@ const YearSelector = ({
     selected: number
     onChange: (year: number) => void
 }) => {
-    const minYear = 2008
-    const maxYear = dayjs().year()
-    let startYear: number = minYear
+    const startYear = 2008
+    const endYear = dayjs().year()
 
-    const years = [...Array(maxYear - minYear + 1).keys()].map(
+    const years = [...Array(endYear - startYear + 1).keys()].map(
         (index) => startYear + index
     )
 
@@ -90,8 +89,11 @@ const Calendar = ({
         return index
     }, [achievements])
 
-    const getAchievementCount = (date: dayjs.Dayjs) =>
-        unlockedAchievementIndex[date.format("DD-MM-YYYY")] ?? 0
+    const getAchievementCount = useCallback(
+        (date: dayjs.Dayjs) =>
+            unlockedAchievementIndex[date.format("DD-MM-YYYY")] ?? 0,
+        [unlockedAchievementIndex]
+    )
 
     const calendar = useMemo(() => {
         console.time("Building calendar")
