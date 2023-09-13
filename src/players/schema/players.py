@@ -40,7 +40,7 @@ def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, re
         "description": achievement.achievement.description,
         "icon_url": achievement.achievement.icon_url,
         "icon_gray_url": achievement.achievement.icon_gray_url,
-        "global_percentage": achievement.achievement.global_percentage,
+        "global_percentage": achievement.achievement.global_percentage or 0,
         "unlocked": achievement.datetime if achievement.datetime is not None else None,
     }
 
@@ -345,7 +345,7 @@ class Query(graphene.ObjectType):
                 unlocked_achievements = unlocked_achievements.select_related("achievement")
                 indexed_unlocked_achievements = {obj.achievement.name: obj for obj in unlocked_achievements}
 
-                def create_achievement(achievement):
+                def create_achievement(achievement: Achievement):
                     unlocked_achievement = (
                         indexed_unlocked_achievements[achievement.name]
                         if (achievement.name in indexed_unlocked_achievements)
@@ -359,7 +359,7 @@ class Query(graphene.ObjectType):
                         "description": achievement.description,
                         "icon_url": achievement.icon_url,
                         "icon_gray_url": achievement.icon_gray_url,
-                        "global_percentage": achievement.global_percentage,
+                        "global_percentage": achievement.global_percentage or 0,
                         "unlocked": unlocked_achievement.datetime if unlocked_achievement else None,
                     }
 
