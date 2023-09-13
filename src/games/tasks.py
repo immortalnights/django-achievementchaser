@@ -16,7 +16,7 @@ ResynchronizeGameResponse = TypedDict(
 )
 
 
-def scheduled_resynchronize_games_task(*, asynchronous: bool = True, throttle_delay: Optional[int] = None):
+def resynchronize_games_task():
     """Resynchronize games that are flagged for resynchronization or have not been resynchronized recently"""
     logger.debug("Begin resynchronization of games")
 
@@ -33,13 +33,10 @@ def scheduled_resynchronize_games_task(*, asynchronous: bool = True, throttle_de
 
     logger.debug(f"Resynchronizing {games.count()} games")
     for game in games:
-        if asynchronous:
-            resynchronize_game_task.delay(game.id)
-        else:
-            resynchronize_game_task.apply([game.id])
+        resynchronize_game_task(game.id)
 
-        if throttle_delay:
-            time.sleep(throttle_delay)
+        # Prevent overwhelming the Steam API
+        time.sleep(1)
 
 
 def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameResponse:
@@ -57,7 +54,7 @@ def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameRespo
         logger.info(f"Beginning resynchronization of game {game.name} ({identity})")
         if can_resynchronize_model(game):
             logger.warning(f"Resynchronization of game {game.name} blocked")
-        if resynchronize_game(game):
+        elif resynchronize_game(game):
             logger.info(f"Resynchronization of game {game.name} complete")
             resp = {
                 "ok": True,

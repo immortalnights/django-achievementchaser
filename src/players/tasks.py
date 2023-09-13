@@ -44,15 +44,10 @@ def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
 
     logger.debug(f"Resynchronizing {players.count()} players")
     for player in players:
-        if asynchronous:
-            resynchronize_player_task.delay(player.id)
-        else:
-            resynchronize_player_task.apply([player.id])
+        resynchronize_player_task(player.id)
 
 
-def scheduled_resynchronize_players_owned_games_task(
-    *, asynchronous: bool = True, throttle_delay: Optional[int] = None
-):
+def resynchronize_players_owned_games_task():
     """Resynchronize player owned games that are flagged for resynchronization.
     Intended for when a new player is added.
     """
@@ -66,13 +61,10 @@ def scheduled_resynchronize_players_owned_games_task(
 
     logger.debug(f"Resynchronizing {owned_games.count()} owned games")
     for owned_game in owned_games:
-        if asynchronous:
-            resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
-        else:
-            resynchronize_player_game_task.apply([owned_game.player_id, owned_game.game_id])
+        resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
 
-        if throttle_delay:
-            time.sleep(throttle_delay)
+        # Prevent overwhelming the Steam API
+        time.sleep(1)
 
 
 def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:

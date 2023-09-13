@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from achievementchaser.management.lib.command_output import CommandOutput
-from games.tasks import scheduled_resynchronize_games_task
+from games.tasks import resynchronize_games_task
 
 
 class Command(BaseCommand):
@@ -14,5 +14,5 @@ class Command(BaseCommand):
         output = CommandOutput(self)
 
         output.info("Beginning resynchronization of all games")
-        scheduled_resynchronize_games_task.apply(None, {"asynchronous": False, "throttle_delay": 1})
+        resynchronize_games_task()
         output.info("Completed resynchronization of game")
