@@ -79,6 +79,9 @@ class SimpleAchievementType(graphene.ObjectType):
     global_percentage = graphene.Float()
     unlocked = graphene.DateTime()
 
+    def resolve_global_percentage(root, info):
+        return root.global_percentage or 0
+
 
 class EmptyObjectType(graphene.ObjectType):
     class Meta:
