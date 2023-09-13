@@ -80,7 +80,7 @@ class SimpleAchievementType(graphene.ObjectType):
     unlocked = graphene.DateTime()
 
     def resolve_global_percentage(root, info):
-        return root.global_percentage or 0
+        return (root.global_percentage if isinstance(root, Achievement) else root["global_percentage"]) or 0
 
 
 class EmptyObjectType(graphene.ObjectType):
