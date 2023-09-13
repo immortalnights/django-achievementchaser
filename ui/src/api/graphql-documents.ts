@@ -28,6 +28,7 @@ playerGames(id: ${player}, played: true, orderBy: "lastPlayed DESC", limit: 6) {
             id
             name
             imgIconUrl
+            lastPlayed
         }
     }
 }`

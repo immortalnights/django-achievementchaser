@@ -6,6 +6,7 @@ const BorderedImage = styled.img`
         0 3px 14px 2px rgba(0, 0, 0, 0.12),
         0 5px 5px -3px rgba(0, 0, 0, 0.2);
     border: 1px solid black;
+    display: block;
 `
 
 export default BorderedImage

@@ -13,6 +13,7 @@ def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data
     node = {
         "id": owned_game.game_id,
         "playtime": owned_game.playtime_forever,
+        "last_played": owned_game.last_played,
         "completion_percentage": owned_game.completion_percentage,
     }
 
@@ -65,6 +66,7 @@ class SimpleGameType(graphene.ObjectType):
     difficulty_percentage = graphene.Float()
     playtime = graphene.Int()
     playtime_forever = graphene.Int()
+    last_played = graphene.String()
     completion_percentage = graphene.Float()
 
 

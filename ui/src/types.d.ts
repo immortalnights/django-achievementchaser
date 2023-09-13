@@ -146,6 +146,7 @@ interface RecentGame {
     id: string
     name: string
     imgIconUrl: string
+    lastPlayed: string
     difficultyPercentage: number
     completionPercentage: number
 }
