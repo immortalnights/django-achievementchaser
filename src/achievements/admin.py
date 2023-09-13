@@ -15,4 +15,4 @@ class AchievementAdmin(admin.ModelAdmin):
 
     @admin.display(description="Percentage")
     def percentage(self, obj):
-        return f"{obj.global_percentage:05.2f}"
+        return f"{obj.global_percentage:05.2f}%" if obj.global_percentage is not None else "-"
