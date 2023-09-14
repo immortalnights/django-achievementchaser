@@ -75,6 +75,7 @@ def get_player_games2(
     perfect: Optional[bool] = None,
     started: Optional[bool] = None,
     unlocked_achievements: Optional[bool] = None,
+    year: Optional[int] = None,
     order_by: Optional[str] = None,
 ):
     games = PlayerOwnedGame.objects.filter(player_id=player)
@@ -99,6 +100,9 @@ def get_player_games2(
     elif unlocked_achievements is False:
         games = games.filter(game__difficulty_percentage__isnull=True)
 
+    if year is not None:
+        games = games.filter(completed__year=year)
+
     if order_by:
         (key, order_modifier) = parse_order_by(order_by)
 
@@ -117,6 +121,8 @@ def get_player_games2(
             games = games.filter(game__difficulty_percentage__gt=0.0)
         elif key == "lastPlayed":
             order_by_value = f"{order_modifier}last_played"
+        elif key == "completed":
+            order_by_value = f"{order_modifier}completed"
         else:
             logging.error(f"Unknown order by key '{key}'")
 
