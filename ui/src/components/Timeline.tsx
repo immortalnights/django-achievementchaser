@@ -187,7 +187,7 @@ const Calendar = ({
 
         console.timeEnd("Building calendar")
         return calendar
-    }, [getAchievementCount, yearDate])
+    }, [getPerfectGameCount, getAchievementCount, yearDate])
 
     return (
         <table className="">
@@ -202,7 +202,7 @@ const Calendar = ({
 
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
-    const { loading, data } = useQueryPlayerTimeline({
+    const { data } = useQueryPlayerTimeline({
         player,
         year: selectedYear,
     })

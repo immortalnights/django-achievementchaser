@@ -152,10 +152,15 @@ interface RecentGame {
     completionPercentage: number
 }
 
-interface TimelineResponse extends BaseQueryResponse {
+interface TimelineResponse
+    extends PlayerAchievementsResponse,
+        BaseQueryResponse {
     playerGames: {
         edges: { node: OwnedGame }[]
     }
+}
+
+interface PlayerAchievementsResponse extends BaseQueryResponse {
     playerAchievements: {
         edges: { node: RecentAchievement }[]
     }
