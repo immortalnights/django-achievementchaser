@@ -63,13 +63,27 @@ export const timelineAchievements = (player: string, year: number) => gql`
 playerAchievements(
     id: ${player}
     unlocked: true
-    before: ${year}
-    after: ${year}
+    year: ${year}
 ) {
     edges {
         node {
             id
             unlocked
+        }
+    }
+}`
+
+export const perfectGames = (player: string, year: number) => gql`
+playerGames(
+    id: ${player}
+    perfect: true
+    yearCompleted: ${year}
+) {
+    edges {
+        node {
+            id
+            name
+            completed
         }
     }
 }`
@@ -161,6 +175,7 @@ export default {
     recentGames,
     recentAchievements,
     timelineAchievements,
+    perfectGames,
     almostCompleteGames,
     justStartedGames,
     nextGames,

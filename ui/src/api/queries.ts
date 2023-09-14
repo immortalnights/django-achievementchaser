@@ -103,6 +103,7 @@ export const useQueryPlayerOwnedGames = ({
                     lastPlayed
                     difficultyPercentage
                     completionPercentage
+                    completed
                 }
             }
         }
@@ -177,7 +178,7 @@ export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
     return { loading, error, data }
 }
 
-export const useQueryPlayerTimelineAchievements = ({
+export const useQueryPlayerTimeline = ({
     player,
     year,
 }: {
@@ -185,11 +186,22 @@ export const useQueryPlayerTimelineAchievements = ({
     year: number
 }) => {
     const { loading, error, data, trigger } = useQuery<
-        PlayerAchievementsResponse,
-        RecentAchievement[]
+        TimelineResponse,
+        {
+            perfectGames: OwnedGame[]
+            achievements: RecentAchievement[]
+        }
     >(
-        (player) => gqlDocument.timelineAchievements(player, year),
-        (response) => response.playerAchievements.edges.map((edge) => edge.node)
+        (player) => [
+            gqlDocument.timelineAchievements(player, year),
+            gqlDocument.perfectGames(player, year),
+        ],
+        (response) => ({
+            perfectGames: response.playerGames.edges.map((edge) => edge.node),
+            achievements: response.playerAchievements.edges.map(
+                (edge) => edge.node
+            ),
+        })
     )
 
     useEffect(
