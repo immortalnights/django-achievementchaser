@@ -62,7 +62,7 @@ export const useQueryPlayerOwnedGames = ({
     perfect?: boolean
     started?: boolean
     unlockedAchievements?: boolean
-    limit: number
+    limit?: number
     orderBy: string
 }) => {
     const queryParameters: string[] = []
@@ -100,6 +100,7 @@ export const useQueryPlayerOwnedGames = ({
                     id
                     name
                     imgIconUrl
+                    lastPlayed
                     difficultyPercentage
                     completionPercentage
                 }
