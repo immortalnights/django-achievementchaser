@@ -72,5 +72,4 @@ class Command(BaseCommand):
         logger.info(f"import '{identity}'")
         r = import_player(logger, identity)
 
-        # TODO handle celery.exceptions.TimeoutError
         logger.info(f"Result {r}")

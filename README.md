@@ -10,12 +10,6 @@ docker-compose up
 python .\src\manage.py runserver
 ```
 
-```
-cd src
-celery --app achievementchaser worker --loglevel DEBUG -P solo
-celery --app achievementchaser beat
-```
-
 ## Requirements
 
 - python

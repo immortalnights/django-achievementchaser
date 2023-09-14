@@ -12,7 +12,6 @@ dependencies = [
     "graphene_django",
     "django-cors-headers",
     "loguru",
-    "celery",
 ]
 
 [project.optional-dependencies]
