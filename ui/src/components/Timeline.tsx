@@ -1,7 +1,7 @@
 import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import dayjs from "dayjs"
 import { InputLabel, NativeSelect } from "@mui/material"
-import { useQueryPlayerTimelineAchievements } from "../api/queries"
+import { useQueryPlayerTimeline } from "../api/queries"
 
 const YearSelector = ({
     selected,
@@ -66,9 +66,11 @@ const YearSelector = ({
 
 const Calendar = ({
     year,
+    perfectGames,
     achievements,
 }: {
     year: number
+    perfectGames: OwnedGame[]
     achievements: RecentAchievement[]
 }) => {
     console.log("Calendar", year)
@@ -89,9 +91,27 @@ const Calendar = ({
         return index
     }, [achievements])
 
+    const perfectGamesIndex = useMemo(() => {
+        const index: { [key: string]: number } = {}
+        perfectGames.forEach((game) => {
+            const date = dayjs(game.completed).format("DD-MM-YYYY")
+            if (!index[date]) {
+                index[date] = 0
+            }
+
+            index[date] += 1
+        })
+
+        return index
+    }, [perfectGames])
+
+    const getPerfectGameCount = useCallback(
+        (date: string) => perfectGamesIndex[date] ?? 0,
+        [perfectGamesIndex]
+    )
+
     const getAchievementCount = useCallback(
-        (date: dayjs.Dayjs) =>
-            unlockedAchievementIndex[date.format("DD-MM-YYYY")] ?? 0,
+        (date: string) => unlockedAchievementIndex[date] ?? 0,
         [unlockedAchievementIndex]
     )
 
@@ -119,25 +139,43 @@ const Calendar = ({
         }
 
         for (let index = 0; index <= totalDays; index++) {
-            const count = getAchievementCount(currentDate)
+            const dateString = currentDate.format("DD-MM-YYYY")
+            const perfectGameCount = getPerfectGameCount(dateString)
+            const achievementCount = getAchievementCount(dateString)
+
+            let perfectGameClassName
+            if (perfectGameCount > 0) {
+                perfectGameClassName = "perfect"
+            }
 
             let colorClassName = "none"
-            if (count > 0 && count < 6) {
+            if (achievementCount > 0 && achievementCount < 6) {
                 colorClassName = "low"
-            } else if (count > 6 && count < 20) {
+            } else if (achievementCount >= 6 && achievementCount < 20) {
                 colorClassName = "med"
-            } else if (count > 20) {
+            } else if (achievementCount > 20) {
                 colorClassName = "high"
             }
 
-            const dateString = currentDate.format("DD/MM/YYYY")
+            let title
+            if (perfectGameCount > 0 && achievementCount > 0) {
+                title = `${perfectGameCount} perfect games and ${achievementCount} achievements on ${dateString}`
+            } else if (achievementCount > 0) {
+                title = `${achievementCount} achievements on ${dateString}`
+            } else {
+                title = `No achievements on ${dateString}`
+            }
 
             calendar[day].push(
                 <td
                     key={dateString}
-                    className={["day", colorClassName, "light"].join(" ")}
-                    style={{ border: "none" }}
-                    title={`${count} achievements on ${dateString}`}
+                    className={[
+                        "day",
+                        colorClassName,
+                        perfectGameClassName,
+                        "light",
+                    ].join(" ")}
+                    title={title}
                 >
                     <span className="sr-only">{dateString}</span>
                 </td>
@@ -149,7 +187,7 @@ const Calendar = ({
 
         console.timeEnd("Building calendar")
         return calendar
-    }, [getAchievementCount, yearDate])
+    }, [getPerfectGameCount, getAchievementCount, yearDate])
 
     return (
         <table className="">
@@ -164,12 +202,13 @@ const Calendar = ({
 
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
-    const { loading, data } = useQueryPlayerTimelineAchievements({
+    const { data } = useQueryPlayerTimeline({
         player,
         year: selectedYear,
     })
 
-    const achievements = data ? data : ([] as RecentAchievement[])
+    const perfectGames = data ? data.perfectGames : ([] as OwnedGame[])
+    const achievements = data ? data.achievements : ([] as RecentAchievement[])
 
     return (
         <div>
@@ -185,11 +224,11 @@ const Timeline = ({ player }: { player: string }) => {
                     selected={selectedYear}
                     onChange={(year) => setSelectedYear(year)}
                 />
-                {loading ? (
-                    <Calendar year={selectedYear} achievements={[]} />
-                ) : (
-                    <Calendar year={selectedYear} achievements={achievements} />
-                )}
+                <Calendar
+                    year={selectedYear}
+                    perfectGames={perfectGames}
+                    achievements={achievements}
+                />
             </div>
         </div>
     )

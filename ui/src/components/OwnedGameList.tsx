@@ -1,6 +1,8 @@
 import styled from "@emotion/styled"
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 
 const FlexWrappedList = styled.ul`
     list-style: none;
@@ -23,9 +25,20 @@ const GameItem = ({
     game: OwnedGame
     showCompletion: boolean
 }) => {
+    dayjs.extend(relativeTime)
+
     let title = `${game.name}`
-    if (showCompletion && game.completionPercentage) {
-        title += ` - ${(game.completionPercentage * 100).toFixed(2)}% Complete`
+    if (showCompletion) {
+        const completionDate = dayjs(game.completed)
+        if (game.completed) {
+            title += ` - ${completionDate.format(
+                "MMM D, YYYY"
+            )} (${completionDate.fromNow()})`
+        } else if (game.completionPercentage) {
+            title += ` - ${(game.completionPercentage * 100).toFixed(
+                2
+            )}% Complete`
+        }
     } else if (game.difficultyPercentage) {
         title += ` - ${game.difficultyPercentage.toFixed(2)}%`
     }

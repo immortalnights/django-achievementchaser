@@ -119,6 +119,7 @@ interface OwnedGame {
     name: string
     imgIconUrl: string
     completionPercentage: number
+    completed: string
     difficultyPercentage: number
 }
 
@@ -149,6 +150,14 @@ interface RecentGame {
     lastPlayed: string
     difficultyPercentage: number
     completionPercentage: number
+}
+
+interface TimelineResponse
+    extends PlayerAchievementsResponse,
+        BaseQueryResponse {
+    playerGames: {
+        edges: { node: OwnedGame }[]
+    }
 }
 
 interface PlayerAchievementsResponse extends BaseQueryResponse {

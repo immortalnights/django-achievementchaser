@@ -31,7 +31,7 @@ export const useQuery = <ResponseType extends BaseQueryResponse, DataType>(
             document = document.join("\n")
         }
 
-        request<ResponseType>("/graphql/", `{${String(document)}}`)
+        request<ResponseType>("/graphql/", `{${String(document)}\n}`)
             .then((response) => {
                 setState({
                     loading: false,

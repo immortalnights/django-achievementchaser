@@ -64,7 +64,7 @@ const PlayerPerfectGamesContent = ({
             <OwnedGameList
                 player={player}
                 games={games}
-                showCompletion={false}
+                showCompletion={true}
             />
         </Paper>
     )
@@ -75,7 +75,7 @@ const PlayerPerfectGames = () => {
     const { loading, error, data } = useQueryPlayerOwnedGames({
         player,
         perfect: true,
-        orderBy: "lastPlayed DESC",
+        orderBy: "completed DESC",
     })
 
     return (

@@ -15,6 +15,7 @@ def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data
         "playtime": owned_game.playtime_forever,
         "last_played": owned_game.last_played,
         "completion_percentage": owned_game.completion_percentage,
+        "completed": owned_game.completed,
     }
 
     # If game data is required, populate the entire result object as more than
@@ -68,6 +69,7 @@ class SimpleGameType(graphene.ObjectType):
     playtime_forever = graphene.Int()
     last_played = graphene.String()
     completion_percentage = graphene.Float()
+    completed = graphene.DateTime()
 
 
 class SimpleAchievementType(graphene.ObjectType):
@@ -164,6 +166,7 @@ class Query(graphene.ObjectType):
         perfect=graphene.Boolean(),
         started=graphene.Boolean(),
         unlocked_achievements=graphene.Boolean(),
+        year_completed=graphene.Int(),
         limit=graphene.Int(),
         order_by=graphene.String(),
     )
@@ -178,9 +181,8 @@ class Query(graphene.ObjectType):
         xPlayerAchievementType,
         id=graphene.BigInt(),
         unlocked=graphene.Boolean(),
+        year=graphene.Int(),
         limit=graphene.Int(),
-        after=graphene.Int(),
-        before=graphene.Int(),
     )
 
     player_achievements_for_game = graphene.Field(
@@ -216,6 +218,7 @@ class Query(graphene.ObjectType):
         perfect: Optional[bool] = None,
         started: Optional[bool] = None,
         unlocked_achievements: Optional[bool] = None,
+        year_completed: Optional[int] = None,
         limit: Optional[int] = None,
         order_by: Optional[str] = None,
     ):
@@ -231,6 +234,7 @@ class Query(graphene.ObjectType):
             perfect=perfect,
             started=started,
             unlocked_achievements=unlocked_achievements,
+            year=year_completed,
             order_by=order_by,
         )
 
@@ -301,9 +305,8 @@ class Query(graphene.ObjectType):
         info,
         id: str,
         unlocked: Optional[bool] = None,
+        year: Optional[int] = None,
         limit: Optional[int] = None,
-        after: Optional[int] = None,
-        before: Optional[int] = None,
     ):
         selected_field_hierarchy = get_field_selection_hierarchy(info.field_nodes)
         node_fields = get_edge_node_fields(selected_field_hierarchy)
@@ -318,14 +321,8 @@ class Query(graphene.ObjectType):
         total_count = None
 
         if unlocked is True:
-            if after and before:
-                unlocked_achievements = unlocked_achievements.filter(
-                    datetime__year__gte=after, datetime__year__lte=before
-                )
-            elif after:
-                unlocked_achievements = unlocked_achievements.filter(datetime__year__gt=after)
-            elif before:
-                unlocked_achievements = unlocked_achievements.filter(datetime__year__lt=before)
+            if year is not None:
+                unlocked_achievements = unlocked_achievements.filter(datetime__year=year)
 
             total_count = unlocked_achievements.count() if "totalCount" in selected_field_hierarchy else None
 
