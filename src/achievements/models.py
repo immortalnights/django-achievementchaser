@@ -13,7 +13,7 @@ class Achievement(models.Model):
     description = models.TextField()
     icon_url = models.CharField(max_length=255)
     icon_gray_url = models.CharField(max_length=255)
-    global_percentage = models.FloatField(null=True)
+    global_percentage = models.FloatField(default=0)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
