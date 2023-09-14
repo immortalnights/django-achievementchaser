@@ -14,6 +14,6 @@ class Command(BaseCommand):
         output = CommandOutput(self)
 
         output.info("Beginning resynchronization of players")
-        resynchronize_players_task(None, {"asynchronous": False})
-        resynchronize_players_owned_games_task(None, {"asynchronous": False, "throttle_delay": 1})
+        resynchronize_players_task()
+        resynchronize_players_owned_games_task()
         output.info("Completed resynchronization of players")

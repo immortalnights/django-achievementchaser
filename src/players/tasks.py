@@ -25,7 +25,7 @@ ResynchronizePlayerGameResponse = TypedDict(
 )
 
 
-def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
+def resynchronize_players_task():
     """Resynchronize players that are flagged for resynchronization or have not been resynchronized recently
     Players are resynchronized every hour (there wont ever be many players).
     """
@@ -61,7 +61,7 @@ def resynchronize_players_owned_games_task():
 
     logger.debug(f"Resynchronizing {owned_games.count()} owned games")
     for owned_game in owned_games:
-        resynchronize_player_game_task.delay(owned_game.player_id, owned_game.game_id)
+        resynchronize_player_game_task(owned_game.player_id, owned_game.game_id)
 
         # Prevent overwhelming the Steam API
         time.sleep(1)
