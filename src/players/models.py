@@ -28,6 +28,7 @@ class PlayerOwnedGame(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     playtime_forever = models.PositiveIntegerField()
     completion_percentage = models.FloatField(default=0)
+    completion_datetime = models.DateTimeField(null=True)
     last_played = models.DateTimeField(null=True)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
