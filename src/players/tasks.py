@@ -25,7 +25,7 @@ ResynchronizePlayerGameResponse = TypedDict(
 )
 
 
-def scheduled_resynchronize_players_task(*, asynchronous: bool = True):
+def resynchronize_players_task():
     """Resynchronize players that are flagged for resynchronization or have not been resynchronized recently
     Players are resynchronized every hour (there wont ever be many players).
     """
