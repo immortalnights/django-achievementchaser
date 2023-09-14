@@ -5,10 +5,8 @@ import { useQuery } from "./base-query"
 
 export const useLazyQueryPlayers = () => {
     return useQuery<PlayerQueryResponse, Player>(
-        (player: string) => gql`{
-        player(name: "${player}") {
+        (player: string) => gql`player(name: "${player}") {
     id
-  }
 }
 `,
         (response) => response.player,
