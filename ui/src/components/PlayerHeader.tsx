@@ -10,6 +10,7 @@ import {
     useQueryPlayerRecent,
 } from "../api/queries"
 import Loader from "./Loader"
+import Timeline from "./Timeline"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -271,20 +272,6 @@ const RecentIcons = ({ player }: { player: string }) => {
     )
 }
 
-const Timeline = () => {
-    return (
-        <div
-            style={{
-                // backgroundColor: "yellow",
-                minWidth: 400,
-                width: "100%",
-                height: 160,
-                margin: 5,
-            }}
-        ></div>
-    )
-}
-
 const PlayerProfileHeader = ({
     id,
     name,
@@ -316,12 +303,12 @@ const PlayerProfileHeader = ({
                 </Grid>
                 <Grid xs={12} sm={10}>
                     <PlayerStatistics player={id} />
-                    <Grid container>
+                    <Grid container wrap="wrap">
                         <Grid xs={6}>
                             <RecentIcons player={id} />
                         </Grid>
-                        <Grid xs={6} flexGrow={1}>
-                            <Timeline />
+                        <Grid xs={6}>
+                            <Timeline player={id} />
                         </Grid>
                     </Grid>
                 </Grid>

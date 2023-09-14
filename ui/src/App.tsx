@@ -23,7 +23,7 @@ function App() {
                     <SearchField placeholder="Search" ariaLabel="search" />
                 </Toolbar>
             </AppBar>
-            <Container>
+            <Container className="light">
                 <Outlet />
             </Container>
         </>

@@ -59,6 +59,21 @@ playerAchievements(
     }
 }`
 
+export const timelineAchievements = (player: string, year: number) => gql`
+playerAchievements(
+    id: ${player}
+    unlocked: true
+    before: ${year}
+    after: ${year}
+) {
+    edges {
+        node {
+            id
+            unlocked
+        }
+    }
+}`
+
 export const almostCompleteGames = (player: string) => gql`
 playerGames(
     id: ${player}
@@ -145,6 +160,7 @@ export default {
     playerProfileSummary,
     recentGames,
     recentAchievements,
+    timelineAchievements,
     almostCompleteGames,
     justStartedGames,
     nextGames,

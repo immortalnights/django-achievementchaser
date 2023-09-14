@@ -6,3 +6,64 @@ body {
 #root {
     height: 100vh;
 }
+
+.calendar {
+    display: flex;
+    flex-direction: column;
+}
+
+.week {
+    display: flex;
+}
+
+.day {
+    height: 11px; /* somehow don't set this? */
+    width: 11px;
+    line-height: 21px;
+    font-size: 14px;
+    border-radius: 2px;
+    outline: #1b1f230f;
+}
+
+.calendar-container .light {
+    background-color: #0d1117;
+}
+.calendar-container .dark {
+    background-color: #0d1117;
+}
+
+.light .day.none {
+    background-color: #ebedf0;
+}
+.light .day.low {
+    background-color: #9be9a8;
+}
+.light .day.med {
+    background-color: #40c463;
+}
+.light .day.high {
+    background-color: #216e39;
+}
+.dark .day.none {
+    background-color: #161b22;
+}
+.dark .day.low {
+    background-color: #0e4429;
+}
+.dark .day.med {
+    background-color: #006d32;
+}
+.dark .day.high {
+    background-color: #39d353;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    word-wrap: normal;
+    border: 0;
+}
