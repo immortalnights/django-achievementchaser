@@ -17,6 +17,10 @@ class AchievementType(DjangoObjectType):
         model = Achievement
         fields = "__all__"
 
+    def resolve_global_percentage(root, info):
+        """Handle rare situations where the global achievement percentages for a game have not been fetched yet."""
+        return root.global_percentage or 0
+
 
 class Query(graphene.ObjectType):
     game = graphene.Field(GameType, id=graphene.Int(), name=graphene.String())
