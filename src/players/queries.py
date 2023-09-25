@@ -120,6 +120,7 @@ def get_player_games2(
             # Only consider games with achievements
             games = games.filter(game__difficulty_percentage__gt=0.0)
         elif key == "lastPlayed":
+            games = games.filter(last_played__isnull=False)
             order_by_value = f"{order_modifier}last_played"
         elif key == "completed":
             order_by_value = f"{order_modifier}completed"
