@@ -1,8 +1,15 @@
 import { ReactNode, useContext } from "react"
-import { Typography, Box, IconButton } from "@mui/material"
+import {
+    Typography,
+    Box,
+    IconButton,
+    Link as ExternalLink,
+} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
-import { VisibilityOff, Visibility } from "@mui/icons-material"
+import { VisibilityOff, Visibility, OpenInNew } from "@mui/icons-material"
 import { Link } from "react-router-dom"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import BorderedImage from "./BorderedImage"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
@@ -141,13 +148,33 @@ const PlayerStatistics = ({ player }: { player: string }) => {
     )
 }
 
-const Header = ({ name }: { name: string }) => {
+const Header = ({
+    id,
+    name,
+    url,
+}: {
+    id: string
+    name: string
+    url: string
+}) => {
     const { hideGameStatistics, toggleGameStatistics } =
         useContext(PlayerProfileContext)
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <Typography variant="h4">{name}</Typography>
+            <ExternalLink
+                component={Link}
+                to={`/player/${id}`}
+                variant="h4"
+                underline="none"
+            >
+                {name}
+            </ExternalLink>
+            <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
+                <ExternalLink href={url} title="Steam Profile" rel="noopener">
+                    <OpenInNew fontSize="small" />
+                </ExternalLink>
+            </Box>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ fontSize: "0.75em" }}>
                 <IconButton
@@ -158,6 +185,28 @@ const Header = ({ name }: { name: string }) => {
                 </IconButton>
             </Box>
         </Box>
+    )
+}
+
+const RecentlyPlayedGame = ({
+    player,
+    game,
+}: {
+    player: string
+    game: RecentGame
+}) => {
+    dayjs.extend(relativeTime)
+
+    const lastPlayed = dayjs(game.lastPlayed).fromNow()
+
+    return (
+        <Link to={`/game/${game.id}?player=${player}`} title={game.name}>
+            <BorderedImage
+                title={`${game.name} last played ${lastPlayed}`}
+                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
+                style={{ display: "block" }}
+            />
+        </Link>
     )
 }
 
@@ -187,16 +236,7 @@ const RecentIconsContent = ({
         >
             {recentGames.map((game) => (
                 <li key={game.id}>
-                    <Link
-                        to={`/player/${player}/game/${game.id}`}
-                        title={game.name}
-                    >
-                        <BorderedImage
-                            title={`Last played ${game.lastPlayed}`}
-                            src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
-                            style={{ display: "block" }}
-                        />
-                    </Link>
+                    <RecentlyPlayedGame player={player} game={game} />
                 </li>
             ))}
             <li>
@@ -226,7 +266,7 @@ const RecentIconsContent = ({
                     style={{ paddingRight: 2 }}
                 >
                     <Link
-                        to={`/player/${player}/game/${item.game.id}`}
+                        to={`/game/${item.game.id}?player=${player}`}
                         title={`${item.displayName} from ${item.game.name}`}
                     >
                         <BorderedImage
@@ -276,6 +316,7 @@ const PlayerProfileHeader = ({
     id,
     name,
     avatarLargeUrl,
+    profileUrl,
 }: {
     id: string
     name?: string
@@ -284,7 +325,7 @@ const PlayerProfileHeader = ({
 }) => {
     return (
         <>
-            <Header name={name ?? ""} />
+            <Header id={id} name={name ?? ""} url={profileUrl ?? ""} />
             <Grid container>
                 <Grid
                     xs={12}

@@ -73,3 +73,25 @@ body {
     word-wrap: normal;
     border: 0;
 }
+
+/* For Firefox */
+body {
+    overflow-y: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+/* For WebKit browsers (Chrome, Safari) */
+body::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* For WebKit browsers (Chrome, Safari) - Track */
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* For WebKit browsers (Chrome, Safari) - Thumb */
+body::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+}

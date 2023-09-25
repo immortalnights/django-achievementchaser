@@ -39,12 +39,15 @@ const GameItem = ({
                 2
             )}% Complete`
         }
+    } else if (game.lastPlayed) {
+        const lastPlayed = dayjs(game.lastPlayed).format("MMM D, YYYY")
+        title += ` - ${lastPlayed}`
     } else if (game.difficultyPercentage) {
         title += ` - ${game.difficultyPercentage.toFixed(2)}%`
     }
 
     return (
-        <ReactiveLink to={`/player/${player}/game/${game.id}`}>
+        <ReactiveLink to={`/game/${game.id}?player=${player}`}>
             <BorderedImage
                 src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
                 title={title}

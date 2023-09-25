@@ -21,7 +21,7 @@ const GameIconList = ({
             {games.map((game) => (
                 <li key={game.id}>
                     <Link
-                        to={`/player/${player}/game/${game.id}`}
+                        to={`/game/${game.id}?player=${player}`}
                         title={game.name}
                     >
                         <BorderedImage

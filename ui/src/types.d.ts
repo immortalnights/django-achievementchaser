@@ -118,9 +118,10 @@ interface OwnedGame {
     id: number
     name: string
     imgIconUrl: string
+    lastPlayed: string
+    difficultyPercentage: number
     completionPercentage: number
     completed: string
-    difficultyPercentage: number
 }
 
 interface PlayerOwnedGameResponse extends BaseQueryResponse {

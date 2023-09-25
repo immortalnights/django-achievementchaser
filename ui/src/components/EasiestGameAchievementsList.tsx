@@ -54,10 +54,11 @@ const EasiestGameAchievementsList = ({
                     gap={1}
                     wrap="wrap"
                     key={item.id}
+                    paddingBottom={0.5}
                 >
                     <Box>
                         <Link
-                            to={`/player/${player}/game/${item.id}`}
+                            to={`/game/${item.id}?player=${player}`}
                             title={item.name}
                         >
                             <BorderedImage
