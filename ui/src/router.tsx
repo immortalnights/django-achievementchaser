@@ -1,4 +1,6 @@
 import { createHashRouter } from "react-router-dom"
+import { request } from "graphql-request"
+import gqlDocument from "./api/graphql-documents"
 import App from "./App"
 import {
     Home,
@@ -6,10 +8,10 @@ import {
     PlayerPerfectGames,
     PlayerRecentAchievements,
     PlayerFriends,
-    PlayerGame,
     Game,
 } from "./screens"
 import PlayerRecentGames from "./screens/PlayerRecentGames"
+import PlayerContainer from "./components/PlayerContainer"
 
 const router = createHashRouter([
     {
@@ -21,28 +23,37 @@ const router = createHashRouter([
                 Component: Home,
             },
             {
-                path: "/Player/:id",
-                Component: PlayerProfile,
-            },
-            {
-                path: "/Player/:id/PerfectGames",
-                Component: PlayerPerfectGames,
-            },
-            {
-                path: "/Player/:id/RecentGames",
-                Component: PlayerRecentGames,
-            },
-            {
-                path: "/Player/:id/RecentAchievements",
-                Component: PlayerRecentAchievements,
-            },
-            {
-                path: "/Player/:id/Friends",
-                Component: PlayerFriends,
-            },
-            {
-                path: "/Player/:id/Game/:gameId",
-                Component: PlayerGame,
+                path: "/Player/*",
+                loader: ({ params }) => {
+                    const document = gqlDocument.player(params.id ?? "")
+                    return request<PlayerQueryResponse>(
+                        "/graphql/",
+                        `{${String(document)}\n}`
+                    )
+                },
+                Component: PlayerContainer,
+                children: [
+                    {
+                        path: ":id",
+                        Component: PlayerProfile,
+                    },
+                    {
+                        path: ":id/PerfectGames",
+                        Component: PlayerPerfectGames,
+                    },
+                    {
+                        path: ":id/RecentGames",
+                        Component: PlayerRecentGames,
+                    },
+                    {
+                        path: ":id/RecentAchievements",
+                        Component: PlayerRecentAchievements,
+                    },
+                    {
+                        path: ":id/Friends",
+                        Component: PlayerFriends,
+                    },
+                ],
             },
             {
                 path: "/Game/:id",

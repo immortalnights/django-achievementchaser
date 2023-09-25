@@ -13,7 +13,7 @@ const AchievementIconList = ({
         {achievements.map((item) => (
             <li key={`${item.game.id}-${item.id}`}>
                 <Link
-                    to={`/player/${player}/game/${item.game.id}`}
+                    to={`/game/${item.game.id}?player=${player}`}
                     title={`${item.displayName} from ${item.game.name}`}
                 >
                     <BorderedImage

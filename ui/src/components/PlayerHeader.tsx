@@ -1,7 +1,12 @@
 import { ReactNode, useContext } from "react"
-import { Typography, Box, IconButton } from "@mui/material"
+import {
+    Typography,
+    Box,
+    IconButton,
+    Link as ExternalLink,
+} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
-import { VisibilityOff, Visibility } from "@mui/icons-material"
+import { VisibilityOff, Visibility, OpenInNew } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import BorderedImage from "./BorderedImage"
 import PlayerProfileContext from "../context/ProfileContext"
@@ -141,13 +146,33 @@ const PlayerStatistics = ({ player }: { player: string }) => {
     )
 }
 
-const Header = ({ name }: { name: string }) => {
+const Header = ({
+    id,
+    name,
+    url,
+}: {
+    id: string
+    name: string
+    url: string
+}) => {
     const { hideGameStatistics, toggleGameStatistics } =
         useContext(PlayerProfileContext)
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <Typography variant="h4">{name}</Typography>
+            <ExternalLink
+                component={Link}
+                to={`/player/${id}`}
+                variant="h4"
+                underline="none"
+            >
+                {name}
+            </ExternalLink>
+            <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
+                <ExternalLink href={url} title="Steam Profile" rel="noopener">
+                    <OpenInNew fontSize="small" />
+                </ExternalLink>
+            </Box>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ fontSize: "0.75em" }}>
                 <IconButton
@@ -188,7 +213,7 @@ const RecentIconsContent = ({
             {recentGames.map((game) => (
                 <li key={game.id}>
                     <Link
-                        to={`/player/${player}/game/${game.id}`}
+                        to={`/game/${game.id}?player=${player}`}
                         title={game.name}
                     >
                         <BorderedImage
@@ -226,7 +251,7 @@ const RecentIconsContent = ({
                     style={{ paddingRight: 2 }}
                 >
                     <Link
-                        to={`/player/${player}/game/${item.game.id}`}
+                        to={`/game/${item.game.id}?player=${player}`}
                         title={`${item.displayName} from ${item.game.name}`}
                     >
                         <BorderedImage
@@ -276,6 +301,7 @@ const PlayerProfileHeader = ({
     id,
     name,
     avatarLargeUrl,
+    profileUrl,
 }: {
     id: string
     name?: string
@@ -284,7 +310,7 @@ const PlayerProfileHeader = ({
 }) => {
     return (
         <>
-            <Header name={name ?? ""} />
+            <Header id={id} name={name ?? ""} url={profileUrl ?? ""} />
             <Grid container>
                 <Grid
                     xs={12}

@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
-import { Paper, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import {
     useQueryPlayer,
     useQueryPlayerAchievements,
@@ -9,13 +8,7 @@ import {
 import Loader from "../components/Loader"
 import { throwExpression } from "../utilities"
 import OwnedGameList from "../components/OwnedGameList"
-import PlayerProfileHeader from "../components/PlayerHeader"
-import PlayerProfileContext from "../context/ProfileContext"
 import EasiestGameAchievementsList from "../components/EasiestGameAchievementsList"
-import {
-    loadFromLocalStorage,
-    saveToLocalStorage,
-} from "../context/localStorage"
 
 const PlayerAlmostThereGames = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerOwnedGames({
@@ -118,49 +111,20 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
             }}
         />
     )
-    return null
 }
 
 const PlayerProfileContent = (player: Player) => {
-    const [contextState, setContextState] = useState(loadFromLocalStorage())
-
-    const contextValue = useMemo(
-        () => ({
-            ...contextState,
-            toggleGameStatistics: () => {
-                setContextState((value) => ({
-                    ...value,
-                    hideGameStatistics: !value.hideGameStatistics,
-                }))
-            },
-            addIgnoredGame: (game: string) => {
-                setContextState((value) => ({
-                    ...value,
-                    ignoredGames: [...value.ignoredGames, game],
-                }))
-            },
-        }),
-        [contextState]
-    )
-
-    useEffect(() => {
-        saveToLocalStorage(contextState)
-    }, [contextState])
-
     return (
-        <PlayerProfileContext.Provider value={contextValue}>
-            <Paper sx={{ marginTop: "1em" }} elevation={0}>
-                <PlayerProfileHeader {...player} />
-                <Typography variant="h5">Almost There</Typography>
-                <PlayerAlmostThereGames player={player.id} />
-                <Typography variant="h5">Just Started</Typography>
-                <PlayerJustStartedGames player={player.id} />
-                <Typography variant="h5">Next Game</Typography>
-                <PlayerEasiestGames player={player.id} />
-                <Typography variant="h5">Next Achievement</Typography>
-                <PlayerGameAchievementList player={player.id} />
-            </Paper>
-        </PlayerProfileContext.Provider>
+        <>
+            <Typography variant="h5">Almost There</Typography>
+            <PlayerAlmostThereGames player={player.id} />
+            <Typography variant="h5">Just Started</Typography>
+            <PlayerJustStartedGames player={player.id} />
+            <Typography variant="h5">Next Game</Typography>
+            <PlayerEasiestGames player={player.id} />
+            <Typography variant="h5">Next Achievement</Typography>
+            <PlayerGameAchievementList player={player.id} />
+        </>
     )
 }
 
