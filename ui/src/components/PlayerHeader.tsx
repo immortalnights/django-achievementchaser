@@ -8,6 +8,8 @@ import {
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility, OpenInNew } from "@mui/icons-material"
 import { Link } from "react-router-dom"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
 import BorderedImage from "./BorderedImage"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
@@ -186,6 +188,28 @@ const Header = ({
     )
 }
 
+const RecentlyPlayedGame = ({
+    player,
+    game,
+}: {
+    player: string
+    game: RecentGame
+}) => {
+    dayjs.extend(relativeTime)
+
+    const lastPlayed = dayjs(game.lastPlayed).fromNow()
+
+    return (
+        <Link to={`/game/${game.id}?player=${player}`} title={game.name}>
+            <BorderedImage
+                title={`${game.name} last played ${lastPlayed}`}
+                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
+                style={{ display: "block" }}
+            />
+        </Link>
+    )
+}
+
 const RecentIconsContent = ({
     player,
     recentGames,
@@ -212,16 +236,7 @@ const RecentIconsContent = ({
         >
             {recentGames.map((game) => (
                 <li key={game.id}>
-                    <Link
-                        to={`/game/${game.id}?player=${player}`}
-                        title={game.name}
-                    >
-                        <BorderedImage
-                            title={`Last played ${game.lastPlayed}`}
-                            src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
-                            style={{ display: "block" }}
-                        />
-                    </Link>
+                    <RecentlyPlayedGame player={player} game={game} />
                 </li>
             ))}
             <li>
