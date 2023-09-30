@@ -158,12 +158,20 @@ export const useQueryPlayerRecent = (player: string) => {
     return { loading, error, data }
 }
 
-export const useQueryPlayerAchievements = ({ player }: { player: string }) => {
+export const useQueryPlayerAchievements = ({
+    player,
+    unlocked,
+    limit = 12,
+}: {
+    player: string
+    unlocked: boolean
+    limit?: number
+}) => {
     const { loading, error, data, trigger } = useQuery<
         PlayerAchievementsResponse,
         RecentAchievement[]
     >(
-        (player) => gqlDocument.recentAchievements(player, false, 12),
+        (player) => gqlDocument.recentAchievements(player, unlocked, limit),
         (response) => response.playerAchievements.edges.map((edge) => edge.node)
     )
 

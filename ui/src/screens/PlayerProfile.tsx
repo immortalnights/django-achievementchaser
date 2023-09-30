@@ -8,7 +8,7 @@ import {
 import Loader from "../components/Loader"
 import { throwExpression } from "../utilities"
 import OwnedGameList from "../components/OwnedGameList"
-import EasiestGameAchievementsList from "../components/EasiestGameAchievementsList"
+import GameAchievementsList from "../components/GameAchievementsList"
 
 const PlayerAlmostThereGames = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerOwnedGames({
@@ -94,6 +94,7 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerAchievements({
         player,
+        unlocked: false,
     })
 
     return (
@@ -103,9 +104,10 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
             data={data}
             renderer={(data) => {
                 return (
-                    <EasiestGameAchievementsList
+                    <GameAchievementsList
                         player={player}
                         achievements={data}
+                        rows={3}
                     />
                 )
             }}

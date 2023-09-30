@@ -8,8 +8,6 @@ import {
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility, OpenInNew } from "@mui/icons-material"
 import { Link } from "react-router-dom"
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
 import BorderedImage from "./BorderedImage"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
@@ -18,6 +16,7 @@ import {
 } from "../api/queries"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
+import { getRelativeTime } from "../utilities"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -195,9 +194,7 @@ const RecentlyPlayedGame = ({
     player: string
     game: RecentGame
 }) => {
-    dayjs.extend(relativeTime)
-
-    const lastPlayed = dayjs(game.lastPlayed).fromNow()
+    const lastPlayed = getRelativeTime(game.lastPlayed)
 
     return (
         <Link to={`/game/${game.id}?player=${player}`} title={game.name}>
