@@ -11,6 +11,8 @@ class GameType(DjangoObjectType):
         model = Game
         fields = "__all__"
 
+    achievementCount = graphene.Int()
+
 
 class AchievementType(DjangoObjectType):
     class Meta:
@@ -37,6 +39,7 @@ class Query(graphene.ObjectType):
             raise RuntimeError(f"Found too many matching games with id '{id}' or name '{name}'")
         else:
             game = result.first()
+            game.achievementCount = game.achievement_set.count()
 
         return game
 
