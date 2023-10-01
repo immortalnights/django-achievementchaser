@@ -143,7 +143,7 @@ const GameScreen = () => {
     const [error, setError] = useState<string>()
 
     useEffect(() => {
-        request<GameResponse>(
+        request<GameQueryResponse>(
             "/graphql/",
             gql`
                 {

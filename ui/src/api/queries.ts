@@ -218,3 +218,17 @@ export const useQueryPlayerTimeline = ({
 
     return { loading, error, data }
 }
+
+export const useQueryGameAchievements = ({ game }: { game: number }) => {
+    const { loading, error, data, trigger } = useQuery<
+        GameAchievementsResponse,
+        Achievement[]
+    >(
+        (game) => gqlDocument.gameAchievements(game),
+        (response) => response.gameAchievements
+    )
+
+    useEffect(() => trigger(game), [game])
+
+    return { loading, error, data }
+}

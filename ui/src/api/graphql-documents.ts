@@ -148,10 +148,18 @@ game(id: ${game}) {
     id
     name
     difficultyPercentage
-}
+    achievementCount
+}`
+
+export const gameAchievements = (game: number) => gql`
 gameAchievements(id: ${game}) {
     id
     name
+    displayName
+    description
+    hidden
+    iconUrl
+    iconGrayUrl
     globalPercentage
 }`
 
@@ -180,5 +188,6 @@ export default {
     justStartedGames,
     nextGames,
     game,
+    gameAchievements,
     playerGame,
 }
