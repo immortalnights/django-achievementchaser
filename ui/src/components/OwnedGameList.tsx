@@ -45,7 +45,7 @@ const GameItem = ({
     }
 
     return (
-        <ReactiveLink to={`/game/${game.id}?player=${player}`}>
+        <ReactiveLink to={`/Player/${player}/Game/${game.id}`}>
             <BorderedImage
                 src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
                 title={title}

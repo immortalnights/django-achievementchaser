@@ -2,6 +2,7 @@ import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import dayjs from "dayjs"
 import { InputLabel, NativeSelect } from "@mui/material"
 import { useQueryPlayerTimeline } from "../api/queries"
+import { formatDate } from "../utilities"
 
 const YearSelector = ({
     selected,
@@ -80,7 +81,7 @@ const Calendar = ({
     const unlockedAchievementIndex = useMemo(() => {
         const index: { [key: string]: number } = {}
         achievements.forEach((achievement) => {
-            const date = dayjs(achievement.unlocked).format("DD-MM-YYYY")
+            const date = formatDate(achievement.unlocked)
             if (!index[date]) {
                 index[date] = 0
             }
@@ -94,7 +95,7 @@ const Calendar = ({
     const perfectGamesIndex = useMemo(() => {
         const index: { [key: string]: number } = {}
         perfectGames.forEach((game) => {
-            const date = dayjs(game.completed).format("DD-MM-YYYY")
+            const date = formatDate(game.completed)
             if (!index[date]) {
                 index[date] = 0
             }
