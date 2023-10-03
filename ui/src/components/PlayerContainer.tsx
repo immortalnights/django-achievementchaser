@@ -39,7 +39,7 @@ const PlayerContainer = () => {
     return (
         <PlayerProfileContext.Provider value={contextValue}>
             <PlayerProfileHeader {...player!} />
-            <Paper sx={{ marginTop: "1em" }} elevation={0}>
+            <Paper elevation={0}>
                 <Box>
                     <Outlet />
                 </Box>
