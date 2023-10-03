@@ -1,12 +1,9 @@
 import { useParams } from "react-router-dom"
-import { request, gql } from "graphql-request"
-import { useEffect, useState } from "react"
 import { Box, Link as ExternalLink, Typography } from "@mui/material"
 import Loader from "../components/Loader"
 import { useQueryPlayerGame } from "../api/queries"
 import { formatDate, getRelativeTime, throwExpression } from "../utilities"
 import { OpenInNew } from "@mui/icons-material"
-import dayjs from "dayjs"
 import { Link } from "react-router-dom"
 import BorderedImage from "../components/BorderedImage"
 import CircularProgressWithLabel from "../components/CircularProgressWithLabel"
@@ -170,7 +167,6 @@ const AchievementItem = ({
 }
 
 const GameDetails = ({
-    player,
     game,
     achievements,
     playerGame,
