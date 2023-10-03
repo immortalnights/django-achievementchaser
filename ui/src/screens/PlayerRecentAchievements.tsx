@@ -3,6 +3,7 @@ import { throwExpression } from "../utilities"
 import { useQueryPlayerAchievements } from "../api/queries"
 import Loader from "../components/Loader"
 import GameAchievementsList from "../components/GameAchievementsList"
+import { Typography } from "@mui/material"
 
 const PlayerRecentAchievements = () => {
     const { id: player = throwExpression("missing param") } = useParams()
@@ -13,20 +14,23 @@ const PlayerRecentAchievements = () => {
     })
 
     return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return (
-                    <GameAchievementsList
-                        player={player}
-                        achievements={data}
-                        rows={1}
-                    />
-                )
-            }}
-        />
+        <>
+            <Typography variant="h5">Recent Achievements</Typography>
+            <Loader
+                loading={loading}
+                error={error}
+                data={data}
+                renderer={(data) => {
+                    return (
+                        <GameAchievementsList
+                            player={player}
+                            achievements={data}
+                            rows={1}
+                        />
+                    )
+                }}
+            />
+        </>
     )
 }
 
