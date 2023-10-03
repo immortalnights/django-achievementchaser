@@ -197,7 +197,7 @@ const RecentlyPlayedGame = ({
     const lastPlayed = getRelativeTime(game.lastPlayed)
 
     return (
-        <Link to={`/game/${game.id}?player=${player}`} title={game.name}>
+        <Link to={`/Player/${player}/Game/${game.id}`} title={game.name}>
             <BorderedImage
                 title={`${game.name} last played ${lastPlayed}`}
                 src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
@@ -263,7 +263,7 @@ const RecentIconsContent = ({
                     style={{ paddingRight: 2 }}
                 >
                     <Link
-                        to={`/game/${item.game.id}?player=${player}`}
+                        to={`/Player/${player}/Game/${item.game.id}`}
                         title={`${item.displayName} from ${item.game.name}`}
                     >
                         <BorderedImage
