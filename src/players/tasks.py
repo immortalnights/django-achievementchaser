@@ -31,7 +31,7 @@ def resynchronize_players_task():
     """
     logger.debug("Begin resynchronization of players")
 
-    due = timezone.now() - timedelta(hours=1)
+    due = timezone.now() - timedelta(minutes=10)
 
     logger.debug(f"Find players last resynchronized before {due}")
     query = Q(resynchronization_required=True) | Q(resynchronized__lt=due)
