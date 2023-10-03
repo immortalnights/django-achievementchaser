@@ -38,6 +38,10 @@ const GameAchievementSet = ({
         return title
     }
 
+    const getAchievementIcon = (
+        achievement: Omit<RecentAchievement, "game">
+    ) => (achievement.unlocked ? achievement.iconUrl : achievement.iconGrayUrl)
+
     return (
         <>
             <Box>
@@ -56,7 +60,7 @@ const GameAchievementSet = ({
                     title={getAchievementTitle(achievement)}
                 >
                     <BorderedImage
-                        src={achievement.iconGrayUrl}
+                        src={getAchievementIcon(achievement)}
                         style={{
                             width: 64,
                             height: 64,
