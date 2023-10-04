@@ -81,7 +81,7 @@ const Calendar = ({
     const unlockedAchievementIndex = useMemo(() => {
         const index: { [key: string]: number } = {}
         achievements.forEach((achievement) => {
-            const date = formatDate(achievement.unlocked)
+            const date = dayjs(achievement.unlocked).format("DD-MM-YYYY")
             if (!index[date]) {
                 index[date] = 0
             }
@@ -95,7 +95,7 @@ const Calendar = ({
     const perfectGamesIndex = useMemo(() => {
         const index: { [key: string]: number } = {}
         perfectGames.forEach((game) => {
-            const date = formatDate(game.completed)
+            const date = dayjs(game.completed).format("DD-MM-YYYY")
             if (!index[date]) {
                 index[date] = 0
             }
@@ -141,6 +141,7 @@ const Calendar = ({
 
         for (let index = 0; index <= totalDays; index++) {
             const dateString = currentDate.format("DD-MM-YYYY")
+            const displayDate = formatDate(currentDate)
             const perfectGameCount = getPerfectGameCount(dateString)
             const achievementCount = getAchievementCount(dateString)
 
@@ -160,11 +161,11 @@ const Calendar = ({
 
             let title
             if (perfectGameCount > 0 && achievementCount > 0) {
-                title = `${perfectGameCount} perfect games and ${achievementCount} achievements on ${dateString}`
+                title = `${perfectGameCount} perfect games and ${achievementCount} achievements on ${displayDate}`
             } else if (achievementCount > 0) {
-                title = `${achievementCount} achievements on ${dateString}`
+                title = `${achievementCount} achievements on ${displayDate}`
             } else {
-                title = `No achievements on ${dateString}`
+                title = `No achievements on ${displayDate}`
             }
 
             calendar[day].push(
@@ -178,7 +179,7 @@ const Calendar = ({
                     ].join(" ")}
                     title={title}
                 >
-                    <span className="sr-only">{dateString}</span>
+                    <span className="sr-only">{displayDate}</span>
                 </td>
             )
 
