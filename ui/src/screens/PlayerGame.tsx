@@ -2,7 +2,12 @@ import { useParams } from "react-router-dom"
 import { Box, Link as ExternalLink, Typography } from "@mui/material"
 import Loader from "../components/Loader"
 import { useQueryPlayerGame } from "../api/queries"
-import { formatDate, getRelativeTime, throwExpression } from "../utilities"
+import {
+    formatDate,
+    formatDateTime,
+    getRelativeTime,
+    throwExpression,
+} from "../utilities"
 import { OpenInNew } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import BorderedImage from "../components/BorderedImage"
@@ -152,7 +157,7 @@ const AchievementItem = ({
                                     unlocked
                                 )}`}</Typography>
                                 <Typography fontSize="small">
-                                    {formatDate(unlocked)}
+                                    {formatDateTime(unlocked)}
                                 </Typography>
                             </Box>
                         )}
