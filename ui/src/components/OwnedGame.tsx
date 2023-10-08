@@ -8,8 +8,6 @@ import BorderedImage from "./BorderedImage"
 const ReactiveLink = styled(Link)``
 
 const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
-    let title = `${game.name}`
-
     let completionTitle: string | undefined
     if (game.completed) {
         const completionDate = dayjs(game.completed)
@@ -51,7 +49,7 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
                 )}
             </>
         ),
-        [completionTitle, lastPlayedTitle, difficultyPercentageTitle]
+        [game.name, completionTitle, lastPlayedTitle, difficultyPercentageTitle]
     )
 
     return (
@@ -59,7 +57,6 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
             <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
                 <BorderedImage
                     src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
-                    title={title}
                 />
             </Tooltip>
         </ReactiveLink>

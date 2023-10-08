@@ -1,5 +1,4 @@
-import { useCallback, useMemo } from "react"
-import { Link } from "react-router-dom"
+import { useMemo } from "react"
 import Grid from "@mui/material/Unstable_Grid2"
 import BorderedImage from "./BorderedImage"
 import { Box, Tooltip, Typography } from "@mui/material"
