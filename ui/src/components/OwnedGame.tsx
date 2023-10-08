@@ -12,15 +12,17 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     console.log(game)
     if (game.completed) {
         const completionDate = dayjs(game.completed)
+
         completionTitle = `Completed: ${completionDate.format(
             "MMM D, YYYY"
         )} (${getRelativeTime(completionDate)})`
     } else if (game.achievementCount && game.unlockedAchievementCount) {
+        const percentage =
+            (game.unlockedAchievementCount / game.achievementCount) * 100
+
         completionTitle = `Progress: ${game.unlockedAchievementCount} / ${
             game.achievementCount
-        } (${(game.unlockedAchievementCount / game.achievementCount).toFixed(
-            2
-        )}%)`
+        } (${percentage.toFixed(2)}%)`
     } else if (game.achievementCount) {
         completionTitle = `Achievements: ${game.achievementCount}`
     }
