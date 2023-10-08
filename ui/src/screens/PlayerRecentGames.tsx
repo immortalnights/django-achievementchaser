@@ -15,11 +15,7 @@ const PlayerRecentGamesContent = ({
     return (
         <>
             <Typography variant="h5">Recent Games</Typography>
-            <OwnedGameList
-                player={player}
-                games={games}
-                showCompletion={false}
-            />
+            <OwnedGameList player={player} games={games} />
         </>
     )
 }

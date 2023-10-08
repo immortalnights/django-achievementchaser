@@ -117,11 +117,11 @@ interface PlayerProfile {
 interface OwnedGame {
     id: number
     name: string
-    imgIconUrl: string
-    lastPlayed: string
-    difficultyPercentage: number
-    completionPercentage: number
-    completed: string
+    imgIconUrl?: string
+    lastPlayed?: string
+    difficultyPercentage?: number
+    completionPercentage?: number
+    completed?: string
 }
 
 interface PlayerOwnedGameResponse extends BaseQueryResponse {
