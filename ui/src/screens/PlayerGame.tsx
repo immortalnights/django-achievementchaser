@@ -18,30 +18,41 @@ interface OwnedGameDetailsProps extends OwnedGame {
     playerAchievements: RecentAchievement[]
 }
 
+const GameCompletionProgress = ({
+    achievements,
+    playerAchievements,
+}: {
+    achievements: Achievement[]
+    playerAchievements: RecentAchievement[]
+}) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {playerAchievements.length > 0 && (
+            <div style={{ margin: "8px 0 0" }}>
+                <CircularProgressWithLabel
+                    value={
+                        (playerAchievements.length / achievements.length) * 100
+                    }
+                />
+            </div>
+        )}
+        <div>
+            <Typography variant="subtitle1" textTransform="uppercase">
+                Achievements
+            </Typography>
+            <div>
+                {playerAchievements.length} of {achievements.length}
+            </div>
+        </div>
+    </div>
+)
+
 const OwnedGameDetails = ({
     lastPlayed,
+    difficultyPercentage,
     completed,
     achievements,
     playerAchievements,
 }: OwnedGameDetailsProps) => {
-    const min = achievements.reduce<number | undefined>(
-        (min, achievement) =>
-            achievement.globalPercentage !== undefined
-                ? min && min < achievement.globalPercentage
-                    ? min
-                    : achievement.globalPercentage
-                : 0,
-        0
-    )
-    const max = achievements.reduce(
-        (max, achievement) =>
-            achievement.globalPercentage !== undefined
-                ? max < achievement.globalPercentage
-                    ? achievement.globalPercentage
-                    : max
-                : 0,
-        0
-    )
     return (
         <div
             style={{
@@ -51,24 +62,12 @@ const OwnedGameDetails = ({
                 alignItems: "center",
             }}
         >
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <div style={{ margin: "8px 0 0" }}>
-                    <CircularProgressWithLabel
-                        value={
-                            (playerAchievements.length / achievements.length) *
-                            100
-                        }
-                    />
-                </div>
-                <div>
-                    <Typography variant="subtitle1" textTransform="uppercase">
-                        Achievements
-                    </Typography>
-                    <div>
-                        {playerAchievements.length} of {achievements.length}
-                    </div>
-                </div>
-            </div>
+            {achievements.length > 0 && (
+                <GameCompletionProgress
+                    achievements={achievements}
+                    playerAchievements={playerAchievements}
+                />
+            )}
             <div>
                 <Typography variant="subtitle1" textTransform="uppercase">
                     Last Played
@@ -91,7 +90,7 @@ const OwnedGameDetails = ({
                 <Typography variant="subtitle1" textTransform="uppercase">
                     Difficulty
                 </Typography>
-                {min?.toFixed(2)}% to {max.toFixed(2)}%
+                {difficultyPercentage.toFixed(2)}%
             </div>
         </div>
     )
@@ -113,7 +112,7 @@ const AchievementItem = ({
     const endGradient = 100 - startGradient
 
     return (
-        <li style={{ display: "flex", margin: "0.25em" }}>
+        <li style={{ display: "flex", margin: "0.25em 0" }}>
             <img
                 src={unlocked ? iconUrl : iconGrayUrl}
                 style={{ width: 64, height: 64 }}
@@ -147,7 +146,9 @@ const AchievementItem = ({
                             }}
                         >
                             <Typography variant="h6">{displayName}</Typography>
-                            <Typography>{description}</Typography>
+                            <Typography>
+                                {description || <span>&nbsp;</span>}
+                            </Typography>
                         </div>
                         {unlocked && (
                             <Box
@@ -164,12 +165,48 @@ const AchievementItem = ({
                     </div>
                 </div>
             </div>
-            <div style={{ margin: "auto 0.5em" }}>
+            <div
+                style={{
+                    margin: "auto 0.5em",
+                    minWidth: 60,
+                    textAlign: "center",
+                }}
+            >
                 {globalPercentage?.toFixed(2)}%
             </div>
         </li>
     )
 }
+
+const GameAchievements = ({
+    achievements,
+    playerAchievements,
+}: {
+    achievements: Achievement[]
+    playerAchievements: RecentAchievement[]
+}) => (
+    <ul
+        style={{
+            listStyle: "none",
+            padding: "0 0 2em",
+            margin: "0.5em 0 0",
+        }}
+    >
+        {achievements.map((achievement) => {
+            const playerAchievement = playerAchievements.find(
+                (value) => value.id === achievement.name
+            )
+
+            return (
+                <AchievementItem
+                    key={achievement.name}
+                    {...achievement}
+                    unlocked={playerAchievement?.unlocked}
+                />
+            )
+        })}
+    </ul>
+)
 
 const GameDetails = ({
     game,
@@ -219,31 +256,28 @@ const GameDetails = ({
                 </div>
                 <OwnedGameDetails
                     {...playerGame}
+                    difficultyPercentage={game.difficultyPercentage}
                     achievements={achievements}
                     playerAchievements={playerAchievements}
                 />
             </Box>
-            <ul
-                style={{
-                    listStyle: "none",
-                    padding: "0 0 2em",
-                    margin: "0.5em 0 0",
-                }}
-            >
-                {achievements.map((achievement) => {
-                    const playerAchievement = playerAchievements.find(
-                        (value) => value.id === achievement.name
-                    )
-
-                    return (
-                        <AchievementItem
-                            key={achievement.name}
-                            {...achievement}
-                            unlocked={playerAchievement?.unlocked}
-                        />
-                    )
-                })}
-            </ul>
+            {achievements.length > 0 ? (
+                <GameAchievements
+                    achievements={achievements}
+                    playerAchievements={playerAchievements}
+                />
+            ) : (
+                <div
+                    style={{
+                        marginTop: 10,
+                        padding: 8,
+                        textAlign: "center",
+                        background: "lightgray",
+                    }}
+                >
+                    No Achievements
+                </div>
+            )}
         </>
     )
 }
