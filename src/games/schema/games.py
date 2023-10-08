@@ -11,6 +11,8 @@ class GameType(DjangoObjectType):
         model = Game
         fields = "__all__"
 
+    id = graphene.NonNull(graphene.String)
+
 
 class AchievementType(DjangoObjectType):
     class Meta:

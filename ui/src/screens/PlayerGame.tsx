@@ -68,14 +68,16 @@ const OwnedGameDetails = ({
                     playerAchievements={playerAchievements}
                 />
             )}
-            <div>
-                <Typography variant="subtitle1" textTransform="uppercase">
-                    Last Played
-                </Typography>
-                <div title={formatDate(lastPlayed)}>
-                    {getRelativeTime(lastPlayed)}
+            {lastPlayed && (
+                <div>
+                    <Typography variant="subtitle1" textTransform="uppercase">
+                        Last Played
+                    </Typography>
+                    <div title={formatDate(lastPlayed)}>
+                        {getRelativeTime(lastPlayed)}
+                    </div>
                 </div>
-            </div>
+            )}
             {completed && (
                 <div>
                     <Typography variant="subtitle1" textTransform="uppercase">
@@ -86,12 +88,14 @@ const OwnedGameDetails = ({
                     </div>
                 </div>
             )}
-            <div>
-                <Typography variant="subtitle1" textTransform="uppercase">
-                    Difficulty
-                </Typography>
-                {difficultyPercentage.toFixed(2)}%
-            </div>
+            {difficultyPercentage && (
+                <div>
+                    <Typography variant="subtitle1" textTransform="uppercase">
+                        Difficulty
+                    </Typography>
+                    {difficultyPercentage.toFixed(2)}%
+                </div>
+            )}
         </div>
     )
 }
