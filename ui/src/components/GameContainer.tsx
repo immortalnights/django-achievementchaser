@@ -113,7 +113,7 @@ const AchievementItem = ({
     )
 }
 
-const GameAchievements = ({ game }: { game: number }) => {
+const GameAchievements = ({ game }: { game: string }) => {
     const { loading, error, data } = useQueryGameAchievements({
         game,
     })
