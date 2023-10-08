@@ -123,6 +123,8 @@ interface OwnedGame {
     difficultyPercentage?: number
     completionPercentage?: number
     completed?: string
+    achievementCount?: number
+    unlockedAchievementCount?: number
 }
 
 interface PlayerOwnedGameResponse extends BaseQueryResponse {
