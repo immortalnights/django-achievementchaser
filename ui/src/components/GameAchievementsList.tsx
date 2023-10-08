@@ -23,21 +23,6 @@ const GameAchievementSet = ({
     player: string
     game: GameAchievements
 }) => {
-    const getAchievementTitle = (
-        achievement: Omit<RecentAchievement, "game">
-    ) => {
-        let title = achievement.displayName
-        if (achievement.unlocked) {
-            const unlockedDate = dayjs(achievement.unlocked)
-            title += ` - ${unlockedDate.format(
-                "MMM D, YYYY"
-            )} (${getRelativeTime(unlockedDate)})`
-        } else {
-            title += ` - ${achievement.globalPercentage.toFixed(2)}%`
-        }
-        return title
-    }
-
     const getAchievementIcon = (
         achievement: Omit<RecentAchievement, "game">
     ) => (achievement.unlocked ? achievement.iconUrl : achievement.iconGrayUrl)
@@ -77,10 +62,7 @@ const GameAchievementSet = ({
                     title={<AchievementTitle achievement={achievement} />}
                     arrow
                 >
-                    <div
-                        key={`${game.id}-${achievement.id}`}
-                        title={getAchievementTitle(achievement)}
-                    >
+                    <div key={`${game.id}-${achievement.id}`}>
                         <BorderedImage
                             src={getAchievementIcon(achievement)}
                             style={{

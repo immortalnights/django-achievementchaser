@@ -102,6 +102,8 @@ export const useQueryPlayerOwnedGames = ({
                     difficultyPercentage
                     completionPercentage
                     completed
+                    achievementCount
+                    unlockedAchievementCount
                 }
             }
         }

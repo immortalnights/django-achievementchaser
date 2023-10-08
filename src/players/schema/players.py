@@ -1,43 +1,19 @@
 from loguru import logger
-from typing import Optional, List, Dict
+from typing import Optional, List
 import graphene
 from graphene_django import DjangoObjectType
 from django.db.models import Q, Sum
 from achievementchaser.graphql_utils import parse_order_by, get_field_selection_hierarchy, get_edge_node_fields
 from achievements.models import Achievement
 from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
+from games.schema.games import GameType
 from ..queries import get_player_games2
-
-
-def transform_owned_game_to_node(owned_game: PlayerOwnedGame, requires_game_data: bool = False) -> Dict:
-    node = {
-        "id": owned_game.game_id,
-        "playtime": owned_game.playtime_forever,
-        "last_played": owned_game.last_played,
-        "completion_percentage": owned_game.completion_percentage,
-        "completed": owned_game.completed,
-    }
-
-    # If game data is required, populate the entire result object as more than
-    #  one field does not effect the request speed
-    if requires_game_data:
-        node.update(
-            {
-                "name": owned_game.game.name,
-                "img_icon_url": owned_game.game.img_icon_url,
-                "difficulty_percentage": owned_game.game.difficulty_percentage,
-            }
-        )
-
-    return node
 
 
 def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, requires_game_data: bool):
     obj = {
         "id": achievement.achievement.name,
-        "game": {
-            "id": achievement.game_id,
-        },
+        "game": achievement.game,
         "display_name": achievement.achievement.display_name,
         "description": achievement.achievement.description,
         "icon_url": achievement.achievement.icon_url,
@@ -45,14 +21,6 @@ def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, re
         "global_percentage": achievement.achievement.global_percentage or 0,
         "unlocked": achievement.datetime if achievement.datetime is not None else None,
     }
-
-    if requires_game_data:
-        obj["game"].update(
-            {
-                "name": achievement.game.name,
-                "img_icon_url": achievement.game.img_icon_url,
-            }
-        )
 
     return obj
 
@@ -67,15 +35,35 @@ class SimpleGameType(graphene.ObjectType):
     difficulty_percentage = graphene.Float()
     playtime = graphene.Int()
     playtime_forever = graphene.Int()
-    last_played = graphene.String()
+    last_played = graphene.DateTime()
     completion_percentage = graphene.Float()
     completed = graphene.DateTime()
+    achievement_count = graphene.Int()
+    unlocked_achievement_count = graphene.Int()
+
+    def resolve_id(root, info):
+        return root.game_id
+
+    def resolve_name(root, info):
+        return root.game.name
+
+    def resolve_img_icon_url(root, info):
+        return root.game.img_icon_url
+
+    def resolve_difficulty_percentage(root, info):
+        return root.game.difficulty_percentage
+
+    def resolve_achievement_count(root, info):
+        return Achievement.objects.filter(game_id=root.game_id).count()
+
+    def resolve_unlocked_achievement_count(root, info):
+        return PlayerUnlockedAchievement.objects.filter(player_id=root.player_id, game_id=root.game_id).count()
 
 
 class SimpleAchievementType(graphene.ObjectType):
     id = graphene.NonNull(graphene.String)
     display_name = graphene.String()
-    game = graphene.Field(SimpleGameType)
+    game = graphene.Field(GameType)
     display_name = graphene.String()
     description = graphene.String()
     icon_url = graphene.String()
@@ -253,7 +241,7 @@ class Query(graphene.ObjectType):
         return {
             "total_count": total_count,
             "edges": map(
-                lambda owned_game: {"node": transform_owned_game_to_node(owned_game, requires_game_data)},
+                lambda owned_game: {"node": owned_game},
                 games,
             ),
         }
@@ -331,6 +319,9 @@ class Query(graphene.ObjectType):
 
                 if limit:
                     unlocked_achievements = unlocked_achievements[:limit]
+
+                if requires_game_data:
+                    unlocked_achievements.select_related("game")
 
                 achievements = map(
                     lambda achievement: transform_unlocked_achievement(
