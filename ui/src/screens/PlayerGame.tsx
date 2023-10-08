@@ -88,14 +88,14 @@ const OwnedGameDetails = ({
                     </div>
                 </div>
             )}
-            {difficultyPercentage && (
+            {difficultyPercentage && difficultyPercentage !== 0.0 ? (
                 <div>
                     <Typography variant="subtitle1" textTransform="uppercase">
                         Difficulty
                     </Typography>
                     {difficultyPercentage.toFixed(2)}%
                 </div>
-            )}
+            ) : null}
         </div>
     )
 }
