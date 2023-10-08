@@ -9,15 +9,20 @@ const ReactiveLink = styled(Link)``
 
 const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     let completionTitle: string | undefined
+    console.log(game)
     if (game.completed) {
         const completionDate = dayjs(game.completed)
         completionTitle = `Completed: ${completionDate.format(
             "MMM D, YYYY"
         )} (${getRelativeTime(completionDate)})`
-    } else if (game.completionPercentage) {
-        completionTitle = `Progress: ${(
-            game.completionPercentage * 100
-        ).toFixed(2)}%`
+    } else if (game.achievementCount && game.unlockedAchievementCount) {
+        completionTitle = `Progress: ${game.unlockedAchievementCount} / ${
+            game.achievementCount
+        } (${(game.unlockedAchievementCount / game.achievementCount).toFixed(
+            2
+        )}%)`
+    } else if (game.achievementCount) {
+        completionTitle = `Achievements: ${game.achievementCount}`
     }
 
     let difficultyPercentageTitle: string | undefined
