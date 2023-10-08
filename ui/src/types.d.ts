@@ -115,7 +115,7 @@ interface PlayerProfile {
 }
 
 interface OwnedGame {
-    id: number
+    id: string
     name: string
     imgIconUrl?: string
     lastPlayed?: string

@@ -11,7 +11,7 @@ interface GameAchievementIndex {
 }
 
 interface GameAchievements {
-    id: number
+    id: string
     name: string
     achievements: Omit<RecentAchievement, "game">[]
 }
