@@ -66,6 +66,7 @@ interface Game {
     id: string
     name: string
     imgIconUrl: string
+    difficultyPercentage: number
     lastPlayed: string
     playtime: number
 }
