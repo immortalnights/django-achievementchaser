@@ -102,6 +102,8 @@ export const useQueryPlayerOwnedGames = ({
                     difficultyPercentage
                     completionPercentage
                     completed
+                    achievementCount
+                    unlockedAchievementCount
                 }
             }
         }
@@ -219,7 +221,7 @@ export const useQueryPlayerTimeline = ({
     return { loading, error, data }
 }
 
-export const useQueryGameAchievements = ({ game }: { game: number }) => {
+export const useQueryGameAchievements = ({ game }: { game: string }) => {
     const { loading, error, data, trigger } = useQuery<
         GameAchievementsResponse,
         Achievement[]
@@ -229,6 +231,77 @@ export const useQueryGameAchievements = ({ game }: { game: number }) => {
     )
 
     useEffect(() => trigger(game), [game])
+
+    return { loading, error, data }
+}
+
+interface PlayerGameResponse extends BaseQueryResponse {
+    game: Game
+    gameAchievements: Achievement[]
+    playerGame: OwnedGame
+    playerAchievementsForGame: RecentAchievement[]
+}
+
+// TODO maybe update PlayerOwnedGame to return game?
+export const useQueryPlayerGame = ({
+    player,
+    game,
+}: {
+    player: string
+    game: string
+}) => {
+    const { loading, error, data, trigger } = useQuery<
+        PlayerGameResponse,
+        {
+            game: Game
+            achievements: Achievement[]
+            playerGame: OwnedGame
+            playerAchievements: RecentAchievement[]
+        }
+    >(
+        (player, game) => [
+            gql`
+game(id: ${game}) {
+    id
+    name
+    imgIconUrl
+    difficultyPercentage
+}
+gameAchievements(id: ${game}) {
+    name
+    displayName
+    description
+    iconUrl
+    iconGrayUrl
+    globalPercentage
+}
+playerGame(id: ${player}, gameId: ${game}) {
+    lastPlayed
+    playtimeForever
+    completed
+  }
+playerAchievementsForGame(
+    id: ${player}
+    gameId: ${game}
+) {
+    id
+    unlocked
+}
+            `,
+        ],
+        (response) => ({
+            game: response.game,
+            achievements: response.gameAchievements,
+            playerGame: response.playerGame,
+            playerAchievements: response.playerAchievementsForGame,
+        })
+    )
+
+    useEffect(
+        () => trigger(player, String(game)),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [player, game]
+    )
 
     return { loading, error, data }
 }

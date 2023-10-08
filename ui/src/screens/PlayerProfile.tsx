@@ -26,13 +26,7 @@ const PlayerAlmostThereGames = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return (
-                    <OwnedGameList
-                        player={player}
-                        games={data}
-                        showCompletion={true}
-                    />
-                )
+                return <OwnedGameList player={player} games={data} />
             }}
         />
     )
@@ -53,13 +47,7 @@ const PlayerJustStartedGames = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return (
-                    <OwnedGameList
-                        player={player}
-                        games={data}
-                        showCompletion={true}
-                    />
-                )
+                return <OwnedGameList player={player} games={data} />
             }}
         />
     )
@@ -79,13 +67,7 @@ const PlayerEasiestGames = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return (
-                    <OwnedGameList
-                        player={player}
-                        games={data}
-                        showCompletion={false}
-                    />
-                )
+                return <OwnedGameList player={player} games={data} />
             }}
         />
     )

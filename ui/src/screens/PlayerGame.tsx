@@ -1,188 +1,310 @@
 import { useParams } from "react-router-dom"
-import { request, gql } from "graphql-request"
-import { useEffect, useState } from "react"
+import { Box, Link as ExternalLink, Typography } from "@mui/material"
+import Loader from "../components/Loader"
+import { useQueryPlayerGame } from "../api/queries"
+import {
+    formatDate,
+    formatDateTime,
+    getRelativeTime,
+    throwExpression,
+} from "../utilities"
+import { OpenInNew } from "@mui/icons-material"
+import { Link } from "react-router-dom"
+import BorderedImage from "../components/BorderedImage"
+import CircularProgressWithLabel from "../components/CircularProgressWithLabel"
 
-const GameHeader = ({
-    id,
-    name,
-    achievements = [],
+interface OwnedGameDetailsProps extends OwnedGame {
+    achievements: Achievement[]
+    playerAchievements: RecentAchievement[]
+}
+
+const GameCompletionProgress = ({
+    achievements,
+    playerAchievements,
 }: {
-    id: number
-    name: string
-    image: string
-    achievements?: Achievement[]
-}) => {
-    const min = achievements.reduce<number | undefined>(
-        (min, achievement) =>
-            achievement.globalPercentage !== undefined
-                ? min && min < achievement.globalPercentage
-                    ? min
-                    : achievement.globalPercentage
-                : 0,
-        0
-    )
-    const max = achievements.reduce(
-        (max, achievement) =>
-            achievement.globalPercentage !== undefined
-                ? max < achievement.globalPercentage
-                    ? achievement.globalPercentage
-                    : max
-                : 0,
-        0
-    )
-    return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-            <div style={{ flexGrow: 1, textAlign: "left" }}>
-                <h3 style={{ margin: 4 }}>{name}</h3>
-                <p style={{ margin: 4 }}>
-                    Total Achievements {achievements.length}
-                </p>
-                <p style={{ margin: 4 }}>
-                    Difficulty: {min?.toFixed(2)}% to {max.toFixed(2)}%
-                </p>
-            </div>
-            <div
-                style={{
-                    margin: 8,
-                    fontSize: "small",
-                    alignContent: "flex-start",
-                }}
-            >
-                <a
-                    href={`http://store.steampowered.com/app/${id}`}
-                    target="_blank"
-                    rel="noopener"
-                >
-                    View on Steam
-                </a>
-            </div>
-            <div>
-                <img
-                    src={`https://media.steampowered.com/steam/apps/${id}/capsule_184x69.jpg`}
+    achievements: Achievement[]
+    playerAchievements: RecentAchievement[]
+}) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        {playerAchievements.length > 0 && (
+            <div style={{ margin: "8px 0 0" }}>
+                <CircularProgressWithLabel
+                    value={
+                        (playerAchievements.length / achievements.length) * 100
+                    }
                 />
             </div>
+        )}
+        <div>
+            <Typography variant="subtitle1" textTransform="uppercase">
+                Achievements
+            </Typography>
+            <div>
+                {playerAchievements.length} of {achievements.length}
+            </div>
+        </div>
+    </div>
+)
+
+const OwnedGameDetails = ({
+    lastPlayed,
+    difficultyPercentage,
+    completed,
+    achievements,
+    playerAchievements,
+}: OwnedGameDetailsProps) => {
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexGrow: 1,
+                justifyContent: "space-evenly",
+                alignItems: "center",
+            }}
+        >
+            {achievements.length > 0 && (
+                <GameCompletionProgress
+                    achievements={achievements}
+                    playerAchievements={playerAchievements}
+                />
+            )}
+            {lastPlayed && (
+                <div>
+                    <Typography variant="subtitle1" textTransform="uppercase">
+                        Last Played
+                    </Typography>
+                    <div title={formatDate(lastPlayed)}>
+                        {getRelativeTime(lastPlayed)}
+                    </div>
+                </div>
+            )}
+            {completed && (
+                <div>
+                    <Typography variant="subtitle1" textTransform="uppercase">
+                        Completed
+                    </Typography>
+                    <div title={formatDate(completed)}>
+                        {getRelativeTime(completed)}
+                    </div>
+                </div>
+            )}
+            {difficultyPercentage && difficultyPercentage !== 0.0 ? (
+                <div>
+                    <Typography variant="subtitle1" textTransform="uppercase">
+                        Difficulty
+                    </Typography>
+                    {difficultyPercentage.toFixed(2)}%
+                </div>
+            ) : null}
         </div>
     )
+}
+
+interface MaybeUnlockedAchievement extends Achievement {
+    unlocked?: string
 }
 
 const AchievementItem = ({
     displayName,
     description,
     iconUrl,
+    iconGrayUrl,
     globalPercentage,
-}: Achievement) => {
+    unlocked,
+}: MaybeUnlockedAchievement) => {
+    const startGradient = Math.floor(globalPercentage ?? 0)
+    const endGradient = 100 - startGradient
+
     return (
-        <li style={{ display: "flex", margin: "0.25em" }}>
-            <img src={iconUrl} style={{ width: 64, height: 64 }} />
+        <li style={{ display: "flex", margin: "0.25em 0" }}>
+            <img
+                src={unlocked ? iconUrl : iconGrayUrl}
+                style={{ width: 64, height: 64 }}
+            />
             <div
                 style={{
-                    display: "flex",
                     flexGrow: 1,
-                    border: "1px solid white",
-                    borderRadius: 5,
                     marginLeft: "0.5em",
                 }}
             >
                 <div
                     style={{
-                        flexGrow: 1,
-                        textAlign: "left",
-                        position: "relative",
+                        border: "1px solid darkgray",
+                        borderRadius: 2,
+                        padding: 2,
                     }}
                 >
                     <div
                         style={{
-                            position: "absolute",
-                            top: 0,
-                            bottom: 0,
-                            zIndex: -1,
-                            backgroundColor: "#607d8b",
-                            margin: "4px",
-                            height: "54px",
-                            borderRadius: "3px",
-                            width: `${globalPercentage ?? 0}%`,
+                            flexGrow: 1,
+                            display: "flex",
+                            background: `linear-gradient(to right, #ccc ${startGradient}%, transparent ${
+                                100 - endGradient
+                            }%)`,
                         }}
-                    ></div>
-                    <h4 style={{ margin: "0.125em 0 0 0.5em" }}>
-                        {displayName}
-                    </h4>
-                    <p style={{ margin: "0.125em 0 0 0.5em" }}>{description}</p>
+                    >
+                        <div
+                            style={{
+                                padding: "0.1em 0 0.1em 0.5em",
+                                flexGrow: 1,
+                            }}
+                        >
+                            <Typography variant="h6">{displayName}</Typography>
+                            <Typography>
+                                {description || <span>&nbsp;</span>}
+                            </Typography>
+                        </div>
+                        {unlocked && (
+                            <Box
+                                sx={{ margin: "auto 0.5em", minWidth: "10em" }}
+                            >
+                                <Typography>{`Unlocked ${getRelativeTime(
+                                    unlocked
+                                )}`}</Typography>
+                                <Typography fontSize="small">
+                                    {formatDateTime(unlocked)}
+                                </Typography>
+                            </Box>
+                        )}
+                    </div>
                 </div>
-                <div>
-                    <span>{globalPercentage?.toFixed(2)}%</span>
-                </div>
+            </div>
+            <div
+                style={{
+                    margin: "auto 0.5em",
+                    minWidth: 60,
+                    textAlign: "center",
+                }}
+            >
+                {globalPercentage?.toFixed(2)}%
             </div>
         </li>
     )
 }
 
-const GameDetails = ({ game }: { game: Game }) => {
+const GameAchievements = ({
+    achievements,
+    playerAchievements,
+}: {
+    achievements: Achievement[]
+    playerAchievements: RecentAchievement[]
+}) => (
+    <ul
+        style={{
+            listStyle: "none",
+            padding: "0 0 2em",
+            margin: "0.5em 0 0",
+        }}
+    >
+        {achievements.map((achievement) => {
+            const playerAchievement = playerAchievements.find(
+                (value) => value.id === achievement.name
+            )
+
+            return (
+                <AchievementItem
+                    key={achievement.name}
+                    {...achievement}
+                    unlocked={playerAchievement?.unlocked}
+                />
+            )
+        })}
+    </ul>
+)
+
+const GameDetails = ({
+    game,
+    achievements,
+    playerGame,
+    playerAchievements,
+}: {
+    player: string
+    game: Game
+    achievements: Achievement[]
+    playerGame: OwnedGame
+    playerAchievements: RecentAchievement[]
+}) => {
     return (
         <>
-            <GameHeader
-                id={game.id}
-                name={game.name ?? "<noname>"}
-                achievements={game.achievementSet}
-                image={game.iconUrl ?? ""}
-            />
-            <hr />
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {game.achievementSet?.map((achievement) => (
-                    <AchievementItem key={achievement.name} {...achievement} />
-                ))}
-            </ul>
+            <Box sx={{ display: "flex", margin: 0 }}>
+                <ExternalLink
+                    component={Link}
+                    to={`/Game/${game.id}`}
+                    variant="h5"
+                    underline="none"
+                >
+                    {game.name}
+                </ExternalLink>
+                <Box
+                    sx={{
+                        display: "flex",
+                        paddingX: 1,
+                        alignItems: "flex-end",
+                    }}
+                >
+                    <ExternalLink
+                        href={`http://store.steampowered.com/app/${game.id}`}
+                        target="_blank"
+                        title="Steam Game"
+                        rel="noopener"
+                    >
+                        <OpenInNew fontSize="small" />
+                    </ExternalLink>
+                </Box>
+            </Box>
+            <Box sx={{ display: "flex" }}>
+                <div>
+                    <BorderedImage
+                        src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
+                    />
+                </div>
+                <OwnedGameDetails
+                    {...playerGame}
+                    difficultyPercentage={game.difficultyPercentage}
+                    achievements={achievements}
+                    playerAchievements={playerAchievements}
+                />
+            </Box>
+            {achievements.length > 0 ? (
+                <GameAchievements
+                    achievements={achievements}
+                    playerAchievements={playerAchievements}
+                />
+            ) : (
+                <div
+                    style={{
+                        marginTop: 10,
+                        padding: 8,
+                        textAlign: "center",
+                        background: "lightgray",
+                    }}
+                >
+                    No Achievements
+                </div>
+            )}
         </>
     )
 }
 
-const PlayerGameScreen = () => {
-    // const { id } = useParams()
-    const { gameId } = useParams()
-
-    const [game, setGame] = useState<Game>()
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string>()
-
-    useEffect(() => {
-        request<GameResponse>(
-            "/graphql/",
-            gql`
-                {
-                    game(id: ${gameId}) {
-                        id
-                        name
-                        imgIconUrl
-                        achievementSet {
-                          name
-                          displayName
-                          description
-                          iconUrl
-                          globalPercentage
-                        }
-                      }
-                }
-            `
-        )
-            .then((resp) => {
-                setLoading(false)
-                setGame(resp.game)
-            })
-            .catch(() => {
-                setLoading(false)
-                setError("Failed")
-            })
-    }, [gameId])
-
-    let content
-    if (loading) {
-        content = <div>Loading...</div>
-    } else if (game) {
-        content = <GameDetails game={game} />
-    } else if (error) {
-        content = <div>Error.</div>
-    }
-
-    return <div>{content}</div>
+const PlayerGameContainer = () => {
+    const { id: player = throwExpression("Missing 'player' parameter") } =
+        useParams()
+    const { gameId: game = throwExpression("Missing 'game' parameter") } =
+        useParams()
+    const { loading, error, data } = useQueryPlayerGame({
+        player,
+        game,
+    })
+    return (
+        <Loader
+            loading={loading}
+            error={error}
+            data={data}
+            renderer={(data) => {
+                return <GameDetails player={player} {...data} />
+            }}
+        />
+    )
 }
 
-export default PlayerGameScreen
+export default PlayerGameContainer

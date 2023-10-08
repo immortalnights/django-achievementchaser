@@ -11,6 +11,7 @@ class GameType(DjangoObjectType):
         model = Game
         fields = "__all__"
 
+    id = graphene.NonNull(graphene.String)
     achievementCount = graphene.Int()
 
 

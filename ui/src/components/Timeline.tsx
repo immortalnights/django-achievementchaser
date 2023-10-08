@@ -2,6 +2,7 @@ import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import dayjs from "dayjs"
 import { InputLabel, NativeSelect } from "@mui/material"
 import { useQueryPlayerTimeline } from "../api/queries"
+import { formatDate } from "../utilities"
 
 const YearSelector = ({
     selected,
@@ -140,6 +141,7 @@ const Calendar = ({
 
         for (let index = 0; index <= totalDays; index++) {
             const dateString = currentDate.format("DD-MM-YYYY")
+            const displayDate = formatDate(currentDate)
             const perfectGameCount = getPerfectGameCount(dateString)
             const achievementCount = getAchievementCount(dateString)
 
@@ -159,11 +161,11 @@ const Calendar = ({
 
             let title
             if (perfectGameCount > 0 && achievementCount > 0) {
-                title = `${perfectGameCount} perfect games and ${achievementCount} achievements on ${dateString}`
+                title = `${perfectGameCount} perfect games and ${achievementCount} achievements on ${displayDate}`
             } else if (achievementCount > 0) {
-                title = `${achievementCount} achievements on ${dateString}`
+                title = `${achievementCount} achievements on ${displayDate}`
             } else {
-                title = `No achievements on ${dateString}`
+                title = `No achievements on ${displayDate}`
             }
 
             calendar[day].push(
@@ -177,7 +179,7 @@ const Calendar = ({
                     ].join(" ")}
                     title={title}
                 >
-                    <span className="sr-only">{dateString}</span>
+                    <span className="sr-only">{displayDate}</span>
                 </td>
             )
 

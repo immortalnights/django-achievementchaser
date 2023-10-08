@@ -71,6 +71,7 @@ interface Game {
     id: string
     name: string
     imgIconUrl: string
+    difficultyPercentage: number
     lastPlayed: string
     playtime: number
     achievementCount: number
@@ -121,13 +122,15 @@ interface PlayerProfile {
 }
 
 interface OwnedGame {
-    id: number
+    id: string
     name: string
-    imgIconUrl: string
-    lastPlayed: string
-    difficultyPercentage: number
-    completionPercentage: number
-    completed: string
+    imgIconUrl?: string
+    lastPlayed?: string
+    difficultyPercentage?: number
+    completionPercentage?: number
+    completed?: string
+    achievementCount?: number
+    unlockedAchievementCount?: number
 }
 
 interface PlayerOwnedGameResponse extends BaseQueryResponse {

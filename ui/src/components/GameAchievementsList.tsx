@@ -1,10 +1,10 @@
 import { useMemo } from "react"
-import { Link } from "react-router-dom"
 import Grid from "@mui/material/Unstable_Grid2"
 import BorderedImage from "./BorderedImage"
-import { Box } from "@mui/material"
+import { Box, Tooltip, Typography } from "@mui/material"
 import { getRelativeTime } from "../utilities"
 import dayjs from "dayjs"
+import OwnedGame from "./OwnedGame"
 
 interface GameAchievementIndex {
     [key: string]: GameAchievements
@@ -23,46 +23,55 @@ const GameAchievementSet = ({
     player: string
     game: GameAchievements
 }) => {
-    const getAchievementTitle = (
+    const getAchievementIcon = (
         achievement: Omit<RecentAchievement, "game">
-    ) => {
-        let title = achievement.displayName
+    ) => (achievement.unlocked ? achievement.iconUrl : achievement.iconGrayUrl)
+
+    const AchievementTitle = ({
+        achievement,
+    }: {
+        achievement: Omit<RecentAchievement, "game">
+    }) => {
+        let subTitle: string | undefined
         if (achievement.unlocked) {
             const unlockedDate = dayjs(achievement.unlocked)
-            title += ` - ${unlockedDate.format(
+            subTitle = `Unlocked: ${unlockedDate.format(
                 "MMM D, YYYY"
             )} (${getRelativeTime(unlockedDate)})`
-        } else {
-            title += ` - ${achievement.globalPercentage.toFixed(2)}%`
+        } else if (achievement.globalPercentage) {
+            subTitle = `Difficulty: ${achievement.globalPercentage.toFixed(2)}%`
         }
-        return title
+
+        return (
+            <>
+                <Typography>{achievement.displayName}</Typography>
+                {subTitle && (
+                    <Typography fontSize="small">{subTitle}</Typography>
+                )}
+            </>
+        )
     }
 
     return (
         <>
             <Box>
-                <Link
-                    to={`/game/${game.id}?player=${player}`}
-                    title={game.name}
-                >
-                    <BorderedImage
-                        src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
-                    />
-                </Link>
+                <OwnedGame player={player} game={game} />
             </Box>
             {game.achievements.map((achievement) => (
-                <div
-                    key={`${game.id}-${achievement.id}`}
-                    title={getAchievementTitle(achievement)}
+                <Tooltip
+                    title={<AchievementTitle achievement={achievement} />}
+                    arrow
                 >
-                    <BorderedImage
-                        src={achievement.iconGrayUrl}
-                        style={{
-                            width: 64,
-                            height: 64,
-                        }}
-                    />
-                </div>
+                    <div key={`${game.id}-${achievement.id}`}>
+                        <BorderedImage
+                            src={getAchievementIcon(achievement)}
+                            style={{
+                                width: 64,
+                                height: 64,
+                            }}
+                        />
+                    </div>
+                </Tooltip>
             ))}
         </>
     )

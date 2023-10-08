@@ -7,6 +7,7 @@ import {
     PlayerProfile,
     PlayerPerfectGames,
     PlayerRecentAchievements,
+    PlayerGame,
     PlayerFriends,
     Game,
 } from "./screens"
@@ -51,6 +52,10 @@ const router = createHashRouter([
                     {
                         path: ":id/RecentAchievements",
                         Component: PlayerRecentAchievements,
+                    },
+                    {
+                        path: ":id/Game/:gameId",
+                        Component: PlayerGame,
                     },
                     {
                         path: ":id/Friends",
