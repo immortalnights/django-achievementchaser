@@ -1,5 +1,5 @@
 from loguru import logger
-from typing import Optional, List, Dict
+from typing import Optional, List
 import graphene
 from graphene_django import DjangoObjectType
 from django.db.models import Q, Sum
