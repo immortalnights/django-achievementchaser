@@ -55,7 +55,6 @@ const GameHeader = ({ game }: { game: Game }) => {
                         </Typography>
                     </Box>
                     <hr />
-                    {/* <PlayerCompareSelect /> */}
                 </Grid>
             </Grid>
         </>
