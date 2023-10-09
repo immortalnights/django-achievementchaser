@@ -230,7 +230,11 @@ export const useQueryGameAchievements = ({ game }: { game: string }) => {
         (response) => response.gameAchievements
     )
 
-    useEffect(() => trigger(game), [game])
+    useEffect(
+        () => trigger(game),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [game]
+    )
 
     return { loading, error, data }
 }
