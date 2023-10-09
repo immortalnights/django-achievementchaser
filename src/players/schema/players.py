@@ -1,13 +1,13 @@
 from loguru import logger
 from typing import Optional, List
 import graphene
-from graphene_django import DjangoObjectType
 from django.db.models import Q, Sum
 from achievementchaser.graphql_utils import parse_order_by, get_field_selection_hierarchy, get_edge_node_fields
 from achievements.models import Achievement
+from .modeltypes import PlayerType
 from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
-from games.schema.games import GameType
 from ..queries import get_player_games2
+from games.schema.games import GameType
 
 
 def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, requires_game_data: bool):
@@ -95,18 +95,6 @@ class xPlayerAchievementType(graphene.Connection):
         node = SimpleAchievementType
 
     total_count = graphene.Int()
-
-
-class PlayerType(DjangoObjectType):
-    class Meta:
-        model = Player
-        # fields = "__all__"
-
-        # fields = ["id", "name"]
-        exclude = ["resynchronization_required", "playerownedgame_set", "playerunlockedachievement_set"]
-
-    # Override the model ID otherwise JavaScript rounds the number
-    id = graphene.String()
 
 
 class PlayerProfile(graphene.ObjectType):

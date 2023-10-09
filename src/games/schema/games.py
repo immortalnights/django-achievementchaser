@@ -1,28 +1,11 @@
 import graphene
-from graphene_django import DjangoObjectType
 from typing import Optional, List
 from django.db.models import Q
+from .modeltypes import GameType, AchievementType
 from ..models import Game
 from achievements.models import Achievement
-
-
-class GameType(DjangoObjectType):
-    class Meta:
-        model = Game
-        fields = "__all__"
-
-    id = graphene.NonNull(graphene.String)
-    achievementCount = graphene.Int()
-
-
-class AchievementType(DjangoObjectType):
-    class Meta:
-        model = Achievement
-        fields = "__all__"
-
-    def resolve_global_percentage(root, info):
-        """Handle rare situations where the global achievement percentages for a game have not been fetched yet."""
-        return root.global_percentage or 0
+from players.models import PlayerOwnedGame
+from players.schema.modeltypes import PlayerType
 
 
 class Query(graphene.ObjectType):
@@ -30,6 +13,8 @@ class Query(graphene.ObjectType):
     games = graphene.List(GameType)
 
     game_achievements = graphene.List(AchievementType, id=graphene.Int())
+
+    game_owners = graphene.List(PlayerType, id=graphene.Int())
 
     def resolve_game(root, info, id: Optional[int] = None, name: Optional[str] = None) -> Optional[Game]:
         game = None
@@ -40,7 +25,6 @@ class Query(graphene.ObjectType):
             raise RuntimeError(f"Found too many matching games with id '{id}' or name '{name}'")
         else:
             game = result.first()
-            game.achievementCount = game.achievement_set.count()
 
         return game
 
@@ -49,3 +33,7 @@ class Query(graphene.ObjectType):
 
     def resolve_game_achievements(root, info, id: int):
         return Achievement.objects.filter(game_id=id).order_by("-global_percentage")
+
+    def resolve_game_owners(root, info, id: int):
+        owners = PlayerOwnedGame.objects.filter(game_id=id)
+        return map(lambda owned_game: owned_game.player, owners)
