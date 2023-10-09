@@ -185,7 +185,7 @@ const GameContainer = () => {
         <>
             <GameHeader game={game} />
             <Paper sx={{ marginTop: "1em" }} elevation={0}>
-                <GameAchievements game={game.id} />
+                <GameAchievements game={String(game.id)} />
             </Paper>
         </>
     )

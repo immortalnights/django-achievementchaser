@@ -9,7 +9,6 @@ import {
     PlayerRecentAchievements,
     PlayerGame,
     PlayerFriends,
-    Game,
 } from "./screens"
 import PlayerRecentGames from "./screens/PlayerRecentGames"
 import PlayerContainer from "./components/PlayerContainer"

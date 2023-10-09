@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { gql } from "graphql-request"
-import gqlDocument, { boolToString, gameOwners } from "./graphql-documents"
+import gqlDocument, { boolToString } from "./graphql-documents"
 import { useQuery } from "./base-query"
 
 export const useLazyQueryPlayers = () => {
