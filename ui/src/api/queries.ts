@@ -221,6 +221,24 @@ export const useQueryPlayerTimeline = ({
     return { loading, error, data }
 }
 
+export const useQueryGameAchievements = ({ game }: { game: string }) => {
+    const { loading, error, data, trigger } = useQuery<
+        GameAchievementsResponse,
+        Achievement[]
+    >(
+        (game) => gqlDocument.gameAchievements(game),
+        (response) => response.gameAchievements
+    )
+
+    useEffect(
+        () => trigger(game),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [game]
+    )
+
+    return { loading, error, data }
+}
+
 interface PlayerGameResponse extends BaseQueryResponse {
     game: Game
     gameAchievements: Achievement[]
@@ -284,9 +302,27 @@ playerAchievementsForGame(
     )
 
     useEffect(
-        () => trigger(player, String(game)),
+        () => trigger(player, game),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [player, game]
+    )
+
+    return { loading, error, data }
+}
+
+export const useQueryGameOwners = ({ game }: { game: string }) => {
+    const { loading, error, data, trigger } = useQuery<
+        PlayersResponse,
+        Player[]
+    >(
+        (game) => gqlDocument.gameOwners(game),
+        (response) => response.players
+    )
+
+    useEffect(
+        () => trigger(game),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [game]
     )
 
     return { loading, error, data }

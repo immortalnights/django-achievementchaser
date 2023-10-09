@@ -148,10 +148,18 @@ game(id: ${game}) {
     id
     name
     difficultyPercentage
-}
+    achievementCount
+}`
+
+export const gameAchievements = (game: string) => gql`
 gameAchievements(id: ${game}) {
     id
     name
+    displayName
+    description
+    hidden
+    iconUrl
+    iconGrayUrl
     globalPercentage
 }`
 
@@ -169,9 +177,18 @@ playerAchievementsForGame(
     unlocked
 }`
 
+export const gameOwners = (game: string) => gql`
+players: gameOwners(id: ${game}) {
+    id
+    name
+    avatarSmallUrl
+}
+`
+
 export default {
     player,
     playerProfileSummary,
+    playerGame,
     recentGames,
     recentAchievements,
     timelineAchievements,
@@ -180,5 +197,6 @@ export default {
     justStartedGames,
     nextGames,
     game,
-    playerGame,
+    gameAchievements,
+    gameOwners,
 }

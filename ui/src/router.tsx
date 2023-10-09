@@ -9,10 +9,11 @@ import {
     PlayerRecentAchievements,
     PlayerGame,
     PlayerFriends,
-    Game,
 } from "./screens"
 import PlayerRecentGames from "./screens/PlayerRecentGames"
 import PlayerContainer from "./components/PlayerContainer"
+import GameContainer from "./components/GameContainer"
+import { throwExpression } from "./utilities"
 
 const router = createHashRouter([
     {
@@ -26,7 +27,8 @@ const router = createHashRouter([
             {
                 path: "/Player/*",
                 loader: ({ params }) => {
-                    const document = gqlDocument.player(params.id ?? "")
+                    const { id = throwExpression("missing param") } = params
+                    const document = gqlDocument.player(id)
                     return request<PlayerQueryResponse>(
                         "/graphql/",
                         `{${String(document)}\n}`
@@ -62,7 +64,15 @@ const router = createHashRouter([
             },
             {
                 path: "/Game/:id",
-                Component: Game,
+                loader: ({ params }) => {
+                    const { id = throwExpression("missing param") } = params
+                    const document = gqlDocument.game(id)
+                    return request<GameQueryResponse>(
+                        "/graphql/",
+                        `{${String(document)}\n}`
+                    )
+                },
+                Component: GameContainer,
             },
         ],
     },

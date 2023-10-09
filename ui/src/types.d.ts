@@ -1,4 +1,13 @@
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
+
+interface ResponseError {
+    error: unknown
+}
+
+interface BaseQueryResponse {
+    errors?: ResponseError[]
+}
+
 interface Player {
     id: string
     name?: string
@@ -25,24 +34,20 @@ interface Achievement {
     displayName?: string
     description?: string
     iconUrl?: string
-    greyIconUrl?: string
+    iconGreyUrl?: string
     globalPercentage?: number
 }
 
-interface PlayersResponse {
+interface PlayersResponse extends BaseQueryResponse {
     players: Player[]
 }
 
-interface GameResponse {
+interface GameQueryResponse extends BaseQueryResponse {
     game: Game
 }
 
-interface ResponseError {
-    error: unknown
-}
-
-interface BaseQueryResponse {
-    errors?: ResponseError[]
+interface GameAchievementsResponse extends BaseQueryResponse {
+    gameAchievements: Achievement[]
 }
 
 interface PlayerQueryResponse extends BaseQueryResponse {
@@ -69,6 +74,7 @@ interface Game {
     difficultyPercentage: number
     lastPlayed: string
     playtime: number
+    achievementCount: number
 }
 
 interface Achievement {
