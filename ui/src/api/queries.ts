@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { gql } from "graphql-request"
-import gqlDocument, { boolToString } from "./graphql-documents"
+import gqlDocument, { boolToString, gameOwners } from "./graphql-documents"
 import { useQuery } from "./base-query"
 
 export const useLazyQueryPlayers = () => {
@@ -298,9 +298,27 @@ playerAchievementsForGame(
     )
 
     useEffect(
-        () => trigger(player, String(game)),
+        () => trigger(player, game),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [player, game]
+    )
+
+    return { loading, error, data }
+}
+
+export const useQueryGameOwners = ({ game }: { game: string }) => {
+    const { loading, error, data, trigger } = useQuery<
+        PlayersResponse,
+        Player[]
+    >(
+        (game) => gqlDocument.gameOwners(game),
+        (response) => response.players
+    )
+
+    useEffect(
+        () => trigger(game),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [game]
     )
 
     return { loading, error, data }

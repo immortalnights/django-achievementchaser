@@ -4,7 +4,44 @@ import { useLoaderData, Link } from "react-router-dom"
 import { OpenInNew } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import Loader from "./Loader"
-import { useQueryGameAchievements } from "../api/queries"
+import { useQueryGameAchievements, useQueryGameOwners } from "../api/queries"
+
+const GameOwners = ({ game }: { game: Game }) => {
+    const { loading, error, data } = useQueryGameOwners({
+        game: String(game.id),
+    })
+
+    return (
+        <Loader
+            loading={loading}
+            error={error}
+            data={data}
+            renderer={(data) => {
+                return (
+                    <Box sx={{ display: "flex" }}>
+                        {data.map((player) => (
+                            <Link to={`/Player/${player.id}/Game/${game.id}`}>
+                                <Box
+                                    key={player.id}
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <BorderedImage
+                                        src={player.avatarSmallUrl}
+                                        style={{ marginRight: 6 }}
+                                    />
+                                    <span>{player.name}</span>
+                                </Box>
+                            </Link>
+                        ))}
+                    </Box>
+                )
+            }}
+        />
+    )
+}
 
 const GameHeader = ({ game }: { game: Game }) => {
     return (
@@ -54,7 +91,10 @@ const GameHeader = ({ game }: { game: Game }) => {
                             {game.achievementCount ?? "?"}
                         </Typography>
                     </Box>
-                    <hr />
+                    <Typography variant="subtitle1" textTransform="uppercase">
+                        Owners
+                    </Typography>
+                    <GameOwners game={game} />
                 </Grid>
             </Grid>
         </>

@@ -151,7 +151,7 @@ game(id: ${game}) {
     achievementCount
 }`
 
-export const gameAchievements = (game: number) => gql`
+export const gameAchievements = (game: string) => gql`
 gameAchievements(id: ${game}) {
     id
     name
@@ -177,9 +177,18 @@ playerAchievementsForGame(
     unlocked
 }`
 
+export const gameOwners = (game: string) => gql`
+players: gameOwners(id: ${game}) {
+    id
+    name
+    avatarSmallUrl
+}
+`
+
 export default {
     player,
     playerProfileSummary,
+    playerGame,
     recentGames,
     recentAchievements,
     timelineAchievements,
@@ -189,5 +198,5 @@ export default {
     nextGames,
     game,
     gameAchievements,
-    playerGame,
+    gameOwners,
 }
