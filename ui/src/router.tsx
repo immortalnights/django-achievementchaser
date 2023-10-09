@@ -66,7 +66,6 @@ const router = createHashRouter([
             {
                 path: "/Game/:id",
                 loader: ({ params }) => {
-                    throwExpression
                     const { id = throwExpression("missing param") } = params
                     const document = gqlDocument.game(id)
                     return request<GameQueryResponse>(
