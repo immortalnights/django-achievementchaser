@@ -31,7 +31,7 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
         resynchronize_game_schema(game)
 
         if resynchronize_achievements:
-            if len(game.achievements) > 0:
+            if game.has_achievements():
                 resynchronize_game_achievements(game)
             else:
                 logging.debug(f"Game {game.name} does not have any achievements")
