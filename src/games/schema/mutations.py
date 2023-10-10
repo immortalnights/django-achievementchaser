@@ -1,5 +1,5 @@
-import logging
 import graphene
+from loguru import logger
 from ..tasks import resynchronize_game_task
 from ..models import Game
 
@@ -21,7 +21,7 @@ class ResynchronizeGame(graphene.Mutation):
     @staticmethod
     def mutate(root, info, identifier):
         try:
-            logging.info(f"Scheduling resynchronize_game_task for '{identifier}'")
+            logger.info(f"Scheduling resynchronize_game_task for '{identifier}'")
             # FIXME support sync/async/
             task = resynchronize_game_task.delay(identifier)
             response = task.get(timeout=30)

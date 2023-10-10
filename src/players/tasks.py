@@ -113,7 +113,7 @@ def resynchronize_player_game_task(
             owned_game.refresh_from_db()
             ok = True
         else:
-            logger.warning(f"Resynchronization of player {player.name} owned game game {game.name} blocked")
+            logger.warning(f"Resynchronization of player {player.name} owned game {game.name} blocked")
     except Player.DoesNotExist:
         logger.error(f"Failed to find player {player}")
     except Game.DoesNotExist:

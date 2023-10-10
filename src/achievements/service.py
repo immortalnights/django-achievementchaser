@@ -1,5 +1,5 @@
-import logging
 import typing
+from loguru import logger
 from games.models import Game
 from games.responsedata import GameAchievementResponse
 from .models import Achievement
@@ -7,7 +7,7 @@ from .steam import load_game_achievement_percentages
 
 
 def save_achievements(game: Game, achievements: typing.List[GameAchievementResponse]) -> None:
-    logging.debug(f"Saving {len(achievements)} achievements for game {game.name} ({game.id})")
+    logger.debug(f"Saving {len(achievements)} achievements for game {game.name} ({game.id})")
 
     for achievement in achievements:
         achievement_instance, achievement_created = Achievement.objects.update_or_create(
@@ -39,7 +39,7 @@ def resynchronize_game_achievements(game: Game) -> bool:
                 instance.global_percentage = achievement.percent
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
-                logging.error(f"Achievement {achievement.name} not found for game {game.name} ({game.id})")
+                logger.error(f"Achievement {achievement.name} not found for game {game.name} ({game.id})")
 
         game.difficulty_percentage = total_percentage / len(achievement_percentages.achievements)
         game.save(update_fields=["difficulty_percentage"])

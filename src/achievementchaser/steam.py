@@ -1,12 +1,10 @@
 """Steam Interface layer"""
 import os
-import logging
 from typing import Tuple, Union, Optional, Dict
 from urllib import request as urllib_request, parse, error
 import json
+from loguru import logger
 from django.conf import settings
-
-logger = logging.getLogger()
 
 STEAM_API_URL = "api.steampowered.com"
 
@@ -47,7 +45,7 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
             ok = True
 
     except error.HTTPError as err:
-        logging.warning(f"HTTP {err.code}")
+        logger.warning(f"HTTP {err.code}")
         response_json = _parse_response(err, cache)
     except error.URLError:
         logger.exception("Steam request failed (URL ERROR)")

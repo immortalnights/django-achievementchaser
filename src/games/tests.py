@@ -1,5 +1,5 @@
-import logging
 from django.test import TestCase
+from loguru import logger
 from graphene_django.utils.testing import GraphQLTestCase
 from unittest import skip
 from unittest.mock import patch
@@ -20,7 +20,7 @@ class GameTests(TestCase):
     def test_resynchronize_new_game_task(self):
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = mock_game_schema
-            resynchronize_game(logging, 288160)
+            resynchronize_game(logger, 288160)
             mock_request.assert_called_once()
 
         game = Game.objects.get(id=288160)
@@ -30,7 +30,7 @@ class GameTests(TestCase):
     def test_resynchronize_existing_game_task(self):
         with patch("achievementchaser.steam._request") as mock_request:
             mock_request.return_value = mock_game_schema
-            resynchronize_game(logging, 288160)
+            resynchronize_game(logger, 288160)
             mock_request.assert_called_once()
 
         game = Game.objects.get(id=288160)

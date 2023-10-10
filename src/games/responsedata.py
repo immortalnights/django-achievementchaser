@@ -1,4 +1,4 @@
-import logging
+from loguru import logger
 from dataclasses import dataclass
 from typing import List, Dict, Optional
 
@@ -50,5 +50,5 @@ class GameSchemaResponse:
         if availableGameStats:
             self.availableGameStats = AvailableGameStatsResponse(**availableGameStats)
         else:
-            logging.debug(f"Game {self.gameName} does not have any game stats")
+            logger.debug(f"Game {self.gameName} does not have any game stats")
             self.availableGameStats = AvailableGameStatsResponse()

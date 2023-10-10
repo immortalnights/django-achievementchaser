@@ -1,5 +1,5 @@
-import logging
 import typing
+from loguru import logger
 from achievementchaser import steam
 from .responsedata import GameSchemaResponse
 
@@ -18,6 +18,6 @@ def load_game_schema(id: int) -> typing.Optional[GameSchemaResponse]:
         if response and "gameName" in response:
             schema = GameSchemaResponse(**response)
     except Exception:
-        logging.exception(f"Failed to load game schema for {id}")
+        logger.exception(f"Failed to load game schema for {id}")
 
     return schema

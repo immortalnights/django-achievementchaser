@@ -1,6 +1,6 @@
 import typing
-import logging
 from datetime import datetime, timedelta
+from loguru import logger
 from django.db import models
 from django.utils import timezone
 from games.models import Game
@@ -36,7 +36,7 @@ def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
     try:
         player_id = int(resolved_identity)
     except ValueError:
-        # logging.debug(f"Could not convert identity '{resolved_identity}' to Steam ID")
+        # logger.debug(f"Could not convert identity '{resolved_identity}' to Steam ID")
         player_id = resolve_vanity_url(resolved_identity)
 
     return player_id
@@ -66,7 +66,7 @@ def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Pl
     try:
         instance = Player.objects.get(query)
     except Player.DoesNotExist:
-        logging.warning(f"Player '{identity}' does not exist")
+        logger.warning(f"Player '{identity}' does not exist")
 
     return instance
 
@@ -81,7 +81,7 @@ def player_from_identity(identity: typing.Union[str, int]) -> typing.Optional["P
         try:
             instance = Player.objects.get(id=player_id)
         except Player.DoesNotExist:
-            logging.warning(f"Player {player_id} (as {identity}) does not exist")
+            logger.warning(f"Player {player_id} (as {identity}) does not exist")
 
     return instance
 
@@ -99,7 +99,7 @@ def resynchronize_player(player: Player) -> bool:
             player.resynchronization_required = False
             player.save()
     except Exception:
-        logging.exception(f"Failed to resynchronize player '{player.name}'")
+        logger.exception(f"Failed to resynchronize player '{player.name}'")
 
     return ok
 
@@ -126,9 +126,9 @@ def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int,
     delta = timezone.now() - playtime.datetime
     save = False
     if new_playtime == playtime.playtime:
-        logging.debug(f"Not saving playtime record for '{playtime.game.name}' playtime has not changed")
+        logger.debug(f"Not saving playtime record for '{playtime.game.name}' playtime has not changed")
     elif delta.seconds < (maximum_frequency * 60):
-        logging.debug(
+        logger.debug(
             f"Not saving playtime record for '{playtime.game.name}' last recorded {delta.seconds / 60:0.0f} minutes ago"
         )
     else:
@@ -141,7 +141,7 @@ def resynchronize_player_games(player: Player) -> bool:
     ok = True
 
     owned_games = get_owned_games(player.id)
-    logging.info(f"Player {player.name} has {len(owned_games)} games")
+    logger.info(f"Player {player.name} has {len(owned_games)} games")
 
     # Add / update the Game in the Game table
     # This could be optimized by getting all the IDs of the games the player already owns
@@ -182,7 +182,7 @@ def resynchronize_player_games(player: Player) -> bool:
             if owned_game_playtime is None or should_save_playtime_record(
                 owned_game_playtime, owned_game.playtime_2weeks
             ):
-                logging.debug(
+                logger.debug(
                     f"Saving playtime record for {player.name} game {game_instance.name} ({owned_game.playtime_2weeks})"
                 )
                 new_owned_game_playtime = PlayerGamePlaytime(
@@ -198,7 +198,7 @@ def resynchronize_all_player_game_achievements(player: Player) -> bool:
     ok = False
 
     player_games = PlayerOwnedGame.objects.filter(player=player)
-    logging.debug(f"Resynchronizing achievements for {len(player_games)} games for {player.name}")
+    logger.debug(f"Resynchronizing achievements for {len(player_games)} games for {player.name}")
 
     for record in player_games:
         game = record.game
@@ -214,8 +214,8 @@ def resynchronize_recent_player_game_achievements(player: Player) -> bool:
 
     q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=4))
     recent_played_games = PlayerGamePlaytime.objects.filter(q).distinct("game")
-    # logging.debug(recent_games.query)
-    logging.debug(f"Resynchronizing achievements for {len(recent_played_games)} games for {player.name}")
+    # logger.debug(recent_games.query)
+    logger.debug(f"Resynchronizing achievements for {len(recent_played_games)} games for {player.name}")
 
     for record in recent_played_games:
         game = record.game
@@ -227,7 +227,7 @@ def resynchronize_recent_player_game_achievements(player: Player) -> bool:
 
 def resynchronize_player_achievements_for_game(player: Player, game: Game):
     game_achievements = game_achievements = Achievement.objects.filter(game=game.id)
-    logging.debug(f"Collecting player {player.name} achievements for '{game.name}'")
+    logger.debug(f"Collecting player {player.name} achievements for '{game.name}'")
     player_achievements = get_player_achievements_for_game(player.id, game.id)
     unlocked = list(filter(lambda achievement: achievement.achieved == 1, player_achievements))
 
@@ -238,13 +238,13 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
     # If the player has not unlocked any achievements assume, for now, that the game
     # really doesn't have any achievements
     if len(game_achievements) == 0 and len(player_achievements) == 0:
-        logging.debug(f"Game '{game.name}' does not have any achievements")
+        logger.debug(f"Game '{game.name}' does not have any achievements")
     else:
         # Check that all unlocked achievements exist in the game achievement list; if not
         # resynchronize the game. This is highly unlikely as most paths to this function
         # resynchronize the game before resynchronizing the player achievements.
 
-        logging.debug(
+        logger.debug(
             f"Player {player.name} has unlocked {len(unlocked)} of "
             f"{len(player_achievements)} achievements in {game.name}"
         )
@@ -269,12 +269,12 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
                     )
                 else:
                     game_resynchronization_required = True
-                    logging.error(
+                    logger.error(
                         f"Achievement {player_achievement.apiname} does not exist for game '{game.name}' ({game.id})"
                     )
 
             completion_percentage = len(unlocked) / len(player_achievements)
-            logging.debug(f"Player completion percentage of {completion_percentage} for '{game.name}'")
+            logger.debug(f"Player completion percentage of {completion_percentage} for '{game.name}'")
 
         # Update the game resynchronization time
         game.resynchronized = timezone.now()

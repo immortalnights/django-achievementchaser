@@ -1,5 +1,5 @@
-import logging
 from typing import Optional, List, TypedDict
+from loguru import logger
 from django.db.models import Q, Sum
 from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
 from achievements.models import Achievement
@@ -125,7 +125,7 @@ def get_player_games2(
         elif key == "completed":
             order_by_value = f"{order_modifier}completed"
         else:
-            logging.error(f"Unknown order by key '{key}'")
+            logger.error(f"Unknown order by key '{key}'")
 
         if order_by_value:
             games = games.order_by(order_by_value)
