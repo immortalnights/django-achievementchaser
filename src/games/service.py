@@ -1,5 +1,5 @@
-import logging
 from typing import Union, Optional
+from loguru import logger
 from django.db.models import Q
 from django.utils import timezone
 from .models import Game
@@ -13,12 +13,11 @@ def load_game(identity: Union[int, str]) -> Optional[Game]:
         query = Q(id=int(identity))
     except ValueError:
         query = Q(name__iexact=identity)
-    logging.debug(query)
 
     try:
         instance = Game.objects.get(query)
     except Game.DoesNotExist:
-        logging.warning(f"Game '{identity}' does not exist")
+        logger.warning(f"Game '{identity}' does not exist")
 
     return instance
 
@@ -27,14 +26,14 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
     ok = False
 
     try:
-        logging.debug(f"Resynchronizing game {game.name} ({game.id})")
+        logger.debug(f"Resynchronizing game {game.name} ({game.id})")
         resynchronize_game_schema(game)
 
         if resynchronize_achievements:
-            if len(game.achievements) > 0:
+            if game.has_achievements():
                 resynchronize_game_achievements(game)
             else:
-                logging.debug(f"Game {game.name} does not have any achievements")
+                logger.debug(f"Game {game.name} does not have any achievements")
 
         # Resynchronization completed successful
         game.resynchronized = timezone.now()
@@ -42,7 +41,7 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
         game.save()
         ok = True
     except Exception:
-        logging.exception(f"Failed to resynchronize game {game.name}")
+        logger.exception(f"Failed to resynchronize game {game.name}")
 
     return ok
 
@@ -57,7 +56,7 @@ def resynchronize_game_schema(game: Game) -> bool:
         if not game.name:
             game.name = schema.gameName
         elif game.name != schema.gameName:
-            logging.warning(f"Game name mismatch {game.name} vs {schema.gameName} ({game.id})")
+            logger.warning(f"Game name mismatch {game.name} vs {schema.gameName} ({game.id})")
 
         # Save the changes to the game
         game.save()

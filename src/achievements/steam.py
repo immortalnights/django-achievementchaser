@@ -1,5 +1,5 @@
-import logging
 import typing
+from loguru import logger
 from achievementchaser import steam
 from .responsedata import AchievementPercentagesResponse
 
@@ -18,6 +18,6 @@ def load_game_achievement_percentages(id: int) -> typing.Optional[AchievementPer
         if response and "achievements" in response:
             schema = AchievementPercentagesResponse(**response)
     except Exception:
-        logging.exception(f"Failed to load game achievement percentages for {id}")
+        logger.exception(f"Failed to load game achievement percentages for {id}")
 
     return schema
