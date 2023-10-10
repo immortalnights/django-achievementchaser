@@ -26,13 +26,18 @@ def save_achievements(game: Game, achievements: typing.List[GameAchievementRespo
 
 def resynchronize_game_achievements(game: Game) -> bool:
     ok = False
+    logger.debug(f"Loading global achievement percentages for game {game.name} ({game.id})")
     achievement_percentages = load_game_achievement_percentages(game.id)
 
     if achievement_percentages is not None:
         total_percentage = 0
+        lowest_percentage = None
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
             total_percentage += achievement.percent
+            lowest_percentage = (
+                min(lowest_percentage, achievement.percent) if lowest_percentage is not None else achievement.percent
+            )
 
             try:
                 instance = Achievement.objects.get(name=achievement.name, game=game)
@@ -41,7 +46,9 @@ def resynchronize_game_achievements(game: Game) -> bool:
             except Achievement.DoesNotExist:
                 logger.error(f"Achievement {achievement.name} not found for game {game.name} ({game.id})")
 
-        game.difficulty_percentage = total_percentage / len(achievement_percentages.achievements)
+        average_difficulty = total_percentage / len(achievement_percentages.achievements)
+        logger.debug(f"Game {game.name} difficulty is {lowest_percentage}, {average_difficulty} average")
+        game.difficulty_percentage = lowest_percentage
         game.save(update_fields=["difficulty_percentage"])
 
         ok = True
