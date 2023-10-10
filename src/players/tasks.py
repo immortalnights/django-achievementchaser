@@ -79,6 +79,7 @@ def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
         raise Player.DoesNotExist(f"Player '{identity}' does not exist")
     else:
         logger.info(f"Beginning resynchronization of Player {player.name} ({player.id})")
+        logger.debug(f"Player {player.name} last resynchronized {player.resynchronized}")
 
         if not can_resynchronize_model(player):
             logger.warning(f"Resynchronization of player {player.name} blocked")

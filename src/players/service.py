@@ -169,6 +169,7 @@ def resynchronize_player_games(player: Player) -> bool:
         )
 
         if owned_game.playtime_2weeks is not None:
+            logger.debug(f"Updating playtime for game {game_instance.name} ({game_instance.id})")
             # Get latest game playtime
             owned_game_playtime = None
 
@@ -177,6 +178,7 @@ def resynchronize_player_games(player: Player) -> bool:
                     "datetime"
                 )
             except PlayerGamePlaytime.DoesNotExist:
+                logger.debug(f"Recording first playtime for game {game_instance.name} ({game_instance.id})")
                 pass
 
             if owned_game_playtime is None or should_save_playtime_record(
