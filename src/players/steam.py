@@ -73,7 +73,7 @@ def get_owned_games(steam_id: int, api_key: str = None) -> typing.List[PlayerOwn
             "include_played_free_games": 1,
         }
 
-        if api_key is not None:
+        if api_key:
             query_properties["key"] = api_key
 
         ok, response = steam.request(
