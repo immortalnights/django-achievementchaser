@@ -51,11 +51,11 @@ def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameRespo
     if game is None:
         raise Game.DoesNotExist(f"Game '{identity}' does not exist")
     else:
-        logger.info(f"Beginning resynchronization of game {game.name} ({identity})")
+        logger.info(f"Beginning resynchronization of game '{game.name}' ({identity})")
         if can_resynchronize_model(game):
-            logger.warning(f"Resynchronization of game {game.name} blocked")
+            logger.warning(f"Resynchronization of game '{game.name}' blocked")
         elif resynchronize_game(game):
-            logger.info(f"Resynchronization of game {game.name} complete")
+            logger.info(f"Resynchronization of game '{game.name}' complete")
             resp = {
                 "ok": True,
                 "game": {
@@ -65,6 +65,6 @@ def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameRespo
                 },
             }
         else:
-            logger.info(f"Resynchronization of game {game.name} failed")
+            logger.info(f"Resynchronization of game '{game.name}' failed")
 
     return resp

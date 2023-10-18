@@ -7,7 +7,7 @@ from .steam import load_game_achievement_percentages
 
 
 def save_achievements(game: Game, achievements: typing.List[GameAchievementResponse]) -> None:
-    logger.debug(f"Saving {len(achievements)} achievements for game {game.name} ({game.id})")
+    logger.debug(f"Saving {len(achievements)} achievements for game '{game.name}' ({game.id})")
 
     for achievement in achievements:
         achievement_instance, achievement_created = Achievement.objects.update_or_create(
@@ -26,7 +26,7 @@ def save_achievements(game: Game, achievements: typing.List[GameAchievementRespo
 
 def resynchronize_game_achievements(game: Game) -> bool:
     ok = False
-    logger.debug(f"Loading global achievement percentages for game {game.name} ({game.id})")
+    logger.debug(f"Loading global achievement percentages for game '{game.name}' ({game.id})")
     achievement_percentages = load_game_achievement_percentages(game.id)
 
     if achievement_percentages is not None:
@@ -44,10 +44,10 @@ def resynchronize_game_achievements(game: Game) -> bool:
                 instance.global_percentage = achievement.percent
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
-                logger.error(f"Achievement {achievement.name} not found for game {game.name} ({game.id})")
+                logger.error(f"Achievement {achievement.name} not found for game '{game.name}' ({game.id})")
 
         average_difficulty = total_percentage / len(achievement_percentages.achievements)
-        logger.debug(f"Game {game.name} difficulty is {lowest_percentage}, {average_difficulty} average")
+        logger.debug(f"Game '{game.name}' difficulty is {lowest_percentage}, {average_difficulty} average")
         game.difficulty_percentage = lowest_percentage
         game.save(update_fields=["difficulty_percentage"])
 
