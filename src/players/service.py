@@ -1,5 +1,5 @@
 import typing
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from loguru import logger
 from django.db import models
 from django.utils import timezone
@@ -155,18 +155,11 @@ def resynchronize_player_games(player: Player) -> bool:
             },
         )
 
-        last_played_time = (
-            datetime.fromtimestamp(owned_game.rtime_last_played) if owned_game.rtime_last_played > 0 else None
-        )
-
-        owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
-            game=game_instance,
-            player=player,
-            defaults={
-                "playtime_forever": owned_game.playtime_forever,
-                "last_played": timezone.make_aware(last_played_time) if last_played_time is not None else None,
-            },
-        )
+        last_played_time = None
+        # rtime_last_played is only available for the owner of the API key,
+        # where it is not available, use today if the playtime value has changed.
+        if owned_game.rtime_last_played is not None:
+            last_played_time = timezone.make_aware(datetime.fromtimestamp(owned_game.rtime_last_played))
 
         if owned_game.playtime_2weeks is not None:
             logger.debug(f"Player has played {game_instance.name} ({game_instance.id}) recently")
@@ -192,6 +185,18 @@ def resynchronize_player_games(player: Player) -> bool:
                 )
                 new_owned_game_playtime.save()
 
+                if owned_game_playtime is None or owned_game.playtime_2weeks > owned_game_playtime.playtime:
+                    last_played_time = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()))
+
+        owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
+            game=game_instance,
+            player=player,
+            defaults={
+                "playtime_forever": owned_game.playtime_forever,
+                "last_played": last_played_time,
+            },
+        )
+
     return ok
 
 
@@ -214,10 +219,11 @@ def resynchronize_recent_player_game_achievements(player: Player) -> bool:
     """Resynchronize player achievements for recently played games"""
     ok = True
 
-    q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=4))
+    threshold = 4
+    q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=threshold))
     recent_played_games = PlayerGamePlaytime.objects.filter(q).distinct("game")
-    # logger.debug(recent_games.query)
-    logger.debug(f"Resynchronizing achievements for {len(recent_played_games)} games for {player.name}")
+    logger.debug(f"Player {player.name} has played {len(recent_played_games)} in the last {threshold} hours")
+    logger.debug(f"Resynchronizing achievements for {len(recent_played_games)} games")
 
     for record in recent_played_games:
         game = record.game
