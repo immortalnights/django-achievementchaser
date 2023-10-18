@@ -55,14 +55,13 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
 
 def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, dict]:
     # Always add the API key and response format
-    default_query_string = parse.urlencode(
-        {
-            "key": _get_api_key(),
-            "format": "json",
-        }
-    )
-    query_string = parse.urlencode(query)
-    url = f"http://{STEAM_API_URL}/{path}?{default_query_string}&{query_string}"
+    query_parameters = {
+        "key": _get_api_key(),
+        "format": "json",
+    }
+    query_parameters.update(query)
+
+    url = f"http://{STEAM_API_URL}/{path}?{parse.urlencode(query_parameters)}"
     ok, response_json = _request(url, cache=True)
     response_data = None
 

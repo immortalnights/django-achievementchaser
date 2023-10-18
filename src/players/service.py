@@ -138,9 +138,7 @@ def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int,
 
 
 def resynchronize_player_games(player: Player) -> bool:
-    ok = True
-
-    owned_games = get_owned_games(player.id)
+    owned_games = get_owned_games(player.id, player.api_key)
     logger.info(f"Player {player.name} has {len(owned_games)} games")
 
     # Add / update the Game in the Game table
@@ -197,7 +195,7 @@ def resynchronize_player_games(player: Player) -> bool:
             },
         )
 
-    return ok
+    return len(owned_games) > 0
 
 
 def resynchronize_all_player_game_achievements(player: Player) -> bool:
