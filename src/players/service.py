@@ -240,6 +240,7 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
     unlocked = list(filter(lambda achievement: achievement.achieved == 1, player_achievements))
 
     completion_percentage = 0.0
+    completion_datetime = None
     game_resynchronization_required = False
 
     # When the game was last resynchronized there might not have been any achievements.
@@ -262,7 +263,7 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
 
             for player_achievement in unlocked:
                 assert player_achievement.achieved == 1, f"Unexpected achieved value {player_achievement.achieved} for "
-                "player achievement {player_achievement.apiname}"
+                f"player achievement {player_achievement.apiname}"
 
                 game_achievement = next(
                     filter(lambda achievement: achievement.name == player_achievement.apiname, game_achievements), None
@@ -284,6 +285,14 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
             completion_percentage = len(unlocked) / len(player_achievements)
             logger.debug(f"Player completion percentage of {completion_percentage} for '{game.name}'")
 
+            if completion_percentage == 1.0:
+                try:
+                    most_recent = PlayerUnlockedAchievement.objects.filter(player=player, game=game).latest("datetime")
+                    completion_datetime = most_recent.datetime
+                    logger.debug(f"Player completed '{game.name}' at {completion_datetime}")
+                except PlayerUnlockedAchievement.DoesNotExist:
+                    pass
+
         # Update the game resynchronization time
         game.resynchronized = timezone.now()
         # Ensure resynchronization doesn't get stuck in a loop
@@ -293,11 +302,13 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
     # Update the player owned game completion percentage and resynchronization time
     owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
     owned_game.completion_percentage = completion_percentage
+    owned_game.completed = completion_datetime
     owned_game.resynchronized = timezone.now()
     owned_game.resynchronization_required = game_resynchronization_required
     owned_game.save(
         update_fields=[
             "completion_percentage",
+            "completed",
             "resynchronized",
             "resynchronization_required",
         ]

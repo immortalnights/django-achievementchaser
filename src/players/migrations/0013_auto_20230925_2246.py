@@ -4,29 +4,9 @@ from django.db import migrations
 from loguru import logger
 
 
-# This is almost a copy of 0011_auto_20230914_2216.py/set_player_game_completion_date
-# but with the fix required to actually save the completion date.
 def set_player_game_completion_date_properly(apps, schema_editor):
-    PlayerOwnedGame = apps.get_model("players", "PlayerOwnedGame")
-    PlayerAchievements = apps.get_model("players", "PlayerUnlockedAchievement")
-    Achievements = apps.get_model("achievements", "Achievement")
-
-    for owned_game in PlayerOwnedGame.objects.all():
-        logger.info(f"Processing player owned game {owned_game.game_id} for {owned_game.player_id}")
-        available_achievements = Achievements.objects.filter(game_id=owned_game.game_id)
-        unlocked_achievements = PlayerAchievements.objects.filter(game_id=owned_game.game_id).order_by("-datetime")
-
-        logger.info(
-            f"Game has {available_achievements.count()} achievements, player has unlocked {unlocked_achievements.count()}"
-        )
-        if (
-            available_achievements.count() > 0
-            and unlocked_achievements.count() > 0
-            and available_achievements.count() == unlocked_achievements.count()
-        ):
-            logger.info(f"Player has unlocked all achievements")
-            owned_game.completion_datetime = unlocked_achievements[0].datetime
-            owned_game.save()
+    # The original implementation here was broken, so this migration didn't do anything anyway.
+    pass
 
 
 class Migration(migrations.Migration):
