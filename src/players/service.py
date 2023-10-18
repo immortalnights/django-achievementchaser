@@ -169,7 +169,7 @@ def resynchronize_player_games(player: Player) -> bool:
         )
 
         if owned_game.playtime_2weeks is not None:
-            logger.debug(f"Updating playtime for game {game_instance.name} ({game_instance.id})")
+            logger.debug(f"Player has played {game_instance.name} ({game_instance.id}) recently")
             # Get latest game playtime
             owned_game_playtime = None
 
@@ -248,7 +248,7 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
 
         logger.debug(
             f"Player {player.name} has unlocked {len(unlocked)} of "
-            f"{len(player_achievements)} achievements in {game.name}"
+            f"{len(player_achievements)} achievements in '{game.name}'"
         )
 
         if len(unlocked) > 0:

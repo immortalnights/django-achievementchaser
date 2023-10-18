@@ -26,14 +26,14 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
     ok = False
 
     try:
-        logger.debug(f"Resynchronizing game {game.name} ({game.id})")
+        logger.debug(f"Resynchronizing game '{game.name}' ({game.id})")
         resynchronize_game_schema(game)
 
         if resynchronize_achievements:
             if game.has_achievements():
                 resynchronize_game_achievements(game)
             else:
-                logger.debug(f"Game {game.name} does not have any achievements")
+                logger.debug(f"Game '{game.name}' does not have any achievements")
 
         # Resynchronization completed successful
         game.resynchronized = timezone.now()
@@ -41,7 +41,7 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
         game.save()
         ok = True
     except Exception:
-        logger.exception(f"Failed to resynchronize game {game.name}")
+        logger.exception(f"Failed to resynchronize game '{game.name}'")
 
     return ok
 
@@ -56,7 +56,7 @@ def resynchronize_game_schema(game: Game) -> bool:
         if not game.name:
             game.name = schema.gameName
         elif game.name != schema.gameName:
-            logger.warning(f"Game name mismatch {game.name} vs {schema.gameName} ({game.id})")
+            logger.warning(f"Game name mismatch '{game.name}' vs {schema.gameName} ({game.id})")
 
         # Save the changes to the game
         game.save()
