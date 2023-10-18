@@ -186,7 +186,7 @@ def resynchronize_player_games(player: Player) -> bool:
                 new_owned_game_playtime.save()
 
                 if owned_game_playtime is None or owned_game.playtime_2weeks > owned_game_playtime.playtime:
-                    last_played_time = date.today()
+                    last_played_time = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()))
 
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
