@@ -79,11 +79,7 @@ mock_player_owned_games = {
                 "name": "Ghost Master",
                 "playtime_forever": 0,
                 "img_icon_url": "62ed0cd5d69d7dc5cedefd92c10e30afa4a0e5f8",
-                "playtime_windows_forever": 0,
-                "playtime_mac_forever": 0,
-                "playtime_linux_forever": 0,
-                "rtime_last_played": 0,
-                "playtime_disconnected": 726,
+                # playtime is only available if the player is the API key owner
             },
             {
                 "appid": 320,
