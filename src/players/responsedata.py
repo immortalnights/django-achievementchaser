@@ -29,6 +29,7 @@ class PlayerSummaryResponse:
     locstatecode: Optional[str] = None
     loccityid: Optional[int] = None
     gameid: Optional[str] = None
+    lobbysteamid: Optional[str] = None
     gameextrainfo: Optional[str] = None
     gameserverip: Optional[str] = None
 
