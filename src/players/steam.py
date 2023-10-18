@@ -60,16 +60,25 @@ def get_friends(steam_id: int):
     pass
 
 
-def get_owned_games(steam_id: int) -> typing.List[PlayerOwnedGameResponse]:
+def get_owned_games(steam_id: int, api_key: str = None) -> typing.List[PlayerOwnedGameResponse]:
+    """Fetch Player owned games.
+    Allow the API key to be overwritten so that the player specific key can be used to retrieve all player owned
+    game data (I.E., last playtime for games).
+    """
     owned_games = []
     try:
+        query_properties = {
+            "steamid": steam_id,
+            "include_appinfo": 1,
+            "include_played_free_games": 1,
+        }
+
+        if api_key is not None:
+            query_properties["key"] = api_key
+
         ok, response = steam.request(
             "IPlayerService/GetOwnedGames/v0001/",
-            {
-                "steamid": steam_id,
-                "include_appinfo": 1,
-                "include_played_free_games": 1,
-            },
+            query_properties,
             "response",
         )
 
