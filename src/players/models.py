@@ -6,6 +6,7 @@ from achievements.models import Achievement
 class Player(models.Model):
     id = models.PositiveBigIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
+    api_key = models.CharField(default="", max_length=32)
     profile_url = models.CharField(default="", max_length=255)
     avatar_small_url = models.CharField(default="", max_length=255)
     avatar_medium_url = models.CharField(default="", max_length=255)
