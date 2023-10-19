@@ -224,8 +224,10 @@ def resynchronize_recent_player_game_achievements(player: Player) -> bool:
     threshold = 4
     q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=threshold))
     recent_played_games = PlayerGamePlaytime.objects.filter(q).distinct("game")
-    logger.debug(f"Player {player.name} has played {len(recent_played_games)} in the last {threshold} hours")
-    logger.debug(f"Resynchronizing achievements for {len(recent_played_games)} games")
+    logger.debug(
+        f"Player {player.name} has played {len(recent_played_games)} games in the last {threshold} hours, "
+        "resynchronizing achievements for played games"
+    )
 
     for record in recent_played_games:
         game = record.game
