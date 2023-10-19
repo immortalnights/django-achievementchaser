@@ -186,13 +186,17 @@ def resynchronize_player_games(player: Player) -> bool:
                 if owned_game_playtime is None or owned_game.playtime_2weeks > owned_game_playtime.playtime:
                     last_played_time = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()))
 
+        changes = {
+            "playtime_forever": owned_game.playtime_forever,
+        }
+
+        if last_played_time is not None:
+            changes["last_played"] = last_played_time
+
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
             player=player,
-            defaults={
-                "playtime_forever": owned_game.playtime_forever,
-                "last_played": last_played_time,
-            },
+            defaults=changes,
         )
 
     return len(owned_games) > 0
@@ -220,8 +224,10 @@ def resynchronize_recent_player_game_achievements(player: Player) -> bool:
     threshold = 4
     q = models.Q(player=player, datetime__gte=timezone.now() - timedelta(hours=threshold))
     recent_played_games = PlayerGamePlaytime.objects.filter(q).distinct("game")
-    logger.debug(f"Player {player.name} has played {len(recent_played_games)} in the last {threshold} hours")
-    logger.debug(f"Resynchronizing achievements for {len(recent_played_games)} games")
+    logger.debug(
+        f"Player {player.name} has played {len(recent_played_games)} games in the last {threshold} hours, "
+        "resynchronizing achievements for played games"
+    )
 
     for record in recent_played_games:
         game = record.game
