@@ -1,10 +1,79 @@
-import { Paper, Box, Link as ExternalLink, Typography } from "@mui/material"
+import {
+    Paper,
+    Box,
+    Link as ExternalLink,
+    Typography,
+    Table,
+    TableHead,
+    TableBody,
+    TableCell,
+    TableRow,
+} from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { useLoaderData, Link } from "react-router-dom"
 import { OpenInNew } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import Loader from "./Loader"
 import { useQueryGameAchievements, useQueryGameOwners } from "../api/queries"
+import { duration, formatDate, getRelativeTime } from "../utilities"
+import CircularProgressWithLabel from "./CircularProgressWithLabel"
+
+const GameOwnerInformation = ({
+    player,
+    game,
+    lastPlayed,
+    playtimeForever,
+    completionPercentage,
+    completed,
+}: GameOwnerInformation) => {
+    return (
+        <TableRow>
+            <TableCell>
+                <Link to={`/Player/${player.id}/Game/${game.id}`}>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            // width: 185,
+                        }}
+                    >
+                        <BorderedImage
+                            src={player.avatarSmallUrl}
+                            style={{ marginRight: 6 }}
+                        />
+                        <span>{player.name}</span>
+                    </Box>
+                </Link>
+            </TableCell>
+            <TableCell align="center">
+                {game.achievementCount > 0 && (
+                    <CircularProgressWithLabel
+                        value={completionPercentage * 100}
+                    />
+                )}
+            </TableCell>
+            <TableCell>
+                {lastPlayed ? (
+                    <div title={formatDate(lastPlayed)}>
+                        {getRelativeTime(lastPlayed)}
+                    </div>
+                ) : (
+                    "Never"
+                )}
+            </TableCell>
+            <TableCell>
+                {completed && (
+                    <div title={formatDate(completed)}>
+                        {getRelativeTime(completed)}
+                    </div>
+                )}
+            </TableCell>
+            <TableCell>
+                {duration(playtimeForever).asHours().toFixed(1)} hours
+            </TableCell>
+        </TableRow>
+    )
+}
 
 const GameOwners = ({ game }: { game: Game }) => {
     const { loading, error, data } = useQueryGameOwners({
@@ -18,25 +87,25 @@ const GameOwners = ({ game }: { game: Game }) => {
             data={data}
             renderer={(data) => {
                 return (
-                    <Box sx={{ display: "flex" }}>
-                        {data.map((player) => (
-                            <Link to={`/Player/${player.id}/Game/${game.id}`}>
-                                <Box
-                                    key={player.id}
-                                    sx={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <BorderedImage
-                                        src={player.avatarSmallUrl}
-                                        style={{ marginRight: 6 }}
-                                    />
-                                    <span>{player.name}</span>
-                                </Box>
-                            </Link>
-                        ))}
-                    </Box>
+                    <Table size="small" sx={{ width: "100%" }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Player</TableCell>
+                                <TableCell>Progress</TableCell>
+                                <TableCell>Last Played</TableCell>
+                                <TableCell>Completed</TableCell>
+                                <TableCell>Playtime</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data.map((information) => (
+                                <GameOwnerInformation
+                                    key={information.player.id}
+                                    {...information}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
                 )
             }}
         />
@@ -79,21 +148,24 @@ const GameHeader = ({ game }: { game: Game }) => {
                         src={`https://media.steampowered.com/steam/apps/${game.id}/header.jpg`}
                     />
                 </Grid>
-                <Grid>
-                    <Box>
-                        <Typography
-                            variant="subtitle1"
-                            textTransform="uppercase"
-                        >
-                            Achievements
-                        </Typography>
-                        <Typography variant="body1">
-                            {game.achievementCount ?? "?"}
-                        </Typography>
+                <Grid flexGrow={1}>
+                    <Box
+                        display="flex"
+                        gap={2}
+                        borderBottom="1px solid lightgray"
+                    >
+                        <Box>
+                            <Typography
+                                variant="subtitle1"
+                                textTransform="uppercase"
+                            >
+                                Achievements
+                            </Typography>
+                            <Typography variant="body1">
+                                {game.achievementCount ?? "?"}
+                            </Typography>
+                        </Box>
                     </Box>
-                    <Typography variant="subtitle1" textTransform="uppercase">
-                        Owners
-                    </Typography>
                     <GameOwners game={game} />
                 </Grid>
             </Grid>

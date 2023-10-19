@@ -312,8 +312,8 @@ playerAchievementsForGame(
 
 export const useQueryGameOwners = ({ game }: { game: string }) => {
     const { loading, error, data, trigger } = useQuery<
-        PlayersResponse,
-        Player[]
+        GameOwnersResponse,
+        GameOwnerInformation[]
     >(
         (game) => gqlDocument.gameOwners(game),
         (response) => response.players

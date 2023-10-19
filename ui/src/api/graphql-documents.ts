@@ -179,9 +179,20 @@ playerAchievementsForGame(
 
 export const gameOwners = (game: string) => gql`
 players: gameOwners(id: ${game}) {
-    id
-    name
-    avatarSmallUrl
+    game {
+        id
+        name
+        achievementCount
+    }
+    player {
+        id
+        name
+        avatarSmallUrl
+    }
+    lastPlayed
+    playtimeForever
+    completionPercentage
+    completed
 }
 `
 

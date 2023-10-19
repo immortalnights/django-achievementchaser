@@ -11,40 +11,12 @@ import {
 import { OpenInNew } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import BorderedImage from "../components/BorderedImage"
-import CircularProgressWithLabel from "../components/CircularProgressWithLabel"
+import { GameCompletionProgress } from "../components/GameCompletionProgress"
 
 interface OwnedGameDetailsProps extends OwnedGame {
     achievements: Achievement[]
     playerAchievements: RecentAchievement[]
 }
-
-const GameCompletionProgress = ({
-    achievements,
-    playerAchievements,
-}: {
-    achievements: Achievement[]
-    playerAchievements: RecentAchievement[]
-}) => (
-    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        {playerAchievements.length > 0 && (
-            <div style={{ margin: "8px 0 0" }}>
-                <CircularProgressWithLabel
-                    value={
-                        (playerAchievements.length / achievements.length) * 100
-                    }
-                />
-            </div>
-        )}
-        <div>
-            <Typography variant="subtitle1" textTransform="uppercase">
-                Achievements
-            </Typography>
-            <div>
-                {playerAchievements.length} of {achievements.length}
-            </div>
-        </div>
-    </div>
-)
 
 const OwnedGameDetails = ({
     lastPlayed,

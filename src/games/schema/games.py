@@ -8,13 +8,22 @@ from players.models import PlayerOwnedGame
 from players.schema.modeltypes import PlayerType
 
 
+class GameOwnerType(graphene.ObjectType):
+    game = graphene.Field(GameType)
+    player = graphene.Field(PlayerType)
+    last_played = graphene.DateTime()
+    playtime_forever = graphene.Int()
+    completion_percentage = graphene.Float()
+    completed = graphene.DateTime()
+
+
 class Query(graphene.ObjectType):
     game = graphene.Field(GameType, id=graphene.Int(), name=graphene.String())
     games = graphene.List(GameType)
 
     game_achievements = graphene.List(AchievementType, id=graphene.Int())
 
-    game_owners = graphene.List(PlayerType, id=graphene.Int())
+    game_owners = graphene.List(GameOwnerType, id=graphene.Int())
 
     def resolve_game(root, info, id: Optional[int] = None, name: Optional[str] = None) -> Optional[Game]:
         game = None
@@ -36,4 +45,4 @@ class Query(graphene.ObjectType):
 
     def resolve_game_owners(root, info, id: int):
         owners = PlayerOwnedGame.objects.filter(game_id=id)
-        return map(lambda owned_game: owned_game.player, owners)
+        return map(lambda owned_game: owned_game, owners)

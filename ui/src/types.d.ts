@@ -175,3 +175,16 @@ interface PlayerAchievementsResponse extends BaseQueryResponse {
         edges: { node: RecentAchievement }[]
     }
 }
+
+interface GameOwnerInformation {
+    game: Game
+    player: Player
+    lastPlayed?: string
+    playtimeForever: number
+    completionPercentage: number
+    completed?: string
+}
+
+interface GameOwnersResponse extends BaseQueryResponse {
+    players: GameOwnerInformation[]
+}
