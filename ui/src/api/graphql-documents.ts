@@ -54,6 +54,8 @@ playerAchievements(
             game {
                 id
                 name
+                difficultyPercentage
+                achievementCount
             }
         }
     }
