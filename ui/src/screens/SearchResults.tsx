@@ -1,7 +1,6 @@
 import { styled, Typography, Tooltip } from "@mui/material"
 import emostyled from "@emotion/styled"
 import { Link, useLoaderData } from "react-router-dom"
-import { ReactElement } from "react"
 import BorderedImage from "../components/BorderedImage"
 
 // COPY
@@ -92,9 +91,9 @@ const SearchResults = () => {
 
     data.searchPlayersAndGames.forEach((item) => {
         if ("avatarMediumUrl" in item) {
-            players.push(item as Player)
+            players.push(item)
         } else if ("imgIconUrl" in item) {
-            games.push(item as Game)
+            games.push(item)
         }
     })
 
