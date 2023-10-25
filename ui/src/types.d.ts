@@ -54,6 +54,10 @@ interface PlayerQueryResponse extends BaseQueryResponse {
     player: Player | null
 }
 
+interface SearchQueryResponse extends BaseQueryResponse {
+    searchPlayersAndGames: (Player | Game)[]
+}
+
 interface PlayerProfileSummary {
     ownedGames: number
     perfectGames: number
