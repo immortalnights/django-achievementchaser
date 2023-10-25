@@ -9,7 +9,7 @@ const ReactiveLink = styled(Link)``
 
 const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     let completionTitle: string | undefined
-    console.log(game)
+
     if (game.completed) {
         const completionDate = dayjs(game.completed)
 
