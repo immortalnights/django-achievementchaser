@@ -12,4 +12,4 @@ class PlayerType(DjangoObjectType):
         exclude = ["resynchronization_required", "playerownedgame_set", "playerunlockedachievement_set"]
 
     # Override the model ID otherwise JavaScript rounds the number
-    id = graphene.String()
+    id = graphene.NonNull(graphene.String)

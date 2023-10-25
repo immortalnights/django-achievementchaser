@@ -196,6 +196,21 @@ players: gameOwners(id: ${game}) {
 }
 `
 
+export const search = (name: string) => gql`
+searchPlayersAndGames(name: "${name}") {
+    ... on PlayerType {
+        id
+        name
+        avatarMediumUrl
+    }
+    ... on GameType {
+        id
+        name
+        imgIconUrl
+    }
+}
+`
+
 export default {
     player,
     playerProfileSummary,
@@ -210,4 +225,5 @@ export default {
     game,
     gameAchievements,
     gameOwners,
+    search,
 }

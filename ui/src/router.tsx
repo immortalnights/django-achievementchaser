@@ -9,6 +9,7 @@ import {
     PlayerRecentAchievements,
     PlayerGame,
     PlayerFriends,
+    SearchResults,
 } from "./screens"
 import PlayerRecentGames from "./screens/PlayerRecentGames"
 import PlayerContainer from "./components/PlayerContainer"
@@ -73,6 +74,20 @@ const router = createHashRouter([
                     )
                 },
                 Component: GameContainer,
+            },
+            {
+                path: "/Search/:name",
+                loader: ({ params }) => {
+                    const { name = "" } = params
+                    const document = gqlDocument.search(name)
+                    return name
+                        ? request<SearchQueryResponse>(
+                              "/graphql/",
+                              `{${String(document)}\n}`
+                          )
+                        : null
+                },
+                Component: SearchResults,
             },
         ],
     },

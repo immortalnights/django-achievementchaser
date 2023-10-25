@@ -1,5 +1,7 @@
+import { useState, ChangeEvent, KeyboardEvent } from "react"
 import { InputBase, alpha, styled } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
+import { useNavigate } from "react-router-dom"
 
 const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -49,16 +51,37 @@ const SearchField = ({
 }: {
     placeholder: string
     ariaLabel: string
-}) => (
-    <Search>
-        <SearchIconWrapper>
-            <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-            placeholder={placeholder}
-            inputProps={{ "aria-label": ariaLabel }}
-        />
-    </Search>
-)
+}) => {
+    const navigate = useNavigate()
+    const [value, setValue] = useState("")
+
+    const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
+        setValue(event.target.value)
+    }
+
+    const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter" && value) {
+            const val = value
+            setValue("")
+            navigate(`/Search/${val}`)
+        }
+    }
+
+    return (
+        <Search>
+            <SearchIconWrapper>
+                <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+                name="name"
+                onChange={handleOnChange}
+                value={value}
+                placeholder={placeholder}
+                inputProps={{ "aria-label": ariaLabel }}
+                onKeyDown={handleKeyDown}
+            />
+        </Search>
+    )
+}
 
 export default SearchField

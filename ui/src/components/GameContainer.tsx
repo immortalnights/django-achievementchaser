@@ -62,14 +62,18 @@ const GameOwnerInformation = ({
                 )}
             </TableCell>
             <TableCell>
-                {completed && (
+                {completed ? (
                     <div title={formatDate(completed)}>
                         {getRelativeTime(completed)}
                     </div>
+                ) : (
+                    "-"
                 )}
             </TableCell>
             <TableCell>
-                {duration(playtimeForever).asHours().toFixed(1)} hours
+                {playtimeForever > 0
+                    ? `${duration(playtimeForever).asHours().toFixed(1)} hours`
+                    : "None"}
             </TableCell>
         </TableRow>
     )
