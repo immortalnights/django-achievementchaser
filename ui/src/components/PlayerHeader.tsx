@@ -123,7 +123,8 @@ const PlayerStatisticsContent = ({
                 <MetaData
                     label="Achievements Unlocked"
                     value={`${(
-                        lockedAchievements / unlockedAchievements
+                        (unlockedAchievements / lockedAchievements) *
+                        100
                     ).toFixed(2)}%`}
                     title={`${unlockedAchievements} of ${lockedAchievements}`}
                 />
