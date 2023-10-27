@@ -1,15 +1,17 @@
 import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import dayjs from "dayjs"
-import { InputLabel, NativeSelect } from "@mui/material"
+import { Box, InputLabel, NativeSelect } from "@mui/material"
 import { useQueryPlayerTimeline } from "../api/queries"
 import { formatDate } from "../utilities"
 
 const YearSelector = ({
     selected,
     onChange,
+    total,
 }: {
     selected: number
     onChange: (year: number) => void
+    total: number
 }) => {
     const startYear = 2008
     const endYear = dayjs().year()
@@ -27,7 +29,7 @@ const YearSelector = ({
             style={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "flex-end",
+                alignItems: "center",
             }}
         >
             <div style={{ marginLeft: 5 }}>Jan</div>
@@ -59,8 +61,11 @@ const YearSelector = ({
                         </option>
                     ))}
                 </NativeSelect>
+                <div style={{ marginLeft: 10 }}>
+                    {total.toFixed(0).padStart(3, "0")} Total
+                </div>
             </div>
-            <div style={{ marginRight: "2em" }}>Dec</div>
+            <div style={{ marginRight: 10 }}>Dec</div>
         </div>
     )
 }
@@ -218,13 +223,14 @@ const Timeline = ({ player }: { player: string }) => {
                 className="calendar-container"
                 style={{
                     width: 650,
-                    margin: 5,
-                    padding: 5,
+                    margin: "0 0 0 10px",
+                    padding: 0,
                 }}
             >
                 <YearSelector
                     selected={selectedYear}
                     onChange={(year) => setSelectedYear(year)}
+                    total={achievements.length}
                 />
                 <Calendar
                     year={selectedYear}
