@@ -1,6 +1,6 @@
 import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import dayjs from "dayjs"
-import { Box, InputLabel, NativeSelect } from "@mui/material"
+import { InputLabel, NativeSelect } from "@mui/material"
 import { useQueryPlayerTimeline } from "../api/queries"
 import { formatDate } from "../utilities"
 
