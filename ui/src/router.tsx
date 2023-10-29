@@ -9,11 +9,11 @@ import {
     PlayerRecentAchievements,
     PlayerGame,
     PlayerFriends,
+    Game,
     SearchResults,
 } from "./screens"
 import PlayerRecentGames from "./screens/PlayerRecentGames"
 import PlayerContainer from "./components/PlayerContainer"
-import GameContainer from "./components/GameContainer"
 import { throwExpression } from "./utilities"
 
 const router = createHashRouter([
@@ -73,7 +73,7 @@ const router = createHashRouter([
                         `{${String(document)}\n}`
                     )
                 },
-                Component: GameContainer,
+                Component: Game,
             },
             {
                 path: "/Search/:name",
