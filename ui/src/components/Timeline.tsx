@@ -79,7 +79,6 @@ const Calendar = ({
     perfectGames: OwnedGame[]
     achievements: RecentAchievement[]
 }) => {
-    console.log("Calendar", year)
     const yearDate = dayjs(`01-01-${year}`)
 
     // Make all achievements have a dayjs object
@@ -122,7 +121,7 @@ const Calendar = ({
     )
 
     const calendar = useMemo(() => {
-        console.time("Building calendar")
+        // console.time("Building calendar")
         const startOfTimeline = yearDate.startOf("year")
         const endOfTimeline = yearDate.endOf("year")
         const totalDays = endOfTimeline.diff(startOfTimeline, "days")
@@ -192,7 +191,7 @@ const Calendar = ({
             day = Number(currentDate.format("d"))
         }
 
-        console.timeEnd("Building calendar")
+        // console.timeEnd("Building calendar")
         return calendar
     }, [getPerfectGameCount, getAchievementCount, yearDate])
 
