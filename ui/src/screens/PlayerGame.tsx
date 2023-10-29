@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom"
-import { Box, Typography } from "@mui/material"
 import Loader from "../components/Loader"
 import { useQueryPlayerGame } from "../api/queries"
 import { throwExpression } from "../utilities"
