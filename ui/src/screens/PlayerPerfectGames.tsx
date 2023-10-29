@@ -5,21 +5,6 @@ import OwnedGameList from "../components/OwnedGameList"
 import { throwExpression } from "../utilities"
 import { Typography } from "@mui/material"
 
-const PlayerPerfectGamesContent = ({
-    player,
-    games,
-}: {
-    player: string
-    games: OwnedGame[]
-}) => {
-    return (
-        <>
-            <Typography variant="h5">Perfect Games</Typography>
-            <OwnedGameList player={player} games={games} />
-        </>
-    )
-}
-
 const PlayerPerfectGames = () => {
     const { id: player = throwExpression("missing param") } = useParams()
     const { loading, error, data } = useQueryPlayerOwnedGames({
@@ -33,9 +18,12 @@ const PlayerPerfectGames = () => {
             loading={loading}
             error={error}
             data={data}
-            renderer={(data) => {
+            renderer={(games) => {
                 return (
-                    <PlayerPerfectGamesContent player={player} games={data} />
+                    <>
+                        <Typography variant="h5">Perfect Games</Typography>
+                        <OwnedGameList player={player} games={games} />
+                    </>
                 )
             }}
         />

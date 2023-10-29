@@ -1,6 +1,6 @@
 import { AppBar, Toolbar, Typography, styled } from "@mui/material"
 import { Link } from "react-router-dom"
-import SearchField from "./MUISearch"
+import SearchField from "./SearchField"
 
 const UndecoratedLink = styled(Link)`
     text-decoration: none;
