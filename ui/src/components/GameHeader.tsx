@@ -2,6 +2,7 @@ import { Box, Grid, Typography } from "@mui/material"
 import BorderedImage from "./BorderedImage"
 import ExternalLink from "./ExternalLink"
 import Link from "./Link"
+import GameOwners from "./GameOwners"
 
 const GameHeader = ({ game }: { game: Game }) => {
     return (
