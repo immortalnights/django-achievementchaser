@@ -1,13 +1,7 @@
 import { ReactNode, useContext } from "react"
-import {
-    Typography,
-    Box,
-    IconButton,
-    Link as ExternalLink,
-} from "@mui/material"
+import { Typography, Box, IconButton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
-import { VisibilityOff, Visibility, OpenInNew } from "@mui/icons-material"
-import { Link } from "react-router-dom"
+import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import PlayerProfileContext from "../context/ProfileContext"
 import {
@@ -17,6 +11,8 @@ import {
 import Loader from "./Loader"
 import Timeline from "./Timeline"
 import { getRelativeTime } from "../utilities"
+import ExternalLink from "./ExternalLink"
+import Link from "./Link"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -51,7 +47,13 @@ const MetaData = ({
             {label}
         </Typography>
         <Typography variant="body1" title={title}>
-            {link ? <Link to={link}>{value}</Link> : value}
+            {link ? (
+                <Link to={link} variant="subtitle1">
+                    {value}
+                </Link>
+            ) : (
+                value
+            )}
         </Typography>
     </Box>
 )
@@ -162,18 +164,9 @@ const Header = ({
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <ExternalLink
-                component={Link}
-                to={`/player/${id}`}
-                variant="h4"
-                underline="none"
-            >
-                {name}
-            </ExternalLink>
+            <Link to={`/player/${id}`}>{name}</Link>
             <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
-                <ExternalLink href={url} title="Steam Profile" rel="noopener">
-                    <OpenInNew fontSize="small" />
-                </ExternalLink>
+                <ExternalLink href={url} title="Steam Profile" />
             </Box>
             <Box sx={{ flexGrow: 1 }} />
             <Box sx={{ fontSize: "0.75em" }}>
@@ -198,7 +191,7 @@ const RecentlyPlayedGame = ({
     const lastPlayed = getRelativeTime(game.lastPlayed)
 
     return (
-        <Link to={`/Player/${player}/Game/${game.id}`} title={game.name}>
+        <Link to={`/Player/${player}/Game/${game.id}`}>
             <BorderedImage
                 title={`${game.name} last played ${lastPlayed}`}
                 src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
