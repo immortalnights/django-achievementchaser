@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import { Box, Link as ExternalLink, Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import Loader from "../components/Loader"
 import { useQueryPlayerGame } from "../api/queries"
 import {
@@ -8,10 +8,10 @@ import {
     getRelativeTime,
     throwExpression,
 } from "../utilities"
-import { OpenInNew } from "@mui/icons-material"
-import { Link } from "react-router-dom"
 import BorderedImage from "../components/BorderedImage"
 import { GameCompletionProgress } from "../components/GameCompletionProgress"
+import Link from "../components/Link"
+import ExternalLink from "../components/ExternalLink"
 
 interface OwnedGameDetailsProps extends OwnedGame {
     achievements: Achievement[]
@@ -199,14 +199,9 @@ const GameDetails = ({
     return (
         <>
             <Box sx={{ display: "flex", margin: 0 }}>
-                <ExternalLink
-                    component={Link}
-                    to={`/Game/${game.id}`}
-                    variant="h5"
-                    underline="none"
-                >
+                <Link to={`/Game/${game.id}`} variant="h5">
                     {game.name}
-                </ExternalLink>
+                </Link>
                 <Box
                     sx={{
                         display: "flex",
@@ -216,12 +211,8 @@ const GameDetails = ({
                 >
                     <ExternalLink
                         href={`http://store.steampowered.com/app/${game.id}`}
-                        target="_blank"
                         title="Steam Game"
-                        rel="noopener"
-                    >
-                        <OpenInNew fontSize="small" />
-                    </ExternalLink>
+                    />
                 </Box>
             </Box>
             <Box sx={{ display: "flex" }}>
