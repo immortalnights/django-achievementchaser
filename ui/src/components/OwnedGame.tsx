@@ -1,11 +1,9 @@
-import { styled, Typography, Tooltip } from "@mui/material"
+import { Typography, Tooltip } from "@mui/material"
 import dayjs from "dayjs"
 import { useMemo } from "react"
-import { Link } from "react-router-dom"
 import { getRelativeTime, formatDate } from "../utilities"
 import BorderedImage from "./BorderedImage"
-
-const ReactiveLink = styled(Link)``
+import Link from "./Link"
 
 const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     let completionTitle: string | undefined
@@ -60,13 +58,13 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     )
 
     return (
-        <ReactiveLink to={`/Player/${player}/Game/${game.id}`}>
+        <Link to={`/Player/${player}/Game/${game.id}`}>
             <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
                 <BorderedImage
                     src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
                 />
             </Tooltip>
-        </ReactiveLink>
+        </Link>
     )
 }
 

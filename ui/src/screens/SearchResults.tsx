@@ -1,10 +1,8 @@
-import { styled, Typography, Tooltip } from "@mui/material"
+import { Typography, Tooltip } from "@mui/material"
 import emostyled from "@emotion/styled"
-import { Link, useLoaderData } from "react-router-dom"
+import { useLoaderData } from "react-router-dom"
 import BorderedImage from "../components/BorderedImage"
-
-// COPY
-const ReactiveLink = styled(Link)``
+import Link from "../components/Link"
 
 // COPY
 const FlexWrappedList = emostyled.ul<{ justifyContent?: string }>`
@@ -21,11 +19,11 @@ const PlayerResult = ({ id, name, avatarMediumUrl }: Player) => {
     const titleEl = name
 
     return (
-        <ReactiveLink to={`/Player/${id}`}>
+        <Link to={`/Player/${id}`}>
             <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
                 <BorderedImage src={avatarMediumUrl} />
             </Tooltip>
-        </ReactiveLink>
+        </Link>
     )
 }
 
@@ -33,13 +31,13 @@ const PlayerResult = ({ id, name, avatarMediumUrl }: Player) => {
 const GameResult = ({ id, name }: Game) => {
     const titleEl = name
     return (
-        <ReactiveLink to={`/Game/${id}`}>
+        <Link to={`/Game/${id}`}>
             <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
                 <BorderedImage
                     src={`https://media.steampowered.com/steam/apps/${id}/capsule_184x69.jpg`}
                 />
             </Tooltip>
-        </ReactiveLink>
+        </Link>
     )
 }
 

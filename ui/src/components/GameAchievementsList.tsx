@@ -61,8 +61,9 @@ const GameAchievementSet = ({
                 <Tooltip
                     title={<AchievementTitle achievement={achievement} />}
                     arrow
+                    key={`${game.id}-${achievement.id}`}
                 >
-                    <div key={`${game.id}-${achievement.id}`}>
+                    <div>
                         <BorderedImage
                             src={getAchievementIcon(achievement)}
                             style={{

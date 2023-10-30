@@ -1,5 +1,5 @@
-export { default as PlayerProfile } from "./PlayerProfile"
 export { default as Home } from "./Home"
+export { default as PlayerProfile } from "./PlayerProfile"
 export { default as PlayerPerfectGames } from "./PlayerPerfectGames"
 export { default as PlayerRecentAchievements } from "./PlayerRecentAchievements"
 export { default as PlayerFriends } from "./PlayerFriends"
