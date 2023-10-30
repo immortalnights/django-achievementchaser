@@ -1,20 +1,69 @@
-import { createHashRouter } from "react-router-dom"
+import { RouteObject, createHashRouter } from "react-router-dom"
 import { request } from "graphql-request"
 import gqlDocument from "./api/graphql-documents"
 import App from "./App"
-import {
-    Home,
-    PlayerProfile,
-    PlayerPerfectGames,
-    PlayerRecentAchievements,
-    PlayerGame,
-    PlayerFriends,
-    Game,
-    SearchResults,
-} from "./screens"
-import PlayerRecentGames from "./screens/PlayerRecentGames"
+import { Home, Game, SearchResults } from "./screens"
 import PlayerContainer from "./components/PlayerContainer"
 import { throwExpression } from "./utilities"
+
+const playerRoutes = {
+    path: "/Player/*",
+    loader: ({ params }) => {
+        const { id = throwExpression("missing param") } = params
+        const document = gqlDocument.player(id)
+        return request<PlayerQueryResponse>(
+            "/graphql/",
+            `{${String(document)}\n}`
+        )
+    },
+    Component: PlayerContainer,
+    children: [
+        {
+            path: ":id",
+            async lazy() {
+                const { PlayerProfile } = await import("./screens/player")
+                return { Component: PlayerProfile }
+            },
+        },
+        {
+            path: ":id/PerfectGames",
+            async lazy() {
+                const { PlayerPerfectGames } = await import("./screens/player")
+                return { Component: PlayerPerfectGames }
+            },
+        },
+        {
+            path: ":id/RecentGames",
+            async lazy() {
+                const { PlayerRecentGames } = await import("./screens/player")
+                return { Component: PlayerRecentGames }
+            },
+        },
+        {
+            path: ":id/RecentAchievements",
+            async lazy() {
+                const { PlayerRecentAchievements } = await import(
+                    "./screens/player"
+                )
+                return { Component: PlayerRecentAchievements }
+            },
+        },
+        {
+            path: ":id/Game/:gameId",
+            async lazy() {
+                const { PlayerGame } = await import("./screens/player")
+                return { Component: PlayerGame }
+            },
+        },
+        {
+            path: ":id/Friends",
+            async lazy() {
+                const { PlayerFriends } = await import("./screens/player")
+                return { Component: PlayerFriends }
+            },
+        },
+    ],
+} satisfies RouteObject
 
 const router = createHashRouter([
     {
@@ -25,44 +74,7 @@ const router = createHashRouter([
                 index: true,
                 Component: Home,
             },
-            {
-                path: "/Player/*",
-                loader: ({ params }) => {
-                    const { id = throwExpression("missing param") } = params
-                    const document = gqlDocument.player(id)
-                    return request<PlayerQueryResponse>(
-                        "/graphql/",
-                        `{${String(document)}\n}`
-                    )
-                },
-                Component: PlayerContainer,
-                children: [
-                    {
-                        path: ":id",
-                        Component: PlayerProfile,
-                    },
-                    {
-                        path: ":id/PerfectGames",
-                        Component: PlayerPerfectGames,
-                    },
-                    {
-                        path: ":id/RecentGames",
-                        Component: PlayerRecentGames,
-                    },
-                    {
-                        path: ":id/RecentAchievements",
-                        Component: PlayerRecentAchievements,
-                    },
-                    {
-                        path: ":id/Game/:gameId",
-                        Component: PlayerGame,
-                    },
-                    {
-                        path: ":id/Friends",
-                        Component: PlayerFriends,
-                    },
-                ],
-            },
+            playerRoutes,
             {
                 path: "/Game/:id",
                 loader: ({ params }) => {

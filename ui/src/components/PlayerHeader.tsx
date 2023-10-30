@@ -4,15 +4,12 @@ import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import PlayerProfileContext from "../context/ProfileContext"
-import {
-    useQueryPlayerProfileSummary,
-    useQueryPlayerRecent,
-} from "../api/queries"
+import { useQueryPlayerProfileSummary } from "../api/queries"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
-import { getRelativeTime } from "../utilities"
 import ExternalLink from "./ExternalLink"
 import Link from "./Link"
+import RecentActivity from "./RecentActivity"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -29,6 +26,37 @@ const Playtime = ({ playtime }: { playtime: number }) => {
     }
 
     return `${index > 1 ? value.toFixed(2) : value} ${keys[index - 1] ?? ""}`
+}
+
+const Header = ({
+    id,
+    name,
+    url,
+}: {
+    id: string
+    name: string
+    url: string
+}) => {
+    const { hideGameStatistics, toggleGameStatistics } =
+        useContext(PlayerProfileContext)
+
+    return (
+        <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
+            <Link to={`/player/${id}`}>{name}</Link>
+            <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
+                <ExternalLink href={url} title="Steam Profile" />
+            </Box>
+            <Box sx={{ flexGrow: 1 }} />
+            <Box sx={{ fontSize: "0.75em" }}>
+                <IconButton
+                    title="Toggle Game Statistics"
+                    onClick={toggleGameStatistics}
+                >
+                    {hideGameStatistics ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+            </Box>
+        </Box>
+    )
 }
 
 const MetaData = ({
@@ -150,159 +178,6 @@ const PlayerStatistics = ({ player }: { player: string }) => {
     )
 }
 
-const Header = ({
-    id,
-    name,
-    url,
-}: {
-    id: string
-    name: string
-    url: string
-}) => {
-    const { hideGameStatistics, toggleGameStatistics } =
-        useContext(PlayerProfileContext)
-
-    return (
-        <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <Link to={`/player/${id}`}>{name}</Link>
-            <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
-                <ExternalLink href={url} title="Steam Profile" />
-            </Box>
-            <Box sx={{ flexGrow: 1 }} />
-            <Box sx={{ fontSize: "0.75em" }}>
-                <IconButton
-                    title="Toggle Game Statistics"
-                    onClick={toggleGameStatistics}
-                >
-                    {hideGameStatistics ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-            </Box>
-        </Box>
-    )
-}
-
-const RecentlyPlayedGame = ({
-    player,
-    game,
-}: {
-    player: string
-    game: RecentGame
-}) => {
-    const lastPlayed = getRelativeTime(game.lastPlayed)
-
-    return (
-        <Link to={`/Player/${player}/Game/${game.id}`}>
-            <BorderedImage
-                title={`${game.name} last played ${lastPlayed}`}
-                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
-                style={{ display: "block" }}
-            />
-        </Link>
-    )
-}
-
-const RecentIconsContent = ({
-    player,
-    recentGames,
-    recentAchievements,
-}: {
-    player: string
-    recentGames: RecentGame[]
-    recentAchievements: RecentAchievement[]
-}) => (
-    <>
-        <Typography variant="subtitle1" textTransform="uppercase">
-            Recently Played
-        </Typography>
-
-        <ul
-            style={{
-                listStyle: "none",
-                margin: 0,
-                padding: 0,
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-            }}
-        >
-            {recentGames.map((game) => (
-                <li key={game.id}>
-                    <RecentlyPlayedGame player={player} game={game} />
-                </li>
-            ))}
-            <li>
-                <Link to={`/player/${player}/recentgames`}>
-                    <Typography fontSize={"small"}>more...</Typography>
-                </Link>
-            </li>
-        </ul>
-
-        <Typography variant="subtitle1" textTransform="uppercase">
-            Recently Unlocked
-        </Typography>
-
-        <ul
-            style={{
-                listStyle: "none",
-                margin: 0,
-                padding: 0,
-                display: "flex",
-                gap: 8,
-                alignItems: "center",
-            }}
-        >
-            {recentAchievements.map((item) => (
-                <li
-                    key={`${item.game.id}-${item.id}`}
-                    style={{ paddingRight: 2 }}
-                >
-                    <Link
-                        to={`/Player/${player}/Game/${item.game.id}`}
-                        title={`${item.displayName} from ${item.game.name}`}
-                    >
-                        <BorderedImage
-                            src={`${item.iconUrl}`}
-                            style={{
-                                width: 32,
-                                height: 32,
-                                display: "block",
-                            }}
-                        />
-                    </Link>
-                </li>
-            ))}
-            <li>
-                <Link to={`/player/${player}/recentachievements`}>
-                    <Typography fontSize={"small"}>more...</Typography>
-                </Link>
-            </li>
-        </ul>
-    </>
-)
-
-const RecentIcons = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerRecent(player)
-
-    return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return (
-                    <>
-                        <RecentIconsContent
-                            player={player}
-                            recentGames={data.games}
-                            recentAchievements={data.achievements}
-                        />
-                    </>
-                )
-            }}
-        />
-    )
-}
-
 const PlayerProfileHeader = ({
     id,
     name,
@@ -337,7 +212,7 @@ const PlayerProfileHeader = ({
                     <PlayerStatistics player={id} />
                     <Grid container wrap="wrap">
                         <Grid xs={6}>
-                            <RecentIcons player={id} />
+                            <RecentActivity player={id} />
                         </Grid>
                         <Grid xs={6}>
                             <Timeline player={id} />

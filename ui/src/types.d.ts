@@ -58,6 +58,10 @@ interface SearchQueryResponse extends BaseQueryResponse {
     searchPlayersAndGames: (Player | Game)[]
 }
 
+interface MaybeUnlockedAchievement extends Achievement {
+    unlocked?: string
+}
+
 interface PlayerProfileSummary {
     ownedGames: number
     perfectGames: number

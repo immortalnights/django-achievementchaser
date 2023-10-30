@@ -97,21 +97,6 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
     )
 }
 
-const PlayerProfileContent = (player: Player) => {
-    return (
-        <>
-            <Typography variant="h5">Almost There</Typography>
-            <PlayerAlmostThereGames player={player.id} />
-            <Typography variant="h5">Just Started</Typography>
-            <PlayerJustStartedGames player={player.id} />
-            <Typography variant="h5">Next Game</Typography>
-            <PlayerEasiestGames player={player.id} />
-            <Typography variant="h5">Next Achievement</Typography>
-            <PlayerGameAchievementList player={player.id} />
-        </>
-    )
-}
-
 const PlayerProfileScreen = () => {
     const { id = throwExpression("missing param") } = useParams()
     const { loading, error, data } = useQueryPlayer(id)
@@ -121,8 +106,19 @@ const PlayerProfileScreen = () => {
             loading={loading}
             error={error}
             data={data}
-            renderer={(data) => {
-                return <PlayerProfileContent {...data} />
+            renderer={(player) => {
+                return (
+                    <>
+                        <Typography variant="h5">Almost There</Typography>
+                        <PlayerAlmostThereGames player={player.id} />
+                        <Typography variant="h5">Just Started</Typography>
+                        <PlayerJustStartedGames player={player.id} />
+                        <Typography variant="h5">Next Game</Typography>
+                        <PlayerEasiestGames player={player.id} />
+                        <Typography variant="h5">Next Achievement</Typography>
+                        <PlayerGameAchievementList player={player.id} />
+                    </>
+                )
             }}
         />
     )
