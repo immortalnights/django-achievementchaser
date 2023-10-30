@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ("datetime", models.DateTimeField()),
                 (
                     "achievement",
-                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.achievement"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="achievements.achievement"),
                 ),
                 ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
                 ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),

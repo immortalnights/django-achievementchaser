@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("games", "0005_auto_20231030_2024"),
         ("achievements", "0002_alter_achievement_global_percentage"),
     ]
 
