@@ -9,6 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("games", "0001_initial"),
+        ("games", "0005_auto_20231030_2024"),
     ]
 
     operations = [
