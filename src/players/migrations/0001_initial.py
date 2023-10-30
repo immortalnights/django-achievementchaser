@@ -9,7 +9,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("games", "0001_initial"),
-        ("games", "0005_auto_20231030_2024"),
     ]
 
     operations = [
@@ -46,7 +45,7 @@ class Migration(migrations.Migration):
                 ("datetime", models.DateTimeField()),
                 (
                     "achievement",
-                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.achievement"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="achievements.achievement"),
                 ),
                 ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
                 ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),

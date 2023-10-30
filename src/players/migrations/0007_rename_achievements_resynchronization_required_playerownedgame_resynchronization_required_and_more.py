@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(
                 related_name="player_unlocked_achievements",
                 through="players.PlayerUnlockedAchievement",
-                to="games.achievement",
+                to="achievements.achievement",
             ),
         ),
         migrations.AlterField(
