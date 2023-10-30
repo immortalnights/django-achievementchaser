@@ -43,7 +43,6 @@ CORS_ALLOWED_ORIGINS: List[str] = []
 
 INSTALLED_APPS = [
     "corsheaders",
-    "achievements.apps.AchievementsConfig",
     "games.apps.GamesConfig",
     "players.apps.PlayersConfig",
     "graphene_django",
