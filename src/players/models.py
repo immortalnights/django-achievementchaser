@@ -1,6 +1,5 @@
 from django.db import models
-from games.models import Game
-from achievements.models import Achievement
+from games.models import Game, Achievement
 
 
 class Player(models.Model):

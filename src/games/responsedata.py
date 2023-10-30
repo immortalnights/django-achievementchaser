@@ -52,3 +52,20 @@ class GameSchemaResponse:
         else:
             logger.debug(f"Game {self.gameName} does not have any game stats")
             self.availableGameStats = AvailableGameStatsResponse()
+
+
+@dataclass
+class AchievementPercentageResponse:
+    name: str
+    percent: float
+
+
+@dataclass
+class AchievementPercentagesResponse:
+    achievements: List[AchievementPercentageResponse]
+
+    def __init__(self, achievements: Dict):
+        self.achievements = []
+
+        for achievement in achievements:
+            self.achievements.append(AchievementPercentageResponse(**achievement))

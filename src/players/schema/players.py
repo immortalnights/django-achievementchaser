@@ -3,7 +3,7 @@ from typing import Optional, List
 import graphene
 from django.db.models import Q
 from achievementchaser.graphql_utils import parse_order_by, get_field_selection_hierarchy, get_edge_node_fields
-from achievements.models import Achievement
+from games.models import Achievement
 from .modeltypes import PlayerType
 from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
 from ..queries import get_player_games2

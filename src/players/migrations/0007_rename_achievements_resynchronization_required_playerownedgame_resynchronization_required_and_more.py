@@ -6,7 +6,6 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("achievements", "0001_initial"),
         ("players", "0006_alter_playerownedgame_completion_percentage"),
     ]
 
@@ -32,7 +31,7 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(
                 related_name="player_unlocked_achievements",
                 through="players.PlayerUnlockedAchievement",
-                to="achievements.achievement",
+                to="games.achievement",
             ),
         ),
         migrations.AlterField(

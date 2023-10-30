@@ -2,7 +2,7 @@ from typing import Optional, List, TypedDict
 from loguru import logger
 from django.db.models import Q, Sum
 from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
-from achievements.models import Achievement
+from games.models import Achievement
 from achievementchaser.graphql_utils import parse_order_by
 
 

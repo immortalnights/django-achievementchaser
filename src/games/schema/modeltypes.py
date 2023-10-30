@@ -1,7 +1,6 @@
 import graphene
 from graphene_django import DjangoObjectType
-from ..models import Game
-from achievements.models import Achievement
+from ..models import Game, Achievement
 
 
 class GameType(DjangoObjectType):
