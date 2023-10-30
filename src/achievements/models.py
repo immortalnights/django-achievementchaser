@@ -6,7 +6,7 @@ class Achievement(models.Model):
         unique_together = (("name", "game"),)
 
     name = models.CharField(max_length=255)
-    game = models.ForeignKey("games.Game", on_delete=models.CASCADE)
+    game = models.ForeignKey("games.Game", on_delete=models.CASCADE, related_name="deprecated_achievement_to_game")
     default_value = models.IntegerField()
     display_name = models.CharField(max_length=255)
     hidden = models.BooleanField(default=False)
