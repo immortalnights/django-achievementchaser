@@ -5,79 +5,92 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('achievements', '0001_initial'),
-        ('games', '0001_initial'),
+        ("games", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Player',
+            name="Player",
             fields=[
-                ('id', models.PositiveBigIntegerField(primary_key=True, serialize=False)),
-                ('name', models.CharField(max_length=255)),
-                ('profile_url', models.CharField(default='', max_length=255)),
-                ('avatar_small_url', models.CharField(default='', max_length=255)),
-                ('avatar_medium_url', models.CharField(default='', max_length=255)),
-                ('avatar_large_url', models.CharField(default='', max_length=255)),
-                ('created', models.IntegerField(default=0)),
-                ('added', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('resynchronized', models.DateTimeField(null=True)),
-                ('resynchronization_required', models.BooleanField(default=True)),
+                ("id", models.PositiveBigIntegerField(primary_key=True, serialize=False)),
+                ("name", models.CharField(max_length=255)),
+                ("profile_url", models.CharField(default="", max_length=255)),
+                ("avatar_small_url", models.CharField(default="", max_length=255)),
+                ("avatar_medium_url", models.CharField(default="", max_length=255)),
+                ("avatar_large_url", models.CharField(default="", max_length=255)),
+                ("created", models.IntegerField(default=0)),
+                ("added", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("resynchronized", models.DateTimeField(null=True)),
+                ("resynchronization_required", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='PlayerGamePlaytime',
+            name="PlayerGamePlaytime",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('playtime', models.PositiveIntegerField()),
-                ('datetime', models.DateTimeField(auto_now_add=True)),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='games.game')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("playtime", models.PositiveIntegerField()),
+                ("datetime", models.DateTimeField(auto_now_add=True)),
+                ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
+                ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),
             ],
         ),
         migrations.CreateModel(
-            name='PlayerUnlockedAchievement',
+            name="PlayerUnlockedAchievement",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('datetime', models.DateTimeField()),
-                ('achievement', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='achievements.achievement')),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='games.game')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("datetime", models.DateTimeField()),
+                (
+                    "achievement",
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.achievement"),
+                ),
+                ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
+                ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),
             ],
             options={
-                'unique_together': {('player', 'game', 'achievement')},
+                "unique_together": {("player", "game", "achievement")},
             },
         ),
         migrations.CreateModel(
-            name='PlayerOwnedGame',
+            name="PlayerOwnedGame",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('playtime_forever', models.PositiveIntegerField()),
-                ('added', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('achievements_resynchronized', models.DateTimeField(null=True)),
-                ('achievements_resynchronization_required', models.BooleanField(default=True)),
-                ('game', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='games.game')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("playtime_forever", models.PositiveIntegerField()),
+                ("added", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("achievements_resynchronized", models.DateTimeField(null=True)),
+                ("achievements_resynchronization_required", models.BooleanField(default=True)),
+                ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
+                ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),
             ],
             options={
-                'unique_together': {('game', 'player')},
+                "unique_together": {("game", "player")},
             },
         ),
         migrations.CreateModel(
-            name='Friend',
+            name="Friend",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('friend', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='friends', to='players.player')),
-                ('player', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='player_to_player', to='players.player')),
+                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                (
+                    "friend",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, related_name="friends", to="players.player"
+                    ),
+                ),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="player_to_player",
+                        to="players.player",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('player', 'friend')},
+                "unique_together": {("player", "friend")},
             },
         ),
     ]
