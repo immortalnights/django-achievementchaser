@@ -2,8 +2,7 @@ import graphene
 from typing import Optional, List
 from django.db.models import Q
 from .modeltypes import GameType, AchievementType
-from ..models import Game
-from achievements.models import Achievement
+from ..models import Game, Achievement
 from players.models import PlayerOwnedGame
 from players.schema.modeltypes import PlayerType
 

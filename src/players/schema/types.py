@@ -1,8 +1,8 @@
 import graphene
 from django.db.models import Sum
-from achievements.models import Achievement
 from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 from ..queries import get_player_games2
+from games.models import Achievement
 from games.schema.games import GameType
 
 
