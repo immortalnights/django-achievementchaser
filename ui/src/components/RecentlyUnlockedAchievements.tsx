@@ -23,7 +23,7 @@ const UnlockedAchievementIcon = ({
                 </Typography>
             </>
         ),
-        []
+        [achievement]
     )
 
     return (
