@@ -22,7 +22,7 @@ class Player(models.Model):
 
 class PlayerOwnedGame(models.Model):
     class Meta:
-        unique_together = (("game", "player"),)
+        constraints = [models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")]
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -46,7 +46,9 @@ class PlayerGamePlaytime(models.Model):
 
 class PlayerUnlockedAchievement(models.Model):
     class Meta:
-        unique_together = (("player", "game", "achievement"),)
+        constraints = [
+            models.UniqueConstraint(fields=["player", "game", "achievement"], name="unique_player_achievement")
+        ]
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
@@ -56,7 +58,7 @@ class PlayerUnlockedAchievement(models.Model):
 
 class Friend(models.Model):
     class Meta:
-        unique_together = (("player", "friend"),)
+        constraints = [models.UniqueConstraint(fields=["player", "friend"], name="unique_player_friend")]
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_friend")
     friend = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="friend_to_player")
