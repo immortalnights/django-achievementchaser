@@ -156,7 +156,7 @@ class Query(graphene.ObjectType):
         info,
         id: str,
         game_id: Optional[str] = None,
-        order_by: Optional[str] = None,
+        order_by: Optional[str] = "datetime DESC",
     ):
         unlocked_achievements = PlayerUnlockedAchievement.objects.filter(player_id=id, game_id=game_id)
 
