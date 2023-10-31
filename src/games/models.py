@@ -3,8 +3,11 @@ from django.db import models
 
 class Achievement(models.Model):
     class Meta:
+        constraints = [models.UniqueConstraint(fields=["game", "name"], name="unique_game_achievement")]
+
         unique_together = (("name", "game"),)
 
+    # Cannot use the "name" as the primary key because it is not globally unique.
     name = models.CharField(max_length=255)
     game = models.ForeignKey("games.Game", on_delete=models.CASCADE)
     default_value = models.IntegerField()
