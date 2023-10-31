@@ -1,16 +1,78 @@
-import { Typography, Box } from "@mui/material"
+import { Typography, Box, IconButton } from "@mui/material"
 import { formatDate, getRelativeTime } from "../utilities"
 import BorderedImage from "./BorderedImage"
 import ExternalLink from "./ExternalLink"
 import { GameCompletionProgress } from "./GameCompletionProgress"
 import Link from "./Link"
+import { DateRangeTwoTone, TaskOutlined } from "@mui/icons-material"
+import { useContext } from "react"
+import PlayerSettingsContext from "../context/PlayerSettingsContext"
 
 interface OwnedGameDetailsProps extends OwnedGame {
     achievements: Achievement[]
     playerAchievements: RecentAchievement[]
 }
 
-const OwnedGameDetails = ({
+const HideUnlockedAchievementsButton = () => {
+    const { hideUnlockedAchievements, setHideUnlockedAchievements } =
+        useContext(PlayerSettingsContext)
+
+    return (
+        <IconButton
+            title={hideUnlockedAchievements ? "Hide Unlocked" : "Show Unlocked"}
+            color={hideUnlockedAchievements ? "inherit" : "primary"}
+            onClick={() =>
+                setHideUnlockedAchievements(!hideUnlockedAchievements)
+            }
+        >
+            <TaskOutlined />
+        </IconButton>
+    )
+}
+
+const ChangeAchievementOrderButton = () => {
+    const {
+        achievementSortOrder,
+        setAchievementSortOrder,
+        hideUnlockedAchievements,
+    } = useContext(PlayerSettingsContext)
+
+    const orderByDifficulty = achievementSortOrder === "difficulty"
+
+    return (
+        <IconButton
+            title={
+                orderByDifficulty ? "Order by Difficulty" : "Order by Unlocked"
+            }
+            disabled={hideUnlockedAchievements}
+            color={orderByDifficulty ? "inherit" : "primary"}
+            onClick={() =>
+                setAchievementSortOrder(
+                    orderByDifficulty ? "unlocked" : "difficulty"
+                )
+            }
+        >
+            <DateRangeTwoTone />
+        </IconButton>
+    )
+}
+
+const OwnedGameLastPlayed = ({ lastPlayed }: { lastPlayed?: string }) => {
+    return (
+        lastPlayed && (
+            <div>
+                <Typography variant="subtitle1" textTransform="uppercase">
+                    Last Played
+                </Typography>
+                <div title={formatDate(lastPlayed)}>
+                    {getRelativeTime(lastPlayed)}
+                </div>
+            </div>
+        )
+    )
+}
+
+const OwnedGameWithAchievements = ({
     lastPlayed,
     difficultyPercentage,
     completed,
@@ -18,48 +80,78 @@ const OwnedGameDetails = ({
     playerAchievements,
 }: OwnedGameDetailsProps) => {
     return (
-        <div
-            style={{
-                display: "flex",
-                flexGrow: 1,
-                justifyContent: "space-evenly",
-                alignItems: "center",
-            }}
-        >
-            {achievements.length > 0 && (
+        <>
+            <div
+                style={{
+                    display: "flex",
+                    flexGrow: 1,
+                    justifyContent: "space-evenly",
+                    alignItems: "center",
+                }}
+            >
                 <GameCompletionProgress
                     achievements={achievements}
                     playerAchievements={playerAchievements}
                 />
-            )}
-            {lastPlayed && (
-                <div>
-                    <Typography variant="subtitle1" textTransform="uppercase">
-                        Last Played
-                    </Typography>
-                    <div title={formatDate(lastPlayed)}>
-                        {getRelativeTime(lastPlayed)}
+
+                <OwnedGameLastPlayed lastPlayed={lastPlayed} />
+
+                {completed && (
+                    <div>
+                        <Typography
+                            variant="subtitle1"
+                            textTransform="uppercase"
+                        >
+                            Completed
+                        </Typography>
+                        <div title={formatDate(completed)}>
+                            {getRelativeTime(completed)}
+                        </div>
                     </div>
-                </div>
-            )}
-            {completed && (
-                <div>
-                    <Typography variant="subtitle1" textTransform="uppercase">
-                        Completed
-                    </Typography>
-                    <div title={formatDate(completed)}>
-                        {getRelativeTime(completed)}
+                )}
+
+                {difficultyPercentage !== undefined && (
+                    <div>
+                        <Typography
+                            variant="subtitle1"
+                            textTransform="uppercase"
+                        >
+                            Difficulty
+                        </Typography>
+                        {difficultyPercentage.toFixed(2)}%
                     </div>
-                </div>
+                )}
+            </div>
+            <div style={{ flexGrow: 0 }}>
+                <HideUnlockedAchievementsButton />
+                <ChangeAchievementOrderButton />
+            </div>
+        </>
+    )
+}
+
+const OwnedGameDetails = ({
+    lastPlayed,
+    achievements,
+    ...rest
+}: OwnedGameDetailsProps) => {
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexGrow: 1,
+                alignItems: "center",
+            }}
+        >
+            {achievements.length > 0 ? (
+                <OwnedGameWithAchievements
+                    lastPlayed={lastPlayed}
+                    achievements={achievements}
+                    {...rest}
+                />
+            ) : (
+                <OwnedGameLastPlayed lastPlayed={lastPlayed} />
             )}
-            {difficultyPercentage && difficultyPercentage !== 0.0 ? (
-                <div>
-                    <Typography variant="subtitle1" textTransform="uppercase">
-                        Difficulty
-                    </Typography>
-                    {difficultyPercentage.toFixed(2)}%
-                </div>
-            ) : null}
         </div>
     )
 }

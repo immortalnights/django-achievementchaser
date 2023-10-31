@@ -5,6 +5,32 @@ import { throwExpression } from "../utilities"
 import PlayerGameHeader from "../components/PlayerGameHeader"
 import PlayerGameAchievements from "../components/PlayerGameAchievements"
 
+// FIXME overlaps with PlayerGameResponse
+interface PlayerGameDetails {
+    game: Game
+    achievements: Achievement[]
+    playerGame: OwnedGame
+    playerAchievements: RecentAchievement[]
+}
+
+const PlayerGame = ({
+    player,
+    data,
+}: {
+    player: string
+    data: PlayerGameDetails
+}) => {
+    return (
+        <>
+            <PlayerGameHeader player={player} {...data} />
+            <PlayerGameAchievements
+                achievements={data.achievements}
+                playerAchievements={data.playerAchievements}
+            />
+        </>
+    )
+}
+
 const PlayerGameContainer = () => {
     const { id: player = throwExpression("Missing 'player' parameter") } =
         useParams()
@@ -21,15 +47,7 @@ const PlayerGameContainer = () => {
             error={error}
             data={data}
             renderer={(data) => {
-                return (
-                    <>
-                        <PlayerGameHeader player={player} {...data} />
-                        <PlayerGameAchievements
-                            achievements={data.achievements}
-                            playerAchievements={data.playerAchievements}
-                        />
-                    </>
-                )
+                return <PlayerGame player={player} data={data} />
             }}
         />
     )

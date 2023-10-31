@@ -3,7 +3,7 @@ import { Typography, Box, IconButton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
-import PlayerProfileContext from "../context/ProfileContext"
+import PlayerSettingsContext from "../context/PlayerSettingsContext"
 import { useQueryPlayerProfileSummary } from "../api/queries"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
@@ -37,8 +37,9 @@ const Header = ({
     name: string
     url: string
 }) => {
-    const { hideGameStatistics, toggleGameStatistics } =
-        useContext(PlayerProfileContext)
+    const { hideGameStatistics, toggleGameStatistics } = useContext(
+        PlayerSettingsContext
+    )
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
@@ -99,7 +100,7 @@ const PlayerStatisticsContent = ({
     unlockedAchievements,
     lockedAchievements,
 }: PlayerStatisticsContentProps) => {
-    const { hideGameStatistics } = useContext(PlayerProfileContext)
+    const { hideGameStatistics } = useContext(PlayerSettingsContext)
 
     return (
         <Grid container>
