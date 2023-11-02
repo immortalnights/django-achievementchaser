@@ -4,41 +4,32 @@ import graphene
 from django.db.models import Q
 from achievementchaser.graphql_utils import parse_order_by, get_field_selection_hierarchy, get_edge_node_fields
 from games.models import Achievement
-from .modeltypes import PlayerType
+from .types import (
+    PlayerType,
+    PlayerOwnedGameType,
+    PlayerOwnedGameListType,
+    PlayerUnlockedAchievementType,
+    PlayerUnlockedAchievementListType,
+    PlayerProfileType,
+)
 from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
 from ..queries import get_player_games2
-from .types import (
-    SimpleGameType,
-    SimpleAchievementType,
-    xPlayerGameType,
-    xPlayerAchievementType,
-    PlayerProfile,
-)
-
-
-def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, requires_game_data: bool):
-    obj = {
-        "id": achievement.achievement.name,
-        "game": achievement.game,
-        "display_name": achievement.achievement.display_name,
-        "description": achievement.achievement.description,
-        "icon_url": achievement.achievement.icon_url,
-        "icon_gray_url": achievement.achievement.icon_gray_url,
-        "global_percentage": achievement.achievement.global_percentage or 0,
-        "unlocked": achievement.datetime if achievement.datetime is not None else None,
-    }
-
-    return obj
 
 
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.BigInt(), name=graphene.String())
     players = graphene.List(PlayerType)
 
-    player_profile_summary = graphene.Field(PlayerProfile, id=graphene.BigInt())
+    player_profile_summary = graphene.Field(PlayerProfileType, id=graphene.BigInt())
+
+    player_game = graphene.Field(
+        PlayerOwnedGameType,
+        id=graphene.BigInt(),
+        game_id=graphene.BigInt(),
+    )
 
     player_games = graphene.Field(
-        xPlayerGameType,
+        PlayerOwnedGameListType,
         id=graphene.BigInt(),
         played=graphene.Boolean(),
         perfect=graphene.Boolean(),
@@ -49,25 +40,19 @@ class Query(graphene.ObjectType):
         order_by=graphene.String(),
     )
 
-    player_game = graphene.Field(
-        SimpleGameType,
+    player_achievements_for_game = graphene.Field(
+        graphene.List(PlayerUnlockedAchievementType),
         id=graphene.BigInt(),
         game_id=graphene.BigInt(),
+        order_by=graphene.String(),
     )
 
     player_achievements = graphene.Field(
-        xPlayerAchievementType,
+        PlayerUnlockedAchievementListType,
         id=graphene.BigInt(),
         unlocked=graphene.Boolean(),
         year=graphene.Int(),
         limit=graphene.Int(),
-    )
-
-    player_achievements_for_game = graphene.Field(
-        graphene.List(SimpleAchievementType),
-        id=graphene.BigInt(),
-        game_id=graphene.BigInt(),
-        order_by=graphene.String(),
     )
 
     def resolve_player(root, info, id: Optional[int] = None, name: Optional[str] = None) -> Optional[Player]:
@@ -86,7 +71,7 @@ class Query(graphene.ObjectType):
         return Player.objects.all()
 
     def resolve_player_profile_summary(root, info, id: int):
-        return PlayerProfile(id=id)
+        return PlayerProfileType(id=id)
 
     def resolve_player_games(
         root,
@@ -173,10 +158,7 @@ class Query(graphene.ObjectType):
             else:
                 logger.error(f"Unknown order by key '{key}'")
 
-        return map(
-            lambda achievement: transform_unlocked_achievement(achievement, requires_game_data=False),
-            unlocked_achievements,
-        )
+        return unlocked_achievements
 
     def resolve_player_achievements(
         root,
@@ -213,12 +195,7 @@ class Query(graphene.ObjectType):
                 if requires_game_data:
                     unlocked_achievements.select_related("game")
 
-                achievements = map(
-                    lambda achievement: transform_unlocked_achievement(
-                        achievement, requires_game_data=requires_game_data
-                    ),
-                    unlocked_achievements,
-                )
+                achievements = unlocked_achievements
 
         elif unlocked is False:
             available_achievements = available_achievements.exclude(
