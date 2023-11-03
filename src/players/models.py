@@ -24,8 +24,8 @@ class PlayerOwnedGame(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")]
 
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="games")
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="owners")
     playtime_forever = models.PositiveIntegerField()
     completion_percentage = models.FloatField(default=0)
     completed = models.DateTimeField(null=True)
@@ -38,8 +38,8 @@ class PlayerOwnedGame(models.Model):
 
 
 class PlayerGamePlaytime(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="playtime")
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_playtime")
     playtime = models.PositiveIntegerField()
     datetime = models.DateTimeField(auto_now_add=True)
 
@@ -50,8 +50,8 @@ class PlayerUnlockedAchievement(models.Model):
             models.UniqueConstraint(fields=["player", "game", "achievement"], name="unique_player_achievement")
         ]
 
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="achievements")
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_achievements")
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
 
