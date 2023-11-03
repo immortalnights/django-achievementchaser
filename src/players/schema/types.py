@@ -1,7 +1,7 @@
 import graphene
 from django.db.models import Sum
 from graphene_django import DjangoObjectType
-from ..models import Player, PlayerOwnedGame, PlayerUnlockedAchievement
+from ..models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement,
 from ..queries import get_player_games2
 from games.models import Achievement
 from games.schema.types import GameType
@@ -16,8 +16,6 @@ class PlayerType(DjangoObjectType):
             "resynchronized",
             "api_key",
             "resynchronization_required",
-            "playerownedgame_set",
-            "playerunlockedachievement_set",
             "added",
             "created",
         ]
@@ -37,6 +35,12 @@ class PlayerOwnedGameListType(graphene.Connection):
         node = PlayerOwnedGameType
 
     total_count = graphene.Int()
+
+
+class PlayerGamePlaytime(DjangoObjectType):
+    class Meta:
+        model = PlayerGamePlaytime
+        exclude = ["id"]
 
 
 class PlayerUnlockedAchievementType(DjangoObjectType):
