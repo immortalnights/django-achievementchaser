@@ -14,12 +14,8 @@ const PlayerGameAchievements = ({
     )
 
     const playerAchievementReferenceSort = (a: Achievement, b: Achievement) => {
-        const aIndex = playerAchievements.findIndex(
-            (item) => item.id === a.name
-        )
-        const bIndex = playerAchievements.findIndex(
-            (item) => item.id === b.name
-        )
+        const aIndex = playerAchievements.findIndex((item) => item.id === a.id)
+        const bIndex = playerAchievements.findIndex((item) => item.id === b.id)
 
         return aIndex === -1 || bIndex === -1 ? 1 : aIndex - bIndex
     }
@@ -29,7 +25,7 @@ const PlayerGameAchievements = ({
             (achievement) =>
                 !playerAchievements.find(
                     (playerAchievement) =>
-                        playerAchievement.id === achievement.name
+                        playerAchievement.id === achievement.id
                 )
         )
     }

@@ -158,13 +158,11 @@ const OwnedGameDetails = ({
 
 const PlayerGameHeader = ({
     game,
-    achievements,
     playerGame,
     playerAchievements,
 }: {
     player: string
     game: Game
-    achievements: Achievement[]
     playerGame: OwnedGame
     playerAchievements: RecentAchievement[]
 }) => {
@@ -196,7 +194,7 @@ const PlayerGameHeader = ({
                 <OwnedGameDetails
                     {...playerGame}
                     difficultyPercentage={game.difficultyPercentage}
-                    achievements={achievements}
+                    achievements={game.achievements ?? []}
                     playerAchievements={playerAchievements}
                 />
             </Box>

@@ -3,6 +3,9 @@ import { gql } from "graphql-request"
 import gqlDocument, { boolToString } from "./graphql-documents"
 import { useQuery } from "./base-query"
 
+export const unwrapEdges = <T>(connection: Connection<T> | undefined) =>
+    connection ? connection.edges.map((edge) => edge.node) : []
+
 export const useLazyQueryPlayers = () => {
     return useQuery<PlayerQueryResponse, Player>(
         (player: string) => gql`player(name: "${player}") {
@@ -221,27 +224,8 @@ export const useQueryPlayerTimeline = ({
     return { loading, error, data }
 }
 
-export const useQueryGameAchievements = ({ game }: { game: string }) => {
-    const { loading, error, data, trigger } = useQuery<
-        GameAchievementsResponse,
-        Achievement[]
-    >(
-        (game) => gqlDocument.gameAchievements(game),
-        (response) => response.gameAchievements
-    )
-
-    useEffect(
-        () => trigger(game),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [game]
-    )
-
-    return { loading, error, data }
-}
-
 interface PlayerGameResponse extends BaseQueryResponse {
     game: Game
-    gameAchievements: Achievement[]
     playerGame: OwnedGame
     playerAchievementsForGame: RecentAchievement[]
 }
@@ -258,7 +242,6 @@ export const useQueryPlayerGame = ({
         PlayerGameResponse,
         {
             game: Game
-            achievements: Achievement[]
             playerGame: OwnedGame
             playerAchievements: RecentAchievement[]
         }
@@ -270,14 +253,14 @@ game(id: ${game}) {
     name
     imgIconUrl
     difficultyPercentage
-}
-gameAchievements(id: ${game}) {
-    name
-    displayName
-    description
-    iconUrl
-    iconGrayUrl
-    globalPercentage
+    achievements {
+        id
+        displayName
+        description
+        iconUrl
+        iconGrayUrl
+        globalPercentage
+    }
 }
 playerGame(id: ${player}, gameId: ${game}) {
     lastPlayed
@@ -295,7 +278,6 @@ playerAchievementsForGame(
         ],
         (response) => ({
             game: response.game,
-            achievements: response.gameAchievements,
             playerGame: response.playerGame,
             playerAchievements: response.playerAchievementsForGame,
         })
@@ -305,24 +287,6 @@ playerAchievementsForGame(
         () => trigger(player, game),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [player, game]
-    )
-
-    return { loading, error, data }
-}
-
-export const useQueryGameOwners = ({ game }: { game: string }) => {
-    const { loading, error, data, trigger } = useQuery<
-        GameOwnersResponse,
-        GameOwnerInformation[]
-    >(
-        (game) => gqlDocument.gameOwners(game),
-        (response) => response.players
-    )
-
-    useEffect(
-        () => trigger(game),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [game]
     )
 
     return { loading, error, data }

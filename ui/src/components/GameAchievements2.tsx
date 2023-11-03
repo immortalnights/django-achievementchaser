@@ -95,7 +95,7 @@ const GameAchievements = ({
     >
         {achievements.map((achievement) => {
             const playerAchievement = playerAchievements.find(
-                (value) => value.id === achievement.name
+                (value) => value.id === achievement.id
             )
 
             return (

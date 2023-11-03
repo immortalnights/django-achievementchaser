@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom"
 import Loader from "../components/Loader"
-import { useQueryPlayerGame } from "../api/queries"
+import { unwrapEdges, useQueryPlayerGame } from "../api/queries"
 import { throwExpression } from "../utilities"
 import PlayerGameHeader from "../components/PlayerGameHeader"
 import PlayerGameAchievements from "../components/PlayerGameAchievements"
@@ -8,7 +8,6 @@ import PlayerGameAchievements from "../components/PlayerGameAchievements"
 // FIXME overlaps with PlayerGameResponse
 interface PlayerGameDetails {
     game: Game
-    achievements: Achievement[]
     playerGame: OwnedGame
     playerAchievements: RecentAchievement[]
 }
@@ -24,7 +23,7 @@ const PlayerGame = ({
         <>
             <PlayerGameHeader player={player} {...data} />
             <PlayerGameAchievements
-                achievements={data.achievements}
+                achievements={data.game.achievements ?? []}
                 playerAchievements={data.playerAchievements}
             />
         </>

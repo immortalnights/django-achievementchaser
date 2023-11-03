@@ -145,25 +145,48 @@ playerGames(
     }
 }`
 
-export const game = (game: string) => gql`
+export const game = (
+    game: string,
+    {
+        includeAchievements = false,
+        includeOwners = false,
+    }: {
+        includeAchievements?: boolean
+        includeOwners?: boolean
+    }
+) => {
+    const achievements = gql`achievements {
+        id
+        displayName
+        description
+        hidden
+        iconUrl
+        iconGrayUrl
+        globalPercentage
+    }`
+
+    const owners = gql`owners {
+        player {
+            id
+            name
+            avatarSmallUrl
+        }
+        lastPlayed
+        playtimeForever
+        completionPercentage
+        completed
+    }`
+
+    return gql`
 game(id: ${game}) {
     id
     name
     difficultyPercentage
     achievementCount
+    ${includeAchievements ? achievements : ""}
+    ${includeOwners ? owners : ""}
 }`
-
-export const gameAchievements = (game: string) => gql`
-gameAchievements(id: ${game}) {
-    id
-    name
-    displayName
-    description
-    hidden
-    iconUrl
-    iconGrayUrl
-    globalPercentage
-}`
+}
 
 export const playerGame = (player: string, game: string) => gql`
 playerGame(id: ${player}, gameId: ${game}) {
@@ -178,25 +201,6 @@ playerAchievementsForGame(
     id
     unlocked
 }`
-
-export const gameOwners = (game: string) => gql`
-players: gameOwners(id: ${game}) {
-    game {
-        id
-        name
-        achievementCount
-    }
-    player {
-        id
-        name
-        avatarSmallUrl
-    }
-    lastPlayed
-    playtimeForever
-    completionPercentage
-    completed
-}
-`
 
 export const search = (name: string) => gql`
 searchPlayersAndGames(name: "${name}") {
@@ -224,8 +228,7 @@ export default {
     almostCompleteGames,
     justStartedGames,
     nextGames,
+
     game,
-    gameAchievements,
-    gameOwners,
     search,
 }

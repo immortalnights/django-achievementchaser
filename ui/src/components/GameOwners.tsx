@@ -6,8 +6,6 @@ import {
     TableBody,
     Box,
 } from "@mui/material"
-import { useQueryGameOwners } from "../api/queries"
-import Loader from "./Loader"
 import { duration, formatDate, getRelativeTime } from "../utilities"
 import BorderedImage from "./BorderedImage"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
@@ -78,39 +76,37 @@ const GameOwnerInformation = ({
 }
 
 const GameOwners = ({ game }: { game: Game }) => {
-    const { loading, error, data } = useQueryGameOwners({
-        game: String(game.id),
-    })
+    const owners = game.owners ?? []
 
     return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return (
-                    <Table size="small" sx={{ width: "100%" }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Player</TableCell>
-                                <TableCell>Progress</TableCell>
-                                <TableCell>Last Played</TableCell>
-                                <TableCell>Completed</TableCell>
-                                <TableCell>Playtime</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data.map((information) => (
-                                <GameOwnerInformation
-                                    key={information.player.id}
-                                    {...information}
-                                />
-                            ))}
-                        </TableBody>
-                    </Table>
-                )
-            }}
-        />
+        <Table size="small" sx={{ width: "100%" }}>
+            <TableHead>
+                <TableRow>
+                    <TableCell>Player</TableCell>
+                    <TableCell>Progress</TableCell>
+                    <TableCell>Last Played</TableCell>
+                    <TableCell>Completed</TableCell>
+                    <TableCell>Playtime</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {owners.length > 0 ? (
+                    owners.map((owner) => (
+                        <GameOwnerInformation
+                            key={owner.player.id}
+                            game={game}
+                            {...owner}
+                        />
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={5} align="center">
+                            No owners
+                        </TableCell>
+                    </TableRow>
+                )}
+            </TableBody>
+        </Table>
     )
 }
 

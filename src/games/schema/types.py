@@ -7,7 +7,6 @@ class AchievementType(DjangoObjectType):
     class Meta:
         model = Achievement
         filter_fields = ["id"]
-        interfaces = (graphene.relay.Node,)
         exclude = ["default_value", "name", "updated", "added"]
 
     id = graphene.NonNull(graphene.ID)

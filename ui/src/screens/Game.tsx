@@ -10,7 +10,7 @@ const GameScreen = () => {
         <>
             <GameHeader game={game} />
             <Paper sx={{ marginTop: "1em" }} elevation={0}>
-                <GameAchievements game={String(game.id)} />
+                <GameAchievements game={game} />
             </Paper>
         </>
     )

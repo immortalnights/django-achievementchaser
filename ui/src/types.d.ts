@@ -1,5 +1,8 @@
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+interface Connection<T> {
+    edges: { node: T }[]
+}
 interface ResponseError {
     error: unknown
 }
@@ -22,20 +25,39 @@ interface Player {
     resynchronizationRequired?: boolean
 }
 
+interface PlayerOwnedGame {
+    player: Player
+    lastPlayed: string
+    playtimeForever: number
+    completionPercentage: number
+    completed: string
+}
+
 interface Game {
     id: number
     name?: string
+    imgIconUrl: string
+    difficultyPercentage: number
+    lastPlayed: string
+    playtime: number
+    achievementCount: number
+    achievements?: Achievement[]
+    owners?: PlayerOwnedGame[]
+
+    // deprecated
     achievementSet?: Achievement[]
     iconUrl?: string
 }
 
 interface Achievement {
-    name: string
+    id: string
+    name: string // deprecated
     displayName?: string
     description?: string
     iconUrl?: string
     iconGreyUrl?: string
     globalPercentage?: number
+    game?: Game
 }
 
 interface PlayersResponse extends BaseQueryResponse {
@@ -44,10 +66,6 @@ interface PlayersResponse extends BaseQueryResponse {
 
 interface GameQueryResponse extends BaseQueryResponse {
     game: Game
-}
-
-interface GameAchievementsResponse extends BaseQueryResponse {
-    gameAchievements: Achievement[]
 }
 
 interface PlayerQueryResponse extends BaseQueryResponse {
@@ -73,24 +91,6 @@ interface PlayerProfileSummary {
 
 interface PlayerProfileSummaryResponse extends BaseQueryResponse {
     playerProfileSummary: PlayerProfileSummary
-}
-
-interface Game {
-    id: string
-    name: string
-    imgIconUrl: string
-    difficultyPercentage: number
-    lastPlayed: string
-    playtime: number
-    achievementCount: number
-}
-
-interface Achievement {
-    name: string
-    displayName: string
-    iconUrl: string
-    iconGrayUrl: string
-    game?: Game
 }
 
 interface UnlockedAchievement {
@@ -191,8 +191,4 @@ interface GameOwnerInformation {
     playtimeForever: number
     completionPercentage: number
     completed?: string
-}
-
-interface GameOwnersResponse extends BaseQueryResponse {
-    players: GameOwnerInformation[]
 }
