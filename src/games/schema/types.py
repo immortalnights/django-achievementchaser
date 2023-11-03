@@ -3,34 +3,14 @@ from graphene_django import DjangoObjectType
 from ..models import Game, Achievement
 
 
-class GameType(DjangoObjectType):
-    class Meta:
-        model = Game
-        exclude = [
-            "updated",
-            "resynchronized",
-            "resynchronization_required",
-            "added",
-        ]
-
-    id = graphene.NonNull(graphene.String)
-    achievement_count = graphene.Int()
-
-    def resolve_achievement_count(root, info):
-        return root.achievement_set.count()
-
-
-class GameListType(graphene.Connection):
-    class Meta:
-        node = GameType
-
-    total_count = graphene.Int()
-
-
 class AchievementType(DjangoObjectType):
     class Meta:
         model = Achievement
+        filter_fields = ["id"]
+        interfaces = (graphene.relay.Node,)
         exclude = ["default_value", "name", "updated", "added"]
+
+    id = graphene.NonNull(graphene.ID)
 
     def resolve_id(root, info):
         return root.name
@@ -40,8 +20,23 @@ class AchievementType(DjangoObjectType):
         return root.global_percentage or 0
 
 
-class GameAchievementListType(graphene.Connection):
+class GameType(DjangoObjectType):
     class Meta:
-        node = AchievementType
+        model = Game
+        filter_fields = ["id", "name"]
+        interfaces = (graphene.relay.Node,)
+        exclude = [
+            "updated",
+            "resynchronized",
+            "resynchronization_required",
+            "added",
+        ]
 
-    total_count = graphene.Int()
+    id = graphene.NonNull(graphene.ID)
+    achievement_count = graphene.Int()
+
+    def resolve_achievements(root, info):
+        return Achievement.objects.filter(game_id=root.id).order_by("-global_percentage")
+
+    def resolve_achievement_count(root, info):
+        return root.achievements.count()
