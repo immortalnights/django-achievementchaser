@@ -50,9 +50,9 @@ class PlayerUnlockedAchievement(models.Model):
             models.UniqueConstraint(fields=["player", "game", "achievement"], name="unique_player_achievement")
         ]
 
-    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="achievements")
+    player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="unlocked_achievements")
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_achievements")
-    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE)
+    achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE, related_name="unlocked_by")
     datetime = models.DateTimeField()
 
 
