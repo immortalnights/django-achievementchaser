@@ -147,7 +147,7 @@ const PlayerStatisticsContent = ({
                     label="Perfect Games"
                     value={perfectGames}
                     title={`${(perfectGames / ownedGames).toFixed(2)}%`}
-                    link={`/player/${player}/perfectgames`}
+                    link={`/Player/${player}/PerfectGames`}
                 />
             </Grid>
             <Grid lg={3} md={4} sm={6} xs={12}>

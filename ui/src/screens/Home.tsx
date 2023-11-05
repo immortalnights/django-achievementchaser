@@ -24,7 +24,7 @@ const HomeScreen = () => {
 
     useEffect(() => {
         if (data && data.id) {
-            navigate(`/player/${data.id}`)
+            navigate(`/Player/${data.id}`)
         }
     }, [data, navigate])
 

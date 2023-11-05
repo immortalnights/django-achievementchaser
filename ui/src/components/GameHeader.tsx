@@ -8,7 +8,7 @@ const GameHeader = ({ game }: { game: Game }) => {
     return (
         <>
             <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-                <Link to={`/game/${game.id}`}>{game.name}</Link>
+                <Link to={`/Game/${game.id}`}>{game.name}</Link>
                 <Box
                     sx={{
                         display: "flex",
