@@ -235,38 +235,6 @@ class Query(graphene.ObjectType):
 
             achievements = available_achievements
 
-        else:
-            available_achievements = available_achievements.order_by("-global_percentage")
-            total_count = available_achievements.count() if "totalCount" in selected_field_hierarchy else None
-
-            if "edges" in selected_field_hierarchy:
-                # Index unlocked achievements
-                unlocked_achievements = unlocked_achievements.select_related("achievement")
-                indexed_unlocked_achievements = {obj.achievement.name: obj for obj in unlocked_achievements}
-
-                def create_achievement(achievement: Achievement):
-                    unlocked_achievement = (
-                        indexed_unlocked_achievements[achievement.name]
-                        if (achievement.name in indexed_unlocked_achievements)
-                        else None
-                    )
-
-                    return {
-                        "id": achievement.name,
-                        "game_id": achievement.game_id,
-                        "display_name": achievement.display_name,
-                        "description": achievement.description,
-                        "icon_url": achievement.icon_url,
-                        "icon_gray_url": achievement.icon_gray_url,
-                        "global_percentage": achievement.global_percentage or 0,
-                        "unlocked": unlocked_achievement.datetime if unlocked_achievement else None,
-                    }
-
-                if limit:
-                    available_achievements = available_achievements[:limit]
-
-                achievements = map(create_achievement, available_achievements)
-
         return {
             "total_count": total_count,
             "edges": map(
