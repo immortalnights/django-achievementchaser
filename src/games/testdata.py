@@ -54,6 +54,18 @@ mock_game_schema = {
     }
 }
 
+mock_global_achievements_for_game = {
+    "achievementpercentages": {
+        "achievements": [
+            {"name": "ACHIEVE_CHAP_1_COMPLETE", "percent": 86.5},
+            {"name": "ACHIEVE_CHAP_2_COMPLETE", "percent": 77.9000015258789063},
+            {"name": "ACHIEVE_CHAP_3_COMPLETE", "percent": 72.1999969482421875},
+            {"name": "ACHIEVE_CHAP_4_COMPLETE", "percent": 69.9000015258789063},
+            {"name": "ACHIEVE_CHAP_5_COMPLETE", "percent": 65.3000030517578125},
+        ]
+    }
+}
+
 mock_game_schema_no_available_game_stats = {
     "game": {
         "gameName": "Fake Game",
