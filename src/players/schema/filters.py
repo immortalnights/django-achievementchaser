@@ -1,4 +1,6 @@
 from django_filters import FilterSet, OrderingFilter, NumberFilter
+from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
+from games.models import Achievement
 
 
 class UnlockedAchievementYearFilter(NumberFilter):
