@@ -3,6 +3,7 @@
 from django.db import migrations, models
 import django.db.migrations.operations.special
 import django.db.models.deletion
+from loguru import logger
 
 
 # players.migrations.0011_auto_20230914_2216
@@ -19,7 +20,8 @@ def set_game_difficulty_percentage(apps, schema_editor):
 def set_player_game_completion_date(apps, schema_editor):
     PlayerOwnedGame = apps.get_model("players", "PlayerOwnedGame")
     PlayerAchievements = apps.get_model("players", "PlayerUnlockedAchievement")
-    Achievements = apps.get_model("achievements", "Achievement")
+    Achievements = apps.get_model("games", "Achievement")
+
     for owned_game in PlayerOwnedGame.objects.all():
         logger.info(f"Processing player owned game {owned_game.game_id} for {owned_game.player_id}")
         available_achievements = Achievements.objects.filter(game_id=owned_game.game_id)
@@ -47,7 +49,7 @@ def set_player_game_completed_properly(apps, schema_editor):
     Player = apps.get_model("players", "Player")
     PlayerOwnedGame = apps.get_model("players", "PlayerOwnedGame")
     PlayerAchievements = apps.get_model("players", "PlayerUnlockedAchievement")
-    Achievements = apps.get_model("achievements", "Achievement")
+    Achievements = apps.get_model("games", "Achievement")
 
     for player in Player.objects.all():
         logger.info(f"Processing player {player.name} ({player.id}) owned games")
@@ -182,7 +184,7 @@ class Migration(migrations.Migration):
                 ("datetime", models.DateTimeField()),
                 (
                     "achievement",
-                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="achievements.achievement"),
+                    models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.achievement"),
                 ),
                 ("game", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.game")),
                 ("player", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="players.player")),
@@ -265,9 +267,9 @@ class Migration(migrations.Migration):
             code=fix_last_played_time,
             reverse_code=django.db.migrations.operations.special.RunPython.noop,
         ),
-        migrations.AlterField(
-            model_name="playerunlockedachievement",
-            name="achievement",
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.achievement"),
-        ),
+        # migrations.AlterField(
+        #     model_name="playerunlockedachievement",
+        #     name="achievement",
+        #     field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="games.achievement"),
+        # ),
     ]
