@@ -33,12 +33,9 @@ export const useQueryPlayer = (player: string) => {
 
 export const useQueryPlayerProfileSummary = (player: string) => {
     const { loading, error, data, trigger } = useQuery<
-        PlayerProfileSummaryResponse,
-        PlayerProfileSummary
-    >(
-        gqlDocument.playerProfileSummary,
-        (response) => response.playerProfileSummary
-    )
+        PlayerQueryResponse,
+        PlayerProfile
+    >(gqlDocument.playerProfileSummary, (response) => response.player?.profile)
 
     useEffect(
         () => trigger(player),

@@ -11,28 +11,6 @@ interface BaseQueryResponse {
     errors?: ResponseError[]
 }
 
-interface Player {
-    id: string
-    name?: string
-    profileUrl?: string
-    avatarSmallUrl?: string
-    avatarMediumUrl?: string
-    avatarLargeUrl?: string
-    created?: string
-    added?: string
-    updated?: string
-    resynchronized?: string | null
-    resynchronizationRequired?: boolean
-}
-
-interface PlayerOwnedGame {
-    player: Player
-    lastPlayed: string
-    playtimeForever: number
-    completionPercentage: number
-    completed: string
-}
-
 interface Game {
     id: number
     name?: string
@@ -43,6 +21,8 @@ interface Game {
     achievementCount: number
     achievements?: Achievement[]
     owners?: PlayerOwnedGame[]
+    playerAchievements?: Connection<PlayerUnlockedAchievement>
+    playerPlaytime?: Connection<PlayerGamePlaytime>
 
     // deprecated
     achievementSet?: Achievement[]
@@ -58,6 +38,51 @@ interface Achievement {
     iconGreyUrl?: string
     globalPercentage?: number
     game?: Game
+}
+
+interface Player {
+    id: string
+    name?: string
+    profileUrl?: string
+    avatarSmallUrl?: string
+    avatarMediumUrl?: string
+    avatarLargeUrl?: string
+    profile?: PlayerProfile
+    games?: Connection<Game>
+    unlockedAchievements?: Connection<PlayerUnlockedAchievement>
+    availableAchievements?: Connection<Achievement>
+}
+
+interface PlayerOwnedGame {
+    player: Player
+    game: Game
+    lastPlayed: string
+    playtimeForever: number
+    completionPercentage: number
+    completed: string
+}
+
+interface PlayerGamePlaytime {
+    player: Player
+    game: Game
+    playtime: number
+    datetime: string
+}
+
+interface PlayerUnlockedAchievement {
+    player: Player
+    game: Game
+    achievement: Achievement
+    datetime: string
+}
+
+interface PlayerProfile {
+    ownedGames: number
+    perfectGames: number
+    playedGames: number
+    totalPlaytime: number
+    unlockedAchievements: number
+    lockedAchievements: number
 }
 
 interface PlayersResponse extends BaseQueryResponse {
@@ -80,19 +105,6 @@ interface MaybeUnlockedAchievement extends Achievement {
     unlocked?: string
 }
 
-interface PlayerProfileSummary {
-    ownedGames: number
-    perfectGames: number
-    playedGames: number
-    totalPlaytime: number
-    unlockedAchievements: number
-    lockedAchievements: number
-}
-
-interface PlayerProfileSummaryResponse extends BaseQueryResponse {
-    playerProfileSummary: PlayerProfileSummary
-}
-
 interface UnlockedAchievement {
     game: Pick<Game, "id" | "name">
     achievement: Achievement
@@ -103,30 +115,6 @@ interface PlayerFriend {
     id: string
     name: string
     profileUrl: string
-}
-
-interface PlayerSummary {
-    recentGames?: Game[]
-    recentAchievements?: UnlockedAchievement[]
-    perfectGamesCount?: number
-    achievementsUnlockedCount?: number
-    totalAchievementCount?: number
-    friends?: PlayerFriend[]
-    totalGamesCount?: number
-    playedGamesCount?: number
-    totalPlaytime?: number
-}
-
-interface PlayerProfile {
-    id: string
-    name: string
-    avatarLargeUrl?: string
-    profileUrl?: string
-    summary?: PlayerSummary
-    highestCompletionGame?: unknown[]
-    lowestCompletionGame?: unknown[]
-    easiestGames?: unknown[]
-    easiestAchievements?: unknown
 }
 
 interface OwnedGame {

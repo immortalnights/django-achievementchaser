@@ -12,13 +12,15 @@ player(id: ${player}) {
 `
 
 export const playerProfileSummary = (player: string) => gql`
-playerProfileSummary(id: ${player}) {
-    ownedGames
-    perfectGames
-    playedGames
-    totalPlaytime
-    lockedAchievements
-    unlockedAchievements
+player(id: ${player}) {
+    profile {
+        ownedGames
+        perfectGames
+        playedGames
+        totalPlaytime
+        lockedAchievements
+        unlockedAchievements
+    }
 }`
 
 export const recentGames = (player: string) => gql`

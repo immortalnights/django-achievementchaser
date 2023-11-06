@@ -12,7 +12,6 @@ from .types import (
     SimpleAchievementType,
     xPlayerGameType,
     xPlayerAchievementType,
-    PlayerProfile,
 )
 
 
@@ -34,8 +33,6 @@ def transform_unlocked_achievement(achievement: PlayerUnlockedAchievement, *, re
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.BigInt(), name=graphene.String())
     players = graphene.List(PlayerType)
-
-    player_profile_summary = graphene.Field(PlayerProfile, id=graphene.BigInt())
 
     player_games = graphene.Field(
         xPlayerGameType,
@@ -84,9 +81,6 @@ class Query(graphene.ObjectType):
 
     def resolve_players(root, info) -> List[Player]:
         return Player.objects.all()
-
-    def resolve_player_profile_summary(root, info, id: int):
-        return PlayerProfile(id=id)
 
     def resolve_player_games(
         root,

@@ -1,3 +1,4 @@
+from django.db.models import Sum
 import graphene
 from graphene.relay import Node, Connection, ConnectionField
 from graphene_django import DjangoObjectType
@@ -43,6 +44,37 @@ class PlayerUnlockedAchievementNode(DjangoObjectType):
         exclude: list[str] = []
 
 
+class ProfileType(graphene.ObjectType):
+    player: "Player"
+    total_playtime = graphene.Int()
+
+    owned_games = graphene.Int()
+    played_games = graphene.Int()
+    perfect_games = graphene.Int()
+
+    unlocked_achievements = graphene.Int()
+    locked_achievements = graphene.Int()
+
+    def resolve_total_playtime(root, info):
+        res = root.player.games.aggregate(Sum("playtime_forever"))
+        return res["playtime_forever__sum"]
+
+    def resolve_owned_games(root, info):
+        return root.player.games.count()
+
+    def resolve_played_games(root, info):
+        return root.player.games.filter(playtime_forever__gt=0).count()
+
+    def resolve_perfect_games(root, info):
+        return root.player.games.filter(completion_percentage=1).count()
+
+    def resolve_unlocked_achievements(root, info):
+        return root.player.unlocked_achievements.count()
+
+    def resolve_locked_achievements(root, info):
+        return root.player.available_achievements.count()
+
+
 class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
@@ -58,12 +90,13 @@ class PlayerType(DjangoObjectType):
     # Override the model ID otherwise JavaScript rounds the number
     id = graphene.NonNull(graphene.String)
 
+    profile = graphene.Field(ProfileType)
+
     games = DjangoFilterConnectionField(
         PlayerOwnedGameNode,
         filterset_class=PlayerOwnedGameFilter,
     )
 
-    # unlocked_achievements = ConnectionField(PlayerUnlockedAchievementConnection, year=graphene.Int())
     unlocked_achievements = DjangoFilterConnectionField(
         PlayerUnlockedAchievementNode,
         filterset_class=PlayerUnlockedAchievementFilter,
@@ -73,12 +106,7 @@ class PlayerType(DjangoObjectType):
         AchievementNode, filterset_class=PlayerAvailableAchievementFilter
     )
 
-    def resolve_available_achievements(root, info, game=None, **kwargs):
-        owned_games = PlayerOwnedGame.objects.filter(player_id=root.id)
-        unlocked_achievements = PlayerUnlockedAchievement.objects.filter(player_id=root.id)
-        available_achievements = Achievement.objects.filter(game__in=owned_games.values("game"))
-
-        # Filter unlocked achievements
-        available_achievements = available_achievements.exclude(id__in=unlocked_achievements.values("achievement__id"))
-
-        return available_achievements
+    def resolve_profile(root, info):
+        profile = ProfileType()
+        profile.player = root
+        return profile
