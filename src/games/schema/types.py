@@ -6,8 +6,7 @@ from ..models import Game, Achievement
 class AchievementType(DjangoObjectType):
     class Meta:
         model = Achievement
-        filter_fields = ["id"]
-        exclude = ["default_value", "name", "updated", "added"]
+        exclude = ["default_value", "name", "updated", "added", "unlocked_by"]
 
     id = graphene.NonNull(graphene.ID)
 
