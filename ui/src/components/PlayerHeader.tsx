@@ -87,7 +87,7 @@ const MetaData = ({
     </Box>
 )
 
-interface PlayerStatisticsContentProps extends PlayerProfileSummary {
+interface PlayerStatisticsContentProps extends PlayerProfile {
     player: string
 }
 
