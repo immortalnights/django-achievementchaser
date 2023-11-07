@@ -54,12 +54,12 @@ interface Player {
 }
 
 interface PlayerOwnedGame {
-    player: Player
+    player?: Player
     game: Game
-    lastPlayed: string
-    playtimeForever: number
-    completionPercentage: number
-    completed: string
+    lastPlayed?: string
+    playtimeForever?: number
+    completionPercentage?: number
+    completed?: string
 }
 
 interface PlayerGamePlaytime {
@@ -130,6 +130,17 @@ interface OwnedGame {
 }
 
 interface PlayerOwnedGameResponse extends BaseQueryResponse {
+    player: {
+        id: string
+        games?: {
+            edges: {
+                node: PlayerOwnedGame
+            }[]
+        }
+    }
+}
+
+interface PlayerOwnedGameResponseOLD extends BaseQueryResponse {
     playerGames: {
         edges?: { node: OwnedGame }[]
         totalCount?: number

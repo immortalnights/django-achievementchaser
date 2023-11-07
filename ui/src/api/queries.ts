@@ -46,6 +46,72 @@ export const useQueryPlayerProfileSummary = (player: string) => {
     return { loading, error, data }
 }
 
+export const useQueryPlayerGames = ({
+    player,
+    played,
+    completed,
+    orderBy,
+    limit,
+}: {
+    player: string
+    played?: boolean
+    completed?: boolean
+    orderBy?: string
+    limit?: number
+}) => {
+    const queryParameters: string[] = []
+    if (played !== undefined) {
+        queryParameters.push(`played: ${boolToString(played)}`)
+    }
+
+    if (completed != undefined) {
+        queryParameters.push(`completed: ${boolToString(completed)}`)
+    }
+
+    if (orderBy !== undefined) {
+        queryParameters.push(`orderBy: "${orderBy}"`)
+    }
+
+    if (limit !== undefined) {
+        queryParameters.push(`first: ${limit}`)
+    }
+
+    const { loading, error, data, trigger } = useQuery<
+        PlayerOwnedGameResponse,
+        PlayerOwnedGame[]
+    >(
+        () => gql`
+        player(id: ${player}) {
+            id
+            games(${queryParameters.join(", ")}) {
+                edges {
+                    node {
+                        game {
+                            name
+                            id
+                            achievementCount
+                            difficultyPercentage
+                        }
+                        completed
+                        lastPlayed
+                        playtimeForever
+                    }
+                }
+            }
+        }`,
+        (response) =>
+            response.player.games?.edges.map((node) => node.node) ?? []
+    )
+
+    useEffect(
+        () => trigger(),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        []
+    )
+
+    return { loading, error, data }
+}
+
 export const useQueryPlayerOwnedGames = ({
     player,
     played,
@@ -85,7 +151,7 @@ export const useQueryPlayerOwnedGames = ({
     )
 
     const { loading, error, data, trigger } = useQuery<
-        PlayerOwnedGameResponse,
+        PlayerOwnedGameResponseOLD,
         OwnedGame[]
     >(
         () => gql`

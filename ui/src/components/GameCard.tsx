@@ -5,20 +5,31 @@ import { getRelativeTime, formatDate } from "../utilities"
 import BorderedImage from "./BorderedImage"
 import Link from "./Link"
 
-const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
+const GameCard = ({
+    player,
+    game,
+    lastPlayed,
+    completed,
+    unlockedAchievements,
+}: {
+    player: string
+    game: Game
+    lastPlayed?: string
+    completed?: string
+    unlockedAchievements?: number
+}) => {
     let completionTitle: string | undefined
 
-    if (game.completed) {
-        const completionDate = dayjs(game.completed)
+    if (completed) {
+        const completionDate = dayjs(completed)
 
-        completionTitle = `Completed: ${completionDate.format(
-            "MMM D, YYYY"
+        completionTitle = `Completed: ${formatDate(
+            completionDate
         )} (${getRelativeTime(completionDate)})`
-    } else if (game.achievementCount && game.unlockedAchievementCount) {
-        const percentage =
-            (game.unlockedAchievementCount / game.achievementCount) * 100
+    } else if (game.achievementCount && unlockedAchievements) {
+        const percentage = (unlockedAchievements / game.achievementCount) * 100
 
-        completionTitle = `Progress: ${game.unlockedAchievementCount} / ${
+        completionTitle = `Progress: ${unlockedAchievements} of ${
             game.achievementCount
         } (${percentage.toFixed(2)}%)`
     } else if (game.achievementCount) {
@@ -33,8 +44,10 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     }
 
     let lastPlayedTitle: string | undefined
-    if (game.lastPlayed) {
-        lastPlayedTitle = `Last Played: ${formatDate(game.lastPlayed)}`
+    if (lastPlayed) {
+        lastPlayedTitle = `Last Played: ${formatDate(
+            lastPlayed
+        )} (${getRelativeTime(lastPlayed)})`
     }
 
     const titleEl = useMemo(
@@ -54,7 +67,7 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
                 )}
             </>
         ),
-        [game.name, completionTitle, lastPlayedTitle, difficultyPercentageTitle]
+        [name, completionTitle, lastPlayedTitle, difficultyPercentageTitle]
     )
 
     return (
@@ -69,4 +82,4 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     )
 }
 
-export default OwnedGame
+export default GameCard
