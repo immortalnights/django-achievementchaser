@@ -48,20 +48,20 @@ export const useQueryPlayerProfileSummary = (player: string) => {
 
 export const useQueryPlayerGames = ({
     player,
-    played,
+    started,
     completed,
     orderBy,
     limit,
 }: {
     player: string
-    played?: boolean
+    started?: boolean
     completed?: boolean
     orderBy?: string
     limit?: number
 }) => {
     const queryParameters: string[] = []
-    if (played !== undefined) {
-        queryParameters.push(`played: ${boolToString(played)}`)
+    if (started !== undefined) {
+        queryParameters.push(`started: ${boolToString(started)}`)
     }
 
     if (completed != undefined) {
@@ -95,6 +95,7 @@ export const useQueryPlayerGames = ({
                         completed
                         lastPlayed
                         playtimeForever
+                        unlockedAchievementCount
                     }
                 }
             }
