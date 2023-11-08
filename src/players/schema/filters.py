@@ -5,8 +5,11 @@ from games.models import Achievement
 
 class PlayerOwnedGameOrderingFilter(OrderingFilter):
     def filter(self, qs, value):
-        if len(value) > 0 and value[0][1:] == "game__difficulty_percentage":
-            qs = qs.exclude(game__difficulty_percentage__isnull=True)
+        if len(value) > 0:
+            if value[0][1:] == "last_played":
+                qs = qs.exclude(last_played__isnull=True)
+            elif value[0][1:] == "game__difficulty_percentage":
+                qs = qs.exclude(game__difficulty_percentage__isnull=True)
 
         return OrderingFilter.filter(self, qs, value)
 
