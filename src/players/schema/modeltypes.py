@@ -28,6 +28,11 @@ class PlayerOwnedGameNode(DjangoObjectType):
         filter_fields: list[str] = []
         exclude = ["added", "updated", "resynchronized", "resynchronization_required"]
 
+    unlocked_achievement_count = graphene.Int()
+
+    def resolve_unlocked_achievement_count(root, info):
+        return PlayerUnlockedAchievement.objects.filter(player=root.player_id, game=root.game_id).count()
+
 
 class PlayerGamePlaytimeNode(DjangoObjectType):
     class Meta:
