@@ -10,13 +10,13 @@ const GameCard = ({
     game,
     lastPlayed,
     completed,
-    unlockedAchievements,
+    unlockedAchievementCount,
 }: {
     player: string
     game: Game
     lastPlayed?: string
     completed?: string
-    unlockedAchievements?: number
+    unlockedAchievementCount?: number
 }) => {
     let completionTitle: string | undefined
 
@@ -26,10 +26,11 @@ const GameCard = ({
         completionTitle = `Completed: ${formatDate(
             completionDate
         )} (${getRelativeTime(completionDate)})`
-    } else if (game.achievementCount && unlockedAchievements) {
-        const percentage = (unlockedAchievements / game.achievementCount) * 100
+    } else if (game.achievementCount && unlockedAchievementCount) {
+        const percentage =
+            (unlockedAchievementCount / game.achievementCount) * 100
 
-        completionTitle = `Progress: ${unlockedAchievements} of ${
+        completionTitle = `Progress: ${unlockedAchievementCount} of ${
             game.achievementCount
         } (${percentage.toFixed(2)}%)`
     } else if (game.achievementCount) {
