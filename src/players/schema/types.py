@@ -39,6 +39,9 @@ class PlayerOwnedGameNode(DjangoObjectType):
     unlocked_achievements = graphene.List(PlayerUnlockedAchievementNode)
     unlocked_achievement_count = graphene.Int()
 
+    def resolve_unlocked_achievements(root, info):
+        return PlayerUnlockedAchievement.objects.filter(player=root.player_id, game=root.game_id).order_by("-datetime")
+
     def resolve_unlocked_achievement_count(root, info):
         return PlayerUnlockedAchievement.objects.filter(player=root.player_id, game=root.game_id).count()
 
