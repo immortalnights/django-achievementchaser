@@ -6,32 +6,32 @@ import { getRelativeTime } from "../utilities"
 
 const UnlockedAchievementIcon = ({
     player,
-    achievement,
+    unlockedAchievement,
 }: {
     player: string
-    achievement: RecentAchievement
+    unlockedAchievement: PlayerUnlockedAchievement
 }) => {
     const title = useMemo(
         () => (
             <>
-                <Typography>{achievement.game.name}</Typography>
+                <Typography>{unlockedAchievement.game.name}</Typography>
                 <Typography fontSize="small">
-                    Achievement: {achievement.displayName}
+                    Achievement: {unlockedAchievement.achievement.displayName}
                 </Typography>
                 <Typography fontSize="small">
-                    Unlocked: {getRelativeTime(achievement.unlocked)}
+                    Unlocked: {getRelativeTime(unlockedAchievement.datetime)}
                 </Typography>
             </>
         ),
-        [achievement]
+        [unlockedAchievement]
     )
 
     return (
         <li style={{ paddingRight: 2 }}>
-            <Link to={`/Player/${player}/Game/${achievement.game.id}`}>
+            <Link to={`/Player/${player}/Game/${unlockedAchievement.game.id}`}>
                 <Tooltip title={title} arrow enterDelay={500} leaveDelay={0}>
                     <BorderedImage
-                        src={`${achievement.iconUrl}`}
+                        src={`${unlockedAchievement.achievement.iconUrl}`}
                         style={{
                             width: 32,
                             height: 32,
@@ -49,7 +49,7 @@ const RecentlyUnlockedAchievements = ({
     achievements,
 }: {
     player: string
-    achievements: RecentAchievement[]
+    achievements: PlayerUnlockedAchievement[]
 }) => {
     return (
         <ul
@@ -62,11 +62,11 @@ const RecentlyUnlockedAchievements = ({
                 alignItems: "center",
             }}
         >
-            {achievements.map((achievement) => (
+            {achievements.map((unlockedAchievement) => (
                 <UnlockedAchievementIcon
-                    key={`${achievement.game.id}-${achievement.id}`}
+                    key={`${unlockedAchievement.game.id}-${unlockedAchievement.achievement.id}`}
                     player={player}
-                    achievement={achievement}
+                    unlockedAchievement={unlockedAchievement}
                 />
             ))}
             <li>

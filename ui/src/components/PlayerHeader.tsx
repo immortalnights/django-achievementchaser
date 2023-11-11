@@ -4,7 +4,7 @@ import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import PlayerSettingsContext from "../context/PlayerSettingsContext"
-import { useQueryPlayerProfileSummary } from "../api/queries"
+import { useQueryPlayer } from "../api/queries"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
 import ExternalLink from "./ExternalLink"
@@ -124,7 +124,9 @@ const PlayerStatisticsContent = ({
                     label="Played"
                     value={
                         ownedGames && playedGames
-                            ? `${(ownedGames / playedGames).toFixed(2)}%`
+                            ? `${((playedGames / ownedGames) * 100).toFixed(
+                                  2
+                              )}%`
                             : "-"
                     }
                     title={`${playedGames ?? 0} of ${ownedGames ?? 0}`}
@@ -145,8 +147,11 @@ const PlayerStatisticsContent = ({
             <Grid lg={2} md={4} sm={4} xs={6}>
                 <MetaData
                     label="Perfect Games"
-                    value={perfectGames}
-                    title={`${(perfectGames / ownedGames).toFixed(2)}%`}
+                    value={`${perfectGames} (${(
+                        (perfectGames / ownedGames) *
+                        100
+                    ).toFixed(2)})%`}
+                    title={`${perfectGames} of ${ownedGames}`}
                     link={`/Player/${player}/PerfectGames`}
                 />
             </Grid>
@@ -165,7 +170,7 @@ const PlayerStatisticsContent = ({
 }
 
 const PlayerStatistics = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerProfileSummary(player)
+    const { loading, error, data } = useQueryPlayer({ player, profile: true })
 
     return (
         <Loader
@@ -173,7 +178,12 @@ const PlayerStatistics = ({ player }: { player: string }) => {
             error={error}
             data={data}
             renderer={(data) => {
-                return <PlayerStatisticsContent player={player} {...data} />
+                return (
+                    <PlayerStatisticsContent
+                        player={player}
+                        {...data.profile}
+                    />
+                )
             }}
         />
     )

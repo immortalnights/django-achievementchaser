@@ -1,15 +1,14 @@
-import { useParams } from "react-router-dom"
-import { throwExpression } from "../utilities"
+import { useRouteLoaderData } from "react-router-dom"
 import { useQueryPlayerAchievements } from "../api/queries"
 import Loader from "../components/Loader"
 import GameAchievementsList from "../components/GameAchievementsList"
 import { Typography } from "@mui/material"
 
 const PlayerRecentAchievements = () => {
-    const { id: player = throwExpression("missing param") } = useParams()
+    const player = useRouteLoaderData("player") as Player
+
     const { loading, error, data } = useQueryPlayerAchievements({
-        player,
-        unlocked: true,
+        player: player.id,
         limit: 24,
     })
 
@@ -23,7 +22,7 @@ const PlayerRecentAchievements = () => {
                 renderer={(data) => {
                     return (
                         <GameAchievementsList
-                            player={player}
+                            player={player.id}
                             achievements={data}
                             rows={1}
                         />

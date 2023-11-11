@@ -10,8 +10,8 @@ const RecentActivityContent = ({
     achievements,
 }: {
     player: string
-    games: RecentGame[]
-    achievements: RecentAchievement[]
+    games: PlayerOwnedGame[]
+    achievements: PlayerUnlockedAchievement[]
 }) => (
     <>
         <Typography variant="subtitle1" textTransform="uppercase">

@@ -5,18 +5,20 @@ import BorderedImage from "./BorderedImage"
 
 const RecentlyPlayedGame = ({
     player,
-    game,
+    ownedGame,
 }: {
     player: string
-    game: RecentGame
+    ownedGame: PlayerOwnedGame
 }) => {
-    const lastPlayed = getRelativeTime(game.lastPlayed)
+    const lastPlayed = ownedGame.lastPlayed
+        ? getRelativeTime(ownedGame.lastPlayed)
+        : "Never"
 
     return (
-        <Link to={`/Player/${player}/Game/${game.id}`}>
+        <Link to={`/Player/${player}/Game/${ownedGame.game.id}`}>
             <BorderedImage
-                title={`${game.name} last played ${lastPlayed}`}
-                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
+                title={`${ownedGame?.game.name} last played ${lastPlayed}`}
+                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${ownedGame.game.id}/${ownedGame.game.imgIconUrl}.jpg`}
                 style={{ display: "block" }}
             />
         </Link>
@@ -28,7 +30,7 @@ const RecentlyPlayedGames = ({
     games,
 }: {
     player: string
-    games: RecentGame[]
+    games: PlayerOwnedGame[]
 }) => (
     <ul
         style={{
@@ -40,9 +42,9 @@ const RecentlyPlayedGames = ({
             alignItems: "center",
         }}
     >
-        {games.map((game) => (
-            <li key={game.id}>
-                <RecentlyPlayedGame player={player} game={game} />
+        {games.map((ownedGame) => (
+            <li key={ownedGame.game.id}>
+                <RecentlyPlayedGame player={player} ownedGame={ownedGame} />
             </li>
         ))}
         <li>

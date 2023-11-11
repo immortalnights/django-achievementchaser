@@ -7,15 +7,19 @@ const PlayerGameAchievements = ({
     playerAchievements,
 }: {
     achievements: Achievement[]
-    playerAchievements: RecentAchievement[]
+    playerAchievements: PlayerUnlockedAchievement[]
 }) => {
     const { achievementSortOrder, hideUnlockedAchievements } = useContext(
         PlayerSettingsContext
     )
 
     const playerAchievementReferenceSort = (a: Achievement, b: Achievement) => {
-        const aIndex = playerAchievements.findIndex((item) => item.id === a.id)
-        const bIndex = playerAchievements.findIndex((item) => item.id === b.id)
+        const aIndex = playerAchievements.findIndex(
+            (item) => item.achievement.id === a.id
+        )
+        const bIndex = playerAchievements.findIndex(
+            (item) => item.achievement.id === b.id
+        )
 
         return aIndex === -1 || bIndex === -1 ? 1 : aIndex - bIndex
     }
@@ -25,7 +29,7 @@ const PlayerGameAchievements = ({
             (achievement) =>
                 !playerAchievements.find(
                     (playerAchievement) =>
-                        playerAchievement.id === achievement.id
+                        playerAchievement.achievement.id === achievement.id
                 )
         )
     }

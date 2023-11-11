@@ -6,7 +6,7 @@ export const GameCompletionProgress = ({
     playerAchievements,
 }: {
     achievements: Achievement[]
-    playerAchievements: RecentAchievement[]
+    playerAchievements: PlayerUnlockedAchievement[]
 }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         {playerAchievements.length > 0 && (

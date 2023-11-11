@@ -11,7 +11,7 @@ const playerRoutes = {
     id: "player",
     loader: async ({ params }) => {
         const { id = throwExpression("missing param") } = params
-        const document = gqlDocument.player(id)
+        const document = gqlDocument.playerDocument({ player: id })
         return request<PlayerQueryResponse>(
             "/graphql/",
             `{${String(document)}\n}`

@@ -15,42 +15,34 @@ import {
 const PlayerContainer = () => {
     const [contextState, setContextState] = useState(loadFromLocalStorage())
 
-    const toggleGameStatistics = () => {
-        setContextState((value) => ({
-            ...value,
-            hideGameStatistics: !value.hideGameStatistics,
-        }))
-    }
-
-    const addIgnoredGame = (game: string) => {
-        setContextState((value) => ({
-            ...value,
-            ignoredGames: [...value.ignoredGames, game],
-        }))
-    }
-
-    const setAchievementSortOrder = (order: AchievementSortOrder) => {
-        setContextState((value) => ({
-            ...value,
-            achievementSortOrder: order,
-        }))
-    }
-
-    const setHideUnlockedAchievements = (hide: boolean) => {
-        setContextState((value) => ({
-            ...value,
-            hideUnlockedAchievements: hide,
-        }))
-    }
-
     const contextValue = useMemo(
         () =>
             ({
                 ...contextState,
-                toggleGameStatistics,
-                addIgnoredGame,
-                setAchievementSortOrder,
-                setHideUnlockedAchievements,
+                toggleGameStatistics: () => {
+                    setContextState((value) => ({
+                        ...value,
+                        hideGameStatistics: !value.hideGameStatistics,
+                    }))
+                },
+                addIgnoredGame: (game: string) => {
+                    setContextState((value) => ({
+                        ...value,
+                        ignoredGames: [...value.ignoredGames, game],
+                    }))
+                },
+                setAchievementSortOrder: (order: AchievementSortOrder) => {
+                    setContextState((value) => ({
+                        ...value,
+                        achievementSortOrder: order,
+                    }))
+                },
+                setHideUnlockedAchievements: (hide: boolean) => {
+                    setContextState((value) => ({
+                        ...value,
+                        hideUnlockedAchievements: hide,
+                    }))
+                },
             }) satisfies PlayerSettingsContextValue,
         [contextState]
     )
@@ -59,7 +51,7 @@ const PlayerContainer = () => {
         saveToLocalStorage(contextState)
     }, [contextState])
 
-    const { player } = useLoaderData() as PlayerQueryResponse
+    const player = useLoaderData() as Player
 
     return (
         <PlayerSettingsContext.Provider value={contextValue}>

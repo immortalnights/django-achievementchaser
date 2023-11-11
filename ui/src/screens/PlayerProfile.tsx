@@ -8,7 +8,6 @@ import LoadPlayerOwnedGames from "../components/LoadPlayerOwnedGames"
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
     const { loading, error, data } = useQueryPlayerAchievements({
         player,
-        unlocked: false,
     })
 
     return (

@@ -12,6 +12,7 @@ const PlayerPerfectGames = () => {
                 player={player.id}
                 completed={true}
                 order="-completed"
+                limit={100}
             />
         </>
     )
