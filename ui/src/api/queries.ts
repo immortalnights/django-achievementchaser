@@ -45,7 +45,7 @@ export const useQueryPlayer = ({
 
 export const useQueryPlayerGames = (params: PlayerGamesQueryParameters) => {
     const { loading, error, data, trigger } = useQuery<
-        PlayerOwnedGameResponse,
+        PlayerOwnedGamesResponse,
         PlayerOwnedGame[]
     >(
         () => gqlDocument.playerGamesDocument(params),
@@ -68,11 +68,10 @@ export const userQueryPlayerGame = (params: {
 }) => {
     const { loading, error, data, trigger } = useQuery<
         PlayerOwnedGameResponse,
-        PlayerOwnedGame[]
+        PlayerOwnedGame
     >(
         () => gqlDocument.playerGameDocument(params),
-        (response) =>
-            response.player.games?.edges.map((node) => node.node) ?? []
+        (response) => response.player.game
     )
 
     useEffect(

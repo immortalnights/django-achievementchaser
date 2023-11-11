@@ -35,7 +35,7 @@ interface Achievement {
     displayName?: string
     description?: string
     iconUrl?: string
-    iconGreyUrl?: string
+    iconGrayUrl?: string
     globalPercentage?: number
     game?: Game
 }
@@ -60,6 +60,8 @@ interface PlayerOwnedGame {
     playtimeForever?: number
     completionPercentage?: number
     completed?: string
+    unlockedAchievements?: PlayerUnlockedAchievement[]
+    unlockedAchievementCount?: number
 }
 
 interface PlayerGamePlaytime {
@@ -117,19 +119,7 @@ interface PlayerFriend {
     profileUrl: string
 }
 
-interface OwnedGame {
-    id: string
-    name: string
-    imgIconUrl?: string
-    lastPlayed?: string
-    difficultyPercentage?: number
-    completionPercentage?: number
-    completed?: string
-    achievementCount?: number
-    unlockedAchievementCount?: number
-}
-
-interface PlayerOwnedGameResponse extends BaseQueryResponse {
+interface PlayerOwnedGamesResponse extends BaseQueryResponse {
     player: {
         id: string
         games?: {
@@ -139,34 +129,11 @@ interface PlayerOwnedGameResponse extends BaseQueryResponse {
         }
     }
 }
-
-interface PlayerOwnedGameResponseOLD extends BaseQueryResponse {
-    playerGames: {
-        edges?: { node: OwnedGame }[]
-        totalCount?: number
-    }
-}
-
-interface RecentAchievement {
-    id: string
-    displayName: string
-    iconUrl: string
-    iconGrayUrl: string
-    globalPercentage: number
-    unlocked: string
-    game: {
+interface PlayerOwnedGameResponse extends BaseQueryResponse {
+    player: {
         id: string
-        name: string
+        game?: PlayerOwnedGame
     }
-}
-
-interface RecentGame {
-    id: string
-    name: string
-    imgIconUrl: string
-    lastPlayed: string
-    difficultyPercentage: number
-    completionPercentage: number
 }
 
 interface TimelineResponse
@@ -181,13 +148,4 @@ interface PlayerAchievementsResponse extends BaseQueryResponse {
     playerAchievements: {
         edges: { node: RecentAchievement }[]
     }
-}
-
-interface GameOwnerInformation {
-    game: Game
-    player: Player
-    lastPlayed?: string
-    playtimeForever: number
-    completionPercentage: number
-    completed?: string
 }

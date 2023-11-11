@@ -70,6 +70,11 @@ export const playerGamesDocument = ({
         queryParameters.push(`first: ${limit}`)
     }
 
+    console.assert(
+        queryParameters.length > 0,
+        "Cannot perform game query with no parameters"
+    )
+
     return gql`
     player(id: ${player}) {
         id
@@ -103,19 +108,29 @@ export const playerGameDocument = ({
     player(id: ${player}) {
         id
         game(game: "${game}") {
-            edges {
-                node {
-                    game {
-                        name
-                        id
-                        imgIconUrl
-                        achievementCount
-                        difficultyPercentage
-                    }
-                    completed
-                    lastPlayed
-                    playtimeForever
-                    unlockedAchievements
+            game {
+                name
+                id
+                imgIconUrl
+                difficultyPercentage
+                achievements {
+                    id
+                    displayName
+                    description
+                    hidden
+                    globalPercentage
+                    iconUrl
+                    iconGrayUrl
+                }
+            }
+            completed
+            lastPlayed
+            playtimeForever
+            unlockedAchievements {
+                datetime
+                achievement {
+                    id
+                    displayName
                 }
             }
         }
@@ -273,20 +288,6 @@ game(id: ${game}) {
 }`
 }
 
-// export const playerGame = (player: string, game: string) => gql`
-// playerGame(id: ${player}, gameId: ${game}) {
-//     id
-//     completionPercentage
-//     playtimeForever
-//     last_played
-// }
-// playerAchievementsForGame(
-//     id: ${player}, gameId: ${game}, orderBy: "globalPercentage DESC"
-// ) {
-//     id
-//     unlocked
-// }`
-
 export const search = (name: string) => gql`
 searchPlayersAndGames(name: "${name}") {
     ... on PlayerType {
@@ -304,10 +305,9 @@ searchPlayersAndGames(name: "${name}") {
 
 export default {
     playerDocument,
+    playerGameDocument,
     playerGamesDocument,
     playerAchievementsDocument,
     game,
-    // gameAchievements,
-    // gameOwners,
     search,
 }
