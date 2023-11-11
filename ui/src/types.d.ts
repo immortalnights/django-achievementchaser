@@ -48,7 +48,7 @@ interface Player {
     avatarMediumUrl?: string
     avatarLargeUrl?: string
     profile?: PlayerProfile
-    games?: Connection<Game>
+    games?: Connection<PlayerOwnedGame>
     unlockedAchievements?: Connection<PlayerUnlockedAchievement>
     availableAchievements?: Connection<Achievement>
 }
