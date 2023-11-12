@@ -136,7 +136,7 @@ export const playerGameDocument = ({
         }
     }`
 
-export interface PlayerAchievementsQueryParameters {
+export interface PlayerUnlockedAchievementsQueryParameters {
     player: string
     game?: string
     year?: number
@@ -144,13 +144,13 @@ export interface PlayerAchievementsQueryParameters {
     limit?: number
 }
 
-export const playerAchievementsDocument = ({
+export const playerUnlockedAchievementsDocument = ({
     player,
     game,
     year,
     orderBy,
     limit,
-}: PlayerAchievementsQueryParameters) => {
+}: PlayerUnlockedAchievementsQueryParameters) => {
     const queryParameters: string[] = []
     if (game !== undefined) {
         queryParameters.push(`game: ${game}`)
@@ -175,6 +175,7 @@ export const playerAchievementsDocument = ({
             edges {
                 node {
                     id
+                    datetime
                     game {
                         id
                         name
@@ -184,6 +185,7 @@ export const playerAchievementsDocument = ({
                         id
                         displayName
                         iconUrl
+                        iconGrayUrl
                     }
                 }
             }
@@ -191,59 +193,50 @@ export const playerAchievementsDocument = ({
     }`
 }
 
-// export const recentGames = (player: string) => gql`
-// playerGames(id: ${player}, played: true, orderBy: "lastPlayed DESC", limit: 6) {
-//     edges {
-//         node {
-//             id
-//             name
-//             imgIconUrl
-//             lastPlayed
-//         }
-//     }
-// }`
+export interface PlayerAvailableAchievementsQueryParameters {
+    player: string
+    orderBy?: string
+    limit?: number
+}
 
-// export const recentAchievements = (
-//     player: string,
-//     unlocked: boolean,
-//     limit: number
-// ) => gql`
-// playerAchievements(
-//     id: ${player}
-//     unlocked: ${boolToString(unlocked)}
-//     limit: ${limit}
-// ) {
-//     edges {
-//         node {
-//             id
-//             displayName
-//             iconUrl,
-//             iconGrayUrl,
-//             globalPercentage
-//             unlocked
-//             game {
-//                 id
-//                 name
-//                 difficultyPercentage
-//                 achievementCount
-//             }
-//         }
-//     }
-// }`
+export const playerAvailableAchievementsDocument = ({
+    player,
+    orderBy = "global_percentage",
+    limit,
+}: PlayerAvailableAchievementsQueryParameters) => {
+    const queryParameters: string[] = []
 
-// export const timelineAchievements = (player: string, year: number) => gql`
-// playerAchievements(
-//     id: ${player}
-//     unlocked: true
-//     year: ${year}
-// ) {
-//     edges {
-//         node {
-//             id
-//             unlocked
-//         }
-//     }
-// }`
+    if (orderBy !== undefined) {
+        queryParameters.push(`orderBy: "${orderBy}"`)
+    }
+
+    if (limit !== undefined) {
+        queryParameters.push(`first: ${limit}`)
+    }
+
+    return gql`
+    player(id: ${player}) {
+        id
+        availableAchievements(${queryParameters.join(", ")}) {
+            edges {
+                node {
+                    id
+                    displayName
+                    description
+                    globalPercentage
+                    iconGrayUrl
+                    game {
+                        id
+                        name
+                        imgIconUrl
+                        difficultyPercentage
+                        achievementCount
+                    }
+                }
+            }
+        }
+    }`
+}
 
 export const game = (
     game: string,
@@ -266,15 +259,19 @@ export const game = (
     }`
 
     const owners = gql`owners {
-        player {
-            id
-            name
-            avatarSmallUrl
+        edges {
+            node {
+                player {
+                    id
+                    name
+                    avatarSmallUrl
+                }
+                lastPlayed
+                playtimeForever
+                completionPercentage
+                completed
+            }
         }
-        lastPlayed
-        playtimeForever
-        completionPercentage
-        completed
     }`
 
     return gql`
@@ -307,7 +304,8 @@ export default {
     playerDocument,
     playerGameDocument,
     playerGamesDocument,
-    playerAchievementsDocument,
+    playerUnlockedAchievementsDocument,
+    playerAvailableAchievementsDocument,
     game,
     search,
 }
