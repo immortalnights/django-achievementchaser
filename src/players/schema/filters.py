@@ -3,13 +3,27 @@ from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Achievement
 
 
+def filter_name_matches(key: [str], name: str):
+    first_key = key[0]
+    return first_key == name or first_key[1:] == name
+
+
 class PlayerOwnedGameOrderingFilter(OrderingFilter):
     def filter(self, qs, value):
         if value and len(value) > 0:
-            if value[0][1:] == "last_played":
+            if filter_name_matches(value, "last_played"):
                 qs = qs.exclude(last_played__isnull=True)
-            elif value[0][1:] == "game__difficulty_percentage":
+            elif filter_name_matches(value, "game__difficulty_percentage"):
                 qs = qs.exclude(game__difficulty_percentage__isnull=True)
+
+        return OrderingFilter.filter(self, qs, value)
+
+
+class AchievementOrderingFilter(OrderingFilter):
+    def filter(self, qs, value):
+        if value and len(value) > 0:
+            if filter_name_matches(value, "global_percentage"):
+                qs = qs.exclude(global_percentage=0.0)
 
         return OrderingFilter.filter(self, qs, value)
 
@@ -79,6 +93,7 @@ class PlayerAvailableAchievementFilter(FilterSet):
         fields: list[str] = []
 
     game = GameFilter()
+    order_by = AchievementOrderingFilter(fields=("global_percentage",))
 
 
 class PlayerOwnedGameFilter(FilterSet):
