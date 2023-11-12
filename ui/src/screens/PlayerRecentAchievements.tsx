@@ -1,13 +1,12 @@
 import { useRouteLoaderData } from "react-router-dom"
-import { useQueryPlayerAchievements } from "../api/queries"
+import { useQueryUnlockedPlayerAchievements } from "../api/queries"
 import Loader from "../components/Loader"
-import GameAchievementsList from "../components/GameAchievementsList"
+import GameGroupedAchievements from "../components/GameGroupedAchievements"
 import { Typography } from "@mui/material"
 
 const PlayerRecentAchievements = () => {
     const player = useRouteLoaderData("player") as Player
-
-    const { loading, error, data } = useQueryPlayerAchievements({
+    const { loading, error, data } = useQueryUnlockedPlayerAchievements({
         player: player.id,
         limit: 24,
     })
@@ -21,7 +20,7 @@ const PlayerRecentAchievements = () => {
                 data={data}
                 renderer={(data) => {
                     return (
-                        <GameAchievementsList
+                        <GameGroupedAchievements
                             player={player.id}
                             achievements={data}
                             rows={1}

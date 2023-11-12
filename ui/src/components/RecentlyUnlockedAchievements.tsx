@@ -70,7 +70,7 @@ const RecentlyUnlockedAchievements = ({
                 />
             ))}
             <li>
-                <Link to={`/Player/${player}/recentachievements`}>
+                <Link to={`/Player/${player}/RecentAchievements`}>
                     <Typography fontSize={"small"}>more...</Typography>
                 </Link>
             </li>

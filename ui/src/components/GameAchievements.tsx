@@ -1,5 +1,4 @@
 import { Typography } from "@mui/material"
-import Loader from "./Loader"
 
 const AchievementItem = ({
     displayName,
@@ -57,7 +56,7 @@ const GameAchievements = ({ game }: { game: Game }) => {
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {game.achievements?.length &&
                 game.achievements.map((achievement) => (
-                    <AchievementItem key={achievement.name} {...achievement} />
+                    <AchievementItem key={achievement.id} {...achievement} />
                 ))}
         </ul>
     )

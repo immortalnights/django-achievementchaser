@@ -10,20 +10,28 @@ import { duration, formatDate, getRelativeTime } from "../utilities"
 import BorderedImage from "./BorderedImage"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
 import Link from "./Link"
+import { unwrapEdges } from "../api/queries"
 
 const GameOwnerInformation = ({
-    player,
     game,
-    lastPlayed,
-    playtimeForever,
-    completionPercentage,
-    completed,
-}: GameOwnerInformation) => {
+    ownedGame,
+}: {
+    game: Game
+    ownedGame: PlayerOwnedGame
+}) => {
+    const {
+        player,
+        completed,
+        completionPercentage,
+        lastPlayed,
+        playtimeForever,
+    } = ownedGame
+
     return (
         <TableRow>
             <TableCell>
                 <Link
-                    to={`/Player/${player.id}/Game/${game.id}`}
+                    to={`/Player/${player?.id}/Game/${game.id}`}
                     variant="subtitle1"
                 >
                     <Box
@@ -34,19 +42,20 @@ const GameOwnerInformation = ({
                         }}
                     >
                         <BorderedImage
-                            src={player.avatarSmallUrl}
+                            src={player?.avatarSmallUrl}
                             style={{ marginRight: 6 }}
                         />
-                        <span>{player.name}</span>
+                        <span>{player?.name}</span>
                     </Box>
                 </Link>
             </TableCell>
             <TableCell align="center">
-                {game.achievementCount > 0 && (
-                    <CircularProgressWithLabel
-                        value={completionPercentage * 100}
-                    />
-                )}
+                {game.achievementCount > 0 &&
+                    completionPercentage !== undefined && (
+                        <CircularProgressWithLabel
+                            value={completionPercentage * 100}
+                        />
+                    )}
             </TableCell>
             <TableCell>
                 {lastPlayed ? (
@@ -67,7 +76,7 @@ const GameOwnerInformation = ({
                 )}
             </TableCell>
             <TableCell>
-                {playtimeForever > 0
+                {playtimeForever && playtimeForever > 0
                     ? `${duration(playtimeForever).asHours().toFixed(1)} hours`
                     : "None"}
             </TableCell>
@@ -76,7 +85,7 @@ const GameOwnerInformation = ({
 }
 
 const GameOwners = ({ game }: { game: Game }) => {
-    const owners = game.owners ?? []
+    const owners = unwrapEdges(game.owners)
 
     return (
         <Table size="small" sx={{ width: "100%" }}>
@@ -91,11 +100,11 @@ const GameOwners = ({ game }: { game: Game }) => {
             </TableHead>
             <TableBody>
                 {owners.length > 0 ? (
-                    owners.map((owner) => (
+                    owners.map((ownedGame) => (
                         <GameOwnerInformation
-                            key={owner.player.id}
+                            key={ownedGame?.player?.id}
                             game={game}
-                            {...owner}
+                            ownedGame={ownedGame}
                         />
                     ))
                 ) : (

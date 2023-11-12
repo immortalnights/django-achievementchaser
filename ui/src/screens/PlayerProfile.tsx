@@ -1,13 +1,14 @@
 import { useRouteLoaderData } from "react-router-dom"
 import { Typography } from "@mui/material"
-import { useQueryPlayerAchievements } from "../api/queries"
+import { useQueryPlayerAvailableAchievements } from "../api/queries"
 import Loader from "../components/Loader"
-import GameAchievementsList from "../components/GameAchievementsList"
+import GameGroupedAchievements from "../components/GameGroupedAchievements"
 import LoadPlayerOwnedGames from "../components/LoadPlayerOwnedGames"
 
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerAchievements({
+    const { loading, error, data } = useQueryPlayerAvailableAchievements({
         player,
+        limit: 36,
     })
 
     return (
@@ -17,10 +18,11 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
             data={data}
             renderer={(data) => {
                 return (
-                    <GameAchievementsList
+                    <GameGroupedAchievements
                         player={player}
                         achievements={data}
                         rows={3}
+                        maxAchievements={2}
                     />
                 )
             }}
