@@ -1,4 +1,4 @@
-import { RouteObject, createHashRouter, useLoaderData } from "react-router-dom"
+import { RouteObject, createHashRouter } from "react-router-dom"
 import { request } from "graphql-request"
 import gqlDocument from "./api/graphql-documents"
 import App from "./App"

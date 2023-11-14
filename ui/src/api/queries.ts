@@ -62,7 +62,7 @@ export const useQueryPlayerGames = (params: PlayerGamesQueryParameters) => {
     return { loading, error, data }
 }
 
-export const userQueryPlayerGame = (params: {
+export const useQueryPlayerGame = (params: {
     player: string
     game: string
 }) => {
