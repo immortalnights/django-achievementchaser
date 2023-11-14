@@ -96,7 +96,7 @@ const GameGroupedAchievements = ({
 }) => {
     const groupedAchievements = useMemo(
         () => groupAchievements(achievements, maxAchievements),
-        [achievements]
+        [achievements, maxAchievements]
     )
 
     return (

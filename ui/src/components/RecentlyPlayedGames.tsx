@@ -13,11 +13,12 @@ const RecentlyPlayedGame = ({
     const lastPlayed = ownedGame.lastPlayed
         ? getRelativeTime(ownedGame.lastPlayed)
         : "Never"
+    const gameName = ownedGame?.game.name ?? ""
 
     return (
         <Link to={`/Player/${player}/Game/${ownedGame.game.id}`}>
             <BorderedImage
-                title={`${ownedGame?.game.name} last played ${lastPlayed}`}
+                title={`${gameName} last played ${lastPlayed}`}
                 src={`http://media.steampowered.com/steamcommunity/public/images/apps/${ownedGame.game.id}/${ownedGame.game.imgIconUrl}.jpg`}
                 style={{ display: "block" }}
             />

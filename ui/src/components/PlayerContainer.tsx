@@ -55,7 +55,7 @@ const PlayerContainer = () => {
 
     return (
         <PlayerSettingsContext.Provider value={contextValue}>
-            <PlayerProfileHeader {...player!} />
+            <PlayerProfileHeader {...player} />
             <Paper elevation={0}>
                 <Box>
                     <Outlet />

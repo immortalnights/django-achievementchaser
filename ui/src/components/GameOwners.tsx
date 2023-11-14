@@ -31,7 +31,7 @@ const GameOwnerInformation = ({
         <TableRow>
             <TableCell>
                 <Link
-                    to={`/Player/${player?.id}/Game/${game.id}`}
+                    to={`/Player/${player?.id ?? ""}/Game/${game.id}`}
                     variant="subtitle1"
                 >
                     <Box

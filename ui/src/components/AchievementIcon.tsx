@@ -29,7 +29,6 @@ const AchievementTitle = ({
 }
 
 const AchievementIcon = ({
-    game,
     achievement,
     unlockedDatetime,
 }: {

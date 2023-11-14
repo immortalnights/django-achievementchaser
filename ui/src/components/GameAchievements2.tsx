@@ -101,7 +101,7 @@ const GameAchievements = ({
 
             return (
                 <AchievementItem
-                    key={achievement.name}
+                    key={achievement.id}
                     achievement={achievement}
                     unlocked={playerAchievement?.datetime}
                 />

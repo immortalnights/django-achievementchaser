@@ -11,7 +11,7 @@ const PlayerOwnedGames = ({
     return (
         <FlexWrappedList>
             {ownedGames.map((ownedGame) => (
-                <li key={ownedGame.game!.id}>
+                <li key={ownedGame.game.id}>
                     <GameCard
                         {...ownedGame}
                         {...ownedGame.game}

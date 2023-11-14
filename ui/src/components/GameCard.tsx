@@ -68,7 +68,7 @@ const GameCard = ({
                 )}
             </>
         ),
-        [name, completionTitle, lastPlayedTitle, difficultyPercentageTitle]
+        [game.name, completionTitle, lastPlayedTitle, difficultyPercentageTitle]
     )
 
     return (
