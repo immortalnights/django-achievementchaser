@@ -8,6 +8,8 @@
         "build": "tsc && vite build",
         "start": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://$BACKEND_HOSTNAME:$BACKEND_PORT",
         "start-test": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://127.0.0.1:8000 --push-state",
+        "test": "vitest",
+        "test:watch": "vitest --watch",
         "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
         "check": "tsc",
         "preview": "vite preview"
@@ -38,6 +40,7 @@
         "eslint-plugin-react-refresh": "^0.4.1",
         "prettier": "^3.0.0",
         "typescript": "^5.0.2",
-        "vite": "^4.4.0"
+        "vite": "^4.4.0",
+        "vitest": "^0.34.6"
     }
 }
