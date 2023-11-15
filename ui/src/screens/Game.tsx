@@ -4,9 +4,9 @@ import { useLoaderData } from "react-router-dom"
 import GameAchievements from "../components/GameAchievements"
 
 const GameScreen = () => {
-    const { game, errors } = useLoaderData() as GameQueryResponse
+    const game = useLoaderData() as Game
 
-    if (!game || (errors && errors.length > 0)) {
+    if (!game) {
         throw "Failed to load game"
     }
 

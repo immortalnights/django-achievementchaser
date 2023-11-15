@@ -5,17 +5,20 @@ import App from "./App"
 import { Home, Game, SearchResults } from "./screens"
 import PlayerContainer from "./components/PlayerContainer"
 import { throwExpression } from "./utilities"
+import { client } from "./api/client"
+import { player, gameComplete } from "./api/documents"
 
 const playerRoutes = {
     path: "/Player/*",
     id: "player",
     loader: async ({ params }) => {
         const { id = throwExpression("missing param") } = params
-        const document = gqlDocument.playerDocument({ player: id })
-        return request<PlayerQueryResponse>(
-            "/graphql/",
-            `{${String(document)}\n}`
-        ).then((response) => response.player)
+
+        const { data } = await client!.request<PlayerQueryResponse>({
+            query: player,
+            variables: { player: id },
+        })
+        return data?.player
     },
     Component: PlayerContainer,
     children: [
@@ -80,14 +83,13 @@ const router = createHashRouter([
                 path: "/Game/:id",
                 loader: async ({ params }) => {
                     const { id = throwExpression("missing param") } = params
-                    const document = gqlDocument.game(id, {
-                        includeAchievements: true,
-                        includeOwners: true,
+
+                    const { data } = await client!.request<GameQueryResponse>({
+                        query: gameComplete,
+                        variables: { game: Number(id) },
                     })
-                    return request<GameQueryResponse>(
-                        "/graphql/",
-                        `{${String(document)}\n}`
-                    )
+
+                    return data?.game
                 },
                 Component: Game,
             },
