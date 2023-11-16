@@ -2,8 +2,8 @@ name: 🏗️ Build
 
 on:
   push:
-  pull_request:
     branches: ["main"]
+  pull_request:
   workflow_dispatch:
 
 jobs:
