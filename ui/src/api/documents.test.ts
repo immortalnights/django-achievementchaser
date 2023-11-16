@@ -97,11 +97,11 @@ test("player games query", async () => {
         localQueries: {
             [playerGames]: ({
                 player,
-                started,
-                completed,
-                year,
-                orderBy,
-                limit,
+                // started,
+                // completed,
+                // year,
+                // orderBy,
+                // limit,
             }) => ({
                 data: {
                     player: {

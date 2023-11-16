@@ -273,7 +273,7 @@ const Timeline = ({ player }: { player: string }) => {
                     cursor: unlockedAchievements?.pageInfo?.endCursor ?? "",
                 },
                 updateData: updateUnlockedAchievementData,
-            })
+            }).catch(() => console.error("Refetch failed"))
         }
     }, [player, selectedYear, unlockedAchievementResponse])
 

@@ -24,7 +24,7 @@ const HomeScreen = () => {
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault()
-        submitPlayer()
+        submitPlayer().catch(() => console.error("Submission failed"))
     }
 
     return (
