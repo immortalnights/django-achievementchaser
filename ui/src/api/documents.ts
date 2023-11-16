@@ -7,6 +7,16 @@ export const players = gql`query Players() {
     }
 }`
 
+export const searchPlayers = gql`
+    query Search($name: String!) {
+        player(name: $name) {
+            id
+            name
+            avatarMediumUrl
+        }
+    }
+`
+
 export const player = gql`
     query PlayerProfile($player: BigInt!) {
         player(id: $player) {
@@ -18,22 +28,24 @@ export const player = gql`
     }
 `
 
-export const playerProfile = gql`query PlayerProfile(player: BigInt!) {
-    player(id: $player) {
-        id
-        name
-        avatarLargeUrl
-        profileUrl
-        profile {
-            ownedGames
-            perfectGames
-            playedGames
-            totalPlaytime
-            lockedAchievements
-            unlockedAchievements
+export const playerProfile = gql`
+    query PlayerProfile($player: BigInt!) {
+        player(id: $player) {
+            id
+            name
+            avatarLargeUrl
+            profileUrl
+            profile {
+                ownedGames
+                perfectGames
+                playedGames
+                totalPlaytime
+                lockedAchievements
+                unlockedAchievements
+            }
         }
     }
-}`
+`
 
 export const playerGames = gql`
     query PlayerGames(
@@ -42,7 +54,7 @@ export const playerGames = gql`
         $completed: Boolean
         $year: Decimal
         $orderBy: String
-        $limit: Number
+        $limit: Int
     ) {
         player(id: $player) {
             id
@@ -73,90 +85,92 @@ export const playerGames = gql`
     }
 `
 
-export const playerGame = gql`query PlayerGame(
-    player: BigInt!
-    game: String!
-) {
-    player(id: $player) {
-        id
-        game(game: $game) {
-            game {
-                name
-                id
-                imgIconUrl
-                difficultyPercentage
-                achievements {
+export const playerGame = gql`
+    query PlayerGame($player: BigInt!, $game: String!) {
+        player(id: $player) {
+            id
+            game(game: $game) {
+                game {
+                    name
                     id
-                    displayName
-                    description
-                    hidden
-                    globalPercentage
-                    iconUrl
-                    iconGrayUrl
-                }
-            }
-            completed
-            lastPlayed
-            playtimeForever
-            unlockedAchievements {
-                datetime
-                achievement {
-                    id
-                    displayName
-                }
-            }
-        }
-    }
-}`
-
-export const playerUnlockedAchievements = gql`query PlayerUnlockedAchievements(
-    player: BigInt!,
-    game: String,
-    year: Decimal,
-    orderBy: String,
-    limit: Numeric,
-) {
-    player(id: $player) {
-        id
-        unlockedAchievements(
-            game: $game,
-            year: $year,
-            orderBy: $orderBy,
-            first: $limit,
-            after: $cursor,
-        ) {
-            pageInfo {
-                hasNextPage
-                hasPreviousPage
-                endCursor
-                startCursor
-            }
-            edges {
-                node {
-                    id
-                    datetime
-                    game {
-                        id
-                        name
-                        imgIconUrl
-                    }
-                    achievement {
+                    imgIconUrl
+                    difficultyPercentage
+                    achievements {
                         id
                         displayName
+                        description
+                        hidden
+                        globalPercentage
                         iconUrl
                         iconGrayUrl
                     }
                 }
+                completed
+                lastPlayed
+                playtimeForever
+                unlockedAchievements {
+                    datetime
+                    achievement {
+                        id
+                        displayName
+                    }
+                }
             }
         }
     }
-}`
+`
+
+export const playerUnlockedAchievements = gql`
+    query PlayerUnlockedAchievements(
+        $player: BigInt!
+        $game: Decimal
+        $year: Decimal
+        $orderBy: String
+        $limit: Int
+        $cursor: String
+    ) {
+        player(id: $player) {
+            id
+            unlockedAchievements(
+                game: $game
+                year: $year
+                orderBy: $orderBy
+                first: $limit
+                after: $cursor
+            ) {
+                pageInfo {
+                    hasNextPage
+                    hasPreviousPage
+                    endCursor
+                    startCursor
+                }
+                edges {
+                    node {
+                        id
+                        datetime
+                        game {
+                            id
+                            name
+                            imgIconUrl
+                        }
+                        achievement {
+                            id
+                            displayName
+                            iconUrl
+                            iconGrayUrl
+                        }
+                    }
+                }
+            }
+        }
+    }
+`
 
 export const playerAvailableAchievements = gql`
     query PlayerAvailableAchievements(
         $player: BigInt!
         $orderBy: String
-        $limit: Number
+        $limit: Int
     ) {
         player(id: $player) {
             id
@@ -227,17 +241,19 @@ export const gameComplete = gql`
     }
 `
 
-export const search = gql`query Search(name: String!) {
-    searchPlayersAndGames(name: $name) {
-        ... on PlayerType {
-            id
-            name
-            avatarMediumUrl
-        }
-        ... on GameType {
-            id
-            name
-            imgIconUrl
+export const search = gql`
+    query Search($name: String!) {
+        searchPlayersAndGames(name: $name) {
+            ... on PlayerType {
+                id
+                name
+                avatarMediumUrl
+            }
+            ... on GameType {
+                id
+                name
+                imgIconUrl
+            }
         }
     }
-}`
+`
