@@ -24,7 +24,9 @@ test("players query", async () => {
         },
     })
 
-    const { data, error } = await client.request({ query: players })
+    const { data, error } = await client.request<PlayerQueryResponse>({
+        query: players,
+    })
     expect(data).toEqual(playersResponseData)
     expect(error).toBeUndefined()
 })
@@ -43,7 +45,7 @@ test("player query", async () => {
         },
     })
 
-    const { data, error } = await client.request({
+    const { data, error } = await client.request<PlayerQueryResponse>({
         query: player,
         variables: { player: 1 },
     })
@@ -81,7 +83,7 @@ test("player query error", async () => {
         },
     })
 
-    const { data, error } = await client.request({
+    const { data, error } = await client.request<PlayerQueryResponse>({
         query: player,
         variables: { player: 1 },
     })
@@ -120,7 +122,7 @@ test("player games query", async () => {
         },
     })
 
-    const { data, error } = await client.request({
+    const { data, error } = await client.request<PlayerQueryResponse>({
         query: playerGames,
         variables: {
             player: 1,

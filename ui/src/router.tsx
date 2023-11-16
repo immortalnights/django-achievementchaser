@@ -12,7 +12,7 @@ const playerRoutes = {
     loader: async ({ params }) => {
         const { id = throwExpression("missing param") } = params
 
-        const { data } = await client!.request<PlayerQueryResponse>({
+        const { data } = await client.request<PlayerQueryResponse>({
             query: player,
             variables: { player: id },
         })
@@ -82,7 +82,7 @@ const router = createHashRouter([
                 loader: async ({ params }) => {
                     const { id = throwExpression("missing param") } = params
 
-                    const { data } = await client!.request<GameQueryResponse>({
+                    const { data } = await client.request<GameQueryResponse>({
                         query: gameComplete,
                         variables: { game: Number(id) },
                     })
@@ -95,12 +95,10 @@ const router = createHashRouter([
                 path: "/Search/:name",
                 loader: async ({ params }) => {
                     const { name = "" } = params
-                    const { data } = await client!.request<SearchQueryResponse>(
-                        {
-                            query: search,
-                            variables: { name },
-                        }
-                    )
+                    const { data } = await client.request<SearchQueryResponse>({
+                        query: search,
+                        variables: { name },
+                    })
                     return data?.searchPlayersAndGames
                 },
                 Component: SearchResults,

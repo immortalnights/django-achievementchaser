@@ -275,7 +275,7 @@ const Timeline = ({ player }: { player: string }) => {
                 updateData: updateUnlockedAchievementData,
             })
         }
-    }, [unlockedAchievementResponse])
+    }, [player, selectedYear, unlockedAchievementResponse])
 
     const perfectGames: PlayerOwnedGame[] = unwrapEdges(
         gamesResponse?.player?.games

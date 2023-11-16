@@ -40,7 +40,7 @@ const PlayerProfileScreen = () => {
 
     return (
         <>
-            {/* <Typography variant="h5">Almost There</Typography>
+            <Typography variant="h5">Almost There</Typography>
             <LoadPlayerOwnedGames
                 player={player.id}
                 completed={false}
@@ -62,7 +62,7 @@ const PlayerProfileScreen = () => {
             />
 
             <Typography variant="h5">Next Achievement</Typography>
-            <PlayerGameAchievementList player={player.id} /> */}
+            <PlayerGameAchievementList player={player.id} />
         </>
     )
 }
