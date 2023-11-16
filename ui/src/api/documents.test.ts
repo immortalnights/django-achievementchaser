@@ -24,11 +24,11 @@ test("players query", async () => {
         },
     })
 
-    const { data, error } = await client.request<PlayerQueryResponse>({
+    const resp = await client.request<PlayerQueryResponse>({
         query: players,
     })
-    expect(data).toEqual(playersResponseData)
-    expect(error).toBeUndefined()
+    expect(resp.data).toEqual(playersResponseData)
+    expect(resp.error).toBeUndefined()
 })
 
 test("player query", async () => {
@@ -45,11 +45,11 @@ test("player query", async () => {
         },
     })
 
-    const { data, error } = await client.request<PlayerQueryResponse>({
+    const resp = await client.request<PlayerQueryResponse>({
         query: player,
         variables: { player: 1 },
     })
-    expect(data).toEqual({
+    expect(resp.data).toEqual({
         data: {
             player: {
                 id: "1",
@@ -57,13 +57,13 @@ test("player query", async () => {
             },
         },
     })
-    expect(error).toBeUndefined()
+    expect(resp.error).toBeUndefined()
 })
 
 test("player query error", async () => {
     const client = new LocalGraphQLClient({
         localQueries: {
-            [player]: ({ player }) => ({
+            [player]: ({ player }: { player: string }) => ({
                 errors: [
                     {
                         message: `Could not find Player with id '${player}' or name 'None'`,
@@ -83,13 +83,12 @@ test("player query error", async () => {
         },
     })
 
-    const { data, error } = await client.request<PlayerQueryResponse>({
+    const resp = await client.request<PlayerQueryResponse>({
         query: player,
         variables: { player: 1 },
     })
-    console.log(data, error)
-    expect(data.data.player).toBeNull()
-    expect(error).toBeUndefined()
+    expect((resp.data as PlayerQueryResponse).player).toBeNull()
+    expect(resp.error).toBeUndefined()
 })
 
 test("player games query", async () => {
@@ -122,7 +121,7 @@ test("player games query", async () => {
         },
     })
 
-    const { data, error } = await client.request<PlayerQueryResponse>({
+    const resp = await client.request<PlayerQueryResponse>({
         query: playerGames,
         variables: {
             player: 1,
@@ -133,7 +132,7 @@ test("player games query", async () => {
             limit: 10,
         },
     })
-    expect(data).toEqual({
+    expect(resp.data).toEqual({
         data: {
             player: {
                 id: "1",
@@ -150,5 +149,5 @@ test("player games query", async () => {
             },
         },
     })
-    expect(error).toBeUndefined()
+    expect(resp.error).toBeUndefined()
 })

@@ -247,6 +247,7 @@ const Timeline = ({ player }: { player: string }) => {
     const { data: gamesResponse } = useQuery<PlayerQueryResponse>(playerGames, {
         variables: { player, complete: true, year: selectedYear },
     })
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const { data: unlockedAchievementResponse, refetch } =
         useQuery<PlayerQueryResponse>(playerUnlockedAchievements, {
             variables: {
@@ -275,7 +276,7 @@ const Timeline = ({ player }: { player: string }) => {
                 updateData: updateUnlockedAchievementData,
             }).catch(() => console.error("Refetch failed"))
         }
-    }, [player, selectedYear, unlockedAchievementResponse])
+    }, [player, selectedYear, unlockedAchievementResponse, refetch])
 
     const perfectGames: PlayerOwnedGame[] = unwrapEdges(
         gamesResponse?.player?.games
