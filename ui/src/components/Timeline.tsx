@@ -1,17 +1,21 @@
-import { ChangeEvent, useMemo, useCallback, useState } from "react"
+import { ChangeEvent, useMemo, useCallback, useState, useEffect } from "react"
 import dayjs from "dayjs"
-import { InputLabel, NativeSelect } from "@mui/material"
-import { useQueryPlayerTimeline } from "../api/queries"
+import { Box, InputLabel, NativeSelect } from "@mui/material"
+import { unwrapEdges, updateUnlockedAchievementData } from "../api/utils"
 import { formatDate } from "../utilities"
+import {
+    VideogameAssetTwoTone,
+    WorkspacePremiumTwoTone,
+} from "@mui/icons-material"
+import { useQuery } from "graphql-hooks"
+import { playerGames, playerUnlockedAchievements } from "../api/documents"
 
 const YearSelector = ({
     selected,
     onChange,
-    total,
 }: {
     selected: number
     onChange: (year: number) => void
-    total: number
 }) => {
     const startYear = 2008
     const endYear = dayjs().year()
@@ -28,45 +32,76 @@ const YearSelector = ({
         <div
             style={{
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "flex-end",
                 alignItems: "center",
             }}
         >
-            <div style={{ marginLeft: 5 }}>Jan</div>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
+            <InputLabel
+                variant="standard"
+                htmlFor="year-select"
+                style={{ marginRight: 10 }}
+            >
+                Year
+            </InputLabel>
+            <NativeSelect
+                defaultValue={selected.toFixed(0)}
+                onChange={handleChange}
+                inputProps={{
+                    name: "year",
+                    id: "year-select",
                 }}
             >
-                <InputLabel
-                    variant="standard"
-                    htmlFor="year-select"
-                    style={{ marginRight: 10 }}
-                >
-                    Year
-                </InputLabel>
-                <NativeSelect
-                    defaultValue={selected.toFixed(0)}
-                    onChange={handleChange}
-                    inputProps={{
-                        name: "year",
-                        id: "year-select",
-                    }}
-                >
-                    {years.map((year) => (
-                        <option key={year} value={year.toFixed(0)}>
-                            {year}
-                        </option>
-                    ))}
-                </NativeSelect>
-                <div style={{ marginLeft: 10 }}>
-                    {total.toFixed(0).padStart(3, "0")} Total
-                </div>
-            </div>
-            <div style={{ marginRight: 10 }}>Dec</div>
+                {years.map((year) => (
+                    <option key={year} value={year.toFixed(0)}>
+                        {year}
+                    </option>
+                ))}
+            </NativeSelect>
         </div>
+    )
+}
+
+const CalendarHeader = ({
+    year,
+    onChangeYear,
+    totalPerfectGames = 0,
+    totalUnlockedAchievements = 0,
+}: {
+    year: number
+    onChangeYear: (value: number) => void
+    totalPerfectGames?: number
+    totalUnlockedAchievements?: number
+}) => {
+    return (
+        <Box display="flex" sx={{ userSelect: "none" }}>
+            <div style={{ marginLeft: 5 }}>Jan</div>
+
+            <YearSelector
+                selected={year}
+                onChange={(year) => onChangeYear(year)}
+            />
+            <Box
+                display="flex"
+                alignItems="center"
+                marginX={2}
+                title="Perfect Games"
+                minWidth={60}
+            >
+                <VideogameAssetTwoTone sx={{ marginRight: "4px" }} />
+                {totalPerfectGames.toFixed(0).padStart(2, "0") || "00"}
+            </Box>
+            <Box
+                display="flex"
+                alignItems="center"
+                marginX={2}
+                title="Unlocked Achievements"
+                minWidth={60}
+            >
+                <WorkspacePremiumTwoTone />
+                {totalUnlockedAchievements.toFixed(0).padStart(2, "0") || "00"}
+            </Box>
+            <div style={{ marginRight: 10 }}>Dec</div>
+        </Box>
     )
 }
 
@@ -76,8 +111,8 @@ const Calendar = ({
     achievements,
 }: {
     year: number
-    perfectGames: OwnedGame[]
-    achievements: RecentAchievement[]
+    perfectGames: PlayerOwnedGame[]
+    achievements: PlayerUnlockedAchievement[]
 }) => {
     const yearDate = dayjs(`01-01-${year}`)
 
@@ -85,7 +120,7 @@ const Calendar = ({
     const unlockedAchievementIndex = useMemo(() => {
         const index: { [key: string]: number } = {}
         achievements.forEach((achievement) => {
-            const date = dayjs(achievement.unlocked).format("DD-MM-YYYY")
+            const date = dayjs(achievement.datetime).format("DD-MM-YYYY")
             if (!index[date]) {
                 index[date] = 0
             }
@@ -208,13 +243,46 @@ const Calendar = ({
 
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
-    const { data } = useQueryPlayerTimeline({
-        player,
-        year: selectedYear,
-    })
 
-    const perfectGames = data ? data.perfectGames : ([] as OwnedGame[])
-    const achievements = data ? data.achievements : ([] as RecentAchievement[])
+    const { data: gamesResponse } = useQuery<PlayerQueryResponse>(playerGames, {
+        variables: { player, complete: true, year: selectedYear },
+    })
+    const { data: unlockedAchievementResponse, refetch } =
+        useQuery<PlayerQueryResponse>(playerUnlockedAchievements, {
+            variables: {
+                player,
+                orderBy: "-datetime",
+                year: selectedYear,
+                limit: 100,
+            },
+        })
+
+    useEffect(() => {
+        const unlockedAchievements =
+            unlockedAchievementResponse?.player?.unlockedAchievements
+        if (
+            !unlockedAchievementResponse ||
+            unlockedAchievements?.pageInfo?.hasNextPage
+        ) {
+            refetch({
+                variables: {
+                    player,
+                    year: selectedYear,
+                    orderBy: "-datetime",
+                    limit: 100,
+                    cursor: unlockedAchievements?.pageInfo?.endCursor ?? "",
+                },
+                updateData: updateUnlockedAchievementData,
+            })
+        }
+    }, [unlockedAchievementResponse])
+
+    const perfectGames: PlayerOwnedGame[] = unwrapEdges(
+        gamesResponse?.player?.games
+    )
+    const achievements: PlayerUnlockedAchievement[] = unwrapEdges(
+        unlockedAchievementResponse?.player?.unlockedAchievements
+    )
 
     return (
         <div>
@@ -226,10 +294,11 @@ const Timeline = ({ player }: { player: string }) => {
                     padding: 0,
                 }}
             >
-                <YearSelector
-                    selected={selectedYear}
-                    onChange={(year) => setSelectedYear(year)}
-                    total={achievements.length}
+                <CalendarHeader
+                    year={selectedYear}
+                    onChangeYear={setSelectedYear}
+                    totalPerfectGames={perfectGames.length}
+                    totalUnlockedAchievements={achievements.length}
                 />
                 <Calendar
                     year={selectedYear}

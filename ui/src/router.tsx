@@ -1,12 +1,10 @@
 import { RouteObject, createHashRouter } from "react-router-dom"
-import { request } from "graphql-request"
-import gqlDocument from "./api/graphql-documents"
 import App from "./App"
 import { Home, Game, SearchResults } from "./screens"
 import PlayerContainer from "./components/PlayerContainer"
 import { throwExpression } from "./utilities"
 import { client } from "./api/client"
-import { player, gameComplete } from "./api/documents"
+import { player, gameComplete, search } from "./api/documents"
 
 const playerRoutes = {
     path: "/Player/*",
@@ -97,13 +95,13 @@ const router = createHashRouter([
                 path: "/Search/:name",
                 loader: async ({ params }) => {
                     const { name = "" } = params
-                    const document = gqlDocument.search(name)
-                    return name
-                        ? request<SearchQueryResponse>(
-                              "/graphql/",
-                              `{${String(document)}\n}`
-                          )
-                        : null
+                    const { data } = await client!.request<SearchQueryResponse>(
+                        {
+                            query: search,
+                            variables: { name },
+                        }
+                    )
+                    return data?.searchPlayersAndGames
                 },
                 Component: SearchResults,
             },

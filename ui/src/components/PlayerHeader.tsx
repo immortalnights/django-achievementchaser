@@ -4,12 +4,13 @@ import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import PlayerSettingsContext from "../context/PlayerSettingsContext"
-import { useQueryPlayer } from "../api/queries"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
 import ExternalLink from "./ExternalLink"
 import Link from "./Link"
 import RecentActivity from "./RecentActivity"
+import { playerProfile } from "../api/documents"
+import { useQuery } from "graphql-hooks"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -170,18 +171,21 @@ const PlayerStatisticsContent = ({
 }
 
 const PlayerStatistics = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayer({ player, profile: true })
+    const { loading, data, error } = useQuery<PlayerQueryResponse>(
+        playerProfile,
+        { variables: { player } }
+    )
 
     return (
         <Loader
             loading={loading}
             error={error}
             data={data}
-            renderer={(data) => {
+            renderer={(response) => {
                 return (
                     <PlayerStatisticsContent
                         player={player}
-                        {...data.profile}
+                        {...response.player!.profile!}
                     />
                 )
             }}
