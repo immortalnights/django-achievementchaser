@@ -8,13 +8,14 @@ import { throwExpression } from "./utilities"
 
 const playerRoutes = {
     path: "/Player/*",
-    loader: ({ params }) => {
+    id: "player",
+    loader: async ({ params }) => {
         const { id = throwExpression("missing param") } = params
-        const document = gqlDocument.player(id)
+        const document = gqlDocument.playerDocument({ player: id })
         return request<PlayerQueryResponse>(
             "/graphql/",
             `{${String(document)}\n}`
-        )
+        ).then((response) => response.player)
     },
     Component: PlayerContainer,
     children: [
@@ -77,9 +78,12 @@ const router = createHashRouter([
             playerRoutes,
             {
                 path: "/Game/:id",
-                loader: ({ params }) => {
+                loader: async ({ params }) => {
                     const { id = throwExpression("missing param") } = params
-                    const document = gqlDocument.game(id)
+                    const document = gqlDocument.game(id, {
+                        includeAchievements: true,
+                        includeOwners: true,
+                    })
                     return request<GameQueryResponse>(
                         "/graphql/",
                         `{${String(document)}\n}`
@@ -89,7 +93,7 @@ const router = createHashRouter([
             },
             {
                 path: "/Search/:name",
-                loader: ({ params }) => {
+                loader: async ({ params }) => {
                     const { name = "" } = params
                     const document = gqlDocument.search(name)
                     return name

@@ -2,201 +2,288 @@ import { gql } from "graphql-request"
 
 export const boolToString = (bool: boolean) => (bool ? "true" : "false")
 
-export const player = (player: string) => gql`
-player(id: ${player}) {
-    id
-    name
-    avatarLargeUrl
-    profileUrl
-}
-`
-
-export const playerProfileSummary = (player: string) => gql`
-playerProfileSummary(id: ${player}) {
-    ownedGames
-    perfectGames
-    playedGames
-    totalPlaytime
-    lockedAchievements
-    unlockedAchievements
-}`
-
-export const recentGames = (player: string) => gql`
-playerGames(id: ${player}, played: true, orderBy: "lastPlayed DESC", limit: 6) {
-    edges {
-        node {
-            id
-            name
-            imgIconUrl
-            lastPlayed
-        }
+export const playerDocument = ({
+    player,
+    profile = false,
+}: {
+    player: string
+    profile?: boolean
+}) => {
+    let profileGQL = ""
+    if (profile) {
+        profileGQL = gql`profile {
+            ownedGames
+            perfectGames
+            playedGames
+            totalPlaytime
+            lockedAchievements
+            unlockedAchievements
+        }`
     }
-}`
 
-export const recentAchievements = (
-    player: string,
-    unlocked: boolean,
-    limit: number
-) => gql`
-playerAchievements(
-    id: ${player}
-    unlocked: ${boolToString(unlocked)}
-    limit: ${limit}
-) {
-    edges {
-        node {
-            id
-            displayName
-            iconUrl,
-            iconGrayUrl,
-            globalPercentage
-            unlocked
-            game {
-                id
-                name
-                difficultyPercentage
-                achievementCount
+    return gql`
+    player(id: ${player}) {
+        id
+        name
+        avatarLargeUrl
+        profileUrl
+        ${profileGQL}
+    }`
+}
+
+export interface PlayerGamesQueryParameters {
+    player: string
+    started?: boolean
+    completed?: boolean
+    year?: number
+    orderBy?: string
+    limit?: number
+}
+
+export const playerGamesDocument = ({
+    player,
+    started,
+    completed,
+    year,
+    orderBy,
+    limit,
+}: PlayerGamesQueryParameters) => {
+    const queryParameters: string[] = []
+
+    if (started !== undefined) {
+        queryParameters.push(`started: ${boolToString(started)}`)
+    }
+
+    if (completed != undefined) {
+        queryParameters.push(`completed: ${boolToString(completed)}`)
+    }
+
+    if (year !== undefined) {
+        queryParameters.push(`year: ${year}`)
+    }
+
+    if (orderBy !== undefined) {
+        queryParameters.push(`orderBy: "${orderBy}"`)
+    }
+
+    if (limit !== undefined) {
+        queryParameters.push(`first: ${limit}`)
+    }
+
+    console.assert(
+        queryParameters.length > 0,
+        "Cannot perform game query with no parameters"
+    )
+
+    return gql`
+    player(id: ${player}) {
+        id
+        games(${queryParameters.join(", ")}) {
+            edges {
+                node {
+                    game {
+                        name
+                        id
+                        imgIconUrl
+                        achievementCount
+                        difficultyPercentage
+                    }
+                    completed
+                    lastPlayed
+                    playtimeForever
+                    unlockedAchievementCount
+                }
             }
         }
-    }
-}`
+    }`
+}
 
-export const timelineAchievements = (player: string, year: number) => gql`
-playerAchievements(
-    id: ${player}
-    unlocked: true
-    year: ${year}
-) {
-    edges {
-        node {
-            id
-            unlocked
-        }
-    }
-}`
-
-export const perfectGames = (player: string, year: number) => gql`
-playerGames(
-    id: ${player}
-    perfect: true
-    yearCompleted: ${year}
-) {
-    edges {
-        node {
-            id
-            name
+export const playerGameDocument = ({
+    player,
+    game,
+}: {
+    player: string
+    game: string
+}) => gql`
+    player(id: ${player}) {
+        id
+        game(game: "${game}") {
+            game {
+                name
+                id
+                imgIconUrl
+                difficultyPercentage
+                achievements {
+                    id
+                    displayName
+                    description
+                    hidden
+                    globalPercentage
+                    iconUrl
+                    iconGrayUrl
+                }
+            }
             completed
+            lastPlayed
+            playtimeForever
+            unlockedAchievements {
+                datetime
+                achievement {
+                    id
+                    displayName
+                }
+            }
         }
-    }
-}`
+    }`
 
-export const almostCompleteGames = (player: string) => gql`
-playerGames(
-    id: ${player}
-    orderBy: "completionPercentage DESC"
-    played: true
-    limit: 12
-    started: true
-    perfect: false
-) {
-    totalCount
-    edges {
-        node {
-            id
-            name
-            completionPercentage
-            imgIconUrl
+export interface PlayerUnlockedAchievementsQueryParameters {
+    player: string
+    game?: string
+    year?: number
+    orderBy?: string
+    limit?: number
+}
+
+export const playerUnlockedAchievementsDocument = ({
+    player,
+    game,
+    year,
+    orderBy,
+    limit,
+}: PlayerUnlockedAchievementsQueryParameters) => {
+    const queryParameters: string[] = []
+    if (game !== undefined) {
+        queryParameters.push(`game: ${game}`)
+    }
+
+    if (year !== undefined) {
+        queryParameters.push(`year: ${year}`)
+    }
+
+    if (orderBy !== undefined) {
+        queryParameters.push(`orderBy: "${orderBy}"`)
+    }
+
+    if (limit !== undefined) {
+        queryParameters.push(`first: ${limit}`)
+    }
+
+    return gql`
+    player(id: ${player}) {
+        id
+        unlockedAchievements(${queryParameters.join(", ")}) {
+            edges {
+                node {
+                    id
+                    datetime
+                    game {
+                        id
+                        name
+                        imgIconUrl
+                    }
+                    achievement {
+                        id
+                        displayName
+                        iconUrl
+                        iconGrayUrl
+                    }
+                }
+            }
         }
-    }
-}`
+    }`
+}
 
-export const justStartedGames = (player: string) => gql`
-playerGames(
-    id: ${player}
-    orderBy: "completionPercentage ASC"
-    played: true
-    limit: 12
-    started: true
-) {
-    totalCount
-    edges {
-        node {
-            id
-            name
-            completionPercentage
-            imgIconUrl
+export interface PlayerAvailableAchievementsQueryParameters {
+    player: string
+    orderBy?: string
+    limit?: number
+}
+
+export const playerAvailableAchievementsDocument = ({
+    player,
+    orderBy = "global_percentage",
+    limit,
+}: PlayerAvailableAchievementsQueryParameters) => {
+    const queryParameters: string[] = []
+
+    if (orderBy !== undefined) {
+        queryParameters.push(`orderBy: "${orderBy}"`)
+    }
+
+    if (limit !== undefined) {
+        queryParameters.push(`first: ${limit}`)
+    }
+
+    return gql`
+    player(id: ${player}) {
+        id
+        availableAchievements(${queryParameters.join(", ")}) {
+            edges {
+                node {
+                    id
+                    displayName
+                    description
+                    globalPercentage
+                    iconGrayUrl
+                    game {
+                        id
+                        name
+                        imgIconUrl
+                        difficultyPercentage
+                        achievementCount
+                    }
+                }
+            }
         }
-    }
-}`
+    }`
+}
 
-export const nextGames = (player: string) => gql`
-playerGames(
-    id: ${player}
-    orderBy: "difficultyPercentage DESC"
-    limit: 12
-    perfect: false
-) {
-    edges {
-        node {
-            id
-            name
-            imgIconUrl
+export const game = (
+    game: string,
+    {
+        includeAchievements = false,
+        includeOwners = false,
+    }: {
+        includeAchievements?: boolean
+        includeOwners?: boolean
+    }
+) => {
+    const achievements = gql`achievements {
+        id
+        displayName
+        description
+        hidden
+        iconUrl
+        iconGrayUrl
+        globalPercentage
+    }`
+
+    const owners = gql`owners {
+        edges {
+            node {
+                player {
+                    id
+                    name
+                    avatarSmallUrl
+                }
+                lastPlayed
+                playtimeForever
+                completionPercentage
+                completed
+            }
         }
-    }
-}`
+    }`
 
-export const game = (game: string) => gql`
+    return gql`
 game(id: ${game}) {
     id
     name
     difficultyPercentage
     achievementCount
+    ${includeAchievements ? achievements : ""}
+    ${includeOwners ? owners : ""}
 }`
-
-export const gameAchievements = (game: string) => gql`
-gameAchievements(id: ${game}) {
-    id
-    name
-    displayName
-    description
-    hidden
-    iconUrl
-    iconGrayUrl
-    globalPercentage
-}`
-
-export const playerGame = (player: string, game: string) => gql`
-playerGame(id: ${player}, gameId: ${game}) {
-    id
-    completionPercentage
-    playtimeForever
-    last_played
 }
-playerAchievementsForGame(
-    id: ${player}, gameId: ${game}, orderBy: "globalPercentage DESC"
-) {
-    id
-    unlocked
-}`
-
-export const gameOwners = (game: string) => gql`
-players: gameOwners(id: ${game}) {
-    game {
-        id
-        name
-        achievementCount
-    }
-    player {
-        id
-        name
-        avatarSmallUrl
-    }
-    lastPlayed
-    playtimeForever
-    completionPercentage
-    completed
-}
-`
 
 export const search = (name: string) => gql`
 searchPlayersAndGames(name: "${name}") {
@@ -214,18 +301,11 @@ searchPlayersAndGames(name: "${name}") {
 `
 
 export default {
-    player,
-    playerProfileSummary,
-    playerGame,
-    recentGames,
-    recentAchievements,
-    timelineAchievements,
-    perfectGames,
-    almostCompleteGames,
-    justStartedGames,
-    nextGames,
+    playerDocument,
+    playerGameDocument,
+    playerGamesDocument,
+    playerUnlockedAchievementsDocument,
+    playerAvailableAchievementsDocument,
     game,
-    gameAchievements,
-    gameOwners,
     search,
 }

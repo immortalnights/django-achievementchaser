@@ -4,13 +4,17 @@ import { useLoaderData } from "react-router-dom"
 import GameAchievements from "../components/GameAchievements"
 
 const GameScreen = () => {
-    const { game } = useLoaderData() as GameQueryResponse
+    const { game, errors } = useLoaderData() as GameQueryResponse
+
+    if (!game || (errors && errors.length > 0)) {
+        throw "Failed to load game"
+    }
 
     return (
         <>
             <GameHeader game={game} />
             <Paper sx={{ marginTop: "1em" }} elevation={0}>
-                <GameAchievements game={String(game.id)} />
+                <GameAchievements game={game} />
             </Paper>
         </>
     )

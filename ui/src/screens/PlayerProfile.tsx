@@ -1,82 +1,14 @@
-import { useParams } from "react-router-dom"
+import { useRouteLoaderData } from "react-router-dom"
 import { Typography } from "@mui/material"
-import {
-    useQueryPlayer,
-    useQueryPlayerAchievements,
-    useQueryPlayerOwnedGames,
-} from "../api/queries"
+import { useQueryPlayerAvailableAchievements } from "../api/queries"
 import Loader from "../components/Loader"
-import { throwExpression } from "../utilities"
-import OwnedGameList from "../components/OwnedGameList"
-import GameAchievementsList from "../components/GameAchievementsList"
-
-const PlayerAlmostThereGames = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerOwnedGames({
-        player,
-        played: true,
-        started: true,
-        perfect: false,
-        limit: 12,
-        orderBy: "completionPercentage DESC",
-    })
-
-    return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return <OwnedGameList player={player} games={data} />
-            }}
-        />
-    )
-}
-
-const PlayerJustStartedGames = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerOwnedGames({
-        player,
-        played: true,
-        started: true,
-        limit: 12,
-        orderBy: "completionPercentage ASC",
-    })
-
-    return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return <OwnedGameList player={player} games={data} />
-            }}
-        />
-    )
-}
-
-const PlayerEasiestGames = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerOwnedGames({
-        player,
-        perfect: false,
-        limit: 12,
-        orderBy: "difficultyPercentage DESC",
-    })
-
-    return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return <OwnedGameList player={player} games={data} />
-            }}
-        />
-    )
-}
+import GameGroupedAchievements from "../components/GameGroupedAchievements"
+import LoadPlayerOwnedGames from "../components/LoadPlayerOwnedGames"
 
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerAchievements({
+    const { loading, error, data } = useQueryPlayerAvailableAchievements({
         player,
-        unlocked: false,
+        limit: 36,
     })
 
     return (
@@ -86,10 +18,11 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
             data={data}
             renderer={(data) => {
                 return (
-                    <GameAchievementsList
+                    <GameGroupedAchievements
                         player={player}
                         achievements={data}
                         rows={3}
+                        maxAchievements={2}
                     />
                 )
             }}
@@ -98,29 +31,34 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
 }
 
 const PlayerProfileScreen = () => {
-    const { id = throwExpression("missing param") } = useParams()
-    const { loading, error, data } = useQueryPlayer(id)
+    const player = useRouteLoaderData("player") as Player
 
     return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(player) => {
-                return (
-                    <>
-                        <Typography variant="h5">Almost There</Typography>
-                        <PlayerAlmostThereGames player={player.id} />
-                        <Typography variant="h5">Just Started</Typography>
-                        <PlayerJustStartedGames player={player.id} />
-                        <Typography variant="h5">Next Game</Typography>
-                        <PlayerEasiestGames player={player.id} />
-                        <Typography variant="h5">Next Achievement</Typography>
-                        <PlayerGameAchievementList player={player.id} />
-                    </>
-                )
-            }}
-        />
+        <>
+            <Typography variant="h5">Almost There</Typography>
+            <LoadPlayerOwnedGames
+                player={player.id}
+                completed={false}
+                order="-completionPercentage"
+            />
+
+            <Typography variant="h5">Just Started</Typography>
+            <LoadPlayerOwnedGames
+                player={player.id}
+                started={true}
+                order="completionPercentage"
+            />
+
+            <Typography variant="h5">Next Game</Typography>
+            <LoadPlayerOwnedGames
+                player={player.id}
+                completed={false}
+                order="-game__difficulty_percentage"
+            />
+
+            <Typography variant="h5">Next Achievement</Typography>
+            <PlayerGameAchievementList player={player.id} />
+        </>
     )
 }
 

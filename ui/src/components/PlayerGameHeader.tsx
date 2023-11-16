@@ -8,11 +8,6 @@ import { DateRangeTwoTone, TaskOutlined } from "@mui/icons-material"
 import { useContext } from "react"
 import PlayerSettingsContext from "../context/PlayerSettingsContext"
 
-interface OwnedGameDetailsProps extends OwnedGame {
-    achievements: Achievement[]
-    playerAchievements: RecentAchievement[]
-}
-
 const HideUnlockedAchievementsButton = () => {
     const { hideUnlockedAchievements, setHideUnlockedAchievements } =
         useContext(PlayerSettingsContext)
@@ -73,12 +68,11 @@ const OwnedGameLastPlayed = ({ lastPlayed }: { lastPlayed?: string }) => {
 }
 
 const OwnedGameWithAchievements = ({
-    lastPlayed,
-    difficultyPercentage,
-    completed,
-    achievements,
-    playerAchievements,
-}: OwnedGameDetailsProps) => {
+    ownedGame,
+}: {
+    ownedGame: PlayerOwnedGame
+}) => {
+    const { game, lastPlayed, completed, unlockedAchievements } = ownedGame
     return (
         <>
             <div
@@ -90,8 +84,8 @@ const OwnedGameWithAchievements = ({
                 }}
             >
                 <GameCompletionProgress
-                    achievements={achievements}
-                    playerAchievements={playerAchievements}
+                    achievements={game.achievements ?? []}
+                    playerAchievements={unlockedAchievements ?? []}
                 />
 
                 <OwnedGameLastPlayed lastPlayed={lastPlayed} />
@@ -110,7 +104,7 @@ const OwnedGameWithAchievements = ({
                     </div>
                 )}
 
-                {difficultyPercentage !== undefined && (
+                {game.difficultyPercentage !== undefined && (
                     <div>
                         <Typography
                             variant="subtitle1"
@@ -118,7 +112,7 @@ const OwnedGameWithAchievements = ({
                         >
                             Difficulty
                         </Typography>
-                        {difficultyPercentage.toFixed(2)}%
+                        {game.difficultyPercentage.toFixed(2)}%
                     </div>
                 )}
             </div>
@@ -130,44 +124,42 @@ const OwnedGameWithAchievements = ({
     )
 }
 
-const OwnedGameDetails = ({
-    lastPlayed,
-    achievements,
-    ...rest
-}: OwnedGameDetailsProps) => {
+const OwnedGameDetails = ({ ownedGame }: { ownedGame: PlayerOwnedGame }) => {
+    const { game, lastPlayed } = ownedGame
+
     return (
         <div
             style={{
                 display: "flex",
                 flexGrow: 1,
-                alignItems: "center",
             }}
         >
-            {achievements.length > 0 ? (
-                <OwnedGameWithAchievements
-                    lastPlayed={lastPlayed}
-                    achievements={achievements}
-                    {...rest}
-                />
+            {game.achievements && game.achievements?.length > 0 ? (
+                <OwnedGameWithAchievements ownedGame={ownedGame} />
             ) : (
-                <OwnedGameLastPlayed lastPlayed={lastPlayed} />
+                <div
+                    style={{
+                        display: "flex",
+                        flexGrow: 1,
+                        justifyContent: "space-evenly",
+                        alignItems: "center",
+                    }}
+                >
+                    <OwnedGameLastPlayed lastPlayed={lastPlayed} />
+                </div>
             )}
         </div>
     )
 }
 
 const PlayerGameHeader = ({
-    game,
-    achievements,
-    playerGame,
-    playerAchievements,
+    ownedGame,
 }: {
     player: string
-    game: Game
-    achievements: Achievement[]
-    playerGame: OwnedGame
-    playerAchievements: RecentAchievement[]
+    ownedGame: PlayerOwnedGame
 }) => {
+    const { game } = ownedGame
+
     return (
         <>
             <Box sx={{ display: "flex", margin: 0 }}>
@@ -193,12 +185,7 @@ const PlayerGameHeader = ({
                         src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
                     />
                 </div>
-                <OwnedGameDetails
-                    {...playerGame}
-                    difficultyPercentage={game.difficultyPercentage}
-                    achievements={achievements}
-                    playerAchievements={playerAchievements}
-                />
+                <OwnedGameDetails ownedGame={ownedGame} />
             </Box>
         </>
     )

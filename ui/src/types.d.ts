@@ -1,11 +1,36 @@
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+interface Connection<T> {
+    edges: { node: T }[]
+}
 interface ResponseError {
     error: unknown
 }
 
 interface BaseQueryResponse {
     errors?: ResponseError[]
+}
+
+interface Game {
+    id: string
+    name?: string
+    imgIconUrl: string
+    difficultyPercentage: number
+    achievementCount: number
+    achievements?: Achievement[]
+    owners?: Connection<PlayerOwnedGame>
+    playerAchievements?: Connection<PlayerUnlockedAchievement>
+    playerPlaytime?: Connection<PlayerGamePlaytime>
+}
+
+interface Achievement {
+    id: string
+    displayName?: string
+    description?: string
+    iconUrl?: string
+    iconGrayUrl?: string
+    globalPercentage?: number
+    game?: Game
 }
 
 interface Player {
@@ -15,54 +40,39 @@ interface Player {
     avatarSmallUrl?: string
     avatarMediumUrl?: string
     avatarLargeUrl?: string
-    created?: string
-    added?: string
-    updated?: string
-    resynchronized?: string | null
-    resynchronizationRequired?: boolean
+    profile?: PlayerProfile
+    game?: PlayerOwnedGame
+    games?: Connection<PlayerOwnedGame>
+    unlockedAchievements?: Connection<PlayerUnlockedAchievement>
+    availableAchievements?: Connection<Achievement>
 }
 
-interface Game {
-    id: number
-    name?: string
-    achievementSet?: Achievement[]
-    iconUrl?: string
-}
-
-interface Achievement {
-    name: string
-    displayName?: string
-    description?: string
-    iconUrl?: string
-    iconGreyUrl?: string
-    globalPercentage?: number
-}
-
-interface PlayersResponse extends BaseQueryResponse {
-    players: Player[]
-}
-
-interface GameQueryResponse extends BaseQueryResponse {
+interface PlayerOwnedGame {
+    player?: Player
     game: Game
+    lastPlayed?: string
+    playtimeForever?: number
+    completionPercentage?: number
+    completed?: string
+    unlockedAchievements?: PlayerUnlockedAchievement[]
+    unlockedAchievementCount?: number
 }
 
-interface GameAchievementsResponse extends BaseQueryResponse {
-    gameAchievements: Achievement[]
+interface PlayerGamePlaytime {
+    player: Player
+    game: Game
+    playtime: number
+    datetime: string
 }
 
-interface PlayerQueryResponse extends BaseQueryResponse {
-    player: Player | null
+interface PlayerUnlockedAchievement {
+    player: Player
+    game: Game
+    achievement: Achievement
+    datetime: string
 }
 
-interface SearchQueryResponse extends BaseQueryResponse {
-    searchPlayersAndGames: (Player | Game)[]
-}
-
-interface MaybeUnlockedAchievement extends Achievement {
-    unlocked?: string
-}
-
-interface PlayerProfileSummary {
+interface PlayerProfile {
     ownedGames: number
     perfectGames: number
     playedGames: number
@@ -71,128 +81,28 @@ interface PlayerProfileSummary {
     lockedAchievements: number
 }
 
-interface PlayerProfileSummaryResponse extends BaseQueryResponse {
-    playerProfileSummary: PlayerProfileSummary
-}
-
-interface Game {
-    id: string
-    name: string
-    imgIconUrl: string
-    difficultyPercentage: number
-    lastPlayed: string
-    playtime: number
-    achievementCount: number
-}
-
-interface Achievement {
-    name: string
-    displayName: string
-    iconUrl: string
-    iconGrayUrl: string
-    game?: Game
-}
-
-interface UnlockedAchievement {
-    game: Pick<Game, "id" | "name">
-    achievement: Achievement
-    datetime: string
-}
-
 interface PlayerFriend {
     id: string
     name: string
     profileUrl: string
 }
 
-interface PlayerSummary {
-    recentGames?: Game[]
-    recentAchievements?: UnlockedAchievement[]
-    perfectGamesCount?: number
-    achievementsUnlockedCount?: number
-    totalAchievementCount?: number
-    friends?: PlayerFriend[]
-    totalGamesCount?: number
-    playedGamesCount?: number
-    totalPlaytime?: number
+interface PlayersResponse extends BaseQueryResponse {
+    players: Player[]
 }
 
-interface PlayerProfile {
-    id: string
-    name: string
-    avatarLargeUrl?: string
-    profileUrl?: string
-    summary?: PlayerSummary
-    highestCompletionGame?: unknown[]
-    lowestCompletionGame?: unknown[]
-    easiestGames?: unknown[]
-    easiestAchievements?: unknown
+interface PlayerQueryResponse extends BaseQueryResponse {
+    player: Player | null
 }
 
-interface OwnedGame {
-    id: string
-    name: string
-    imgIconUrl?: string
-    lastPlayed?: string
-    difficultyPercentage?: number
-    completionPercentage?: number
-    completed?: string
-    achievementCount?: number
-    unlockedAchievementCount?: number
+interface GamesQueryResponse extends BaseQueryResponse {
+    game: Game[]
 }
 
-interface PlayerOwnedGameResponse extends BaseQueryResponse {
-    playerGames: {
-        edges?: { node: OwnedGame }[]
-        totalCount?: number
-    }
+interface GameQueryResponse extends BaseQueryResponse {
+    game: Game | null
 }
 
-interface RecentAchievement {
-    id: string
-    displayName: string
-    iconUrl: string
-    iconGrayUrl: string
-    globalPercentage: number
-    unlocked: string
-    game: {
-        id: string
-        name: string
-    }
-}
-
-interface RecentGame {
-    id: string
-    name: string
-    imgIconUrl: string
-    lastPlayed: string
-    difficultyPercentage: number
-    completionPercentage: number
-}
-
-interface TimelineResponse
-    extends PlayerAchievementsResponse,
-        BaseQueryResponse {
-    playerGames: {
-        edges: { node: OwnedGame }[]
-    }
-}
-
-interface PlayerAchievementsResponse extends BaseQueryResponse {
-    playerAchievements: {
-        edges: { node: RecentAchievement }[]
-    }
-}
-
-interface GameOwnerInformation {
-    game: Game
-    player: Player
-    lastPlayed?: string
-    playtimeForever: number
-    completionPercentage: number
-    completed?: string
-}
-
-interface GameOwnersResponse extends BaseQueryResponse {
-    players: GameOwnerInformation[]
+interface SearchQueryResponse extends BaseQueryResponse {
+    searchPlayersAndGames: (Player | Game)[]
 }

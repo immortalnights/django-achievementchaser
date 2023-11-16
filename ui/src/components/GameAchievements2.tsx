@@ -2,13 +2,14 @@ import { Box, Typography } from "@mui/material"
 import { formatDateTime, getRelativeTime } from "../utilities"
 
 const AchievementItem = ({
-    displayName,
-    description,
-    iconUrl,
-    iconGrayUrl,
-    globalPercentage,
+    achievement,
     unlocked,
-}: MaybeUnlockedAchievement) => {
+}: {
+    achievement: Achievement
+    unlocked?: string
+}) => {
+    const { displayName, description, iconUrl, iconGrayUrl, globalPercentage } =
+        achievement
     const startGradient = Math.floor(globalPercentage ?? 0)
     const endGradient = 100 - startGradient
 
@@ -84,7 +85,7 @@ const GameAchievements = ({
     playerAchievements,
 }: {
     achievements: Achievement[]
-    playerAchievements: RecentAchievement[]
+    playerAchievements: PlayerUnlockedAchievement[]
 }) => (
     <ul
         style={{
@@ -95,14 +96,14 @@ const GameAchievements = ({
     >
         {achievements.map((achievement) => {
             const playerAchievement = playerAchievements.find(
-                (value) => value.id === achievement.name
+                (value) => value.achievement.id === achievement.id
             )
 
             return (
                 <AchievementItem
-                    key={achievement.name}
-                    {...achievement}
-                    unlocked={playerAchievement?.unlocked}
+                    key={achievement.id}
+                    achievement={achievement}
+                    unlocked={playerAchievement?.datetime}
                 />
             )
         })}

@@ -1,44 +1,17 @@
-import { useParams } from "react-router-dom"
+import { useParams, useRouteLoaderData } from "react-router-dom"
 import Loader from "../components/Loader"
 import { useQueryPlayerGame } from "../api/queries"
 import { throwExpression } from "../utilities"
 import PlayerGameHeader from "../components/PlayerGameHeader"
 import PlayerGameAchievements from "../components/PlayerGameAchievements"
 
-// FIXME overlaps with PlayerGameResponse
-interface PlayerGameDetails {
-    game: Game
-    achievements: Achievement[]
-    playerGame: OwnedGame
-    playerAchievements: RecentAchievement[]
-}
-
-const PlayerGame = ({
-    player,
-    data,
-}: {
-    player: string
-    data: PlayerGameDetails
-}) => {
-    return (
-        <>
-            <PlayerGameHeader player={player} {...data} />
-            <PlayerGameAchievements
-                achievements={data.achievements}
-                playerAchievements={data.playerAchievements}
-            />
-        </>
-    )
-}
-
 const PlayerGameContainer = () => {
-    const { id: player = throwExpression("Missing 'player' parameter") } =
-        useParams()
+    const player = useRouteLoaderData("player") as Player
     const { gameId: game = throwExpression("Missing 'game' parameter") } =
         useParams()
     const { loading, error, data } = useQueryPlayerGame({
-        player,
-        game,
+        player: player.id,
+        game: game,
     })
 
     return (
@@ -46,9 +19,20 @@ const PlayerGameContainer = () => {
             loading={loading}
             error={error}
             data={data}
-            renderer={(data) => {
-                return <PlayerGame player={player} data={data} />
-            }}
+            renderer={(ownedGame) => (
+                <>
+                    <PlayerGameHeader
+                        player={player.id}
+                        ownedGame={ownedGame}
+                    />
+                    <PlayerGameAchievements
+                        achievements={ownedGame.game.achievements ?? []}
+                        playerAchievements={
+                            ownedGame.unlockedAchievements ?? []
+                        }
+                    />
+                </>
+            )}
         />
     )
 }

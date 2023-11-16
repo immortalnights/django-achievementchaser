@@ -1,9 +1,9 @@
 import graphene
 from graphene_django import DjangoObjectType  # noqa F401
-from players.schema import Queries as PlayerQueries, ResynchronizePlayer, ResynchronizePlayerGame
-from games.schema import Queries as GameQueries, ResynchronizeGame
-from players.schema.players import Player, PlayerType
-from games.schema.games import Game, GameType
+from players.models import Player
+from players.schema import PlayerType, Queries as PlayerQueries, ResynchronizePlayer, ResynchronizePlayerGame
+from games.models import Game
+from games.schema import GameType, Queries as GameQueries, ResynchronizeGame
 
 
 class ResultType(graphene.Union):

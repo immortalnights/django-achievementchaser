@@ -1,6 +1,4 @@
 import { Typography } from "@mui/material"
-import { useQueryGameAchievements } from "../api/queries"
-import Loader from "./Loader"
 
 const AchievementItem = ({
     displayName,
@@ -53,29 +51,14 @@ const AchievementItem = ({
     )
 }
 
-const GameAchievements = ({ game }: { game: string }) => {
-    const { loading, error, data } = useQueryGameAchievements({
-        game,
-    })
-
+const GameAchievements = ({ game }: { game: Game }) => {
     return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return (
-                    <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                        {data.map((achievement) => (
-                            <AchievementItem
-                                key={achievement.name}
-                                {...achievement}
-                            />
-                        ))}
-                    </ul>
-                )
-            }}
-        />
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+            {game.achievements?.length &&
+                game.achievements.map((achievement) => (
+                    <AchievementItem key={achievement.id} {...achievement} />
+                ))}
+        </ul>
     )
 }
 
