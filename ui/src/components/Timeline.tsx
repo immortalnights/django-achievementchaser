@@ -76,8 +76,8 @@ const Calendar = ({
     achievements,
 }: {
     year: number
-    perfectGames: OwnedGame[]
-    achievements: RecentAchievement[]
+    perfectGames: PlayerOwnedGame[]
+    achievements: PlayerUnlockedAchievement[]
 }) => {
     const yearDate = dayjs(`01-01-${year}`)
 
@@ -85,7 +85,7 @@ const Calendar = ({
     const unlockedAchievementIndex = useMemo(() => {
         const index: { [key: string]: number } = {}
         achievements.forEach((achievement) => {
-            const date = dayjs(achievement.unlocked).format("DD-MM-YYYY")
+            const date = dayjs(achievement.datetime).format("DD-MM-YYYY")
             if (!index[date]) {
                 index[date] = 0
             }
@@ -213,8 +213,10 @@ const Timeline = ({ player }: { player: string }) => {
         year: selectedYear,
     })
 
-    const perfectGames = data ? data.perfectGames : ([] as OwnedGame[])
-    const achievements = data ? data.achievements : ([] as RecentAchievement[])
+    const perfectGames = data ? data.perfectGames : ([] as PlayerOwnedGame[])
+    const achievements = data
+        ? data.achievements
+        : ([] as PlayerUnlockedAchievement[])
 
     return (
         <div>

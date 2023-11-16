@@ -159,6 +159,20 @@ export const useQueryPlayerRecent = (player: string) => {
     return { loading, error, data }
 }
 
+interface PlayerAchievementsResponse extends BaseQueryResponse {
+    playerAchievements: {
+        edges: { node: PlayerUnlockedAchievement }[]
+    }
+}
+
+interface TimelineResponse
+    extends PlayerAchievementsResponse,
+        BaseQueryResponse {
+    playerGames: {
+        edges: { node: PlayerOwnedGame }[]
+    }
+}
+
 export const useQueryPlayerTimeline = ({
     player,
     year,
@@ -178,8 +192,7 @@ export const useQueryPlayerTimeline = ({
             gqlDocument.playerGamesDocument({ player, completed: true, year }),
         ],
         (response) => ({
-            // perfectGames: unwrapEdges(response.playerGames),
-            perfectGames: [],
+            perfectGames: unwrapEdges(response.playerGames),
             achievements: unwrapEdges(response.playerAchievements),
         })
     )
