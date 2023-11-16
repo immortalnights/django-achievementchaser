@@ -32,6 +32,13 @@ body {
     background-color: #0d1117;
 }
 
+.day {
+    border: 1px solid transparent;
+    transition:
+        background-color 0.5s linear,
+        border-color 0.5s linear;
+}
+
 .light .day.none {
     background-color: #ebedf0;
 }

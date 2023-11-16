@@ -1,32 +1,31 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { TextField, Button, Box, CircularProgress } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import { useLazyQueryPlayers } from "../api/queries"
+import { useManualQuery } from "graphql-hooks"
+import { searchPlayers } from "../api/documents"
 
 const HomeScreen = () => {
     const navigate = useNavigate()
-    const [player, setPlayer] = useState("")
-    const { loading, data, trigger } = useLazyQueryPlayers()
+    const [inputValue, setInputValue] = useState("")
+    const [query, { loading }] =
+        useManualQuery<PlayerQueryResponse>(searchPlayers)
 
     const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
-        setPlayer(event.target.value)
+        setInputValue(event.target.value)
 
-    const submitPlayer = () => {
-        if (player) {
-            trigger(player)
+    const submitPlayer = async () => {
+        if (inputValue) {
+            const { data } = await query({ variables: { name: inputValue } })
+            if (data?.player?.id) {
+                navigate(`/Player/${data.player.id}`)
+            }
         }
     }
 
     const handleSubmit = (event: FormEvent) => {
         event.preventDefault()
-        submitPlayer()
+        submitPlayer().catch(() => console.error("Submission failed"))
     }
-
-    useEffect(() => {
-        if (data && data.id) {
-            navigate(`/Player/${data.id}`)
-        }
-    }, [data, navigate])
 
     return (
         <Box sx={{ paddingTop: "8rem", paddingBottom: "8rem" }}>
@@ -38,7 +37,7 @@ const HomeScreen = () => {
                         variant={"filled"}
                         size="small"
                         sx={{ width: "80%" }}
-                        defaultValue={player}
+                        defaultValue={inputValue}
                         onChange={handleChange}
                         disabled={loading}
                     />

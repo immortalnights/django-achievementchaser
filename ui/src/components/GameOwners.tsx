@@ -10,7 +10,7 @@ import { duration, formatDate, getRelativeTime } from "../utilities"
 import BorderedImage from "./BorderedImage"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
 import Link from "./Link"
-import { unwrapEdges } from "../api/queries"
+import { unwrapEdges } from "../api/utils"
 
 const GameOwnerInformation = ({
     game,

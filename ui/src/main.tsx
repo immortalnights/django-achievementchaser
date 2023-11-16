@@ -8,11 +8,15 @@ import "@fontsource/roboto/500.css"
 import "@fontsource/roboto/700.css"
 import { RouterProvider } from "react-router-dom"
 import router from "./router.tsx"
+import { ClientContext } from "graphql-hooks"
+import { client } from "./api/client"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <CssBaseline>
-            <RouterProvider router={router} />
+            <ClientContext.Provider value={client}>
+                <RouterProvider router={router} />
+            </ClientContext.Provider>
         </CssBaseline>
     </React.StrictMode>
 )

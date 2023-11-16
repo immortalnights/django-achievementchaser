@@ -1,15 +1,17 @@
 import { useRouteLoaderData } from "react-router-dom"
-import { useQueryUnlockedPlayerAchievements } from "../api/queries"
+import { unwrapEdges } from "../api/utils"
 import Loader from "../components/Loader"
 import GameGroupedAchievements from "../components/GameGroupedAchievements"
 import { Typography } from "@mui/material"
+import { playerUnlockedAchievements } from "../api/documents"
+import { useQuery } from "graphql-hooks"
 
 const PlayerRecentAchievements = () => {
     const player = useRouteLoaderData("player") as Player
-    const { loading, error, data } = useQueryUnlockedPlayerAchievements({
-        player: player.id,
-        limit: 24,
-    })
+    const { loading, data, error } = useQuery<PlayerQueryResponse>(
+        playerUnlockedAchievements,
+        { variables: { player: player.id, limit: 24 } }
+    )
 
     return (
         <>
@@ -18,11 +20,14 @@ const PlayerRecentAchievements = () => {
                 loading={loading}
                 error={error}
                 data={data}
-                renderer={(data) => {
+                renderer={(response) => {
+                    const achievements = unwrapEdges(
+                        response?.player?.unlockedAchievements
+                    )
                     return (
                         <GameGroupedAchievements
                             player={player.id}
-                            achievements={data}
+                            achievements={achievements}
                             rows={1}
                         />
                     )

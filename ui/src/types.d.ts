@@ -2,6 +2,12 @@ type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 interface Connection<T> {
     edges: { node: T }[]
+    pageInfo?: {
+        hasNextPage?: boolean
+        hasPreviousPage?: boolean
+        endCursor?: string
+        startCursor?: string
+    }
 }
 interface ResponseError {
     error: unknown

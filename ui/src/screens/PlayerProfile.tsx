@@ -1,26 +1,31 @@
 import { useRouteLoaderData } from "react-router-dom"
 import { Typography } from "@mui/material"
-import { useQueryPlayerAvailableAchievements } from "../api/queries"
+import { unwrapEdges } from "../api/utils"
 import Loader from "../components/Loader"
 import GameGroupedAchievements from "../components/GameGroupedAchievements"
 import LoadPlayerOwnedGames from "../components/LoadPlayerOwnedGames"
+import { useQuery } from "graphql-hooks"
+import { playerAvailableAchievements } from "../api/documents"
 
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerAvailableAchievements({
-        player,
-        limit: 36,
-    })
+    const { loading, data, error } = useQuery<PlayerQueryResponse>(
+        playerAvailableAchievements,
+        { variables: { player, orderBy: "global_percentage", limit: 36 } }
+    )
 
     return (
         <Loader
             loading={loading}
             error={error}
             data={data}
-            renderer={(data) => {
+            renderer={(response) => {
+                const achievements = unwrapEdges(
+                    response?.player?.availableAchievements
+                )
                 return (
                     <GameGroupedAchievements
                         player={player}
-                        achievements={data}
+                        achievements={achievements}
                         rows={3}
                         maxAchievements={2}
                     />
