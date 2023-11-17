@@ -1,11 +1,13 @@
 import { gql } from "graphql-request"
 
-export const players = gql`query Players() {
-    players {
-        id
-        name
+export const players = gql`
+    query Players {
+        players {
+            id
+            name
+        }
     }
-}`
+`
 
 export const searchPlayers = gql`
     query Search($name: String!) {
@@ -197,7 +199,7 @@ export const playerAvailableAchievements = gql`
 `
 
 export const game = gql`
-    query Game($game: String) {
+    query Game($game: Int!) {
         game(id: $game) {
             id
             name
@@ -206,6 +208,40 @@ export const game = gql`
         }
     }
 `
+
+export const gameWithPlayerAchievements = gql`
+    query Game($game: Int!, $players: [ID!]) {
+        game(id: $game) {
+            id
+            name
+            difficultyPercentage
+            achievements {
+                id
+                displayName
+                description
+                hidden
+                iconUrl
+                iconGrayUrl
+                globalPercentage
+            }
+            playerAchievements(orderBy: "-datetime", player: $players) {
+                edges {
+                    node {
+                        datetime
+                        achievement {
+                            id
+                        }
+                        player {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+`
+
 export const gameComplete = gql`
     query Game($game: Int!) {
         game(id: $game) {

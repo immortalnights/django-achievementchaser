@@ -4,7 +4,7 @@ import { throwExpression } from "../utilities"
 import PlayerGameHeader from "../components/PlayerGameHeader"
 import PlayerGameAchievements from "../components/PlayerGameAchievements"
 import { useQuery } from "graphql-hooks"
-import { playerGame } from "../api/documents"
+import { gameWithPlayerAchievements, playerGame } from "../api/documents"
 
 const PlayerGameContainer = () => {
     const player = useRouteLoaderData("player") as Player
@@ -13,6 +13,13 @@ const PlayerGameContainer = () => {
     const { loading, data, error } = useQuery<PlayerQueryResponse>(playerGame, {
         variables: { player: player.id, game },
     })
+
+    const { data: gameData } = useQuery<GameQueryResponse>(
+        gameWithPlayerAchievements,
+        {
+            variables: { game: Number(game), players: [player.id] },
+        }
+    )
 
     return (
         <Loader

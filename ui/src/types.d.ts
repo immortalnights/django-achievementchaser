@@ -93,7 +93,7 @@ interface PlayerFriend {
     profileUrl: string
 }
 
-interface PlayersResponse extends BaseQueryResponse {
+interface PlayersQueryResponse extends BaseQueryResponse {
     players: Player[]
 }
 
