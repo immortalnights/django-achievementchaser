@@ -1,6 +1,9 @@
 import graphene
 from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
+from .filters import PlayerUnlockedAchievementFilter
 from ..models import Game, Achievement
+from players.schema.types import PlayerUnlockedAchievementNode
 
 
 class AchievementType(DjangoObjectType):
@@ -38,3 +41,8 @@ class GameType(DjangoObjectType):
 
     def resolve_achievement_count(root, info):
         return root.achievements.count()
+
+    player_achievements = DjangoFilterConnectionField(
+        PlayerUnlockedAchievementNode,
+        filterset_class=PlayerUnlockedAchievementFilter,
+    )
