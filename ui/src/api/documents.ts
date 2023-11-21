@@ -209,7 +209,7 @@ export const game = gql`
     }
 `
 
-export const gameWithPlayerAchievements = gql`
+export const gameWithPlayers = gql`
     query Game($game: Int!, $players: [ID!]) {
         game(id: $game) {
             id
@@ -223,6 +223,18 @@ export const gameWithPlayerAchievements = gql`
                 iconUrl
                 iconGrayUrl
                 globalPercentage
+            }
+            owners(player: $players) {
+                edges {
+                    node {
+                        lastPlayed
+                        unlockedAchievementCount
+                        player {
+                            id
+                            name
+                        }
+                    }
+                }
             }
             playerAchievements(orderBy: "-datetime", player: $players) {
                 edges {
