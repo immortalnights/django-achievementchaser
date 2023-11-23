@@ -1,5 +1,5 @@
 import { useContext } from "react"
-import GameAchievements from "../components/GameAchievements2"
+import GameAchievements from "../components/GameAchievements"
 import PlayerSettingsContext from "../context/PlayerSettingsContext"
 
 const PlayerGameAchievements = ({

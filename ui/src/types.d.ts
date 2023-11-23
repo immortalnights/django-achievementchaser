@@ -36,6 +36,7 @@ interface Achievement {
     iconUrl?: string
     iconGrayUrl?: string
     globalPercentage?: number
+    hidden?: boolean
     game?: Game
 }
 
