@@ -53,7 +53,13 @@ const AchievementItem = ({
 
 const GameAchievements = ({ game }: { game: Game }) => {
     return (
-        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+        <ul
+            style={{
+                listStyle: "none",
+                padding: "0 0 2em",
+                margin: "0.75em 0 0",
+            }}
+        >
             {game.achievements?.length &&
                 game.achievements.map((achievement) => (
                     <AchievementItem key={achievement.id} {...achievement} />
