@@ -228,10 +228,12 @@ export const gameWithPlayers = gql`
                 edges {
                     node {
                         lastPlayed
+                        playtimeForever
                         unlockedAchievementCount
                         player {
                             id
                             name
+                            avatarMediumUrl
                         }
                     }
                 }
