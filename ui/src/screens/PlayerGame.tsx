@@ -1,45 +1,21 @@
 import { useParams, useRouteLoaderData } from "react-router-dom"
 import Loader from "../components/Loader"
-import {
-    duration,
-    formatDate,
-    getRelativeTime,
-    throwExpression,
-} from "../utilities"
-import PlayerGameHeader from "../components/PlayerGameHeader"
+import { throwExpression } from "../utilities"
 import GameAchievements from "../components/PlayerGameAchievements"
 import { useQuery } from "graphql-hooks"
-import { gameWithPlayers, playerGame } from "../api/documents"
-import { createContext, useState } from "react"
+import { gameWithPlayers } from "../api/documents"
+import { useState } from "react"
 import PlayerCompareContext, {
     PlayerCompareContextValue,
 } from "../context/PlayerCompareContext"
 import { unwrapEdges } from "../api/utils"
 import GameIcon from "../components/GameIcon"
-import {
-    Box,
-    IconButton,
-    LinearProgress,
-    LinearProgressProps,
-    Stack,
-    Typography,
-} from "@mui/material"
-import Link from "../components/Link"
-import ExternalLink from "../components/ExternalLink"
+import { Box } from "@mui/material"
 import { GameCompletionProgress } from "../components/GameCompletionProgress"
 import PlayerSelect from "../components/PlayerSelect"
 import HideUnlockedAchievementsButton from "../components/HideUnlockedAchievementsButton"
 import OrderAchievementsButton from "../components/OrderAchievementsButton"
-import {
-    CancelPresentationTwoTone,
-    CancelScheduleSendTwoTone,
-    Circle,
-    ClearTwoTone,
-    HighlightOffRounded,
-} from "@mui/icons-material"
 import ClearComparisonButton from "../components/ClearComparisonButton"
-import BorderedImage from "../components/BorderedImage"
-import CircularProgressWithLabel from "../components/CircularProgressWithLabel"
 import GameTitle from "../components/GameTitle"
 import GameDifficulty from "../components/GameDifficulty"
 import OwnedGameLastPlayed from "../components/OwnedGameLastPlayed"
