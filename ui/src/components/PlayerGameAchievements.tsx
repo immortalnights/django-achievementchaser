@@ -4,20 +4,22 @@ import PlayerSettingsContext from "../context/PlayerSettingsContext"
 
 const PlayerGameAchievements = ({
     achievements,
-    playerAchievements,
+    player1Achievements,
+    player2Achievements,
 }: {
     achievements: Achievement[]
-    playerAchievements: PlayerUnlockedAchievement[]
+    player1Achievements: PlayerUnlockedAchievement[]
+    player2Achievements?: PlayerUnlockedAchievement[]
 }) => {
     const { achievementSortOrder, hideUnlockedAchievements } = useContext(
         PlayerSettingsContext
     )
 
     const playerAchievementReferenceSort = (a: Achievement, b: Achievement) => {
-        const aIndex = playerAchievements.findIndex(
+        const aIndex = player1Achievements.findIndex(
             (item) => item.achievement.id === a.id
         )
-        const bIndex = playerAchievements.findIndex(
+        const bIndex = player1Achievements.findIndex(
             (item) => item.achievement.id === b.id
         )
 
@@ -27,7 +29,7 @@ const PlayerGameAchievements = ({
     const filterUnlockedAchievements = () => {
         return achievements.filter(
             (achievement) =>
-                !playerAchievements.find(
+                !player1Achievements.find(
                     (playerAchievement) =>
                         playerAchievement.achievement.id === achievement.id
                 )
@@ -49,7 +51,8 @@ const PlayerGameAchievements = ({
     return achievements.length > 0 ? (
         <GameAchievements
             achievements={mutatedAchievements}
-            playerAchievements={playerAchievements}
+            player1Achievements={player1Achievements}
+            player2Achievements={player2Achievements}
         />
     ) : (
         <div
