@@ -2,8 +2,8 @@ import { Typography, Tooltip } from "@mui/material"
 import dayjs from "dayjs"
 import { useMemo } from "react"
 import { getRelativeTime, formatDate } from "../utilities"
-import BorderedImage from "./BorderedImage"
 import Link from "./Link"
+import GameIcon from "./GameIcon"
 
 const GameCard = ({
     player,
@@ -74,10 +74,7 @@ const GameCard = ({
     return (
         <Link to={`/Player/${player}/Game/${game.id}`}>
             <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
-                <BorderedImage
-                    alt={game.name}
-                    src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
-                />
+                <GameIcon {...game} />
             </Tooltip>
         </Link>
     )
