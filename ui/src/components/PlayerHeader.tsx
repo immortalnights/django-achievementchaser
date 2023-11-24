@@ -141,7 +141,7 @@ const PlayerStatisticsContent = ({
                 sx={{ display: hideGameStatistics ? "none" : "block" }}
             >
                 <MetaData
-                    label="Playtime"
+                    label="Play Time"
                     value={<Playtime playtime={totalPlaytime ?? 0} />}
                 />
             </Grid>
