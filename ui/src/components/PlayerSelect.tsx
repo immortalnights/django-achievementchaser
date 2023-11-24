@@ -18,8 +18,7 @@ const PlayerSelect = ({
     value?: string
 }) => {
     // TODO add game filter
-    const { data, loading, error } =
-        useQuery<PlayersQueryResponse>(playersDocument)
+    const { data, loading } = useQuery<PlayersQueryResponse>(playersDocument)
     const { setOtherPlayer } = useContext(PlayerCompareContext)
 
     const handleChange = (event: SelectChangeEvent<string>) => {

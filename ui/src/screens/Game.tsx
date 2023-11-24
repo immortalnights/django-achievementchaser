@@ -1,4 +1,3 @@
-import { Paper } from "@mui/material"
 import GameHeader from "../components/GameHeader"
 import { useLoaderData } from "react-router-dom"
 import GameAchievements from "../components/GameAchievements"

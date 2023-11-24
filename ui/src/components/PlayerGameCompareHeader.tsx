@@ -39,7 +39,7 @@ const PlayerGameDetails = ({
 
                     <Typography
                         fontSize={12}
-                        title={`${playtimeForever} minutes`}
+                        title={`${playtimeForever ?? 0} minutes`}
                     >
                         {playtime ? `Total playtime ${playtime} hours` : ""}
                     </Typography>

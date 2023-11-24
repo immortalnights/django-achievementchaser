@@ -48,7 +48,7 @@ const OwnedGameHeader = ({
                     />
                     <OwnedGameLastPlayed {...player1Owner} />
                     <OwnedGamePlaytime {...player1Owner} />
-                    <PlayerSelect filter={[player1Owner.player?.id!]} />
+                    <PlayerSelect filter={[player1Owner.player?.id ?? ""]} />
                 </>
             ) : (
                 <Box flexGrow={0.85} />

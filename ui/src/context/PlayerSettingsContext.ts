@@ -1,6 +1,6 @@
 import { createContext } from "react"
 
-type AchievementSortOrder = "difficulty" | "unlocked"
+export type AchievementSortOrder = "difficulty" | "unlocked"
 
 export interface PlayerSettings {
     hideGameStatistics: boolean
