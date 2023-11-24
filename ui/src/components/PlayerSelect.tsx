@@ -11,13 +11,16 @@ import { players as playersDocument } from "../api/documents"
 import PlayerCompareContext from "../context/PlayerCompareContext"
 
 const PlayerSelect = ({
-    filter,
+    filterPlayers,
+    filterGames,
     value,
 }: {
-    filter: string[]
+    filterPlayers: string[]
+    filterGames: string[]
     value?: string
 }) => {
     // TODO add game filter
+    console.debug(filterGames)
     const { data, loading } = useQuery<PlayersQueryResponse>(playersDocument)
     const { setOtherPlayer } = useContext(PlayerCompareContext)
 
@@ -27,7 +30,9 @@ const PlayerSelect = ({
 
     let players: Player[] = []
     if (data) {
-        players = data.players.filter((player) => !filter.includes(player.id))
+        players = data.players.filter(
+            (player) => !filterPlayers.includes(player.id)
+        )
     }
 
     return (
