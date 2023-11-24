@@ -19,7 +19,7 @@ class PlayerOwnedGameFilter(FilterSet):
         fields: list[str] = []
 
     order_by = OrderingFilter(fields=("last_played",))
-    player = NonNullModelMultipleChoiceFilter(queryset=Player.objects.all())
+    player = ModelMultipleChoiceFilter(queryset=Player.objects.all())
 
 
 class PlayerUnlockedAchievementFilter(FilterSet):
