@@ -159,9 +159,9 @@ const Calendar = ({
         [unlockedAchievementIndex]
     )
 
-    const handleClickTimelineDay = (date: string) => {
+    const handleClickTimelineDay = useCallback((date: string) => {
         navigate(`/Player/${player}/RecentAchievements/${date}`)
-    }
+    }, [])
 
     const calendar = useMemo(() => {
         // console.time("Building calendar")
