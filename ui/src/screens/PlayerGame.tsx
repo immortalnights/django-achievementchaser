@@ -22,7 +22,7 @@ import OwnedGameLastPlayed from "../components/OwnedGameLastPlayed"
 import OwnedGamePlaytime from "../components/OwnedGamePlaytime"
 import PlayerGameCompareHeader from "../components/PlayerGameCompareHeader"
 
-const GameHeader = ({
+const OwnedGameHeader = ({
     game,
     player1Owner,
     player1Achievements,
@@ -85,10 +85,10 @@ const GameDetails = ({
 
     return (
         <Box>
-            <GameTitle {...game} />
+            <GameTitle game={game} />
             {player1Owner && (
                 <>
-                    <GameHeader
+                    <OwnedGameHeader
                         game={game}
                         player1Owner={player1Owner}
                         player1Achievements={player1Achievements.length}
