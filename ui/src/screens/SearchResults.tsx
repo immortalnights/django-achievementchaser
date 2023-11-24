@@ -4,14 +4,14 @@ import SearchGameResults from "../components/SearchGameResults"
 import SearchPlayerResults from "../components/SearchPlayerResults"
 
 const SearchResults = () => {
-    const data = useLoaderData() as SearchQueryResponse
+    const results = useLoaderData() as SearchQueryResults
 
     const players: Player[] = []
     const games: Game[] = []
 
-    data.searchPlayersAndGames.forEach((item) => {
-        if ("avatarMediumUrl" in item) {
-            players.push(item)
+    results.forEach((item) => {
+        if ("playerId" in item) {
+            players.push({ ...item, id: item.playerId })
         } else if ("imgIconUrl" in item) {
             games.push(item)
         }
@@ -20,8 +20,10 @@ const SearchResults = () => {
     return (
         <div>
             <Typography variant="h4">Search</Typography>
+
             <Typography variant="h5">Players</Typography>
             <SearchPlayerResults items={players} />
+
             <Typography variant="h5">Games</Typography>
             <SearchGameResults items={games} />
         </div>

@@ -109,6 +109,7 @@ interface GameQueryResponse extends BaseQueryResponse {
     game: Game | null
 }
 
+type SearchQueryResults = ((Player & { playerId: string }) | Game)[]
 interface SearchQueryResponse extends BaseQueryResponse {
-    searchPlayersAndGames: (Player | Game)[]
+    searchPlayersAndGames: SearchQueryResults
 }
