@@ -1,29 +1,12 @@
 import { Box, Grid, Typography } from "@mui/material"
 import BorderedImage from "./BorderedImage"
-import ExternalLink from "./ExternalLink"
-import Link from "./Link"
 import GameOwners from "./GameOwners"
+import GameTitle from "./GameTitle"
 
 const GameHeader = ({ game }: { game: Game }) => {
     return (
         <>
-            <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-                <Link to={`/Game/${game.id}`}>{game.name}</Link>
-                <Box
-                    sx={{
-                        display: "flex",
-                        paddingX: 1,
-                        alignItems: "flex-end",
-                    }}
-                >
-                    <ExternalLink
-                        href={`https://store.steampowered.com/app/${
-                            game.id
-                        }/${encodeURIComponent(game.name ?? "")}`}
-                        title="Steam Profile"
-                    />
-                </Box>
-            </Box>
+            <GameTitle game={game} variant="h4" />
             <Grid container>
                 <Grid paddingRight="1em">
                     <BorderedImage

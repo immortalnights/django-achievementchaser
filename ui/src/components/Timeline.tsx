@@ -74,8 +74,11 @@ const CalendarHeader = ({
     totalUnlockedAchievements?: number
 }) => {
     return (
-        <Box display="flex" sx={{ userSelect: "none" }}>
-            <div style={{ marginLeft: 5 }}>Jan</div>
+        <Box
+            display="flex"
+            sx={{ userSelect: "none", justifyContent: "space-between" }}
+        >
+            <div style={{ marginLeft: 5, flexGrow: 0.4 }}>Jan</div>
 
             <YearSelector
                 selected={year}
@@ -101,7 +104,9 @@ const CalendarHeader = ({
                 <WorkspacePremiumTwoTone />
                 {totalUnlockedAchievements.toFixed(0).padStart(2, "0") || "00"}
             </Box>
-            <div style={{ marginRight: 10 }}>Dec</div>
+            <div style={{ marginRight: 10, textAlign: "right", flexGrow: 0.4 }}>
+                Dec
+            </div>
         </Box>
     )
 }
