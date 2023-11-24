@@ -295,7 +295,7 @@ export const search = gql`
     query Search($name: String!) {
         searchPlayersAndGames(name: $name) {
             ... on PlayerType {
-                id
+                playerId: id
                 name
                 avatarMediumUrl
             }
