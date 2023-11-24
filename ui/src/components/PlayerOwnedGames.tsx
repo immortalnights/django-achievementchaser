@@ -1,4 +1,4 @@
-import FlexWrappedList from "./FlexWrappedList"
+import { Stack } from "@mui/material"
 import GameCard from "./GameCard"
 
 const PlayerOwnedGames = ({
@@ -9,17 +9,21 @@ const PlayerOwnedGames = ({
     ownedGames: PlayerOwnedGame[]
 }) => {
     return (
-        <FlexWrappedList>
+        <Stack
+            direction="row"
+            justifyContent="space-between"
+            flexWrap="wrap"
+            gap={0.75}
+        >
             {ownedGames.map((ownedGame) => (
-                <li key={ownedGame.game.id}>
-                    <GameCard
-                        {...ownedGame}
-                        {...ownedGame.game}
-                        player={player}
-                    />
-                </li>
+                <GameCard
+                    key={ownedGame.game.id}
+                    {...ownedGame}
+                    {...ownedGame.game}
+                    player={player}
+                />
             ))}
-        </FlexWrappedList>
+        </Stack>
     )
 }
 

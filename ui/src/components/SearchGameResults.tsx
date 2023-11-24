@@ -1,6 +1,5 @@
-import { Tooltip } from "@mui/material"
+import { Stack, Tooltip } from "@mui/material"
 import BorderedImage from "./BorderedImage"
-import FlexWrappedList from "./FlexWrappedList"
 import Link from "./Link"
 
 const GameResult = ({ id, name }: Game) => {
@@ -20,13 +19,16 @@ const SearchGameResults = ({ items }: { items: Game[] }) => {
 
     if (items.length > 0) {
         content = (
-            <FlexWrappedList justifyContent="flex-start">
+            <Stack
+                direction="row"
+                flexWrap="wrap"
+                justifyContent="space-between"
+                gap={0.75}
+            >
                 {items.map((item) => (
-                    <li key={item.id}>
-                        <GameResult {...item} />
-                    </li>
+                    <GameResult key={item.id} {...item} />
                 ))}
-            </FlexWrappedList>
+            </Stack>
         )
     } else {
         content = <div>No results</div>
