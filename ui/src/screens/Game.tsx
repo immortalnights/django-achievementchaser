@@ -13,9 +13,7 @@ const GameScreen = () => {
     return (
         <>
             <GameHeader game={game} />
-            <Paper sx={{ marginTop: "1em" }} elevation={0}>
-                <GameAchievements achievements={game.achievements ?? []} />
-            </Paper>
+            <GameAchievements achievements={game.achievements ?? []} />
         </>
     )
 }
