@@ -1,4 +1,3 @@
-from loguru import logger
 from django_filters import FilterSet, OrderingFilter, ModelMultipleChoiceFilter
 from players.models import Player, PlayerUnlockedAchievement
 
