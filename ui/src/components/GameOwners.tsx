@@ -95,7 +95,7 @@ const GameOwners = ({ game }: { game: Game }) => {
                     <TableCell>Progress</TableCell>
                     <TableCell>Last Played</TableCell>
                     <TableCell>Completed</TableCell>
-                    <TableCell>Playtime</TableCell>
+                    <TableCell>Play Time</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>

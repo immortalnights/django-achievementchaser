@@ -4,7 +4,7 @@ import { throwExpression } from "../utilities"
 import GameAchievements from "../components/PlayerGameAchievements"
 import { useQuery } from "graphql-hooks"
 import { gameWithPlayers } from "../api/documents"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import PlayerCompareContext, {
     PlayerCompareContextValue,
 } from "../context/PlayerCompareContext"
@@ -22,6 +22,29 @@ import OwnedGameLastPlayed from "../components/OwnedGameLastPlayed"
 import OwnedGamePlaytime from "../components/OwnedGamePlaytime"
 import PlayerGameCompareHeader from "../components/PlayerGameCompareHeader"
 
+const OwnedGameAchievementProgress = ({
+    game,
+    playerOwner,
+    playerAchievements,
+}: {
+    game: Game
+    playerOwner: PlayerOwnedGame
+    playerAchievements: number
+}) => (
+    <>
+        <GameCompletionProgress
+            player={playerOwner.player!}
+            achievements={game.achievements?.length ?? 0}
+            playerAchievements={playerAchievements}
+        />
+
+        <PlayerSelect
+            filterPlayers={[playerOwner.player?.id ?? ""]}
+            filterGames={[game.id]}
+        />
+    </>
+)
+
 const OwnedGameHeader = ({
     game,
     player1Owner,
@@ -33,7 +56,7 @@ const OwnedGameHeader = ({
     player1Achievements: number
     compare?: boolean
 }) => {
-    const gameAchievementsCount = game.achievements?.length ?? 0
+    const gameAchievementCount = game.achievements?.length ?? 0
 
     return (
         <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -41,23 +64,29 @@ const OwnedGameHeader = ({
             <GameDifficulty difficulty={game.difficultyPercentage} />
             {player1Owner && !compare ? (
                 <>
-                    <GameCompletionProgress
-                        player={player1Owner.player!}
-                        achievements={gameAchievementsCount}
-                        playerAchievements={player1Achievements}
-                    />
                     <OwnedGameLastPlayed {...player1Owner} />
                     <OwnedGamePlaytime {...player1Owner} />
-                    <PlayerSelect filter={[player1Owner.player?.id ?? ""]} />
+                    {gameAchievementCount > 0 ? (
+                        <OwnedGameAchievementProgress
+                            game={game}
+                            playerOwner={player1Owner}
+                            playerAchievements={player1Achievements}
+                        />
+                    ) : (
+                        <Box flexGrow={0.5} />
+                    )}
                 </>
             ) : (
                 <Box flexGrow={0.85} />
             )}
-            <Box>
-                {compare && <ClearComparisonButton />}
-                <HideUnlockedAchievementsButton />
-                <OrderAchievementsButton />
-            </Box>
+
+            {gameAchievementCount > 0 && (
+                <Box>
+                    {compare && <ClearComparisonButton />}
+                    <HideUnlockedAchievementsButton />
+                    <OrderAchievementsButton />
+                </Box>
+            )}
         </Box>
     )
 }
@@ -83,6 +112,8 @@ const GameDetails = ({
         ? playerAchievements.filter((item) => item.player.id === player2)
         : undefined
 
+    const gameAchievementCount = game.achievements?.length ?? 0
+
     return (
         <Box>
             <GameTitle game={game} />
@@ -94,11 +125,9 @@ const GameDetails = ({
                         player1Achievements={player1Achievements.length}
                         compare={!!player2Owner}
                     />
-                    {player2Owner && (
+                    {gameAchievementCount > 0 && player2Owner && (
                         <PlayerGameCompareHeader
-                            gameAchievementCount={
-                                game.achievements?.length ?? 0
-                            }
+                            gameAchievementCount={gameAchievementCount}
                             player1Owner={player1Owner}
                             player1Achievements={player1Achievements.length}
                             player2Owner={player2Owner}
@@ -138,6 +167,10 @@ const PlayerGameContainer = () => {
         otherPlayer: comparePlayer,
         setOtherPlayer: (value: string | undefined) => setComparePlayer(value),
     }
+
+    useEffect(() => {
+        setComparePlayer(undefined)
+    }, [game])
 
     return (
         <PlayerCompareContext.Provider value={contextValue}>
