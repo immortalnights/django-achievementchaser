@@ -1,17 +1,23 @@
-import { Box } from "@mui/material"
+import { Box, TypographyVariant } from "@mui/material"
 import Link from "./Link"
 import ExternalLink from "./ExternalLink"
 
-const GameTitle = ({ id, name }: Game) => (
+const GameTitle = ({
+    game: { id, name },
+    variant = "h5",
+}: {
+    game: Game
+    variant?: TypographyVariant
+}) => (
     <Box
         sx={{
             display: "flex",
-            margin: 0,
+            margin: "0 0 0.25em",
             alignItems: "flex-end",
             gap: 1,
         }}
     >
-        <Link to={`/Game/${id}`} variant="h5">
+        <Link to={`/Game/${id}`} variant={variant}>
             {name}
         </Link>
         <ExternalLink
