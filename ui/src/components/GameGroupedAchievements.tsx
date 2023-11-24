@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import Grid from "@mui/material/Unstable_Grid2"
 import GameCapsule from "./GameCapsule"
 import AchievementIcon from "./AchievementIcon"
-import FlexWrappedList from "./FlexWrappedList"
+import { Stack } from "@mui/material"
 
 type MaybeUnlockedAchievement = {
     datetime?: string
@@ -29,17 +29,16 @@ const GameAchievementSet = ({
     return (
         <>
             <GameCapsule player={player} game={game} />
-            <FlexWrappedList justifyContent="flex-start" margin="3px 0 0">
+            <Stack flexDirection="row" flexWrap="wrap" gap={1}>
                 {achievements.map((item) => (
-                    <li key={`${game.id}-${item.id}`}>
-                        <AchievementIcon
-                            game={game.id}
-                            achievement={item}
-                            unlockedDatetime={item.datetime}
-                        />
-                    </li>
+                    <AchievementIcon
+                        key={`${game.id}-${item.id}`}
+                        game={game.id}
+                        achievement={item}
+                        unlockedDatetime={item.datetime}
+                    />
                 ))}
-            </FlexWrappedList>
+            </Stack>
         </>
     )
 }
