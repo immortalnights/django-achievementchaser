@@ -36,6 +36,7 @@ interface Achievement {
     iconUrl?: string
     iconGrayUrl?: string
     globalPercentage?: number
+    hidden?: boolean
     game?: Game
 }
 
@@ -93,7 +94,7 @@ interface PlayerFriend {
     profileUrl: string
 }
 
-interface PlayersResponse extends BaseQueryResponse {
+interface PlayersQueryResponse extends BaseQueryResponse {
     players: Player[]
 }
 

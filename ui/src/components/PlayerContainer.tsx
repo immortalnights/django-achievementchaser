@@ -10,7 +10,7 @@ import PlayerProfileHeader from "./PlayerHeader"
 import {
     AchievementSortOrder,
     PlayerSettingsContextValue,
-} from "../context/types"
+} from "../context/PlayerSettingsContext"
 
 const PlayerContainer = () => {
     const [contextState, setContextState] = useState(loadFromLocalStorage())
