@@ -7,7 +7,7 @@ import { playerUnlockedAchievements } from "../api/documents"
 import { useQuery } from "graphql-hooks"
 import { DateRangeTwoTone } from "@mui/icons-material"
 
-const PlayerRecentAchievements = () => {
+const PlayerAchievements = () => {
     const player = useRouteLoaderData("player") as Player
     const { loading, data, error } = useQuery<PlayerQueryResponse>(
         playerUnlockedAchievements,
@@ -43,4 +43,4 @@ const PlayerRecentAchievements = () => {
     )
 }
 
-export default PlayerRecentAchievements
+export default PlayerAchievements

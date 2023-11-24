@@ -160,7 +160,7 @@ const Calendar = ({
     )
 
     const handleClickTimelineDay = useCallback((date: string) => {
-        navigate(`/Player/${player}/RecentAchievements/${date}`)
+        navigate(`/Player/${player}/Achievements/${date}`)
     }, [])
 
     const calendar = useMemo(() => {

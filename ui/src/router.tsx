@@ -42,12 +42,10 @@ const playerRoutes = {
             },
         },
         {
-            path: ":id/RecentAchievements/:date?",
+            path: ":id/Achievements/:date?",
             async lazy() {
-                const { PlayerRecentAchievements } = await import(
-                    "./screens/player"
-                )
-                return { Component: PlayerRecentAchievements }
+                const { PlayerAchievements } = await import("./screens/player")
+                return { Component: PlayerAchievements }
             },
         },
         {
