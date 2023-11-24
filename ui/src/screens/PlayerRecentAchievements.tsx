@@ -2,9 +2,10 @@ import { useRouteLoaderData } from "react-router-dom"
 import { unwrapEdges } from "../api/utils"
 import Loader from "../components/Loader"
 import GameGroupedAchievements from "../components/GameGroupedAchievements"
-import { Typography } from "@mui/material"
+import { Box, IconButton, Typography } from "@mui/material"
 import { playerUnlockedAchievements } from "../api/documents"
 import { useQuery } from "graphql-hooks"
+import { DateRangeTwoTone } from "@mui/icons-material"
 
 const PlayerRecentAchievements = () => {
     const player = useRouteLoaderData("player") as Player
@@ -15,7 +16,12 @@ const PlayerRecentAchievements = () => {
 
     return (
         <>
-            <Typography variant="h5">Recent Achievements</Typography>
+            <Box display="flex" justifyContent="space-between">
+                <Typography variant="h5">Recent Achievements</Typography>
+                <IconButton disabled>
+                    <DateRangeTwoTone />
+                </IconButton>
+            </Box>
             <Loader
                 loading={loading}
                 error={error}
