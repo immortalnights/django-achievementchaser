@@ -9,6 +9,7 @@ import {
 } from "@mui/icons-material"
 import { useQuery } from "graphql-hooks"
 import { playerGames, playerUnlockedAchievements } from "../api/documents"
+import { useNavigate } from "react-router-dom"
 
 const YearSelector = ({
     selected,
@@ -106,14 +107,17 @@ const CalendarHeader = ({
 }
 
 const Calendar = ({
+    player,
     year,
     perfectGames,
     achievements,
 }: {
+    player: string
     year: number
     perfectGames: PlayerOwnedGame[]
     achievements: PlayerUnlockedAchievement[]
 }) => {
+    const navigate = useNavigate()
     const yearDate = dayjs(`01-01-${year}`)
 
     // Make all achievements have a dayjs object
@@ -154,6 +158,10 @@ const Calendar = ({
         (date: string) => unlockedAchievementIndex[date] ?? 0,
         [unlockedAchievementIndex]
     )
+
+    const handleClickTimelineDay = (date: string) => {
+        navigate(`/Player/${player}/RecentAchievements/${date}`)
+    }
 
     const calendar = useMemo(() => {
         // console.time("Building calendar")
@@ -215,8 +223,13 @@ const Calendar = ({
                         colorClassName,
                         perfectGameClassName,
                         "light",
+                        achievementCount > 0 ? "selectable" : "",
                     ].join(" ")}
                     title={title}
+                    onClick={() =>
+                        achievementCount > 0 &&
+                        handleClickTimelineDay(dateString)
+                    }
                 >
                     <span className="sr-only">{displayDate}</span>
                 </td>
@@ -302,6 +315,7 @@ const Timeline = ({ player }: { player: string }) => {
                     totalUnlockedAchievements={achievements.length}
                 />
                 <Calendar
+                    player={player}
                     year={selectedYear}
                     perfectGames={perfectGames}
                     achievements={achievements}

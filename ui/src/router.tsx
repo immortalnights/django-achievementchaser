@@ -42,7 +42,7 @@ const playerRoutes = {
             },
         },
         {
-            path: ":id/RecentAchievements",
+            path: ":id/RecentAchievements/:date?",
             async lazy() {
                 const { PlayerRecentAchievements } = await import(
                     "./screens/player"
