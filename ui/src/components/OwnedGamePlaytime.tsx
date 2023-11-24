@@ -9,7 +9,7 @@ const OwnedGamePlaytime = ({ playtimeForever }: PlayerOwnedGame) => {
     return (
         <div>
             <Typography variant="subtitle1" textTransform="uppercase">
-                Total Playtime
+                Play Time
             </Typography>
             <div>{value}</div>
         </div>
