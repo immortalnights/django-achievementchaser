@@ -1,4 +1,9 @@
-from django_filters import FilterSet, OrderingFilter, NumberFilter, BooleanFilter
+from django_filters import (
+    FilterSet,
+    OrderingFilter,
+    NumberFilter,
+    BooleanFilter,
+)
 from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Achievement
 
@@ -28,63 +33,27 @@ class AchievementOrderingFilter(OrderingFilter):
         return OrderingFilter.filter(self, qs, value)
 
 
-class UnlockedAchievementYearFilter(NumberFilter):
-    def filter(self, qs, value):
-        res = qs
-        if value is not None:
-            res = qs.filter(datetime__year=value)
-
-        return res
-
-
-class GameFilter(NumberFilter):
-    def filter(self, qs, value):
-        res = qs
-        if value is not None:
-            res = qs.filter(game_id=value)
-
-        return res
-
-
 class StartedGameFilter(BooleanFilter):
     def filter(self, qs, value):
-        res = qs
         if value is not None:
             if value is True:
-                args = {"playtime_forever__gt": 0, "completion_percentage__gt": 0}
+                qs = qs.filter(playtime_forever__gt=0, completion_percentage__gt=0)
             else:
-                args = {"playtime_forever": 0, "completion_percentage": 0}
-            res = qs.filter(**args)
+                qs = qs.filter(playtime_forever=0, completion_percentage=0)
 
-        return res
-
-
-class CompletedGameFilter(BooleanFilter):
-    def filter(self, qs, value):
-        res = qs
-        if value is not None:
-            res = qs.filter(completed__isnull=not value)
-
-        return res
-
-
-class GameCompletedYearFilter(NumberFilter):
-    def filter(self, qs, value):
-        res = qs
-        if value is not None:
-            res = qs.filter(completed__year=value)
-
-        return res
+        return qs
 
 
 class PlayerUnlockedAchievementFilter(FilterSet):
     class Meta:
         model = PlayerUnlockedAchievement
-        fields: list[str] = []  # {"game_id: [], "datetime": ["year"]}
+        fields = {
+            "datetime": ["range"],
+        }
 
     order_by = OrderingFilter(fields=("datetime",))
-    year = UnlockedAchievementYearFilter()
-    game = GameFilter()
+    year = NumberFilter(field_name="datetime__year")
+    game = NumberFilter(field_name="game_id")
 
 
 class PlayerAvailableAchievementFilter(FilterSet):
@@ -92,8 +61,8 @@ class PlayerAvailableAchievementFilter(FilterSet):
         model = Achievement
         fields: list[str] = []
 
-    game = GameFilter()
     order_by = AchievementOrderingFilter(fields=("global_percentage",))
+    game = NumberFilter(field_name="game_id")
 
 
 class PlayerOwnedGameFilter(FilterSet):
@@ -105,5 +74,5 @@ class PlayerOwnedGameFilter(FilterSet):
         fields=("completed", "last_played", "completion_percentage", "game__difficulty_percentage")
     )
     started = StartedGameFilter()
-    completed = CompletedGameFilter()
-    year = GameCompletedYearFilter()
+    completed = BooleanFilter(field_name="completed", lookup_expr="isnull", exclude=True)
+    year = NumberFilter(field_name="completed__year")
