@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import GameAchievements from "../components/GameAchievements"
 import PlayerSettingsContext from "../context/PlayerSettingsContext"
+import NoAchievementsBanner from "./NoAchievementsBanner"
 
 const PlayerGameAchievements = ({
     achievements,
@@ -55,16 +56,7 @@ const PlayerGameAchievements = ({
             player2Achievements={player2Achievements}
         />
     ) : (
-        <div
-            style={{
-                marginTop: 10,
-                padding: 8,
-                textAlign: "center",
-                background: "lightgray",
-            }}
-        >
-            No Achievements
-        </div>
+        <NoAchievementsBanner />
     )
 }
 
