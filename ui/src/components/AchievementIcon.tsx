@@ -1,6 +1,6 @@
 import { Typography, Tooltip } from "@mui/material"
 import dayjs from "dayjs"
-import { getRelativeTime } from "../utilities"
+import { getRelativeTime } from "../dayjsUtilities"
 import BorderedImage from "./BorderedImage"
 
 const AchievementTitle = ({
