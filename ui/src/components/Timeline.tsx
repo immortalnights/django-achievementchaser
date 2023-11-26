@@ -164,9 +164,12 @@ const Calendar = ({
         [unlockedAchievementIndex]
     )
 
-    const handleClickTimelineDay = useCallback((date: string) => {
-        navigate(`/Player/${player}/Achievements/${date}`)
-    }, [])
+    const handleClickTimelineDay = useCallback(
+        (date: string) => {
+            navigate(`/Player/${player}/Achievements/${date}`)
+        },
+        [navigate, player]
+    )
 
     const calendar = useMemo(() => {
         // console.time("Building calendar")
@@ -246,7 +249,12 @@ const Calendar = ({
 
         // console.timeEnd("Building calendar")
         return calendar
-    }, [getPerfectGameCount, getAchievementCount, yearDate])
+    }, [
+        handleClickTimelineDay,
+        getPerfectGameCount,
+        getAchievementCount,
+        yearDate,
+    ])
 
     return (
         <table className="">

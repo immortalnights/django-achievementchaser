@@ -87,6 +87,7 @@ const WeeklyAchievements = ({
         <Box flexGrow={1} minHeight={10}>
             {Object.entries(weeklyAchievements).map(([week, achievements]) => (
                 <AchievementsOnWeek
+                    key={`week-${week}`}
                     player={player}
                     week={Number(week)}
                     achievements={achievements}
@@ -145,8 +146,8 @@ const PlayerAchievements = () => {
     const player = useRouteLoaderData("player") as Player
     const { date } = useParams()
     dayjs.tz.setDefault(dayjs.tz.guess())
-    let toDate = getToDate(date)
-    let fromDate = toDate.subtract(4, "weeks")
+    const toDate = getToDate(date)
+    const fromDate = toDate.subtract(4, "weeks")
     // console.debug(
     //     `${fromDate.format("DD-MM-YYYY")} -(${date})> ${toDate.format(
     //         "DD-MM-YYYY"
