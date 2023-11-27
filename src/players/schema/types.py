@@ -97,7 +97,7 @@ class PlayerType(DjangoObjectType):
 
     profile = graphene.Field(ProfileType)
 
-    game = graphene.Field(PlayerOwnedGameNode, game=graphene.String())
+    game = graphene.Field(PlayerOwnedGameNode, game=graphene.Int())
 
     games = DjangoFilterConnectionField(
         PlayerOwnedGameNode,
