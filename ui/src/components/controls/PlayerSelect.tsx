@@ -6,37 +6,60 @@ import {
     MenuItem,
 } from "@mui/material"
 import { useQuery } from "graphql-hooks"
-import { useContext } from "react"
-import { players as playersDocument } from "@/api/documents"
+import { useContext, useMemo } from "react"
+import { gameWithOwners } from "@/api/documents"
 import PlayerCompareContext from "@/context/PlayerCompareContext"
+import { unwrapEdges } from "@/api/utils"
 
 const PlayerSelect = ({
-    filterPlayers,
-    filterGames,
+    game,
+    excludePlayers,
     value,
 }: {
-    filterPlayers: string[]
-    filterGames: string[]
+    game: string
+    excludePlayers: string[]
     value?: string
 }) => {
-    // TODO add game filter
-    console.debug(filterGames)
-    const { data, loading } = useQuery<PlayersQueryResponse>(playersDocument)
+    const { data, loading } = useQuery<GameQueryResponse>(gameWithOwners, {
+        variables: {
+            game: Number(game),
+        },
+    })
     const { setOtherPlayer } = useContext(PlayerCompareContext)
 
     const handleChange = (event: SelectChangeEvent<string>) => {
         setOtherPlayer(event.target.value)
     }
 
-    let players: Player[] = []
-    if (data) {
-        players = data.players.filter(
-            (player) => !filterPlayers.includes(player.id)
-        )
-    }
+    // {
+    //     let players
+    //     if (data) {
+    //         const owners = unwrapEdges(data.game?.owners)
+    //         players = owners.map((owner) => owner.player).filter(Boolean)
+
+    //     }
+
+    // }
+
+    const players = useMemo(
+        () =>
+            data
+                ? (unwrapEdges(data.game?.owners)
+                      .map((owner) => owner.player)
+                      .filter(
+                          (player) =>
+                              player && !excludePlayers.includes(player.id)
+                      ) as Player[]) // force the type as the filter doesn't apply correctly
+                : [],
+        [data]
+    )
 
     return (
-        <FormControl sx={{ minWidth: 200 }} size="small">
+        <FormControl
+            sx={{ minWidth: 200 }}
+            size="small"
+            disabled={loading || players.length === 0}
+        >
             <InputLabel id="select-player-compare-label">Compare</InputLabel>
             <Select
                 labelId="select-player-compare-label"
@@ -45,7 +68,6 @@ const PlayerSelect = ({
                 label="Compare"
                 size="small"
                 onChange={handleChange}
-                disabled={loading}
             >
                 {value && (
                     <MenuItem key="noone" value="">
