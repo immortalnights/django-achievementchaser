@@ -31,16 +31,6 @@ const PlayerSelect = ({
         setOtherPlayer(event.target.value)
     }
 
-    // {
-    //     let players
-    //     if (data) {
-    //         const owners = unwrapEdges(data.game?.owners)
-    //         players = owners.map((owner) => owner.player).filter(Boolean)
-
-    //     }
-
-    // }
-
     const players = useMemo(
         () =>
             data
@@ -51,7 +41,7 @@ const PlayerSelect = ({
                               player && !excludePlayers.includes(player.id)
                       ) as Player[]) // force the type as the filter doesn't apply correctly
                 : [],
-        [data]
+        [data, excludePlayers]
     )
 
     return (
