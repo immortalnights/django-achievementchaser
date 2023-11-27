@@ -99,12 +99,11 @@ const GameDetails = ({
     player2: player2Owner,
 }: {
     game: Omit<Game, "owners">
-    player1: PlayerOwnedGame
+    player1?: PlayerOwnedGame
     player2?: PlayerOwnedGame
 }) => {
-    const player1Achievements = unwrapEdges(
-        player1Owner.player?.unlockedAchievements
-    )
+    const player1Achievements =
+        unwrapEdges(player1Owner?.player?.unlockedAchievements) ?? []
     const player2Achievements = player2Owner
         ? unwrapEdges(player2Owner.player?.unlockedAchievements)
         : undefined
