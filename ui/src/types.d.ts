@@ -61,7 +61,7 @@ interface PlayerOwnedGame {
     playtimeForever?: number
     completionPercentage?: number
     completed?: string
-    unlockedAchievements?: PlayerUnlockedAchievement[]
+    unlockedAchievements?: Connection<PlayerUnlockedAchievement>
     unlockedAchievementCount?: number
 }
 
