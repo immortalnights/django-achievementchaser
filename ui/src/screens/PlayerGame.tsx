@@ -1,26 +1,28 @@
 import { useParams, useRouteLoaderData } from "react-router-dom"
-import Loader from "../components/Loader"
-import { throwExpression } from "../utilities"
-import GameAchievements from "../components/PlayerGameAchievements"
+import Loader from "@/components/Loader"
+import { throwExpression } from "@/utilities"
+import GameAchievements from "@/components/PlayerGameAchievements"
 import { useQuery } from "graphql-hooks"
-import { gameWithPlayers } from "../api/documents"
+import { gameWithPlayers } from "@/api/documents"
 import { useEffect, useState } from "react"
 import PlayerCompareContext, {
     PlayerCompareContextValue,
-} from "../context/PlayerCompareContext"
-import { unwrapEdges } from "../api/utils"
-import GameIcon from "../components/GameIcon"
+} from "@/context/PlayerCompareContext"
+import { unwrapEdges } from "@/api/utils"
+import GameIcon from "@/components/GameIcon"
 import { Box } from "@mui/material"
-import { GameCompletionProgress } from "../components/GameCompletionProgress"
-import PlayerSelect from "../components/PlayerSelect"
-import HideUnlockedAchievementsButton from "../components/HideUnlockedAchievementsButton"
-import OrderAchievementsButton from "../components/OrderAchievementsButton"
-import ClearComparisonButton from "../components/ClearComparisonButton"
-import GameTitle from "../components/GameTitle"
-import GameDifficulty from "../components/GameDifficulty"
-import OwnedGameLastPlayed from "../components/OwnedGameLastPlayed"
-import OwnedGamePlaytime from "../components/OwnedGamePlaytime"
-import PlayerGameCompareHeader from "../components/PlayerGameCompareHeader"
+import { GameCompletionProgress } from "@/components/GameCompletionProgress"
+import {
+    PlayerSelect,
+    HideUnlockedAchievementsButton,
+    OrderAchievementsButton,
+    ClearComparisonButton,
+} from "@/components/controls"
+import GameTitle from "@/components/GameTitle"
+import GameDifficulty from "@/components/GameDifficulty"
+import OwnedGameLastPlayed from "@/components/OwnedGameLastPlayed"
+import OwnedGamePlaytime from "@/components/OwnedGamePlaytime"
+import PlayerGameCompareHeader from "@/components/PlayerGameCompareHeader"
 
 const OwnedGameAchievementProgress = ({
     game,

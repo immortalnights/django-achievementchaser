@@ -1,7 +1,7 @@
 import { DateRangeTwoTone } from "@mui/icons-material"
 import { IconButton } from "@mui/material"
 import { useContext } from "react"
-import PlayerSettingsContext from "../context/PlayerSettingsContext"
+import PlayerSettingsContext from "@/context/PlayerSettingsContext"
 
 const OrderAchievementsButton = () => {
     const {

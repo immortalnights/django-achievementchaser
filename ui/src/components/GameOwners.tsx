@@ -6,11 +6,11 @@ import {
     TableBody,
     Box,
 } from "@mui/material"
-import { duration, formatDate, getRelativeTime } from "../dayjsUtilities"
+import { duration, formatDate, getRelativeTime } from "@/dayjsUtilities"
 import BorderedImage from "./BorderedImage"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
 import Link from "./Link"
-import { unwrapEdges } from "../api/utils"
+import { unwrapEdges } from "@/api/utils"
 
 const GameOwnerInformation = ({
     game,

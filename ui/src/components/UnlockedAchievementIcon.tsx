@@ -1,6 +1,6 @@
 import { Tooltip, Typography } from "@mui/material"
 import { useMemo } from "react"
-import { getRelativeTime } from "../dayjsUtilities"
+import { getRelativeTime } from "@/dayjsUtilities"
 import Link from "./Link"
 import BorderedImage from "./BorderedImage"
 

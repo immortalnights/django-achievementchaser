@@ -1,11 +1,11 @@
 import { useRouteLoaderData } from "react-router-dom"
 import { Typography } from "@mui/material"
-import { unwrapEdges } from "../api/utils"
-import Loader from "../components/Loader"
-import GameGroupedAchievements from "../components/GameGroupedAchievements"
-import LoadPlayerOwnedGames from "../components/LoadPlayerOwnedGames"
+import { unwrapEdges } from "@/api/utils"
+import Loader from "@/components/Loader"
+import GameGroupedAchievements from "@/components/GameGroupedAchievements"
+import LoadPlayerOwnedGames from "@/components/LoadPlayerOwnedGames"
 import { useQuery } from "graphql-hooks"
-import { playerAvailableAchievements } from "../api/documents"
+import { playerAvailableAchievements } from "@/api/documents"
 
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
     const { loading, data, error } = useQuery<PlayerQueryResponse>(

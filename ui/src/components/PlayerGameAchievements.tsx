@@ -1,6 +1,6 @@
 import { useContext } from "react"
-import GameAchievements from "../components/GameAchievements"
-import PlayerSettingsContext from "../context/PlayerSettingsContext"
+import GameAchievements from "./GameAchievements"
+import PlayerSettingsContext from "@/context/PlayerSettingsContext"
 import NoAchievementsBanner from "./NoAchievementsBanner"
 
 const PlayerGameAchievements = ({

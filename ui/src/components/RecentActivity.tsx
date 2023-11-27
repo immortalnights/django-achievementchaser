@@ -2,9 +2,9 @@ import { Typography } from "@mui/material"
 import Loader from "./Loader"
 import RecentlyPlayedGames from "./RecentlyPlayedGames"
 import RecentlyUnlockedAchievements from "./RecentlyUnlockedAchievements"
-import { playerGames, playerUnlockedAchievements } from "../api/documents"
+import { playerGames, playerUnlockedAchievements } from "@/api/documents"
 import { useQuery } from "graphql-hooks"
-import { unwrapEdges } from "../api/utils"
+import { unwrapEdges } from "@/api/utils"
 
 const RecentlyPlayedGamesLoader = ({ player }: { player: string }) => {
     const { loading, data, error } = useQuery<PlayerQueryResponse>(

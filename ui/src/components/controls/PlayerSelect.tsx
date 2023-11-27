@@ -7,8 +7,8 @@ import {
 } from "@mui/material"
 import { useQuery } from "graphql-hooks"
 import { useContext } from "react"
-import { players as playersDocument } from "../api/documents"
-import PlayerCompareContext from "../context/PlayerCompareContext"
+import { players as playersDocument } from "@/api/documents"
+import PlayerCompareContext from "@/context/PlayerCompareContext"
 
 const PlayerSelect = ({
     filterPlayers,

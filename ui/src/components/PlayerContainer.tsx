@@ -1,16 +1,16 @@
 import { Paper, Box } from "@mui/material"
 import { useState, useMemo, useEffect } from "react"
 import { useLoaderData, Outlet } from "react-router-dom"
-import PlayerSettingsContext from "../context/PlayerSettingsContext"
 import {
     loadFromLocalStorage,
     saveToLocalStorage,
-} from "../context/localStorage"
+} from "@/context/localStorage"
 import PlayerProfileHeader from "./PlayerHeader"
 import {
+    default as PlayerSettingsContext,
     AchievementSortOrder,
     PlayerSettingsContextValue,
-} from "../context/PlayerSettingsContext"
+} from "@/context/PlayerSettingsContext"
 
 const PlayerContainer = () => {
     const [contextState, setContextState] = useState(loadFromLocalStorage())

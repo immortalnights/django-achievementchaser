@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material"
 import { Link } from "react-router-dom"
-import { getRelativeTime } from "../dayjsUtilities"
+import { getRelativeTime } from "@/dayjsUtilities"
 import BorderedImage from "./BorderedImage"
 
 const RecentlyPlayedGame = ({

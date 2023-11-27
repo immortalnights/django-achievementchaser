@@ -1,8 +1,8 @@
 import { useQuery } from "graphql-hooks"
-import { unwrapEdges } from "../api/utils"
+import { unwrapEdges } from "@/api/utils"
 import Loader from "./Loader"
 import PlayerOwnedGames from "./PlayerOwnedGames"
-import { playerGames } from "../api/documents"
+import { playerGames } from "@/api/documents"
 
 const LoadPlayerOwnedGames = ({
     player,
