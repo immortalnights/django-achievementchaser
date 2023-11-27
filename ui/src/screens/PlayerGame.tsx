@@ -3,7 +3,7 @@ import Loader from "@/components/Loader"
 import { throwExpression } from "@/utilities"
 import GameAchievements from "@/components/PlayerGameAchievements"
 import { useQuery } from "graphql-hooks"
-import { gameWithOwners } from "@/api/documents"
+import { gameWithOwnerAchievements } from "@/api/documents"
 import { useEffect, useMemo, useState } from "react"
 import PlayerCompareContext, {
     PlayerCompareContextValue,
@@ -41,8 +41,8 @@ const OwnedGameAchievementProgress = ({
         />
 
         <PlayerSelect
-            filterPlayers={[playerOwner.player?.id ?? ""]}
-            filterGames={[game.id]}
+            game={game.id}
+            excludePlayers={[playerOwner.player?.id ?? ""]}
         />
     </>
 )
@@ -151,7 +151,7 @@ const PlayerGameContainer = () => {
     const [comparePlayer, setComparePlayer] = useState<string>()
 
     const { loading, data, error } = useQuery<GameQueryResponse>(
-        gameWithOwners,
+        gameWithOwnerAchievements,
         {
             variables: {
                 game: Number(game),

@@ -211,8 +211,8 @@ export const game = gql`
     }
 `
 
-export const gameWithOwners = gql`
-    query GameWithOwners($game: Int!, $players: [ID!]) {
+export const gameWithOwnerAchievements = gql`
+    query GameWithOwnerAchievements($game: Int!, $players: [ID!]) {
         game(id: $game) {
             id
             name
@@ -249,6 +249,25 @@ export const gameWithOwners = gql`
                         }
                         lastPlayed
                         playtimeForever
+                    }
+                }
+            }
+        }
+    }
+`
+
+export const gameWithOwners = gql`
+    query GameWithOwners($game: Int!) {
+        game(id: $game) {
+            id
+            owners {
+                edges {
+                    node {
+                        player {
+                            id
+                            name
+                            avatarMediumUrl
+                        }
                     }
                 }
             }
