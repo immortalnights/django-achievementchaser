@@ -127,6 +127,7 @@ export const playerUnlockedAchievements = gql`
         $player: BigInt!
         $game: Decimal
         $year: Decimal
+        $range: [DateTime]
         $orderBy: String
         $limit: Int
         $cursor: String
@@ -136,6 +137,7 @@ export const playerUnlockedAchievements = gql`
             unlockedAchievements(
                 game: $game
                 year: $year
+                datetime_Range: $range
                 orderBy: $orderBy
                 first: $limit
                 after: $cursor

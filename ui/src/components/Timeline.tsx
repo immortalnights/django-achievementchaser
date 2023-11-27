@@ -2,13 +2,14 @@ import { ChangeEvent, useMemo, useCallback, useState, useEffect } from "react"
 import dayjs from "dayjs"
 import { Box, InputLabel, NativeSelect } from "@mui/material"
 import { unwrapEdges, updateUnlockedAchievementData } from "../api/utils"
-import { formatDate } from "../utilities"
+import { formatDate } from "../dayjsUtilities"
 import {
     VideogameAssetTwoTone,
     WorkspacePremiumTwoTone,
 } from "@mui/icons-material"
 import { useQuery } from "graphql-hooks"
 import { playerGames, playerUnlockedAchievements } from "../api/documents"
+import { useNavigate } from "react-router-dom"
 
 const YearSelector = ({
     selected,
@@ -111,14 +112,17 @@ const CalendarHeader = ({
 }
 
 const Calendar = ({
+    player,
     year,
     perfectGames,
     achievements,
 }: {
+    player: string
     year: number
     perfectGames: PlayerOwnedGame[]
     achievements: PlayerUnlockedAchievement[]
 }) => {
+    const navigate = useNavigate()
     const yearDate = dayjs(`01-01-${year}`)
 
     // Make all achievements have a dayjs object
@@ -158,6 +162,13 @@ const Calendar = ({
     const getAchievementCount = useCallback(
         (date: string) => unlockedAchievementIndex[date] ?? 0,
         [unlockedAchievementIndex]
+    )
+
+    const handleClickTimelineDay = useCallback(
+        (date: string) => {
+            navigate(`/Player/${player}/Achievements/${date}`)
+        },
+        [navigate, player]
     )
 
     const calendar = useMemo(() => {
@@ -220,8 +231,13 @@ const Calendar = ({
                         colorClassName,
                         perfectGameClassName,
                         "light",
+                        achievementCount > 0 ? "selectable" : "",
                     ].join(" ")}
                     title={title}
+                    onClick={() =>
+                        achievementCount > 0 &&
+                        handleClickTimelineDay(dateString)
+                    }
                 >
                     <span className="sr-only">{displayDate}</span>
                 </td>
@@ -233,7 +249,12 @@ const Calendar = ({
 
         // console.timeEnd("Building calendar")
         return calendar
-    }, [getPerfectGameCount, getAchievementCount, yearDate])
+    }, [
+        handleClickTimelineDay,
+        getPerfectGameCount,
+        getAchievementCount,
+        yearDate,
+    ])
 
     return (
         <table className="">
@@ -307,6 +328,7 @@ const Timeline = ({ player }: { player: string }) => {
                     totalUnlockedAchievements={achievements.length}
                 />
                 <Calendar
+                    player={player}
                     year={selectedYear}
                     perfectGames={perfectGames}
                     achievements={achievements}

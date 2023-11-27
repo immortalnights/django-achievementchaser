@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material"
-import { duration } from "../utilities"
+import { duration } from "../dayjsUtilities"
 
 const OwnedGamePlaytime = ({ playtimeForever }: PlayerOwnedGame) => {
     const value = playtimeForever

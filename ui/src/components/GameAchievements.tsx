@@ -1,5 +1,5 @@
 import { Box, Stack, SvgIconProps, Typography, styled } from "@mui/material"
-import { formatDateTime, getRelativeTime } from "../utilities"
+import { formatDateTime, getRelativeTime } from "../dayjsUtilities"
 import { Circle } from "@mui/icons-material"
 import { ReactNode, useState } from "react"
 

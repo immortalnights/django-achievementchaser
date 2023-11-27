@@ -10,6 +10,9 @@ import { RouterProvider } from "react-router-dom"
 import router from "./router.tsx"
 import { ClientContext } from "graphql-hooks"
 import { client } from "./api/client"
+import { installPlugins } from "./dayjsUtilities.ts"
+
+installPlugins()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>

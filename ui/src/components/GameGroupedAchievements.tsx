@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import Grid from "@mui/material/Unstable_Grid2"
-import { Box } from "@mui/material"
 import GameCapsule from "./GameCapsule"
 import AchievementIcon from "./AchievementIcon"
+import { Stack } from "@mui/material"
 
 type MaybeUnlockedAchievement = {
     datetime?: string
@@ -28,17 +28,17 @@ const GameAchievementSet = ({
 }) => {
     return (
         <>
-            <Box>
-                <GameCapsule player={player} game={game} />
-            </Box>
-            {achievements.map((item) => (
-                <AchievementIcon
-                    key={`${game.id}-${item.id}`}
-                    game={game.id}
-                    achievement={item}
-                    unlockedDatetime={item.datetime}
-                />
-            ))}
+            <GameCapsule player={player} game={game} />
+            <Stack flexDirection="row" flexWrap="wrap" gap={1}>
+                {achievements.map((item) => (
+                    <AchievementIcon
+                        key={`${game.id}-${item.id}`}
+                        game={game.id}
+                        achievement={item}
+                        unlockedDatetime={item.datetime}
+                    />
+                ))}
+            </Stack>
         </>
     )
 }
@@ -108,11 +108,11 @@ const GameGroupedAchievements = ({
                     md={12 / rows}
                     lg={12 / rows}
                     display="flex"
-                    alignItems="center"
+                    alignItems="flex-start"
                     gap={1}
                     wrap="wrap"
                     key={item.game.id}
-                    paddingBottom={0.5}
+                    paddingBottom={1}
                 >
                     <GameAchievementSet
                         key={item.game.id}

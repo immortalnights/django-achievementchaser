@@ -73,6 +73,7 @@ interface PlayerGamePlaytime {
 }
 
 interface PlayerUnlockedAchievement {
+    id: string
     player: Player
     game: Game
     achievement: Achievement
