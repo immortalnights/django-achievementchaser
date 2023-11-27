@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material"
 import { useLoaderData } from "react-router-dom"
-import SearchGameResults from "../components/SearchGameResults"
-import SearchPlayerResults from "../components/SearchPlayerResults"
+import SearchGameResults from "@/components/SearchGameResults"
+import SearchPlayerResults from "@/components/SearchPlayerResults"
 
 const SearchResults = () => {
     const results = useLoaderData() as SearchQueryResults

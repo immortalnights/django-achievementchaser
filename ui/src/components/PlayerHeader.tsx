@@ -3,13 +3,13 @@ import { Typography, Box, IconButton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
-import PlayerSettingsContext from "../context/PlayerSettingsContext"
+import PlayerSettingsContext from "@/context/PlayerSettingsContext"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
 import ExternalLink from "./ExternalLink"
 import Link from "./Link"
 import RecentActivity from "./RecentActivity"
-import { playerProfile } from "../api/documents"
+import { playerProfile } from "@/api/documents"
 import { useQuery } from "graphql-hooks"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
@@ -44,7 +44,7 @@ const Header = ({
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <Link to={`/player/${id}`}>{name}</Link>
+            <Link to={`/Player/${id}`}>{name}</Link>
             <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
                 <ExternalLink href={url} title="Steam Profile" />
             </Box>

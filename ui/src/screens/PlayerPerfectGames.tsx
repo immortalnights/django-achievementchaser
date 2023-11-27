@@ -1,6 +1,6 @@
 import { useRouteLoaderData } from "react-router-dom"
 import { Typography } from "@mui/material"
-import LoadPlayerOwnedGames from "../components/LoadPlayerOwnedGames"
+import LoadPlayerOwnedGames from "@/components/LoadPlayerOwnedGames"
 
 const PlayerPerfectGames = () => {
     const player = useRouteLoaderData("player") as Player

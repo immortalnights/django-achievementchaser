@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { TextField, Button, Box, CircularProgress } from "@mui/material"
 import { useNavigate } from "react-router-dom"
 import { useManualQuery } from "graphql-hooks"
-import { searchPlayers } from "../api/documents"
+import { searchPlayers } from "@/api/documents"
 
 const HomeScreen = () => {
     const navigate = useNavigate()

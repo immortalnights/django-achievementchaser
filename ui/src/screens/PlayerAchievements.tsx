@@ -1,14 +1,14 @@
 import { Link, useParams, useRouteLoaderData } from "react-router-dom"
-import { unwrapEdges } from "../api/utils"
+import { unwrapEdges } from "@/api/utils"
 import { Box, IconButton, Stack, Typography } from "@mui/material"
-import { playerUnlockedAchievements } from "../api/documents"
+import { playerUnlockedAchievements } from "@/api/documents"
 import { useQuery } from "graphql-hooks"
 import dayjs, { Dayjs } from "dayjs"
 import { useMemo, useState } from "react"
-import UnlockedAchievementIcon from "../components/UnlockedAchievementIcon"
-import { formatDate } from "../dayjsUtilities"
+import UnlockedAchievementIcon from "@/components/UnlockedAchievementIcon"
+import { formatDate } from "@/dayjsUtilities"
 import { NavigateBefore, NavigateNext } from "@mui/icons-material"
-import NoAchievementsBanner from "../components/NoAchievementsBanner"
+import NoAchievementsBanner from "@/components/NoAchievementsBanner"
 
 const getToDate = (date?: string) => {
     const now = dayjs()

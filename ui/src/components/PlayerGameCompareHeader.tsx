@@ -1,6 +1,6 @@
 import { Circle } from "@mui/icons-material"
 import { Box, Stack, SvgIconProps, Typography } from "@mui/material"
-import { getRelativeTime, duration, formatDateTime } from "../dayjsUtilities"
+import { getRelativeTime, duration, formatDateTime } from "@/dayjsUtilities"
 import BorderedImage from "./BorderedImage"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
 

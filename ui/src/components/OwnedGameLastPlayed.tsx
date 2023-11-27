@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material"
-import { formatDate, getRelativeTime } from "../dayjsUtilities"
+import { formatDate, getRelativeTime } from "@/dayjsUtilities"
 
 const OwnedGameLastPlayed = ({ lastPlayed }: PlayerOwnedGame) => (
     <div>
