@@ -4,6 +4,7 @@ from django_filters import (
     NumberFilter,
     BooleanFilter,
 )
+from django.forms import IntegerField
 from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Achievement
 
@@ -11,6 +12,10 @@ from games.models import Achievement
 def filter_name_matches(key: [str], name: str):
     first_key = key[0]
     return first_key == name or first_key[1:] == name
+
+
+class IntegerFilter(NumberFilter):
+    field_class = IntegerField
 
 
 class PlayerOwnedGameOrderingFilter(OrderingFilter):
@@ -53,7 +58,7 @@ class PlayerUnlockedAchievementFilter(FilterSet):
 
     order_by = OrderingFilter(fields=("datetime",))
     year = NumberFilter(field_name="datetime__year")
-    game = NumberFilter(field_name="game_id")
+    game = IntegerFilter(field_name="game_id")
 
 
 class PlayerAvailableAchievementFilter(FilterSet):
@@ -62,7 +67,7 @@ class PlayerAvailableAchievementFilter(FilterSet):
         fields: list[str] = []
 
     order_by = AchievementOrderingFilter(fields=("global_percentage",))
-    game = NumberFilter(field_name="game_id")
+    game = IntegerFilter(field_name="game_id")
 
 
 class PlayerOwnedGameFilter(FilterSet):
