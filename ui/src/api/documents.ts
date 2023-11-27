@@ -125,7 +125,7 @@ export const playerGame = gql`
 export const playerUnlockedAchievements = gql`
     query PlayerUnlockedAchievements(
         $player: BigInt!
-        $game: Decimal
+        $game: Int
         $year: Decimal
         $range: [DateTime]
         $orderBy: String
@@ -211,8 +211,8 @@ export const game = gql`
     }
 `
 
-export const gameWithPlayers = gql`
-    query Game($game: Int!, $players: [ID!]) {
+export const gameWithOwners = gql`
+    query GameWithOwners($game: Int!, $players: [ID!]) {
         game(id: $game) {
             id
             name
@@ -229,28 +229,26 @@ export const gameWithPlayers = gql`
             owners(player: $players) {
                 edges {
                     node {
-                        lastPlayed
-                        playtimeForever
-                        unlockedAchievementCount
                         player {
                             id
                             name
                             avatarMediumUrl
+                            unlockedAchievements(
+                                orderBy: "-datetime"
+                                game: $game
+                            ) {
+                                edges {
+                                    node {
+                                        datetime
+                                        achievement {
+                                            id
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-            }
-            playerAchievements(orderBy: "-datetime", player: $players) {
-                edges {
-                    node {
-                        datetime
-                        achievement {
-                            id
-                        }
-                        player {
-                            id
-                            name
-                        }
+                        lastPlayed
+                        playtimeForever
                     }
                 }
             }
