@@ -3,8 +3,8 @@ import Loader from "@/components/Loader"
 import { throwExpression } from "@/utilities"
 import GameAchievements from "@/components/PlayerGameAchievements"
 import { useQuery } from "graphql-hooks"
-import { gameWithPlayers } from "@/api/documents"
-import { useEffect, useState } from "react"
+import { gameWithOwnerAchievements } from "@/api/documents"
+import { useEffect, useMemo, useState } from "react"
 import PlayerCompareContext, {
     PlayerCompareContextValue,
 } from "@/context/PlayerCompareContext"
@@ -41,8 +41,8 @@ const OwnedGameAchievementProgress = ({
         />
 
         <PlayerSelect
-            filterPlayers={[playerOwner.player?.id ?? ""]}
-            filterGames={[game.id]}
+            game={game.id}
+            excludePlayers={[playerOwner.player?.id ?? ""]}
         />
     </>
 )
@@ -95,23 +95,17 @@ const OwnedGameHeader = ({
 
 const GameDetails = ({
     game,
-    player1,
-    player2,
+    player1: player1Owner,
+    player2: player2Owner,
 }: {
-    game: Game
-    player1: string
-    player2?: string
+    game: Omit<Game, "owners">
+    player1?: PlayerOwnedGame
+    player2?: PlayerOwnedGame
 }) => {
-    const owners = unwrapEdges(game.owners)
-    const player1Owner = owners.find((item) => item.player?.id === player1)
-    const player2Owner = owners.find((item) => item.player?.id === player2)
-
-    const playerAchievements = unwrapEdges(game.playerAchievements)
-    const player1Achievements = playerAchievements.filter(
-        (item) => item.player.id === player1
-    )
-    const player2Achievements = player2
-        ? playerAchievements.filter((item) => item.player.id === player2)
+    const player1Achievements =
+        unwrapEdges(player1Owner?.player?.unlockedAchievements) ?? []
+    const player2Achievements = player2Owner
+        ? unwrapEdges(player2Owner.player?.unlockedAchievements)
         : undefined
 
     const gameAchievementCount = game.achievements?.length ?? 0
@@ -156,7 +150,7 @@ const PlayerGameContainer = () => {
     const [comparePlayer, setComparePlayer] = useState<string>()
 
     const { loading, data, error } = useQuery<GameQueryResponse>(
-        gameWithPlayers,
+        gameWithOwnerAchievements,
         {
             variables: {
                 game: Number(game),
@@ -174,6 +168,8 @@ const PlayerGameContainer = () => {
         setComparePlayer(undefined)
     }, [game])
 
+    const owners = useMemo(() => unwrapEdges(data?.game?.owners), [data])
+
     return (
         <PlayerCompareContext.Provider value={contextValue}>
             <Loader
@@ -183,8 +179,12 @@ const PlayerGameContainer = () => {
                 renderer={(response) => (
                     <GameDetails
                         game={response.game!}
-                        player1={player.id}
-                        player2={comparePlayer}
+                        player1={owners.find(
+                            (owner) => owner.player?.id === player.id
+                        )}
+                        player2={owners.find(
+                            (owner) => owner.player?.id === comparePlayer
+                        )}
                     />
                 )}
             />

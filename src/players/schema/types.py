@@ -36,11 +36,7 @@ class PlayerOwnedGameNode(DjangoObjectType):
         filter_fields: list[str] = []
         exclude = ["added", "updated", "resynchronized", "resynchronization_required"]
 
-    unlocked_achievements = graphene.List(PlayerUnlockedAchievementNode)
     unlocked_achievement_count = graphene.Int()
-
-    def resolve_unlocked_achievements(root, info):
-        return PlayerUnlockedAchievement.objects.filter(player=root.player_id, game=root.game_id).order_by("-datetime")
 
     def resolve_unlocked_achievement_count(root, info):
         return PlayerUnlockedAchievement.objects.filter(player=root.player_id, game=root.game_id).count()
@@ -101,7 +97,7 @@ class PlayerType(DjangoObjectType):
 
     profile = graphene.Field(ProfileType)
 
-    game = graphene.Field(PlayerOwnedGameNode, game=graphene.String())
+    game = graphene.Field(PlayerOwnedGameNode, game=graphene.Int())
 
     games = DjangoFilterConnectionField(
         PlayerOwnedGameNode,

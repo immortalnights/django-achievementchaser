@@ -256,6 +256,7 @@ const GameAchievements = ({
 
             return (
                 <Achievement
+                    key={achievement.id}
                     achievement={achievement}
                     unlocked={!player1Achievements || !!player1Achievement}
                     compare={!!player2Achievements}
