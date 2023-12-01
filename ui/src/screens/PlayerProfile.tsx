@@ -10,7 +10,7 @@ import { playerAvailableAchievements } from "@/api/documents"
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
     const { loading, data, error } = useQuery<PlayerQueryResponse>(
         playerAvailableAchievements,
-        { variables: { player, orderBy: "global_percentage", limit: 36 } }
+        { variables: { player, orderBy: "-globalPercentage", limit: 36 } }
     )
 
     return (
@@ -58,7 +58,7 @@ const PlayerProfileScreen = () => {
             <LoadPlayerOwnedGames
                 player={player.id}
                 completed={false}
-                order="-game__difficulty_percentage"
+                order="-game_DifficultyPercentage"
             />
 
             <Typography variant="h5">Next Achievement</Typography>
