@@ -19,8 +19,8 @@ const GameCapsule = ({
     if (ownedGame && ownedGame.completed) {
         const completionDate = dayjs(ownedGame.completed)
 
-        completionTitle = `Completed: ${completionDate.format(
-            "MMM D, YYYY"
+        completionTitle = `Completed: ${formatDate(
+            completionDate
         )} (${getRelativeTime(completionDate)})`
     } else if (
         game.achievementCount &&
