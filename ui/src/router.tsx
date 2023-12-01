@@ -1,20 +1,22 @@
 import { RouteObject, createHashRouter } from "react-router-dom"
-import { request } from "graphql-request"
-import gqlDocument from "./api/graphql-documents"
 import App from "./App"
 import { Home, Game, SearchResults } from "./screens"
 import PlayerContainer from "./components/PlayerContainer"
 import { throwExpression } from "./utilities"
+import { client } from "./api/client"
+import { player, gameComplete, search } from "./api/documents"
 
 const playerRoutes = {
     path: "/Player/*",
-    loader: ({ params }) => {
+    id: "player",
+    loader: async ({ params }) => {
         const { id = throwExpression("missing param") } = params
-        const document = gqlDocument.player(id)
-        return request<PlayerQueryResponse>(
-            "/graphql/",
-            `{${String(document)}\n}`
-        )
+
+        const { data } = await client.request<PlayerQueryResponse>({
+            query: player,
+            variables: { player: id },
+        })
+        return data?.player
     },
     Component: PlayerContainer,
     children: [
@@ -40,12 +42,10 @@ const playerRoutes = {
             },
         },
         {
-            path: ":id/RecentAchievements",
+            path: ":id/Achievements/:date?",
             async lazy() {
-                const { PlayerRecentAchievements } = await import(
-                    "./screens/player"
-                )
-                return { Component: PlayerRecentAchievements }
+                const { PlayerAchievements } = await import("./screens/player")
+                return { Component: PlayerAchievements }
             },
         },
         {
@@ -77,27 +77,27 @@ const router = createHashRouter([
             playerRoutes,
             {
                 path: "/Game/:id",
-                loader: ({ params }) => {
+                loader: async ({ params }) => {
                     const { id = throwExpression("missing param") } = params
-                    const document = gqlDocument.game(id)
-                    return request<GameQueryResponse>(
-                        "/graphql/",
-                        `{${String(document)}\n}`
-                    )
+
+                    const { data } = await client.request<GameQueryResponse>({
+                        query: gameComplete,
+                        variables: { game: Number(id) },
+                    })
+
+                    return data?.game
                 },
                 Component: Game,
             },
             {
                 path: "/Search/:name",
-                loader: ({ params }) => {
+                loader: async ({ params }) => {
                     const { name = "" } = params
-                    const document = gqlDocument.search(name)
-                    return name
-                        ? request<SearchQueryResponse>(
-                              "/graphql/",
-                              `{${String(document)}\n}`
-                          )
-                        : null
+                    const { data } = await client.request<SearchQueryResponse>({
+                        query: search,
+                        variables: { name },
+                    })
+                    return data?.searchPlayersAndGames
                 },
                 Component: SearchResults,
             },

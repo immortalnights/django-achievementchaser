@@ -3,13 +3,14 @@ import { Typography, Box, IconButton } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
-import PlayerSettingsContext from "../context/PlayerSettingsContext"
-import { useQueryPlayerProfileSummary } from "../api/queries"
+import PlayerSettingsContext from "@/context/PlayerSettingsContext"
 import Loader from "./Loader"
 import Timeline from "./Timeline"
 import ExternalLink from "./ExternalLink"
 import Link from "./Link"
 import RecentActivity from "./RecentActivity"
+import { playerProfile } from "@/api/documents"
+import { useQuery } from "graphql-hooks"
 
 const Playtime = ({ playtime }: { playtime: number }) => {
     const units = { minutes: 1, hrs: 60, days: 24, years: 365 }
@@ -43,7 +44,7 @@ const Header = ({
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <Link to={`/player/${id}`}>{name}</Link>
+            <Link to={`/Player/${id}`}>{name}</Link>
             <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
                 <ExternalLink href={url} title="Steam Profile" />
             </Box>
@@ -87,7 +88,7 @@ const MetaData = ({
     </Box>
 )
 
-interface PlayerStatisticsContentProps extends PlayerProfileSummary {
+interface PlayerStatisticsContentProps extends PlayerProfile {
     player: string
 }
 
@@ -124,7 +125,9 @@ const PlayerStatisticsContent = ({
                     label="Played"
                     value={
                         ownedGames && playedGames
-                            ? `${(ownedGames / playedGames).toFixed(2)}%`
+                            ? `${((playedGames / ownedGames) * 100).toFixed(
+                                  2
+                              )}%`
                             : "-"
                     }
                     title={`${playedGames ?? 0} of ${ownedGames ?? 0}`}
@@ -138,16 +141,19 @@ const PlayerStatisticsContent = ({
                 sx={{ display: hideGameStatistics ? "none" : "block" }}
             >
                 <MetaData
-                    label="Playtime"
+                    label="Play Time"
                     value={<Playtime playtime={totalPlaytime ?? 0} />}
                 />
             </Grid>
             <Grid lg={2} md={4} sm={4} xs={6}>
                 <MetaData
                     label="Perfect Games"
-                    value={perfectGames}
-                    title={`${(perfectGames / ownedGames).toFixed(2)}%`}
-                    link={`/player/${player}/perfectgames`}
+                    value={`${perfectGames} (${(
+                        (perfectGames / ownedGames) *
+                        100
+                    ).toFixed(2)})%`}
+                    title={`${perfectGames} of ${ownedGames}`}
+                    link={`/Player/${player}/PerfectGames`}
                 />
             </Grid>
             <Grid lg={3} md={4} sm={6} xs={12}>
@@ -165,15 +171,23 @@ const PlayerStatisticsContent = ({
 }
 
 const PlayerStatistics = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerProfileSummary(player)
+    const { loading, data, error } = useQuery<PlayerQueryResponse>(
+        playerProfile,
+        { variables: { player } }
+    )
 
     return (
         <Loader
             loading={loading}
             error={error}
             data={data}
-            renderer={(data) => {
-                return <PlayerStatisticsContent player={player} {...data} />
+            renderer={(response) => {
+                return (
+                    <PlayerStatisticsContent
+                        player={player}
+                        {...response.player!.profile!}
+                    />
+                )
             }}
         />
     )

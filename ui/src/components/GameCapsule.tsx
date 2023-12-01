@@ -1,24 +1,36 @@
 import { Typography, Tooltip } from "@mui/material"
 import dayjs from "dayjs"
 import { useMemo } from "react"
-import { getRelativeTime, formatDate } from "../utilities"
-import BorderedImage from "./BorderedImage"
+import { getRelativeTime, formatDate } from "@/dayjsUtilities"
 import Link from "./Link"
+import GameIcon from "./GameIcon"
 
-const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
+const GameCapsule = ({
+    player,
+    game,
+    ownedGame,
+}: {
+    player: string
+    game: Game
+    ownedGame?: Omit<PlayerOwnedGame, "game">
+}) => {
     let completionTitle: string | undefined
 
-    if (game.completed) {
-        const completionDate = dayjs(game.completed)
+    if (ownedGame && ownedGame.completed) {
+        const completionDate = dayjs(ownedGame.completed)
 
-        completionTitle = `Completed: ${completionDate.format(
-            "MMM D, YYYY"
+        completionTitle = `Completed: ${formatDate(
+            completionDate
         )} (${getRelativeTime(completionDate)})`
-    } else if (game.achievementCount && game.unlockedAchievementCount) {
+    } else if (
+        game.achievementCount &&
+        ownedGame &&
+        ownedGame.unlockedAchievementCount
+    ) {
         const percentage =
-            (game.unlockedAchievementCount / game.achievementCount) * 100
+            (ownedGame.unlockedAchievementCount / game.achievementCount) * 100
 
-        completionTitle = `Progress: ${game.unlockedAchievementCount} / ${
+        completionTitle = `Progress: ${ownedGame.unlockedAchievementCount} / ${
             game.achievementCount
         } (${percentage.toFixed(2)}%)`
     } else if (game.achievementCount) {
@@ -33,8 +45,8 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     }
 
     let lastPlayedTitle: string | undefined
-    if (game.lastPlayed) {
-        lastPlayedTitle = `Last Played: ${formatDate(game.lastPlayed)}`
+    if (ownedGame && ownedGame.lastPlayed) {
+        lastPlayedTitle = `Last Played: ${formatDate(ownedGame.lastPlayed)}`
     }
 
     const titleEl = useMemo(
@@ -60,12 +72,10 @@ const OwnedGame = ({ player, game }: { player: string; game: OwnedGame }) => {
     return (
         <Link to={`/Player/${player}/Game/${game.id}`}>
             <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
-                <BorderedImage
-                    src={`https://media.steampowered.com/steam/apps/${game.id}/capsule_184x69.jpg`}
-                />
+                <GameIcon {...game} />
             </Tooltip>
         </Link>
     )
 }
 
-export default OwnedGame
+export default GameCapsule

@@ -1,4 +1,4 @@
-import type { PlayerSettings } from "./types"
+import type { PlayerSettings } from "./PlayerSettingsContext"
 
 export const loadFromLocalStorage = (): PlayerSettings => {
     const achievementSortOrder =

@@ -23,6 +23,14 @@ body {
     font-size: 14px;
     border-radius: 2px;
     outline: #1b1f230f;
+    border: 1px solid transparent;
+    transition:
+        background-color 0.5s linear,
+        border-color 0.5s linear;
+}
+
+.day.selectable {
+    cursor: pointer;
 }
 
 .calendar-container .light {

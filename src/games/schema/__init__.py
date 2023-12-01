@@ -1,4 +1,5 @@
 from graphene import ObjectType
+from .types import GameType, AchievementType
 from .games import Query as GameQuery
 from .mutations import GameMinimalType, ResynchronizeGame
 
@@ -10,4 +11,4 @@ class Queries(
     pass
 
 
-__all__ = ["GameMinimalType", "ResynchronizeGame"]
+__all__ = ["GameType", "AchievementType", "GameMinimalType", "ResynchronizeGame"]

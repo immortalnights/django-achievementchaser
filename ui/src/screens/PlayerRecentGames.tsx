@@ -1,42 +1,19 @@
-import { useParams } from "react-router-dom"
-import { useQueryPlayerOwnedGames } from "../api/queries"
-import Loader from "../components/Loader"
-import OwnedGameList from "../components/OwnedGameList"
-import { throwExpression } from "../utilities"
+import { useRouteLoaderData } from "react-router-dom"
 import { Typography } from "@mui/material"
+import LoadPlayerOwnedGames from "@/components/LoadPlayerOwnedGames"
 
-const PlayerRecentGamesContent = ({
-    player,
-    games,
-}: {
-    player: string
-    games: OwnedGame[]
-}) => {
+const PlayerRecentGames = () => {
+    const player = useRouteLoaderData("player") as Player
+
     return (
         <>
             <Typography variant="h5">Recent Games</Typography>
-            <OwnedGameList player={player} games={games} />
+            <LoadPlayerOwnedGames
+                player={player.id}
+                order="-lastPlayed"
+                limit={36}
+            />
         </>
-    )
-}
-
-const PlayerRecentGames = () => {
-    const { id: player = throwExpression("missing param") } = useParams()
-    const { loading, error, data } = useQueryPlayerOwnedGames({
-        player,
-        orderBy: "lastPlayed DESC",
-        limit: 36,
-    })
-
-    return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return <PlayerRecentGamesContent player={player} games={data} />
-            }}
-        />
     )
 }
 

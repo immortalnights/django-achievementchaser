@@ -2,28 +2,28 @@ import { Typography } from "@mui/material"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
 
 export const GameCompletionProgress = ({
+    player,
     achievements,
     playerAchievements,
 }: {
-    achievements: Achievement[]
-    playerAchievements: RecentAchievement[]
+    player: Player
+    achievements: number
+    playerAchievements: number
 }) => (
     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        {playerAchievements.length > 0 && (
+        {playerAchievements > 0 && (
             <div style={{ margin: "8px 0 0" }}>
                 <CircularProgressWithLabel
-                    value={
-                        (playerAchievements.length / achievements.length) * 100
-                    }
+                    value={(playerAchievements / achievements) * 100}
                 />
             </div>
         )}
         <div>
             <Typography variant="subtitle1" textTransform="uppercase">
-                Achievements
+                {player.name}
             </Typography>
             <div>
-                {playerAchievements.length} of {achievements.length}
+                {playerAchievements} of {achievements}
             </div>
         </div>
     </div>

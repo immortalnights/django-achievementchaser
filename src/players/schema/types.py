@@ -1,77 +1,56 @@
-import graphene
 from django.db.models import Sum
-from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
-from ..queries import get_player_games2
+import graphene
+from graphene.relay import Node
+from graphene_django import DjangoObjectType
+from graphene_django.filter import DjangoFilterConnectionField
+from ..models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
+from .filters import PlayerOwnedGameFilter, PlayerUnlockedAchievementFilter, PlayerAvailableAchievementFilter
 from games.models import Achievement
-from games.schema.games import GameType
 
 
-class SimpleGameType(graphene.ObjectType):
+class AchievementNode(DjangoObjectType):
     class Meta:
-        interfaces = (graphene.Node,)
+        model = Achievement
+        interfaces = (Node,)
+        filter_fields: list[str] = []
+        exclude = ["default_value", "name", "updated", "added", "unlocked_by"]
 
     id = graphene.NonNull(graphene.ID)
-    name = graphene.String()
-    img_icon_url = graphene.String()
-    difficulty_percentage = graphene.Float()
-    playtime = graphene.Int()
-    playtime_forever = graphene.Int()
-    last_played = graphene.DateTime()
-    completion_percentage = graphene.Float()
-    completed = graphene.DateTime()
-    achievement_count = graphene.Int()
-    unlocked_achievement_count = graphene.Int()
 
     def resolve_id(root, info):
-        return root.game_id
+        return root.name
 
-    def resolve_name(root, info):
-        return root.game.name
 
-    def resolve_img_icon_url(root, info):
-        return root.game.img_icon_url
+class PlayerUnlockedAchievementNode(DjangoObjectType):
+    class Meta:
+        model = PlayerUnlockedAchievement
+        interfaces = (Node,)
+        filter_fields: list[str] = []
+        exclude: list[str] = []
 
-    def resolve_difficulty_percentage(root, info):
-        return root.game.difficulty_percentage
 
-    def resolve_achievement_count(root, info):
-        return Achievement.objects.filter(game_id=root.game_id).count()
+class PlayerOwnedGameNode(DjangoObjectType):
+    class Meta:
+        model = PlayerOwnedGame
+        interfaces = (Node,)
+        filter_fields: list[str] = []
+        exclude = ["added", "updated", "resynchronized", "resynchronization_required"]
+
+    unlocked_achievement_count = graphene.Int()
 
     def resolve_unlocked_achievement_count(root, info):
-        return PlayerUnlockedAchievement.objects.filter(player_id=root.player_id, game_id=root.game_id).count()
+        return PlayerUnlockedAchievement.objects.filter(player=root.player_id, game=root.game_id).count()
 
 
-class SimpleAchievementType(graphene.ObjectType):
-    id = graphene.NonNull(graphene.String)
-    display_name = graphene.String()
-    game = graphene.Field(GameType)
-    display_name = graphene.String()
-    description = graphene.String()
-    icon_url = graphene.String()
-    icon_gray_url = graphene.String()
-    global_percentage = graphene.Float()
-    unlocked = graphene.DateTime()
-
-    def resolve_global_percentage(root, info):
-        return (root.global_percentage if isinstance(root, Achievement) else root["global_percentage"]) or 0
-
-
-class xPlayerGameType(graphene.Connection):
+class PlayerGamePlaytimeNode(DjangoObjectType):
     class Meta:
-        node = SimpleGameType
-
-    total_count = graphene.Int()
-
-
-class xPlayerAchievementType(graphene.Connection):
-    class Meta:
-        node = SimpleAchievementType
-
-    total_count = graphene.Int()
+        model = PlayerGamePlaytime
+        interfaces = (Node,)
+        fields = "__all__"
 
 
-class PlayerProfile(graphene.ObjectType):
-    id = graphene.String()
+class ProfileType(graphene.ObjectType):
+    player: "Player"
     total_playtime = graphene.Int()
 
     owned_games = graphene.Int()
@@ -82,21 +61,62 @@ class PlayerProfile(graphene.ObjectType):
     locked_achievements = graphene.Int()
 
     def resolve_total_playtime(root, info):
-        res = get_player_games2(player=root.id, played=True).aggregate(Sum("playtime_forever"))
+        res = root.player.games.aggregate(Sum("playtime_forever"))
         return res["playtime_forever__sum"]
 
     def resolve_owned_games(root, info):
-        return get_player_games2(player=root.id).count()
+        return root.player.games.count()
 
     def resolve_played_games(root, info):
-        return get_player_games2(player=root.id, played=True).count()
+        return root.player.games.filter(playtime_forever__gt=0).count()
 
     def resolve_perfect_games(root, info):
-        return get_player_games2(player=root.id, perfect=True).count()
+        return root.player.games.filter(completion_percentage=1).count()
 
     def resolve_unlocked_achievements(root, info):
-        return PlayerUnlockedAchievement.objects.filter(player_id=root.id).count()
+        return root.player.unlocked_achievements.count()
 
     def resolve_locked_achievements(root, info):
-        owned_games = PlayerOwnedGame.objects.filter(player_id=root.id)
-        return Achievement.objects.filter(game__in=owned_games.values("game")).count()
+        return root.player.available_achievements.count()
+
+
+class PlayerType(DjangoObjectType):
+    class Meta:
+        model = Player
+        exclude = [
+            "updated",
+            "resynchronized",
+            "api_key",
+            "resynchronization_required",
+            "added",
+            "created",
+        ]
+
+    # Override the model ID otherwise JavaScript rounds the number
+    id = graphene.NonNull(graphene.String)
+
+    profile = graphene.Field(ProfileType)
+
+    game = graphene.Field(PlayerOwnedGameNode, game=graphene.Int())
+
+    games = DjangoFilterConnectionField(
+        PlayerOwnedGameNode,
+        filterset_class=PlayerOwnedGameFilter,
+    )
+
+    unlocked_achievements = DjangoFilterConnectionField(
+        PlayerUnlockedAchievementNode,
+        filterset_class=PlayerUnlockedAchievementFilter,
+    )
+
+    available_achievements = DjangoFilterConnectionField(
+        AchievementNode, filterset_class=PlayerAvailableAchievementFilter
+    )
+
+    def resolve_profile(root, info):
+        profile = ProfileType()
+        profile.player = root
+        return profile
+
+    def resolve_game(root, info, game):
+        return PlayerOwnedGame.objects.filter(player_id=root.id, game_id=game).first()

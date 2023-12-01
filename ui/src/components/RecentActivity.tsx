@@ -1,52 +1,72 @@
 import { Typography } from "@mui/material"
-import { useQueryPlayerRecent } from "../api/queries"
 import Loader from "./Loader"
 import RecentlyPlayedGames from "./RecentlyPlayedGames"
 import RecentlyUnlockedAchievements from "./RecentlyUnlockedAchievements"
+import { playerGames, playerUnlockedAchievements } from "@/api/documents"
+import { useQuery } from "graphql-hooks"
+import { unwrapEdges } from "@/api/utils"
 
-const RecentActivityContent = ({
-    player,
-    games,
-    achievements,
-}: {
-    player: string
-    games: RecentGame[]
-    achievements: RecentAchievement[]
-}) => (
-    <>
-        <Typography variant="subtitle1" textTransform="uppercase">
-            Recently Played
-        </Typography>
-        <RecentlyPlayedGames player={player} games={games} />
-
-        <Typography variant="subtitle1" textTransform="uppercase">
-            Recently Unlocked
-        </Typography>
-        <RecentlyUnlockedAchievements
-            player={player}
-            achievements={achievements}
-        />
-    </>
-)
-
-const RecentActivity = ({ player }: { player: string }) => {
-    const { loading, error, data } = useQueryPlayerRecent(player)
+const RecentlyPlayedGamesLoader = ({ player }: { player: string }) => {
+    const { loading, data, error } = useQuery<PlayerQueryResponse>(
+        playerGames,
+        { variables: { player, orderBy: "-lastPlayed", limit: 6 } }
+    )
 
     return (
-        <Loader
-            loading={loading}
-            error={error}
-            data={data}
-            renderer={(data) => {
-                return (
-                    <RecentActivityContent
-                        player={player}
-                        games={data.games}
-                        achievements={data.achievements}
-                    />
-                )
-            }}
-        />
+        <>
+            <Typography variant="subtitle1" textTransform="uppercase">
+                Recently Played
+            </Typography>
+            <Loader
+                loading={loading}
+                error={error}
+                data={data}
+                renderer={(response) => {
+                    const games = unwrapEdges(response.player?.games)
+                    return <RecentlyPlayedGames player={player} games={games} />
+                }}
+            />
+        </>
+    )
+}
+
+const RecentlyUnlockedAchievementsLoader = ({ player }: { player: string }) => {
+    const { loading, data, error } = useQuery<PlayerQueryResponse>(
+        playerUnlockedAchievements,
+        { variables: { player, orderBy: "-datetime", limit: 6 } }
+    )
+
+    return (
+        <>
+            <Typography variant="subtitle1" textTransform="uppercase">
+                Recently Unlocked
+            </Typography>
+            <Loader
+                loading={loading}
+                error={error}
+                data={data}
+                renderer={(response) => {
+                    const achievements = unwrapEdges(
+                        response.player?.unlockedAchievements
+                    )
+                    return (
+                        <RecentlyUnlockedAchievements
+                            player={player}
+                            achievements={achievements}
+                        />
+                    )
+                }}
+            />
+        </>
+    )
+}
+
+const RecentActivity = ({ player }: { player: string }) => {
+    return (
+        <>
+            <RecentlyPlayedGamesLoader player={player} />
+            <RecentlyUnlockedAchievementsLoader player={player} />
+        </>
     )
 }
 
