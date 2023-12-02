@@ -49,7 +49,7 @@ class StartedGameFilter(BooleanFilter):
         return qs
 
 
-class PlayerUnlockedAchievementFilter(FilterSet):
+class PlayerUnlockedAchievementFilterSet(FilterSet):
     class Meta:
         model = PlayerUnlockedAchievement
         fields = {
@@ -61,7 +61,7 @@ class PlayerUnlockedAchievementFilter(FilterSet):
     game = IntegerFilter(field_name="game_id")
 
 
-class PlayerAvailableAchievementFilter(FilterSet):
+class PlayerAvailableAchievementFilterSet(FilterSet):
     class Meta:
         model = Achievement
         fields: list[str] = []
@@ -70,7 +70,7 @@ class PlayerAvailableAchievementFilter(FilterSet):
     game = IntegerFilter(field_name="game_id")
 
 
-class PlayerOwnedGameFilter(FilterSet):
+class PlayerOwnedGameFilterSet(FilterSet):
     class Meta:
         model = PlayerOwnedGame
         fields: list[str] = []
