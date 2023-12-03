@@ -49,15 +49,30 @@ const PlayerGameAchievements = ({
         mutatedAchievements = achievements
     }
 
-    return achievements.length > 0 ? (
-        <GameAchievements
-            achievements={mutatedAchievements}
-            player1Achievements={player1Achievements}
-            player2Achievements={player2Achievements}
-        />
-    ) : (
-        <Alert severity="info">No Achievements</Alert>
-    )
+    let content
+    if (achievements.length === 0) {
+        content = (
+            <Alert severity="info" sx={{ marginTop: 1 }}>
+                No Achievements
+            </Alert>
+        )
+    } else if (mutatedAchievements.length === 0) {
+        content = (
+            <Alert variant="outlined" severity="success" sx={{ marginTop: 1 }}>
+                All achievements have been completed
+            </Alert>
+        )
+    } else {
+        content = (
+            <GameAchievements
+                achievements={mutatedAchievements}
+                player1Achievements={player1Achievements}
+                player2Achievements={player2Achievements}
+            />
+        )
+    }
+
+    return content
 }
 
 export default PlayerGameAchievements
