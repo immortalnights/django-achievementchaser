@@ -19,7 +19,15 @@ const LoadPlayerOwnedGames = ({
 }) => {
     const { loading, error, data } = useQuery<PlayerQueryResponse>(
         playerGames,
-        { variables: { player, started, completed, orderBy: order, limit } }
+        {
+            variables: {
+                player,
+                started,
+                completed: !completed,
+                orderBy: order,
+                limit,
+            },
+        }
     )
     return (
         <Loader

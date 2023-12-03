@@ -50,7 +50,7 @@ const PlayerProfileScreen = () => {
             <Typography variant="h5">Almost There</Typography>
             <LoadPlayerOwnedGames
                 player={player.id}
-                completed={true}
+                completed={false}
                 order="-completionPercentage"
             />
 
