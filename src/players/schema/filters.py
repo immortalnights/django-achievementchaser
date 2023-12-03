@@ -73,11 +73,10 @@ class PlayerAvailableAchievementFilter(FilterSet):
 class PlayerOwnedGameFilter(FilterSet):
     class Meta:
         model = PlayerOwnedGame
-        fields: list[str] = []
+        fields = {"completed": ["range", "isnull"]}
 
     order_by = PlayerOwnedGameOrderingFilter(
         fields=("completed", "last_played", "completion_percentage", "game__difficulty_percentage")
     )
     started = StartedGameFilter()
-    completed = BooleanFilter(field_name="completed", lookup_expr="isnull", exclude=True)
     year = NumberFilter(field_name="completed__year")
