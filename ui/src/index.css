@@ -1,10 +1,11 @@
 html,
 body {
-    height: 100vh;
+    min-height: 100vh;
 }
 
 #root {
-    height: 100vh;
+    min-height: 100vh;
+    padding-bottom: 5px;
 }
 
 .calendar {
