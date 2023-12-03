@@ -4,7 +4,7 @@ from graphene.relay import Node
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 from ..models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
-from .filters import PlayerOwnedGameFilter, PlayerUnlockedAchievementFilter, PlayerAvailableAchievementFilter
+from .filters import PlayerOwnedGameFilterSet, PlayerUnlockedAchievementFilterSet, PlayerAvailableAchievementFilterSet
 from games.models import Achievement
 
 
@@ -101,16 +101,16 @@ class PlayerType(DjangoObjectType):
 
     games = DjangoFilterConnectionField(
         PlayerOwnedGameNode,
-        filterset_class=PlayerOwnedGameFilter,
+        filterset_class=PlayerOwnedGameFilterSet,
     )
 
     unlocked_achievements = DjangoFilterConnectionField(
         PlayerUnlockedAchievementNode,
-        filterset_class=PlayerUnlockedAchievementFilter,
+        filterset_class=PlayerUnlockedAchievementFilterSet,
     )
 
     available_achievements = DjangoFilterConnectionField(
-        AchievementNode, filterset_class=PlayerAvailableAchievementFilter
+        AchievementNode, locked=graphene.Boolean(), filterset_class=PlayerAvailableAchievementFilterSet
     )
 
     def resolve_profile(root, info):
@@ -120,3 +120,16 @@ class PlayerType(DjangoObjectType):
 
     def resolve_game(root, info, game):
         return PlayerOwnedGame.objects.filter(player_id=root.id, game_id=game).first()
+
+    def resolve_available_achievements(root, info, locked: bool = False, **kwargs):
+        owned_games = PlayerOwnedGame.objects.filter(player_id=root.id)
+        available_achievements = Achievement.objects.filter(game__in=owned_games.values("game"))
+
+        if locked is True:
+            unlocked_achievements = PlayerUnlockedAchievement.objects.filter(player_id=root.id)
+
+            available_achievements = available_achievements.exclude(
+                id__in=unlocked_achievements.values("achievement__id")
+            )
+
+        return available_achievements

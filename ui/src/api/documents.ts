@@ -173,12 +173,17 @@ export const playerUnlockedAchievements = gql`
 export const playerAvailableAchievements = gql`
     query PlayerAvailableAchievements(
         $player: BigInt!
+        $locked: Boolean
         $orderBy: String
         $limit: Int
     ) {
         player(id: $player) {
             id
-            availableAchievements(orderBy: $orderBy, first: $limit) {
+            availableAchievements(
+                locked: $locked
+                orderBy: $orderBy
+                first: $limit
+            ) {
                 edges {
                     node {
                         id
