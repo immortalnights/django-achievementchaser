@@ -1,12 +1,10 @@
-import { Stack, Tooltip } from "@mui/material"
+import { Stack } from "@mui/material"
 import Link from "./Link"
-import GameIcon from "./GameIcon"
+import { GameIconWithTooltip } from "./GameIcon"
 
 const GameResult = ({ game }: { game: Game }) => (
     <Link to={`/Game/${game.id}`}>
-        <Tooltip title={game.name} arrow enterDelay={500} leaveDelay={0}>
-            <GameIcon {...game} />
-        </Tooltip>
+        <GameIconWithTooltip game={game} tooltip={game.name} />
     </Link>
 )
 
