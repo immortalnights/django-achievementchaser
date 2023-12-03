@@ -1,7 +1,6 @@
 from django.test import TestCase
 from loguru import logger
 from graphene_django.utils.testing import GraphQLTestCase
-from unittest import skip
 from unittest.mock import patch
 from .models import Game
 from .tasks import resynchronize_game
