@@ -41,14 +41,24 @@ def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
     return player_id
 
 
-def load_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
+def query_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
     """
-    Attempt to identify the user from existing data
+    Attempt to identify the user from existing data.
     This may fail if the player has changed their persona name
     or URL. In such a case, resolve the identity to attempt to
     load by Player ID.
     """
     return find_existing_player(identity) or player_from_identity(identity)
+
+
+def load_player(identity: typing.Union[str, int]) -> Player:
+    player = query_player(identity)
+
+    if not player:
+        logger.error(f"Player '{identity}' does not exist")
+        raise Player.DoesNotExist(f"Player '{identity}' does not exist")
+
+    return player
 
 
 def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:

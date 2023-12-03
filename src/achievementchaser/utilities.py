@@ -13,4 +13,5 @@ def can_resynchronize_model(model: Union[Player, PlayerOwnedGame, Game], rate_li
         logger.error(f"Cannot resynchronize {model} again for another {rate_limit - delta.seconds} seconds")
     else:
         ok = True
+
     return ok

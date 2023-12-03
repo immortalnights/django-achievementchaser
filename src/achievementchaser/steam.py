@@ -1,6 +1,6 @@
 """Steam Interface layer"""
 import os
-from typing import Tuple, Union, Optional, Dict
+from typing import Tuple, Union, Optional, Dict, cast
 from urllib import request as urllib_request, parse, error
 import json
 from loguru import logger
@@ -33,8 +33,8 @@ def _parse_response(resp: Union[error.HTTPError], cache: bool) -> Optional[Dict]
 
 
 def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
-    response_json: Optional[dict] = None
-    ok: bool = False
+    response_json = None
+    ok = False
 
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
 
@@ -45,7 +45,6 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
             ok = True
 
     except error.HTTPError as err:
-        logger.warning(f"HTTP {err.code}")
         response_json = _parse_response(err, cache)
     except error.URLError:
         logger.exception("Steam request failed (URL ERROR)")
@@ -53,7 +52,7 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
     return ok, response_json
 
 
-def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, dict]:
+def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optional[dict]]:
     # Always add the API key and response format
     query_parameters = {
         "key": _get_api_key(),
@@ -61,13 +60,19 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, dict]
     }
     query_parameters.update(query)
 
+    if "key" not in query_parameters or not query_parameters["key"]:
+        raise KeyError("Steam API 'key' missing from query parameters")
+
     url = f"http://{STEAM_API_URL}/{path}?{parse.urlencode(query_parameters)}"
     ok, response_json = _request(url, cache=True)
     response_data = None
 
     if ok is True and response_json is not None:
         if response_data_key in response_json:
-            response_data = response_json[response_data_key]
+            if isinstance(response_json[response_data_key], dict):
+                response_data = cast(dict, response_json[response_data_key])
+            else:
+                logger.error(f"Expected root object '{response_data_key}' is not a dictionary; {response_json}")
         else:
             logger.error(f"Expected root object '{response_data_key}' missing; {response_json}")
     else:

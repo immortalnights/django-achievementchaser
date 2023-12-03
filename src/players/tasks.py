@@ -11,16 +11,13 @@ from games.service import load_game, resynchronize_game
 from games.models import Game
 
 
-PlayerResponse = TypedDict("PlayerResponse", {"id": int, "name": str, "resynchronized": Optional[str]}, total=False)
-OwnedGameResponse = TypedDict("OwnedGameResponse", {"id": int, "name": str, "resynchronized": str})
-
 ResynchronizePlayerResponse = TypedDict(
-    "ResynchronizePlayerResponse", {"ok": bool, "player": Optional[PlayerResponse], "error": Optional[str]}, total=False
+    "ResynchronizePlayerResponse", {"ok": bool, "player": "Player", "error": Optional[str]}, total=False
 )
 
 ResynchronizePlayerGameResponse = TypedDict(
     "ResynchronizePlayerGameResponse",
-    {"ok": bool, "player": Optional[PlayerResponse], "owned_game": Optional[OwnedGameResponse], "error": Optional[str]},
+    {"ok": bool, "player": "Player", "owned_game": "PlayerOwnedGame", "error": Optional[str]},
     total=False,
 )
 
@@ -73,11 +70,9 @@ def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
     The resolution is done here so it's in the worker thread."""
     ok = False
 
-    player = load_player(identity)
+    try:
+        player = load_player(identity)
 
-    if player is None:
-        raise Player.DoesNotExist(f"Player '{identity}' does not exist")
-    else:
         logger.info(f"Beginning resynchronization of Player {player.name} ({player.id})")
         logger.debug(f"Player {player.name} last resynchronized {player.resynchronized}")
 
@@ -88,6 +83,8 @@ def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
         else:
             logger.info(f"Resynchronization of player {player.name} complete")
             ok = True
+    except Player.DoesNotExist:
+        pass
 
     return ok
 
@@ -124,14 +121,7 @@ def resynchronize_player_game_task(
 
     return {
         "ok": ok,
-        "player": {
-            "id": player.id,
-            "name": player.name,
-        },
-        "owned_game": {
-            "id": game.id,
-            "name": game.name,
-            "resynchronized": owned_game.resynchronized,
-        },
+        "player": player,
+        "owned_game": game,
         "error": None,
     }
