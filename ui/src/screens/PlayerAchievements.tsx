@@ -102,7 +102,11 @@ const DailyAchievements = ({
                                 </div>
                             )}
                             {perfectGames.map((ownedGame) => (
-                                <GameCard {...ownedGame} player={player} />
+                                <GameCard
+                                    key={ownedGame.game.id}
+                                    {...ownedGame}
+                                    player={player}
+                                />
                             ))}
                         </Stack>
                     </Box>
