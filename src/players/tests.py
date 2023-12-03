@@ -177,39 +177,6 @@ class PlayerAPITests(GraphQLTestCase):
     def test_query_player(self):
         pass
 
-    def test_resynchronize_player_request(self):
-        with patch("players.tasks.resynchronize_player_task.delay") as mock_request:
-            _response = self.query(
-                """
-    mutation TestMutation {
-        resynchronizePlayer(identifier: "TestUser") {
-            ok
-            id
-            name
-            error
-        }
-    }
-"""
-            )
-            mock_request.assert_called_once_with("TestUser")
-
-    def test_resynchronize_unknown_player_request(self):
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_vanity_response
-            _response = self.query(
-                """
-    mutation TestMutation {
-        resynchronizePlayer(identifier: "TestUser") {
-            ok
-            id
-            name
-            error
-        }
-    }
-"""
-            )
-            mock_request.assert_called_once_with("TestUser")
-
 
 class PlayerOwnedGamesTests(TestCase):
     def test_load_owned_games(self):

@@ -7,7 +7,7 @@ import dayjs, { Dayjs } from "dayjs"
 import { useMemo, useState } from "react"
 import UnlockedAchievementIcon from "@/components/UnlockedAchievementIcon"
 import { NavigateBefore, NavigateNext } from "@mui/icons-material"
-import GameCard from "@/components/GameCard"
+import GameCapsule from "@/components/GameCapsule"
 
 const DailyAchievements = ({
     player,
@@ -101,10 +101,11 @@ const DailyAchievements = ({
                                 </div>
                             )}
                             {perfectGames.map((ownedGame) => (
-                                <GameCard
+                                <GameCapsule
                                     key={ownedGame.game.id}
-                                    {...ownedGame}
                                     player={player}
+                                    game={ownedGame.game}
+                                    ownedGame={ownedGame}
                                 />
                             ))}
                         </Stack>

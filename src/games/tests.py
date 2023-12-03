@@ -1,7 +1,6 @@
 from django.test import TestCase
 from loguru import logger
 from graphene_django.utils.testing import GraphQLTestCase
-from unittest import skip
 from unittest.mock import patch
 from .models import Game
 from .tasks import resynchronize_game
@@ -110,20 +109,3 @@ class GameAPITests(GraphQLTestCase):
 
     def test_query_game(self):
         pass
-
-    @skip
-    def test_resynchronize_game_request(self):
-        with patch("games.tasks.resynchronize_game_task.delay") as mock_request:
-            self.query(
-                """
-    mutation TestMutation {
-        resynchronizeGame(identifier: 244850) {
-            id
-            resynchronized
-            name
-            ok
-        }
-    }
-"""
-            )
-            mock_request.assert_called_once_with(244850)

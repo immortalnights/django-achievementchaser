@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material"
-import GameCard from "./GameCard"
+import GameCapsule from "./GameCapsule"
 
 const PlayerOwnedGames = ({
     player,
@@ -16,11 +16,11 @@ const PlayerOwnedGames = ({
             gap={0.75}
         >
             {ownedGames.map((ownedGame) => (
-                <GameCard
+                <GameCapsule
                     key={ownedGame.game.id}
-                    {...ownedGame}
-                    {...ownedGame.game}
                     player={player}
+                    game={ownedGame.game}
+                    ownedGame={ownedGame}
                 />
             ))}
         </Stack>
