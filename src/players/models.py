@@ -20,6 +20,10 @@ class Player(models.Model):
         return f"{self.name} ({self.id})"
 
     @property
+    def available_achievements(self: "Player"):
+        return Achievement.objects.filter(game__in=self.games.values("game"))
+
+    @property
     def locked_achievements(self: "Player"):
         return self.exclude(id__in=self.unlocked_achievements.values("achievement__id"))
 
