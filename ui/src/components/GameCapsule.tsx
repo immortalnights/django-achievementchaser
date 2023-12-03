@@ -1,9 +1,9 @@
-import { Typography, Tooltip } from "@mui/material"
+import { Typography } from "@mui/material"
 import dayjs from "dayjs"
 import { useMemo } from "react"
 import { getRelativeTime, formatDate } from "@/dayjsUtilities"
 import Link from "./Link"
-import GameIcon from "./GameIcon"
+import { GameIconWithTooltip } from "./GameIcon"
 
 const GameCapsule = ({
     player,
@@ -71,9 +71,7 @@ const GameCapsule = ({
 
     return (
         <Link to={`/Player/${player}/Game/${game.id}`}>
-            <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
-                <GameIcon {...game} />
-            </Tooltip>
+            <GameIconWithTooltip game={game} tooltip={titleEl} />
         </Link>
     )
 }

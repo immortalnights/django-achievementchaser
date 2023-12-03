@@ -1,9 +1,9 @@
-import { Typography, Tooltip } from "@mui/material"
+import { Typography } from "@mui/material"
 import dayjs from "dayjs"
-import { useMemo, forwardRef } from "react"
+import { useMemo } from "react"
 import { getRelativeTime, formatDate } from "@/dayjsUtilities"
 import Link from "./Link"
-import GameIcon from "./GameIcon"
+import { GameIconWithTooltip } from "./GameIcon"
 
 const GameCard = ({
     player,
@@ -71,19 +71,9 @@ const GameCard = ({
         [game.name, completionTitle, lastPlayedTitle, difficultyPercentageTitle]
     )
 
-    const Wrapped = useMemo(
-        () =>
-            forwardRef((props, ref) => (
-                <GameIcon {...game} {...props} innerRef={ref} />
-            )),
-        [game]
-    )
-
     return (
         <Link to={`/Player/${player}/Game/${game.id}`}>
-            <Tooltip title={titleEl} arrow enterDelay={500} leaveDelay={0}>
-                <Wrapped />
-            </Tooltip>
+            <GameIconWithTooltip game={game} tooltip={titleEl} />
         </Link>
     )
 }
