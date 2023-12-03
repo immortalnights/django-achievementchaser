@@ -295,6 +295,8 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
                     logger.debug(f"Player completed '{game.name}' at {completion_datetime}")
                 except PlayerUnlockedAchievement.DoesNotExist:
                     pass
+            else:
+                completion_datetime = None
 
         # Update the game resynchronization time
         game.resynchronized = timezone.now()

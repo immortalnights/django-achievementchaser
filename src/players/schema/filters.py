@@ -49,7 +49,7 @@ class StartedGameFilter(BooleanFilter):
         return qs
 
 
-class PlayerUnlockedAchievementFilter(FilterSet):
+class PlayerUnlockedAchievementFilterSet(FilterSet):
     class Meta:
         model = PlayerUnlockedAchievement
         fields = {
@@ -61,7 +61,7 @@ class PlayerUnlockedAchievementFilter(FilterSet):
     game = IntegerFilter(field_name="game_id")
 
 
-class PlayerAvailableAchievementFilter(FilterSet):
+class PlayerAvailableAchievementFilterSet(FilterSet):
     class Meta:
         model = Achievement
         fields: list[str] = []
@@ -70,14 +70,13 @@ class PlayerAvailableAchievementFilter(FilterSet):
     game = IntegerFilter(field_name="game_id")
 
 
-class PlayerOwnedGameFilter(FilterSet):
+class PlayerOwnedGameFilterSet(FilterSet):
     class Meta:
         model = PlayerOwnedGame
-        fields: list[str] = []
+        fields = {"completed": ["range", "isnull"]}
 
     order_by = PlayerOwnedGameOrderingFilter(
         fields=("completed", "last_played", "completion_percentage", "game__difficulty_percentage")
     )
     started = StartedGameFilter()
-    completed = BooleanFilter(field_name="completed", lookup_expr="isnull", exclude=True)
     year = NumberFilter(field_name="completed__year")

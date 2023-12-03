@@ -10,7 +10,14 @@ import { playerAvailableAchievements } from "@/api/documents"
 const PlayerGameAchievementList = ({ player }: { player: string }) => {
     const { loading, data, error } = useQuery<PlayerQueryResponse>(
         playerAvailableAchievements,
-        { variables: { player, orderBy: "-globalPercentage", limit: 36 } }
+        {
+            variables: {
+                player,
+                locked: true,
+                orderBy: "-globalPercentage",
+                limit: 36,
+            },
+        }
     )
 
     return (

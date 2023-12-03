@@ -53,16 +53,45 @@ export const playerGames = gql`
     query PlayerGames(
         $player: BigInt!
         $started: Boolean
-        $completed: Boolean
+        $orderBy: String
+        $limit: Int
+    ) {
+        player(id: $player) {
+            id
+            games(started: $started, orderBy: $orderBy, first: $limit) {
+                edges {
+                    node {
+                        game {
+                            name
+                            id
+                            imgIconUrl
+                            achievementCount
+                            difficultyPercentage
+                        }
+                        completed
+                        lastPlayed
+                        playtimeForever
+                        unlockedAchievementCount
+                    }
+                }
+            }
+        }
+    }
+`
+
+export const playerPerfectGames = gql`
+    query PlayerPerfectGames(
+        $player: BigInt!
         $year: Decimal
+        $range: [DateTime]
         $orderBy: String
         $limit: Int
     ) {
         player(id: $player) {
             id
             games(
-                started: $started
-                completed: $completed
+                completed_Isnull: false
+                completed_Range: $range
                 year: $year
                 orderBy: $orderBy
                 first: $limit
@@ -79,7 +108,6 @@ export const playerGames = gql`
                         completed
                         lastPlayed
                         playtimeForever
-                        unlockedAchievementCount
                     }
                 }
             }
@@ -173,12 +201,17 @@ export const playerUnlockedAchievements = gql`
 export const playerAvailableAchievements = gql`
     query PlayerAvailableAchievements(
         $player: BigInt!
+        $locked: Boolean
         $orderBy: String
         $limit: Int
     ) {
         player(id: $player) {
             id
-            availableAchievements(orderBy: $orderBy, first: $limit) {
+            availableAchievements(
+                locked: $locked
+                orderBy: $orderBy
+                first: $limit
+            ) {
                 edges {
                     node {
                         id
