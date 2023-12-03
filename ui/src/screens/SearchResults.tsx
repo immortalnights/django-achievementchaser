@@ -25,7 +25,7 @@ const SearchResults = () => {
             <SearchPlayerResults items={players} />
 
             <Typography variant="h5">Games</Typography>
-            <SearchGameResults items={games} />
+            <SearchGameResults games={games} />
         </div>
     )
 }

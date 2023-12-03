@@ -11,7 +11,7 @@ const UnlockedAchievementIcon = ({
 }: {
     player: string
     unlockedAchievement: PlayerUnlockedAchievement
-    size?: "sm" | "md" | "lg"
+    size?: "sm" | "md"
 }) => {
     const title = useMemo(
         () => (
@@ -36,10 +36,6 @@ const UnlockedAchievementIcon = ({
         }
         case "md": {
             widthHeight = 64
-            break
-        }
-        case "lg": {
-            widthHeight = 128
             break
         }
     }

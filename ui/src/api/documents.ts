@@ -361,6 +361,8 @@ export const search = gql`
                 id
                 name
                 imgIconUrl
+                achievementCount
+                difficultyPercentage
             }
         }
     }
