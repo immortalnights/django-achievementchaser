@@ -1,6 +1,6 @@
 import { Tooltip, Typography } from "@mui/material"
 import dayjs from "dayjs"
-import { ReactNode, forwardRef, useMemo } from "react"
+import { ReactNode, forwardRef } from "react"
 import { getRelativeTime, formatDate } from "@/dayjsUtilities"
 import Link from "./Link"
 import GameIcon from "./GameIcon"
