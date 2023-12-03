@@ -1,7 +1,6 @@
 import { useContext } from "react"
 import GameAchievements from "./GameAchievements"
 import PlayerSettingsContext from "@/context/PlayerSettingsContext"
-import NoAchievementsBanner from "./NoAchievementsBanner"
 import { Alert } from "@mui/material"
 
 const PlayerGameAchievements = ({
