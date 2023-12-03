@@ -7,7 +7,7 @@ import utcPlugin from "dayjs/plugin/utc"
 import timezonePlugin from "dayjs/plugin/timezone"
 import weekOfYear from "dayjs/plugin/weekOfYear"
 
-export const installPlugins = () => {
+export const setup = () => {
     dayjs.extend(customParseFormat)
     dayjs.extend(relativeTimePlugin)
     dayjs.extend(advancedFormatPlugin)
@@ -15,6 +15,8 @@ export const installPlugins = () => {
     dayjs.extend(utcPlugin)
     dayjs.extend(timezonePlugin)
     dayjs.extend(weekOfYear)
+
+    dayjs.tz.setDefault(dayjs.tz.guess())
 }
 
 export const formatDate = (date: string | dayjs.Dayjs) => {
