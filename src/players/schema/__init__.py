@@ -1,7 +1,6 @@
 from graphene import ObjectType
 from .types import PlayerType
 from .players import Query as PlayerQuery
-from .mutations import ResynchronizePlayer, ResynchronizePlayerGame
 
 
 class Queries(
@@ -13,6 +12,4 @@ class Queries(
 
 __all__ = [
     "PlayerType",
-    "ResynchronizePlayer",
-    "ResynchronizePlayerGame",
 ]
