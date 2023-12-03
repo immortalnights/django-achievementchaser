@@ -53,12 +53,18 @@ export const playerGames = gql`
     query PlayerGames(
         $player: BigInt!
         $started: Boolean
+        $completed: Boolean
         $orderBy: String
         $limit: Int
     ) {
         player(id: $player) {
             id
-            games(started: $started, orderBy: $orderBy, first: $limit) {
+            games(
+                started: $started
+                completed_Isnull: $completed
+                orderBy: $orderBy
+                first: $limit
+            ) {
                 edges {
                     node {
                         game {
