@@ -22,7 +22,7 @@ const SearchResults = () => {
             <Typography variant="h4">Search</Typography>
 
             <Typography variant="h5">Players</Typography>
-            <SearchPlayerResults items={players} />
+            <SearchPlayerResults players={players} />
 
             <Typography variant="h5">Games</Typography>
             <SearchGameResults games={games} />

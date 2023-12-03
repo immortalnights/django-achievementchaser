@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material"
+import { Alert, Stack } from "@mui/material"
 import GameCapsule from "./GameCapsule"
 
 const SearchGameResults = ({ games }: { games: Game[] }) =>
@@ -14,7 +14,7 @@ const SearchGameResults = ({ games }: { games: Game[] }) =>
             ))}
         </Stack>
     ) : (
-        <div>No results</div>
+        <Alert severity="info">No results</Alert>
     )
 
 export default SearchGameResults
