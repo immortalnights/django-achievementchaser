@@ -1,6 +1,7 @@
 import typing
 from loguru import logger
 from achievementchaser import steam
+from typing import Optional, Union
 from .responsedata import (
     VanityResponse,
     PlayerSummaryResponse,
@@ -20,17 +21,20 @@ def resolve_vanity_url(name: str) -> typing.Union[int, None]:
             "response",
         )
 
-        if "success" in response:
-            if response["success"] == 42:
-                # No Match
-                logger.error(f"No match for name '{name}'")
-            elif response["success"] == 1:
-                vanity_response = VanityResponse(**response)
-                steam_id = int(vanity_response.steamid)
-                logger.debug(f"Successfully resolved name {name} to steam id {steam_id}")
+        if response:
+            if "success" in response:
+                if response["success"] == 42:
+                    # No Match
+                    logger.error(f"No match for name '{name}'")
+                elif response["success"] == 1:
+                    vanity_response = VanityResponse(**response)
+                    steam_id = int(vanity_response.steamid)
+                    logger.debug(f"Successfully resolved name {name} to steam id {steam_id}")
+            else:
+                message = response["message"] if "message" in response else "Unspecified"
+                logger.error(f"Failed to resolve name '{name}': {message}")
         else:
-            message = response["message"] if "message" in response else "Unspecified"
-            logger.error(f"Failed to resolve name '{name}': {message}")
+            logger.error("No response from request")
     except Exception:
         logger.exception("Failed to resolve vanity name")
 
@@ -60,19 +64,20 @@ def get_friends(steam_id: int):
     pass
 
 
-def get_owned_games(steam_id: int, api_key: str = None) -> typing.List[PlayerOwnedGameResponse]:
+def get_owned_games(steam_id: int, api_key: Optional[str] = None) -> typing.List[PlayerOwnedGameResponse]:
     """Fetch Player owned games.
     Allow the API key to be overwritten so that the player specific key can be used to retrieve all player owned
     game data (I.E., last playtime for games).
     """
     owned_games = []
     try:
-        query_properties = {
+        query_properties: dict[str, Union[str, int]] = {
             "steamid": steam_id,
             "include_appinfo": 1,
             "include_played_free_games": 1,
         }
 
+        # The API key from the database may be an empty string
         if api_key:
             query_properties["key"] = api_key
 

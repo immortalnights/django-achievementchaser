@@ -33,8 +33,8 @@ def _parse_response(resp: Union[error.HTTPError], cache: bool) -> Optional[Dict]
 
 
 def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
-    response_json: Optional[dict] = None
-    ok: bool = False
+    response_json = None
+    ok = False
 
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
 
@@ -53,13 +53,16 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
     return ok, response_json
 
 
-def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, dict]:
+def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optional[dict]]:
     # Always add the API key and response format
     query_parameters = {
         "key": _get_api_key(),
         "format": "json",
     }
     query_parameters.update(query)
+
+    if "key" not in query_parameters or not query_parameters["key"]:
+        raise KeyError("Steam API 'key' missing from query parameters")
 
     url = f"http://{STEAM_API_URL}/{path}?{parse.urlencode(query_parameters)}"
     ok, response_json = _request(url, cache=True)

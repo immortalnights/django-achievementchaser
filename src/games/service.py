@@ -93,8 +93,8 @@ def resynchronize_game_achievements(game: Game) -> bool:
     achievement_percentages = load_game_achievement_percentages(game.id)
 
     if achievement_percentages is not None:
-        total_percentage = 0
-        lowest_percentage = None
+        total_percentage = 0.0
+        lowest_percentage = 0.0
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
             total_percentage += achievement.percent

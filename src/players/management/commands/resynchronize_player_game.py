@@ -11,7 +11,7 @@ from games.service import resynchronize_game
 
 
 class Command(BaseCommand):
-    help = "Resynchronize player"
+    help = "Resynchronize player game"
 
     def add_arguments(self, parser) -> None:
         parser.add_argument("player", help="Player to resynchronize")
