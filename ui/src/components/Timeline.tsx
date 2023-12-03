@@ -8,7 +8,7 @@ import dayjs from "dayjs"
 import { useNavigate } from "react-router-dom"
 import { useQuery } from "graphql-hooks"
 import { unwrapEdges, updateUnlockedAchievementData } from "@/api/utils"
-import { playerGames, playerUnlockedAchievements } from "@/api/documents"
+import { playerPerfectGames, playerUnlockedAchievements } from "@/api/documents"
 import { formatDate } from "@/dayjsUtilities"
 
 const YearSelector = ({
@@ -270,9 +270,12 @@ const Calendar = ({
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
 
-    const { data: gamesResponse } = useQuery<PlayerQueryResponse>(playerGames, {
-        variables: { player, complete: true, year: selectedYear },
-    })
+    const { data: gamesResponse } = useQuery<PlayerQueryResponse>(
+        playerPerfectGames,
+        {
+            variables: { player, year: selectedYear },
+        }
+    )
     // eslint-disable-next-line @typescript-eslint/unbound-method
     const { data: unlockedAchievementResponse, refetch } =
         useQuery<PlayerQueryResponse>(playerUnlockedAchievements, {
