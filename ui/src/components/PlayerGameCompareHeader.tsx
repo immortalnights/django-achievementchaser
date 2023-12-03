@@ -3,14 +3,16 @@ import { Box, Stack, SvgIconProps, Typography } from "@mui/material"
 import { getRelativeTime, duration, formatDateTime } from "@/dayjsUtilities"
 import BorderedImage from "./BorderedImage"
 import CircularProgressWithLabel from "./CircularProgressWithLabel"
+import Link from "./Link"
 
 const PlayerGameDetails = ({
-    name,
+    player,
+
     color,
     lastPlayed,
     playtimeForever,
 }: {
-    name: string
+    player: Player
     color: SvgIconProps["color"]
     lastPlayed?: string
     playtimeForever?: number
@@ -23,7 +25,9 @@ const PlayerGameDetails = ({
         <Box minWidth="120px">
             <Stack direction="row">
                 <Circle color={color} />
-                <Typography variant="subtitle1">{name}</Typography>
+                <Link to={`/Player/${player.id}`}>
+                    <Typography variant="subtitle1">{player.name}</Typography>
+                </Link>
             </Stack>
 
             {lastPlayed || playtime ? (
@@ -83,7 +87,7 @@ const PlayerGameCompareHeader = ({
         >
             <BorderedImage src={player1.avatarMediumUrl} width={64} />
             <PlayerGameDetails
-                name={player1.name!}
+                player={player1}
                 color="primary"
                 lastPlayed={player1Owner.lastPlayed}
                 playtimeForever={player1Owner.playtimeForever}
@@ -101,7 +105,7 @@ const PlayerGameCompareHeader = ({
                 />
             </Box>
             <PlayerGameDetails
-                name={player2.name!}
+                player={player2}
                 color="secondary"
                 lastPlayed={player2Owner.lastPlayed}
                 playtimeForever={player2Owner.playtimeForever}
