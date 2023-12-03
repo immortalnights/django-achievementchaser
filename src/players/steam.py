@@ -21,20 +21,17 @@ def resolve_vanity_url(name: str) -> typing.Union[int, None]:
             "response",
         )
 
-        if response:
-            if "success" in response:
-                if response["success"] == 42:
-                    # No Match
-                    logger.error(f"No match for name '{name}'")
-                elif response["success"] == 1:
-                    vanity_response = VanityResponse(**response)
-                    steam_id = int(vanity_response.steamid)
-                    logger.debug(f"Successfully resolved name {name} to steam id {steam_id}")
-            else:
-                message = response["message"] if "message" in response else "Unspecified"
-                logger.error(f"Failed to resolve name '{name}': {message}")
+        if ok and response and "success" in response:
+            if response["success"] == 42:
+                # No Match
+                logger.error(f"No match for name '{name}'")
+            elif response["success"] == 1:
+                vanity_response = VanityResponse(**response)
+                steam_id = int(vanity_response.steamid)
+                logger.debug(f"Successfully resolved name {name} to steam id {steam_id}")
         else:
-            logger.error("No response from request")
+            message = response["message"] if response and "message" in response else "Unspecified"
+            logger.error(f"Failed to resolve name '{name}': {message}")
     except Exception:
         logger.exception("Failed to resolve vanity name")
 
@@ -52,7 +49,7 @@ def load_player_summary(steam_id: int) -> typing.Optional[PlayerSummaryResponse]
             "response",
         )
 
-        if response and "players" in response and len(response["players"]) == 1:
+        if ok and response and "players" in response and len(response["players"]) == 1:
             summary = PlayerSummaryResponse(**response["players"][0])
     except Exception:
         logger.exception(f"Failed to load player summary for {steam_id}")
@@ -87,7 +84,7 @@ def get_owned_games(steam_id: int, api_key: Optional[str] = None) -> typing.List
             "response",
         )
 
-        if response and "games" in response and isinstance(response["games"], list):
+        if ok and response and "games" in response and isinstance(response["games"], list):
             try:
                 for game in response["games"]:
                     owned_games.append(PlayerOwnedGameResponse(**game))
@@ -111,7 +108,7 @@ def get_player_achievements_for_game(steam_id: int, game_id: int) -> typing.List
             "playerstats",
         )
 
-        if response and "success" in response:
+        if ok and response and "success" in response:
             if "achievements" in response and isinstance(response["achievements"], list):
                 try:
                     for achievement in response["achievements"]:

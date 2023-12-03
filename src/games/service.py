@@ -7,7 +7,7 @@ from .models import Game, Achievement
 from .steam import load_game_schema, load_game_achievement_percentages
 
 
-def load_game(identity: Union[int, str]) -> Optional[Game]:
+def query_game(identity: Union[int, str]) -> Optional[Game]:
     query = None
     try:
         query = Q(id=int(identity))
@@ -20,6 +20,16 @@ def load_game(identity: Union[int, str]) -> Optional[Game]:
         logger.warning(f"Game '{identity}' does not exist")
 
     return instance
+
+
+def load_game(identity: Union[int, str]) -> Game:
+    game = query_game(identity)
+
+    if not game:
+        logger.error(f"game '{identity}' does not exist")
+        raise Game.DoesNotExist(f"game '{identity}' does not exist")
+
+    return game
 
 
 def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -> bool:

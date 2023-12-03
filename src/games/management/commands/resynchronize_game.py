@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from achievementchaser.management.lib.command_output import CommandOutput
 from games.models import Game
-from games.service import resynchronize_game
+from games.tasks import resynchronize_game_task
 
 
 class Command(BaseCommand):
@@ -16,13 +16,17 @@ class Command(BaseCommand):
         identity = options["game"]
 
         try:
-            game = Game.objects.get(id=identity)
+            output.info(f"Beginning resynchronization of Game {identity}")
+            response = resynchronize_game_task(identity)
 
-            output.info(f"Beginning resynchronization of Game '{game.name}' ({identity})")
-            if resynchronize_game(game):
-                output.info(f"Resynchronization of Game '{game.name}' succeeded")
+            game_name = (
+                response["game"].name if response and "game" in response and response["game"] is not None else identity
+            )
+
+            if response and response["ok"] is True:
+                output.info(f"Resynchronization of Game '{game_name}' succeeded")
             else:
-                output.info(f"Resynchronization of Game '{game.name}' failed")
+                output.info(f"Resynchronization of Game '{game_name}' failed")
 
         except Game.DoesNotExist:
             output.error(f"Game '{identity}' does not exist")

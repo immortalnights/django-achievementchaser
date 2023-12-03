@@ -1,6 +1,6 @@
 """Steam Interface layer"""
 import os
-from typing import Tuple, Union, Optional, Dict
+from typing import Tuple, Union, Optional, Dict, cast
 from urllib import request as urllib_request, parse, error
 import json
 from loguru import logger
@@ -45,7 +45,6 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
             ok = True
 
     except error.HTTPError as err:
-        logger.warning(f"HTTP {err.code}")
         response_json = _parse_response(err, cache)
     except error.URLError:
         logger.exception("Steam request failed (URL ERROR)")
@@ -70,7 +69,10 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
 
     if ok is True and response_json is not None:
         if response_data_key in response_json:
-            response_data = response_json[response_data_key]
+            if isinstance(response_json[response_data_key], dict):
+                response_data = cast(dict, response_json[response_data_key])
+            else:
+                logger.error(f"Expected root object '{response_data_key}' is not a dictionary; {response_json}")
         else:
             logger.error(f"Expected root object '{response_data_key}' missing; {response_json}")
     else:

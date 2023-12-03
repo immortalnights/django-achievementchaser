@@ -9,10 +9,8 @@ from .service import load_game, resynchronize_game
 from achievementchaser.utilities import can_resynchronize_model
 
 
-GameResponse = TypedDict("GameResponse", {"id": int, "name": str, "resynchronized": str})
-
 ResynchronizeGameResponse = TypedDict(
-    "ResynchronizeGameResponse", {"ok": bool, "game": Optional[GameResponse], "error": Optional[str]}, total=False
+    "ResynchronizeGameResponse", {"ok": bool, "game": Optional[Game], "error": Optional[str]}, total=False
 )
 
 
@@ -20,7 +18,7 @@ def resynchronize_games_task():
     """Resynchronize games that are flagged for resynchronization or have not been resynchronized recently"""
     logger.debug("Begin resynchronization of games")
 
-    due = timezone.now() - timedelta(hours=24)
+    due = timezone.now() - timedelta(days=14)
 
     logger.debug(f"Find games last resynchronized before {due}")
     query = Q(resynchronization_required=True) | Q(resynchronized__lt=due)
@@ -46,25 +44,18 @@ def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameRespo
 
     resp: ResynchronizeGameResponse = {"ok": False}
 
-    game = load_game(identity)
+    try:
+        game = load_game(identity)
 
-    if game is None:
-        raise Game.DoesNotExist(f"Game '{identity}' does not exist")
-    else:
         logger.info(f"Beginning resynchronization of game '{game.name}' ({identity})")
-        if can_resynchronize_model(game):
+        if not can_resynchronize_model(game):
             logger.warning(f"Resynchronization of game '{game.name}' blocked")
         elif resynchronize_game(game):
             logger.info(f"Resynchronization of game '{game.name}' complete")
-            resp = {
-                "ok": True,
-                "game": {
-                    "id": game.id,
-                    "name": game.name,
-                    "resynchronized": game.resynchronized,
-                },
-            }
+            resp = {"ok": True, "game": game}
         else:
-            logger.info(f"Resynchronization of game '{game.name}' failed")
+            logger.error(f"Resynchronization of game '{game.name}' failed")
+    except Game.DoesNotExist:
+        pass
 
     return resp

@@ -15,7 +15,7 @@ def load_game_schema(id: int) -> Optional[GameSchemaResponse]:
             "game",
         )
 
-        if response and "gameName" in response:
+        if ok and response and "gameName" in response:
             schema = GameSchemaResponse(**response)
     except Exception:
         logger.exception(f"Failed to load game schema for {id}")
@@ -34,7 +34,7 @@ def load_game_achievement_percentages(id: int) -> Optional[AchievementPercentage
             "achievementpercentages",
         )
 
-        if response and "achievements" in response:
+        if ok and response and "achievements" in response:
             schema = AchievementPercentagesResponse(**response)
     except Exception:
         logger.exception(f"Failed to load game achievement percentages for {id}")

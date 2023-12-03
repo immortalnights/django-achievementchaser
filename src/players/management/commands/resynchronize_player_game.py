@@ -6,7 +6,7 @@ from players.service import (
     load_player,
     resynchronize_player_achievements_for_game,
 )
-from players.models import PlayerOwnedGame
+from players.models import Player, PlayerOwnedGame
 from games.service import resynchronize_game
 
 
@@ -23,9 +23,9 @@ class Command(BaseCommand):
         identity = options["player"]
         game_identity = options["game"]
 
-        player = load_player(identity)
+        try:
+            player = load_player(identity)
 
-        if player is not None:
             identity_query = Q(game=int(game_identity)) if game_identity.isdigit() else Q(game__name=game_identity)
 
             owned_games = PlayerOwnedGame.objects.filter(Q(player=player) & identity_query).select_related("game")
@@ -55,5 +55,5 @@ class Command(BaseCommand):
                     f"must specify one game"
                 )
 
-        else:
+        except Player.DoesNotExist:
             output.error(f"Player '{identity}' does not exist")
