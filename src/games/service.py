@@ -108,9 +108,9 @@ def resynchronize_game_achievements(game: Game) -> bool:
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
             total_percentage += achievement.percent
-            lowest_percentage = (
-                min(lowest_percentage, achievement.percent) if lowest_percentage is not None else achievement.percent
-            )
+
+            if lowest_percentage == 0.0 or achievement.percent < lowest_percentage:
+                lowest_percentage = achievement.percent
 
             try:
                 instance = Achievement.objects.get(name=achievement.name, game=game)
