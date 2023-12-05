@@ -152,7 +152,9 @@ const PlayerUnlockedAchievements = ({
                     perfectGames={perfectGames}
                 />
             ) : (
-                <Alert security="info">No Achievements</Alert>
+                <Box flexGrow={1}>
+                    <Alert severity="info">No Achievements</Alert>
+                </Box>
             )}
 
             <IconButton
