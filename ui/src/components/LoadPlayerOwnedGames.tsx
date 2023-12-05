@@ -23,7 +23,7 @@ const LoadPlayerOwnedGames = ({
             variables: {
                 player,
                 started,
-                completed: !completed,
+                incomplete: !completed,
                 orderBy: order,
                 limit,
             },

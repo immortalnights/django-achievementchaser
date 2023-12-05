@@ -53,7 +53,7 @@ export const playerGames = gql`
     query PlayerGames(
         $player: BigInt!
         $started: Boolean
-        $completed: Boolean
+        $incomplete: Boolean
         $orderBy: String
         $limit: Int
     ) {
@@ -61,7 +61,7 @@ export const playerGames = gql`
             id
             games(
                 started: $started
-                completed_Isnull: $completed
+                completed_Isnull: $incomplete
                 orderBy: $orderBy
                 first: $limit
             ) {
