@@ -135,10 +135,10 @@ def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int,
     delta = timezone.now() - playtime.datetime
     save = False
     if new_playtime == playtime.playtime:
-        logger.debug(f"Not saving playtime record for '{playtime.game.name}' playtime has not changed")
+        logger.debug(f"Not saving playtime record for '{playtime.game.name}', playtime has not changed")
     elif delta.seconds < (maximum_frequency * 60):
         logger.debug(
-            f"Not saving playtime record for '{playtime.game.name}' last recorded {delta.seconds / 60:0.0f} minutes ago"
+            f"Not saving playtime record for '{playtime.game.name}', last recorded {delta.seconds / 60:0.0f} minutes ago"
         )
     else:
         save = True
@@ -165,10 +165,10 @@ def resynchronize_player_games(player: Player) -> bool:
         last_played_time = None
         # rtime_last_played is only available for the owner of the API key,
         # where it is not available, use today if the playtime value has changed.
-        if owned_game.rtime_last_played is not None:
+        if owned_game.rtime_last_played is not None and owned_game.rtime_last_played > 0:
             last_played_time = timezone.make_aware(datetime.fromtimestamp(owned_game.rtime_last_played))
 
-        if owned_game.playtime_2weeks is not None:
+        if owned_game.playtime_2weeks is not None and owned_game.playtime_2weeks > 0:
             logger.debug(f"Player has played {game_instance.name} ({game_instance.id}) recently")
             # Get latest game playtime
             owned_game_playtime = None
@@ -192,6 +192,7 @@ def resynchronize_player_games(player: Player) -> bool:
                 )
                 new_owned_game_playtime.save()
 
+                # If rtime_last_played is not available and playtime has changed, update last_played_time
                 if owned_game_playtime is None or owned_game.playtime_2weeks > owned_game_playtime.playtime:
                     last_played_time = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()))
 
