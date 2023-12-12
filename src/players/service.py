@@ -138,7 +138,8 @@ def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int,
         logger.debug(f"Not saving playtime record for '{playtime.game.name}', playtime has not changed")
     elif delta.seconds < (maximum_frequency * 60):
         logger.debug(
-            f"Not saving playtime record for '{playtime.game.name}', last recorded {delta.seconds / 60:0.0f} minutes ago"
+            f"Not saving playtime record for '{playtime.game.name}',"
+            f" last recorded {delta.seconds / 60:0.0f} minutes ago"
         )
     else:
         save = True
