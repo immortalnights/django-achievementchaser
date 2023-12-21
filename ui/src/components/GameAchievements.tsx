@@ -108,9 +108,11 @@ const AchievementContainer = ({
 
 const AchievementDetails = ({
     achievement,
+    unlocked,
     unlockedAchievementDetails,
 }: {
     achievement: Achievement
+    unlocked: boolean
     unlockedAchievementDetails?: ReactNode
 }) => {
     const {
@@ -119,7 +121,7 @@ const AchievementDetails = ({
         hidden: initialHidden,
         globalPercentage = 0,
     } = achievement
-    const [hidden, setHidden] = useState(initialHidden)
+    const [hidden, setHidden] = useState(!unlocked && initialHidden)
 
     const handleClick = () => {
         setHidden(false)
@@ -184,6 +186,7 @@ const Achievement = ({
     player1Achievement?: PlayerUnlockedAchievement
     player2Achievement?: PlayerUnlockedAchievement
 }) => {
+    const isUnlocked = Boolean(player1Achievement || player2Achievement)
     let unlockedAchievementDetails
     if (compare) {
         unlockedAchievementDetails = (
@@ -212,6 +215,7 @@ const Achievement = ({
 
             <AchievementDetails
                 achievement={achievement}
+                unlocked={isUnlocked}
                 unlockedAchievementDetails={unlockedAchievementDetails}
             />
 
