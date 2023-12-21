@@ -11,7 +11,7 @@ const CircularProgressWithLabel = (
     props: CircularProgressProps & { value: number }
 ) => {
     return (
-        <Box margin="auto">
+        <Box margin="auto" sx={{ userSelect: "none" }}>
             <Box
                 sx={{
                     position: "relative",
