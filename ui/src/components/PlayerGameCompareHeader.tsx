@@ -38,14 +38,14 @@ const PlayerGameDetails = ({
                     >
                         {lastPlayed
                             ? `Last played ${getRelativeTime(lastPlayed)}`
-                            : "Never played"}
+                            : ""}
                     </Typography>
 
                     <Typography
                         fontSize={12}
                         title={`${playtimeForever ?? 0} minutes`}
                     >
-                        {playtime ? `play time ${playtime} hours` : ""}
+                        {playtime ? `Play time ${playtime} hours` : ""}
                     </Typography>
                 </>
             ) : (
@@ -92,17 +92,23 @@ const PlayerGameCompareHeader = ({
                 lastPlayed={player1Owner.lastPlayed}
                 playtimeForever={player1Owner.playtimeForever}
             />
-            <Box display="flex">
+            <Box display="flex" flexDirection="column">
                 <CircularProgressWithLabel
                     value={player1CompletionPercentage}
                 />
+                <Typography fontSize="small">
+                    {player1Achievements} of {gameAchievementCount}
+                </Typography>
             </Box>
             <Box flexGrow={1} />
-            <Box display="flex">
+            <Box display="flex" flexDirection="column">
                 <CircularProgressWithLabel
                     value={player2CompletionPercentage}
                     color="secondary"
                 />
+                <Typography fontSize="small">
+                    {player2Achievements} of {gameAchievementCount}
+                </Typography>
             </Box>
             <PlayerGameDetails
                 player={player2}
