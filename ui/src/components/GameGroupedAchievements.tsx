@@ -2,7 +2,7 @@ import { useMemo } from "react"
 import Grid from "@mui/material/Unstable_Grid2"
 import GameCapsule from "./GameCapsule"
 import AchievementIcon from "./AchievementIcon"
-import { Stack } from "@mui/material"
+import { Box, Stack, Typography } from "@mui/material"
 
 type MaybeUnlockedAchievement = {
     datetime?: string
@@ -25,27 +25,31 @@ const GameAchievementSet = ({
     player: string
     game: Game
     achievements: MaybeUnlockedAchievement[]
-}) => {
-    return (
-        <>
-            <GameCapsule player={player} game={game} />
-            <Stack flexDirection="row" flexWrap="wrap" gap={1}>
-                {achievements.map((item) => (
-                    <AchievementIcon
-                        key={`${game.id}-${item.id}`}
-                        game={game.id}
-                        achievement={item}
-                        unlockedDatetime={item.datetime}
-                    />
-                ))}
-            </Stack>
-        </>
-    )
-}
+}) => (
+    <>
+        <GameCapsule player={player} game={game} />
+        <Stack flexDirection="row" flexWrap="wrap" gap={1}>
+            {achievements.slice(0, 2).map((item) => (
+                <AchievementIcon
+                    key={`${game.id}-${item.id}`}
+                    game={game.id}
+                    achievement={item}
+                    unlockedDatetime={item.datetime}
+                />
+            ))}
+            {achievements.length > 2 && (
+                <Box key="rest" display="flex">
+                    <Typography margin="auto">
+                        +{achievements.length - 2 + 1}
+                    </Typography>
+                </Box>
+            )}
+        </Stack>
+    </>
+)
 
 const groupAchievements = (
-    achievements: Achievement[] | PlayerUnlockedAchievement[],
-    maxAchievements?: number
+    achievements: Achievement[] | PlayerUnlockedAchievement[]
 ) => {
     const games: GameAchievementIndex = {}
 
@@ -61,21 +65,16 @@ const groupAchievements = (
                 }
             }
 
-            if (
-                maxAchievements === undefined ||
-                games[key].achievements.length < maxAchievements
-            ) {
-                if ("datetime" in item) {
-                    games[key].achievements.push({
-                        datetime: item.datetime,
-                        ...item.achievement,
-                    })
-                } else if ("displayName" in item) {
-                    games[key].achievements.push({
-                        datetime: undefined,
-                        ...(rest as Achievement),
-                    })
-                }
+            if ("datetime" in item) {
+                games[key].achievements.push({
+                    datetime: item.datetime,
+                    ...item.achievement,
+                })
+            } else if ("displayName" in item) {
+                games[key].achievements.push({
+                    datetime: undefined,
+                    ...(rest as Achievement),
+                })
             }
         }
     })
@@ -87,16 +86,14 @@ const GameGroupedAchievements = ({
     player,
     achievements,
     rows,
-    maxAchievements,
 }: {
     player: string
     achievements: Achievement[] | PlayerUnlockedAchievement[]
     rows: number
-    maxAchievements?: number
 }) => {
     const groupedAchievements = useMemo(
-        () => groupAchievements(achievements, maxAchievements),
-        [achievements, maxAchievements]
+        () => groupAchievements(achievements),
+        [achievements]
     )
 
     return (

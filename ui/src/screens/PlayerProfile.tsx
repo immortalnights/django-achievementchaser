@@ -34,7 +34,6 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
                         player={player}
                         achievements={achievements}
                         rows={3}
-                        maxAchievements={2}
                     />
                 )
             }}
