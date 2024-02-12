@@ -29,7 +29,7 @@ const Playtime = ({ playtime }: { playtime: number }) => {
     return `${index > 1 ? value.toFixed(2) : value} ${keys[index - 1] ?? ""}`
 }
 
-const Header = ({
+const Title = ({
     id,
     name,
     url,
@@ -185,7 +185,7 @@ const PlayerProfileHeader = ({
 }) => {
     return (
         <>
-            <Header id={id} name={name ?? ""} url={profileUrl ?? ""} />
+            <Title id={id} name={name ?? ""} url={profileUrl ?? ""} />
             <Stack direction="row" useFlexGap spacing={1}>
                 <BorderedImage
                     src={avatarLargeUrl}
