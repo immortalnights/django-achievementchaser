@@ -6,7 +6,7 @@ function App() {
     return (
         <>
             <Header />
-            <Container className="light">
+            <Container className="light" disableGutters>
                 <Outlet />
             </Container>
         </>
