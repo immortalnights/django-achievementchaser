@@ -26,7 +26,7 @@ const GameHeader = ({ game }: { game: Game }) => {
                                 Difficulty
                             </Typography>
                             <Typography variant="body1">
-                                {`${game.difficultyPercentage}%`}
+                                {`${game.difficultyPercentage.toFixed(2)}%`}
                             </Typography>
                         </Box>
                         <Box>

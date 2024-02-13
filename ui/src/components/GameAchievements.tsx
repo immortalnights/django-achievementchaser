@@ -22,7 +22,7 @@ const UnlockedAchievementRelative = ({
     unlockedAchievement: PlayerUnlockedAchievement
 }) => {
     return (
-        <Box sx={{ margin: "auto 0.5em", minWidth: "10em" }}>
+        <Box sx={{ margin: "auto 0.5em", minWidth: "11em" }}>
             <Typography>{`Unlocked ${getRelativeTime(
                 unlockedAchievement.datetime
             )}`}</Typography>
@@ -42,7 +42,7 @@ const UnlockedAchievementDateTime = ({
 }) => {
     return (
         unlockedAchievement && (
-            <Stack direction="row" gap={0.25} minWidth={190}>
+            <Stack direction="row" gap={0.25} minWidth="12em">
                 <Circle color={color} fontSize="small" />
                 <Typography fontSize="small">
                     {formatDateTime(unlockedAchievement.datetime)}
