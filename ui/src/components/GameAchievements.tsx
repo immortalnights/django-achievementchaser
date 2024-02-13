@@ -42,7 +42,7 @@ const UnlockedAchievementDateTime = ({
 }) => {
     return (
         unlockedAchievement && (
-            <Stack direction="row" alignItems="center" gap={0.5}>
+            <Stack direction="row" gap={0.25} minWidth={190}>
                 <Circle color={color} fontSize="small" />
                 <Typography fontSize="small">
                     {formatDateTime(unlockedAchievement.datetime)}
