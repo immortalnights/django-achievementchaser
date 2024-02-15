@@ -60,23 +60,22 @@ const PlayerGameDetails = ({
 const PlayerGameCompareHeader = ({
     gameAchievementCount,
     player1Owner,
-    player1Achievements,
     player2Owner,
-    player2Achievements,
 }: {
     gameAchievementCount: number
     player1Owner: PlayerOwnedGame
-    player1Achievements: number
     player2Owner: PlayerOwnedGame
-    player2Achievements: number
 }) => {
     const player1 = player1Owner.player!
     const player2 = player2Owner.player!
 
+    const player1AchievementCount = player1Owner.unlockedAchievementCount ?? 0
+    const player2AchievementCount = player2Owner.unlockedAchievementCount ?? 0
+
     const player1CompletionPercentage =
-        (player1Achievements / gameAchievementCount) * 100
+        (player1AchievementCount / gameAchievementCount) * 100
     const player2CompletionPercentage =
-        (player2Achievements / gameAchievementCount) * 100
+        (player2AchievementCount / gameAchievementCount) * 100
 
     return (
         <Box
@@ -92,12 +91,12 @@ const PlayerGameCompareHeader = ({
                 lastPlayed={player1Owner.lastPlayed}
                 playtimeForever={player1Owner.playtimeForever}
             />
-            <Box display="flex" flexDirection="column">
+            <Box display="flex" flexDirection="column" alignItems="center">
                 <CircularProgressWithLabel
                     value={player1CompletionPercentage}
                 />
                 <Typography fontSize="small">
-                    {player1Achievements} of {gameAchievementCount}
+                    {player1AchievementCount} of {gameAchievementCount}
                 </Typography>
             </Box>
             <Box flexGrow={1} />
@@ -107,7 +106,7 @@ const PlayerGameCompareHeader = ({
                     color="secondary"
                 />
                 <Typography fontSize="small">
-                    {player2Achievements} of {gameAchievementCount}
+                    {player2AchievementCount} of {gameAchievementCount}
                 </Typography>
             </Box>
             <PlayerGameDetails
