@@ -1,99 +1,8 @@
-import { useContext, useEffect, useMemo } from "react"
 import GameAchievements from "./GameAchievements"
-import PlayerSettingsContext from "@/context/PlayerSettingsContext"
 import { Alert } from "@mui/material"
-import { useQuery } from "graphql-hooks"
-import { playerUnlockedAchievements } from "@/api/documents"
-import { unwrapEdges, updateUnlockedAchievementData } from "@/api/utils"
+import { useAchievementFilter, useLoadPlayerAchievements } from "@/api/utils"
 
 type GameWithAchievements = Required<Pick<Game, "achievements">> & Game
-
-const useAchievementFilter = (
-    achievements: Achievement[],
-    playerAchievements: PlayerUnlockedAchievement[]
-) => {
-    const { achievementSortOrder, hideUnlockedAchievements } = useContext(
-        PlayerSettingsContext
-    )
-
-    return useMemo(() => {
-        const playerAchievementReferenceSort = (
-            a: Achievement,
-            b: Achievement
-        ) => {
-            const aIndex = playerAchievements.findIndex(
-                (item) => item.achievement.id === a.id
-            )
-            const bIndex = playerAchievements.findIndex(
-                (item) => item.achievement.id === b.id
-            )
-
-            return aIndex === -1 || bIndex === -1 ? 1 : aIndex - bIndex
-        }
-
-        const filterUnlockedAchievements = () => {
-            return achievements.filter(
-                (achievement) =>
-                    !playerAchievements.find(
-                        (playerAchievement) =>
-                            playerAchievement.achievement.id === achievement.id
-                    )
-            )
-        }
-
-        let mutatedAchievements
-        if (hideUnlockedAchievements) {
-            mutatedAchievements = filterUnlockedAchievements()
-        } else if (achievementSortOrder === "unlocked") {
-            // Array is modified in place
-            mutatedAchievements = achievements
-                .slice()
-                .sort(playerAchievementReferenceSort)
-        } else {
-            mutatedAchievements = achievements
-        }
-
-        return mutatedAchievements
-    }, [
-        achievements,
-        playerAchievements,
-        achievementSortOrder,
-        hideUnlockedAchievements,
-    ])
-}
-
-const useLoadPlayerAchievements = (variables: {
-    player: string
-    game?: number
-    year?: number
-    orderBy?: string
-    limit: number
-}) => {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { data: unlockedAchievementResponse, refetch } =
-        useQuery<PlayerQueryResponse>(playerUnlockedAchievements, { variables })
-
-    useEffect(() => {
-        const unlockedAchievements =
-            unlockedAchievementResponse?.player?.unlockedAchievements
-        if (
-            !unlockedAchievementResponse ||
-            unlockedAchievements?.pageInfo?.hasNextPage
-        ) {
-            refetch({
-                variables: {
-                    ...variables,
-                    cursor: unlockedAchievements?.pageInfo?.endCursor ?? "",
-                },
-                updateData: updateUnlockedAchievementData,
-            }).catch(() => console.error("Refetch failed"))
-        }
-    }, [variables, unlockedAchievementResponse, refetch])
-
-    return unwrapEdges(
-        unlockedAchievementResponse?.player?.unlockedAchievements
-    )
-}
 
 const PlayerGameAchievements2 = ({
     game,
@@ -106,7 +15,6 @@ const PlayerGameAchievements2 = ({
         player: player1?.id ?? "",
         game: Number(game.id),
         orderBy: "-datetime",
-        limit: 100,
     })
 
     const mutatedAchievements = useAchievementFilter(
@@ -145,14 +53,12 @@ const CompareGameAchievements = ({
         player: player1?.id ?? "",
         game: Number(game.id),
         orderBy: "-datetime",
-        limit: 100,
     })
 
     const player2Achievements = useLoadPlayerAchievements({
         player: player2?.id ?? "",
         game: Number(game.id),
         orderBy: "-datetime",
-        limit: 100,
     })
 
     const mutatedAchievements = useAchievementFilter(
