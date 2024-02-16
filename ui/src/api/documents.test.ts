@@ -1,35 +1,6 @@
 import { LocalGraphQLClient } from "graphql-hooks"
 import { test, expect } from "vitest"
-import { player, playerGames, players } from "./documents"
-
-test("players query", async () => {
-    const playersResponseData = {
-        data: {
-            players: [
-                {
-                    id: "00000000000000001",
-                    name: "Player1",
-                },
-                {
-                    id: "00000000000000002",
-                    name: "Player2",
-                },
-            ],
-        },
-    }
-
-    const client = new LocalGraphQLClient({
-        localQueries: {
-            [players]: () => playersResponseData,
-        },
-    })
-
-    const resp = await client.request<PlayerQueryResponse>({
-        query: players,
-    })
-    expect(resp.data).toEqual(playersResponseData)
-    expect(resp.error).toBeUndefined()
-})
+import { player, playerGames } from "./documents"
 
 test("player query", async () => {
     const client = new LocalGraphQLClient({

@@ -1,14 +1,5 @@
 import { gql } from "graphql-request"
 
-export const players = gql`
-    query Players {
-        players {
-            id
-            name
-        }
-    }
-`
-
 export const searchPlayers = gql`
     query Search($name: String!) {
         player(name: $name) {
@@ -121,41 +112,6 @@ export const playerPerfectGames = gql`
     }
 `
 
-export const playerGame = gql`
-    query PlayerGame($player: BigInt!, $game: String!) {
-        player(id: $player) {
-            id
-            game(game: $game) {
-                game {
-                    name
-                    id
-                    imgIconUrl
-                    difficultyPercentage
-                    achievements {
-                        id
-                        displayName
-                        description
-                        hidden
-                        globalPercentage
-                        iconUrl
-                        iconGrayUrl
-                    }
-                }
-                completed
-                lastPlayed
-                playtimeForever
-                unlockedAchievements {
-                    datetime
-                    achievement {
-                        id
-                        displayName
-                    }
-                }
-            }
-        }
-    }
-`
-
 export const playerUnlockedAchievements = gql`
     query PlayerUnlockedAchievements(
         $player: BigInt!
@@ -239,81 +195,6 @@ export const playerAvailableAchievements = gql`
     }
 `
 
-export const game = gql`
-    query Game($game: Int!) {
-        game(id: $game) {
-            id
-            name
-            difficultyPercentage
-            achievementCount
-        }
-    }
-`
-
-export const gameWithOwnerAchievements = gql`
-    query GameWithOwnerAchievements($game: Int!, $players: [ID!]) {
-        game(id: $game) {
-            id
-            name
-            difficultyPercentage
-            achievements {
-                id
-                displayName
-                description
-                hidden
-                iconUrl
-                iconGrayUrl
-                globalPercentage
-            }
-            owners(player: $players) {
-                edges {
-                    node {
-                        player {
-                            id
-                            name
-                            avatarMediumUrl
-                            unlockedAchievements(
-                                orderBy: "-datetime"
-                                game: $game
-                            ) {
-                                edges {
-                                    node {
-                                        datetime
-                                        achievement {
-                                            id
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        lastPlayed
-                        playtimeForever
-                    }
-                }
-            }
-        }
-    }
-`
-
-export const gameWithOwners = gql`
-    query GameWithOwners($game: Int!) {
-        game(id: $game) {
-            id
-            owners {
-                edges {
-                    node {
-                        player {
-                            id
-                            name
-                            avatarMediumUrl
-                        }
-                    }
-                }
-            }
-        }
-    }
-`
-
 export const gameComplete = gql`
     query Game($game: Int!) {
         game(id: $game) {
@@ -328,10 +209,11 @@ export const gameComplete = gql`
                             id
                             name
                             avatarSmallUrl
+                            avatarMediumUrl
                         }
                         lastPlayed
                         playtimeForever
-                        completionPercentage
+                        unlockedAchievementCount
                         completed
                     }
                 }

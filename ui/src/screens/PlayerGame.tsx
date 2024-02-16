@@ -179,16 +179,10 @@ const PlayerGameContainer = () => {
             )}
 
             <PlayerGameAchievements
-                achievements={game.achievements ?? []}
-                player1Achievements={[]}
-                player2Achievements={[]}
-            />
-
-            {/* <PlayerGameAchievements
-                achievements={game.achievements ?? []}
+                game={game}
                 player1={player1Owner?.player}
                 player2={player2Owner?.player}
-            /> */}
+            />
         </PlayerCompareContext.Provider>
     )
 }
