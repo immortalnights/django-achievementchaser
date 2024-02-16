@@ -29,6 +29,8 @@ interface Game {
     playerPlaytime?: Connection<PlayerGamePlaytime>
 }
 
+type GameWithAchievements = WithRequired<Game, "achievements">
+
 interface Achievement {
     id: string
     displayName?: string

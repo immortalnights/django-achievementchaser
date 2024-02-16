@@ -1,6 +1,4 @@
 import { useLoaderData, useRouteLoaderData } from "react-router-dom"
-import PlayerGameAchievements from "@/components/PlayerGameAchievements"
-
 import { useContext, useEffect, useMemo, useState } from "react"
 import PlayerCompareContext, {
     PlayerCompareContextValue,
@@ -20,6 +18,7 @@ import GameDifficulty from "@/components/GameDifficulty"
 import OwnedGameLastPlayed from "@/components/OwnedGameLastPlayed"
 import OwnedGamePlaytime from "@/components/OwnedGamePlaytime"
 import PlayerGameCompareHeader from "@/components/PlayerGameCompareHeader"
+import GameAchievementsContainer from "@/components/GameAchievementsContainer"
 
 const PlayerGameDetails = ({
     game,
@@ -178,7 +177,7 @@ const PlayerGameContainer = () => {
                 />
             )}
 
-            <PlayerGameAchievements
+            <GameAchievementsContainer
                 game={game}
                 player1={player1Owner?.player}
                 player2={player2Owner?.player}
