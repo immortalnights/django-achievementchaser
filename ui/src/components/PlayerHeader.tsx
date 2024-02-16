@@ -195,13 +195,13 @@ const PlayerProfileHeader = ({
                         margin: "0 0",
                     }}
                 />
-                {/* <Box>
+                <Box>
                     <PlayerStatistics player={id} />
                     <Stack direction="row">
                         <RecentActivity player={id} />
                         <Timeline player={id} />
                     </Stack>
-                </Box> */}
+                </Box>
             </Stack>
         </>
     )
