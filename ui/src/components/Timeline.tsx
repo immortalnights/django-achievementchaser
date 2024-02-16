@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useCallback, useState, useEffect } from "react"
+import { ChangeEvent, useMemo, useCallback, useState } from "react"
 import { Box, InputLabel, NativeSelect } from "@mui/material"
 import {
     VideogameAssetTwoTone,
@@ -6,9 +6,10 @@ import {
 } from "@mui/icons-material"
 import dayjs from "dayjs"
 import { useNavigate } from "react-router-dom"
-import { useQuery } from "graphql-hooks"
-import { unwrapEdges, updateUnlockedAchievementData } from "@/api/utils"
-import { playerPerfectGames, playerUnlockedAchievements } from "@/api/documents"
+import {
+    useLoadPlayerAchievements,
+    useLoadPlayerPerfectGames,
+} from "@/api/utils"
 import { formatDate } from "@/dayjsUtilities"
 
 const YearSelector = ({
@@ -270,49 +271,18 @@ const Calendar = ({
 const Timeline = ({ player }: { player: string }) => {
     const [selectedYear, setSelectedYear] = useState(dayjs().year())
 
-    const { data: gamesResponse } = useQuery<PlayerQueryResponse>(
-        playerPerfectGames,
-        {
-            variables: { player, year: selectedYear },
-        }
-    )
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { data: unlockedAchievementResponse, refetch } =
-        useQuery<PlayerQueryResponse>(playerUnlockedAchievements, {
-            variables: {
-                player,
-                orderBy: "-datetime",
-                year: selectedYear,
-                limit: 100,
-            },
-        })
+    const achievements = useLoadPlayerAchievements({
+        player,
+        orderBy: "-datetime",
+        year: selectedYear,
+    })
 
-    useEffect(() => {
-        const unlockedAchievements =
-            unlockedAchievementResponse?.player?.unlockedAchievements
-        if (
-            !unlockedAchievementResponse ||
-            unlockedAchievements?.pageInfo?.hasNextPage
-        ) {
-            refetch({
-                variables: {
-                    player,
-                    year: selectedYear,
-                    orderBy: "-datetime",
-                    limit: 100,
-                    cursor: unlockedAchievements?.pageInfo?.endCursor ?? "",
-                },
-                updateData: updateUnlockedAchievementData,
-            }).catch(() => console.error("Refetch failed"))
-        }
-    }, [player, selectedYear, unlockedAchievementResponse, refetch])
+    console.assert(player.id, "Missing player ID")
 
-    const perfectGames: PlayerOwnedGame[] = unwrapEdges(
-        gamesResponse?.player?.games
-    )
-    const achievements: PlayerUnlockedAchievement[] = unwrapEdges(
-        unlockedAchievementResponse?.player?.unlockedAchievements
-    )
+    const perfectGames = useLoadPlayerPerfectGames({
+        player,
+        year: selectedYear,
+    })
 
     return (
         <div>
