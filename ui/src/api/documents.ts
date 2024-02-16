@@ -83,6 +83,7 @@ export const playerPerfectGames = gql`
         $range: [DateTime]
         $orderBy: String
         $limit: Int
+        $cursor: String
     ) {
         player(id: $player) {
             id
@@ -92,7 +93,14 @@ export const playerPerfectGames = gql`
                 year: $year
                 orderBy: $orderBy
                 first: $limit
+                after: $cursor
             ) {
+                pageInfo {
+                    hasNextPage
+                    hasPreviousPage
+                    endCursor
+                    startCursor
+                }
                 edges {
                     node {
                         game {
