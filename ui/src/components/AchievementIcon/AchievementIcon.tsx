@@ -1,7 +1,7 @@
 import { Typography, Tooltip } from "@mui/material"
 import dayjs from "dayjs"
 import { formatDate, getRelativeTime } from "@/dayjsUtilities"
-import BorderedImage from "./BorderedImage"
+import BorderedImage from "../BorderedImage"
 
 const AchievementTitle = ({
     achievement,
