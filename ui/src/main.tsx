@@ -10,10 +10,6 @@ import { RouterProvider } from "react-router-dom"
 import router from "./router.tsx"
 import { ClientContext } from "graphql-hooks"
 import { client } from "./api/client"
-import { setup } from "./dayjsUtilities.ts"
-
-// Setup Dayjs plugins and timezone
-setup()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
