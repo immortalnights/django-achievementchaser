@@ -1,6 +1,5 @@
 import { ReactNode, useContext } from "react"
 import { Typography, Box, IconButton, Stack } from "@mui/material"
-import Grid from "@mui/material/Unstable_Grid2"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import PlayerSettingsContext from "@/context/PlayerSettingsContext"
