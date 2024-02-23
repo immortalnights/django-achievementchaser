@@ -24,7 +24,7 @@ export const formatDate = (date: string | dayjs.Dayjs) => {
 }
 
 export const formatDateTime = (date: string | dayjs.Dayjs) => {
-    return dayjs(date).format("HH:mm:ss on MMM Do, YYYY")
+    return dayjs(date).format("MMM Do, YYYY [at] HH:mm:ss")
 }
 
 export const getRelativeTime = (date: string | dayjs.Dayjs) => {

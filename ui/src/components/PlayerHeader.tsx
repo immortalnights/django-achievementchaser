@@ -1,6 +1,5 @@
 import { ReactNode, useContext } from "react"
-import { Typography, Box, IconButton } from "@mui/material"
-import Grid from "@mui/material/Unstable_Grid2"
+import { Typography, Box, IconButton, Stack } from "@mui/material"
 import { VisibilityOff, Visibility } from "@mui/icons-material"
 import BorderedImage from "./BorderedImage"
 import PlayerSettingsContext from "@/context/PlayerSettingsContext"
@@ -29,7 +28,7 @@ const Playtime = ({ playtime }: { playtime: number }) => {
     return `${index > 1 ? value.toFixed(2) : value} ${keys[index - 1] ?? ""}`
 }
 
-const Header = ({
+const Title = ({
     id,
     name,
     url,
@@ -66,13 +65,15 @@ const MetaData = ({
     value,
     title,
     link,
+    display = true,
 }: {
     label: string
     value: ReactNode | string | number
     title?: string
     link?: string
+    display?: boolean
 }) => (
-    <Box>
+    <Box sx={{ display: display ? "block" : "none" }}>
         <Typography variant="subtitle1" textTransform="uppercase">
             {label}
         </Typography>
@@ -104,69 +105,46 @@ const PlayerStatisticsContent = ({
     const { hideGameStatistics } = useContext(PlayerSettingsContext)
 
     return (
-        <Grid container>
-            <Grid
-                lg={2}
-                md={3}
-                sm={4}
-                xs={6}
-                sx={{ display: hideGameStatistics ? "none" : "block" }}
-            >
-                <MetaData label="Games" value={ownedGames ?? 0} />
-            </Grid>
-            <Grid
-                lg={2}
-                md={3}
-                sm={4}
-                xs={6}
-                sx={{ display: hideGameStatistics ? "none" : "block" }}
-            >
-                <MetaData
-                    label="Played"
-                    value={
-                        ownedGames && playedGames
-                            ? `${((playedGames / ownedGames) * 100).toFixed(
-                                  2
-                              )}%`
-                            : "-"
-                    }
-                    title={`${playedGames ?? 0} of ${ownedGames ?? 0}`}
-                />
-            </Grid>
-            <Grid
-                lg={2}
-                md={3}
-                sm={4}
-                xs={6}
-                sx={{ display: hideGameStatistics ? "none" : "block" }}
-            >
-                <MetaData
-                    label="Play Time"
-                    value={<Playtime playtime={totalPlaytime ?? 0} />}
-                />
-            </Grid>
-            <Grid lg={2} md={4} sm={4} xs={6}>
-                <MetaData
-                    label="Perfect Games"
-                    value={`${perfectGames} (${(
-                        (perfectGames / ownedGames) *
-                        100
-                    ).toFixed(2)})%`}
-                    title={`${perfectGames} of ${ownedGames}`}
-                    link={`/Player/${player}/PerfectGames`}
-                />
-            </Grid>
-            <Grid lg={3} md={4} sm={6} xs={12}>
-                <MetaData
-                    label="Achievements Unlocked"
-                    value={`${(
-                        (unlockedAchievements / lockedAchievements) *
-                        100
-                    ).toFixed(2)}%`}
-                    title={`${unlockedAchievements} of ${lockedAchievements}`}
-                />
-            </Grid>
-        </Grid>
+        <Stack direction="row" useFlexGap spacing={4}>
+            <MetaData
+                label="Games"
+                value={ownedGames ?? 0}
+                display={!hideGameStatistics}
+            />
+
+            <MetaData
+                label="Played"
+                value={
+                    ownedGames && playedGames
+                        ? `${((playedGames / ownedGames) * 100).toFixed(2)}%`
+                        : "-"
+                }
+                title={`${playedGames ?? 0} of ${ownedGames ?? 0}`}
+                display={!hideGameStatistics}
+            />
+            <MetaData
+                label="Play Time"
+                value={<Playtime playtime={totalPlaytime ?? 0} />}
+                display={!hideGameStatistics}
+            />
+            <MetaData
+                label="Perfect Games"
+                value={`${perfectGames} (${(
+                    (perfectGames / ownedGames) *
+                    100
+                ).toFixed(2)})%`}
+                title={`${perfectGames} of ${ownedGames}`}
+                link={`/Player/${player}/PerfectGames`}
+            />
+            <MetaData
+                label="Achievements Unlocked"
+                value={`${(
+                    (unlockedAchievements / lockedAchievements) *
+                    100
+                ).toFixed(2)}%`}
+                title={`${unlockedAchievements} of ${lockedAchievements}`}
+            />
+        </Stack>
     )
 }
 
@@ -206,35 +184,24 @@ const PlayerProfileHeader = ({
 }) => {
     return (
         <>
-            <Header id={id} name={name ?? ""} url={profileUrl ?? ""} />
-            <Grid container>
-                <Grid
-                    xs={12}
-                    sm={2}
-                    display={{ xs: "none", sm: "none", md: "block" }}
-                    paddingRight="1em"
-                >
-                    <BorderedImage
-                        src={avatarLargeUrl}
-                        style={{
-                            width: "100%",
-                            maxWidth: "184px",
-                            margin: "auto",
-                        }}
-                    />
-                </Grid>
-                <Grid xs={12} sm={10}>
+            <Title id={id} name={name ?? ""} url={profileUrl ?? ""} />
+            <Stack direction="row" useFlexGap spacing={1}>
+                <BorderedImage
+                    src={avatarLargeUrl}
+                    style={{
+                        width: "100%",
+                        maxWidth: "184px",
+                        margin: "0 0",
+                    }}
+                />
+                <Box>
                     <PlayerStatistics player={id} />
-                    <Grid container wrap="wrap">
-                        <Grid xs={6}>
-                            <RecentActivity player={id} />
-                        </Grid>
-                        <Grid xs={6}>
-                            <Timeline player={id} />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+                    <Stack direction="row">
+                        <RecentActivity player={id} />
+                        <Timeline player={id} />
+                    </Stack>
+                </Box>
+            </Stack>
         </>
     )
 }

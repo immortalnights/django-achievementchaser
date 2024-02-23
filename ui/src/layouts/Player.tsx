@@ -1,11 +1,10 @@
-import { Paper, Box } from "@mui/material"
 import { useState, useMemo, useEffect } from "react"
 import { useLoaderData, Outlet } from "react-router-dom"
 import {
     loadFromLocalStorage,
     saveToLocalStorage,
 } from "@/context/localStorage"
-import PlayerProfileHeader from "./PlayerHeader"
+import PlayerProfileHeader from "@/components/PlayerHeader"
 import {
     default as PlayerSettingsContext,
     AchievementSortOrder,
@@ -56,11 +55,7 @@ const PlayerContainer = () => {
     return (
         <PlayerSettingsContext.Provider value={contextValue}>
             <PlayerProfileHeader {...player} />
-            <Paper elevation={0}>
-                <Box>
-                    <Outlet />
-                </Box>
-            </Paper>
+            <Outlet />
         </PlayerSettingsContext.Provider>
     )
 }

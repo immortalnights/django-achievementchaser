@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material"
+import { Box, Typography } from "@mui/material"
 import Loader from "./Loader"
 import RecentlyPlayedGames from "./RecentlyPlayedGames"
 import RecentlyUnlockedAchievements from "./RecentlyUnlockedAchievements"
@@ -13,7 +13,7 @@ const RecentlyPlayedGamesLoader = ({ player }: { player: string }) => {
     )
 
     return (
-        <>
+        <Box>
             <Typography variant="subtitle1" textTransform="uppercase">
                 Recently Played
             </Typography>
@@ -26,7 +26,7 @@ const RecentlyPlayedGamesLoader = ({ player }: { player: string }) => {
                     return <RecentlyPlayedGames player={player} games={games} />
                 }}
             />
-        </>
+        </Box>
     )
 }
 
@@ -37,7 +37,7 @@ const RecentlyUnlockedAchievementsLoader = ({ player }: { player: string }) => {
     )
 
     return (
-        <>
+        <Box>
             <Typography variant="subtitle1" textTransform="uppercase">
                 Recently Unlocked
             </Typography>
@@ -57,16 +57,16 @@ const RecentlyUnlockedAchievementsLoader = ({ player }: { player: string }) => {
                     )
                 }}
             />
-        </>
+        </Box>
     )
 }
 
 const RecentActivity = ({ player }: { player: string }) => {
     return (
-        <>
+        <Box>
             <RecentlyPlayedGamesLoader player={player} />
             <RecentlyUnlockedAchievementsLoader player={player} />
-        </>
+        </Box>
     )
 }
 

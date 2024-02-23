@@ -1,4 +1,5 @@
 """Steam Interface layer"""
+
 import os
 from typing import Tuple, Union, Optional, Dict, cast
 from urllib import request as urllib_request, parse, error

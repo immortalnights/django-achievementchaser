@@ -5,56 +5,31 @@ import {
     Select,
     MenuItem,
 } from "@mui/material"
-import { useQuery } from "graphql-hooks"
-import { useContext, useMemo } from "react"
-import { gameWithOwners } from "@/api/documents"
-import PlayerCompareContext from "@/context/PlayerCompareContext"
-import { unwrapEdges } from "@/api/utils"
 
 const PlayerSelect = ({
-    game,
-    excludePlayers,
+    options,
     value,
+    onChange,
 }: {
-    game: string
-    excludePlayers: string[]
+    options: { id: string; name?: string }[]
     value?: string
+    onChange: (value: string) => void
 }) => {
-    const { data, loading } = useQuery<GameQueryResponse>(gameWithOwners, {
-        variables: {
-            game: Number(game),
-        },
-    })
-    const { setOtherPlayer } = useContext(PlayerCompareContext)
-
     const handleChange = (event: SelectChangeEvent<string>) => {
-        setOtherPlayer(event.target.value)
+        onChange(event.target.value)
     }
-
-    const players = useMemo(
-        () =>
-            data
-                ? (unwrapEdges(data.game?.owners)
-                      .map((owner) => owner.player)
-                      .filter(
-                          (player) =>
-                              player && !excludePlayers.includes(player.id)
-                      ) as Player[]) // force the type as the filter doesn't apply correctly
-                : [],
-        [data, excludePlayers]
-    )
 
     return (
         <FormControl
             sx={{ minWidth: 200 }}
             size="small"
-            disabled={loading || players.length === 0}
+            disabled={options.length === 0}
         >
             <InputLabel id="select-player-compare-label">Compare</InputLabel>
             <Select
                 labelId="select-player-compare-label"
                 fullWidth
-                value={(data && value) ?? ""}
+                value={value ?? ""}
                 label="Compare"
                 size="small"
                 onChange={handleChange}
@@ -64,9 +39,9 @@ const PlayerSelect = ({
                         No one
                     </MenuItem>
                 )}
-                {players.map((player) => (
-                    <MenuItem key={player.id} value={player.id}>
-                        {player.name}
+                {options.map((option) => (
+                    <MenuItem key={option.id} value={option.id}>
+                        {option.name ?? option.id}
                     </MenuItem>
                 ))}
             </Select>

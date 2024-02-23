@@ -1,13 +1,13 @@
 import { RouteObject, createHashRouter } from "react-router-dom"
 import App from "./App"
 import { Home, Game, SearchResults } from "./screens"
-import PlayerContainer from "./components/PlayerContainer"
+import PlayerLayout from "./layouts/Player"
 import { throwExpression } from "./utilities"
 import { client } from "./api/client"
 import { player, gameComplete, search } from "./api/documents"
 
 const playerRoutes = {
-    path: "/Player/*",
+    path: "/Player/:id/*",
     id: "player",
     loader: async ({ params }) => {
         const { id = throwExpression("missing param") } = params
@@ -18,51 +18,67 @@ const playerRoutes = {
         })
         return data?.player
     },
-    Component: PlayerContainer,
+    Component: PlayerLayout,
     children: [
         {
-            path: ":id",
+            path: "",
+            index: true,
             async lazy() {
                 const { PlayerProfile } = await import("./screens/player")
                 return { Component: PlayerProfile }
             },
         },
         {
-            path: ":id/PerfectGames",
+            path: "PerfectGames",
             async lazy() {
                 const { PlayerPerfectGames } = await import("./screens/player")
                 return { Component: PlayerPerfectGames }
             },
         },
         {
-            path: ":id/RecentGames",
+            path: "RecentGames",
             async lazy() {
                 const { PlayerRecentGames } = await import("./screens/player")
                 return { Component: PlayerRecentGames }
             },
         },
         {
-            path: ":id/Achievements/:date?",
+            path: "Achievements/:date?",
             async lazy() {
                 const { PlayerAchievements } = await import("./screens/player")
                 return { Component: PlayerAchievements }
             },
         },
         {
-            path: ":id/Game/:gameId",
+            path: "Game/:gameId",
             async lazy() {
                 const { PlayerGame } = await import("./screens/player")
                 return { Component: PlayerGame }
             },
         },
         {
-            path: ":id/Friends",
+            path: "Friends",
             async lazy() {
                 const { PlayerFriends } = await import("./screens/player")
                 return { Component: PlayerFriends }
             },
         },
     ],
+} satisfies RouteObject
+
+const gameRoutes = {
+    path: "/Game/:id",
+    loader: async ({ params }) => {
+        const { id = throwExpression("missing param") } = params
+
+        const { data } = await client.request<GameQueryResponse>({
+            query: gameComplete,
+            variables: { game: Number(id) },
+        })
+
+        return data?.game
+    },
+    Component: Game,
 } satisfies RouteObject
 
 const router = createHashRouter([
@@ -75,20 +91,7 @@ const router = createHashRouter([
                 Component: Home,
             },
             playerRoutes,
-            {
-                path: "/Game/:id",
-                loader: async ({ params }) => {
-                    const { id = throwExpression("missing param") } = params
-
-                    const { data } = await client.request<GameQueryResponse>({
-                        query: gameComplete,
-                        variables: { game: Number(id) },
-                    })
-
-                    return data?.game
-                },
-                Component: Game,
-            },
+            gameRoutes,
             {
                 path: "/Search/:name",
                 loader: async ({ params }) => {
