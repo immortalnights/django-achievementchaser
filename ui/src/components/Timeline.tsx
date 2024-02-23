@@ -277,7 +277,7 @@ const Timeline = ({ player }: { player: string }) => {
         year: selectedYear,
     })
 
-    console.assert(player.id, "Missing player ID")
+    console.assert(player, "Missing player ID")
 
     const perfectGames = useLoadPlayerPerfectGames({
         player,
