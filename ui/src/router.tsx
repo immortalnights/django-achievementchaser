@@ -1,10 +1,21 @@
-import { RouteObject, createHashRouter } from "react-router-dom"
+import { Params, RouteObject, createHashRouter } from "react-router-dom"
 import App from "./App"
 import { Home, Game, SearchResults } from "./screens"
 import PlayerLayout from "./layouts/Player"
 import { throwExpression } from "./utilities"
 import { client } from "./api/client"
 import { player, gameComplete, search } from "./api/documents"
+
+const gameLoader = async ({ params }: { params: Params }) => {
+    const { gameId = throwExpression("missing param") } = params
+
+    const { data } = await client.request<GameQueryResponse>({
+        query: gameComplete,
+        variables: { game: Number(gameId) },
+    })
+
+    return data?.game
+}
 
 const playerRoutes = {
     path: "/Player/:id/*",
@@ -51,6 +62,7 @@ const playerRoutes = {
         },
         {
             path: "Game/:gameId",
+            loader: gameLoader,
             async lazy() {
                 const { PlayerGame } = await import("./screens/player")
                 return { Component: PlayerGame }
@@ -67,17 +79,8 @@ const playerRoutes = {
 } satisfies RouteObject
 
 const gameRoutes = {
-    path: "/Game/:id",
-    loader: async ({ params }) => {
-        const { id = throwExpression("missing param") } = params
-
-        const { data } = await client.request<GameQueryResponse>({
-            query: gameComplete,
-            variables: { game: Number(id) },
-        })
-
-        return data?.game
-    },
+    path: "/Game/:gameId",
+    loader: gameLoader,
     Component: Game,
 } satisfies RouteObject
 
