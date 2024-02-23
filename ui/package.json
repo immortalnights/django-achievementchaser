@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "dev": "vite --host 127.0.0.1",
         "build": "tsc && vite build",
         "start": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://$BACKEND_HOSTNAME:$BACKEND_PORT",
         "start-test": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://127.0.0.1:8000 --push-state",
@@ -32,6 +32,7 @@
     "devDependencies": {
         "@types/react": "^18.2.14",
         "@types/react-dom": "^18.2.6",
+        "@types/react-test-renderer": "^18.0.7",
         "@typescript-eslint/eslint-plugin": "^5.61.0",
         "@typescript-eslint/parser": "^5.61.0",
         "@vitejs/plugin-react": "^4.0.1",
@@ -39,6 +40,7 @@
         "eslint-plugin-react-hooks": "^4.6.0",
         "eslint-plugin-react-refresh": "^0.4.1",
         "prettier": "^3.0.0",
+        "react-test-renderer": "^18.2.0",
         "typescript": "^5.0.2",
         "vite": "^4.4.0",
         "vitest": "^0.34.6"
