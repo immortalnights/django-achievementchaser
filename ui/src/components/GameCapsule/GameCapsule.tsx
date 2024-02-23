@@ -2,8 +2,8 @@ import { Tooltip, Typography } from "@mui/material"
 import dayjs from "dayjs"
 import { ReactNode, forwardRef } from "react"
 import { getRelativeTime, formatDate } from "@/dayjsUtilities"
-import Link from "./Link"
-import GameIcon from "./GameIcon"
+import Link from "../Link"
+import GameIcon from "../GameIcon"
 
 export const GameIconWithTooltip = ({
     game,
