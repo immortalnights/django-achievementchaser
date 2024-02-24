@@ -1,5 +1,4 @@
 import { Skeleton } from "@mui/material"
-import { ReactNode } from "react"
 
 const SkeletonList = ({
     count,
@@ -10,11 +9,14 @@ const SkeletonList = ({
     width?: number
     height?: number
 }) => {
-    let index = 0
-    const items = new Array(count).fill(
-        <Skeleton key={index++} width={width} height={height} />
-    ) as ReactNode[]
+    const items = new Array(count).fill(true)
 
-    return <>{items.map((item) => item)}</>
+    return (
+        <>
+            {items.map((_, index) => (
+                <Skeleton key={index} width={width} height={height} />
+            ))}
+        </>
+    )
 }
 export default SkeletonList
