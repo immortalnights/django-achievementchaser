@@ -1,9 +1,9 @@
 import { Tooltip, Typography } from "@mui/material"
 import dayjs from "dayjs"
-import { ReactNode, forwardRef } from "react"
+import { ReactNode } from "react"
 import { getRelativeTime, formatDate } from "@/dayjsUtilities"
-import Link from "./Link"
-import GameIcon from "./GameIcon"
+import Link from "../Link"
+import GameIcon from "../GameIcon"
 
 export const GameIconWithTooltip = ({
     game,
@@ -12,13 +12,9 @@ export const GameIconWithTooltip = ({
     game: Game
     tooltip: ReactNode
 }) => {
-    const Wrapped = forwardRef((props, ref) => (
-        <GameIcon {...game} {...props} innerRef={ref} />
-    ))
-
     return (
         <Tooltip title={tooltip} arrow enterDelay={500} leaveDelay={0}>
-            <Wrapped />
+            <GameIcon {...game} />
         </Tooltip>
     )
 }

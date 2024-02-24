@@ -1,0 +1,346 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`snapshot 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 1qdg4h9-MuiLink-root"
+  />,
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+  />,
+  <a
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    href="/Game/1158310"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-mt3xud{box-shadow:0 8px 17px 2px rgba(0, 0, 0, 0.14),0 3px 14px 2px rgba(0, 0, 0, 0.12),0 5px 5px -3px rgba(0, 0, 0, 0.2);border:1px solid black;display:block;}",
+        }
+      }
+      data-emotion="css mt3xud"
+    />
+    <img
+      alt="Crusader Kings III"
+      aria-label={null}
+      aria-labelledby={null}
+      className=" css-mt3xud"
+      data-mui-internal-clone-element={true}
+      id="1158310"
+      name="Crusader Kings III"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css pnutvq-MuiTooltip-popper"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+    />
+  </a>,
+]
+`;
+
+exports[`snapshot 2`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 1qdg4h9-MuiLink-root"
+  />,
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+  />,
+  <a
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    href="/Player/1234/Game/1158310"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-mt3xud{box-shadow:0 8px 17px 2px rgba(0, 0, 0, 0.14),0 3px 14px 2px rgba(0, 0, 0, 0.12),0 5px 5px -3px rgba(0, 0, 0, 0.2);border:1px solid black;display:block;}",
+        }
+      }
+      data-emotion="css mt3xud"
+    />
+    <img
+      alt="Crusader Kings III"
+      aria-label={null}
+      aria-labelledby={null}
+      className=" css-mt3xud"
+      data-mui-internal-clone-element={true}
+      id="1158310"
+      name="Crusader Kings III"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css pnutvq-MuiTooltip-popper"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+    />
+  </a>,
+]
+`;
+
+exports[`snapshot 3`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 1qdg4h9-MuiLink-root"
+  />,
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+  />,
+  <a
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    href="/Game/1158310"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-mt3xud{box-shadow:0 8px 17px 2px rgba(0, 0, 0, 0.14),0 3px 14px 2px rgba(0, 0, 0, 0.12),0 5px 5px -3px rgba(0, 0, 0, 0.2);border:1px solid black;display:block;}",
+        }
+      }
+      data-emotion="css mt3xud"
+    />
+    <img
+      alt="Crusader Kings III"
+      aria-label={null}
+      aria-labelledby={null}
+      className=" css-mt3xud"
+      data-mui-internal-clone-element={true}
+      id="1158310"
+      name="Crusader Kings III"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css pnutvq-MuiTooltip-popper"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+    />
+  </a>,
+]
+`;
+
+exports[`snapshot 4`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 1qdg4h9-MuiLink-root"
+  />,
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+  />,
+  <a
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    href="/Game/1158310"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-mt3xud{box-shadow:0 8px 17px 2px rgba(0, 0, 0, 0.14),0 3px 14px 2px rgba(0, 0, 0, 0.12),0 5px 5px -3px rgba(0, 0, 0, 0.2);border:1px solid black;display:block;}",
+        }
+      }
+      data-emotion="css mt3xud"
+    />
+    <img
+      alt="Crusader Kings III"
+      aria-label={null}
+      aria-labelledby={null}
+      className=" css-mt3xud"
+      data-mui-internal-clone-element={true}
+      id="1158310"
+      name="Crusader Kings III"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css pnutvq-MuiTooltip-popper"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+    />
+  </a>,
+]
+`;
+
+exports[`snapshot 5`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 1qdg4h9-MuiLink-root"
+  />,
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+      }
+    }
+    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+  />,
+  <a
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    href="/Game/1158310"
+    onBlur={[Function]}
+    onClick={[Function]}
+    onFocus={[Function]}
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-mt3xud{box-shadow:0 8px 17px 2px rgba(0, 0, 0, 0.14),0 3px 14px 2px rgba(0, 0, 0, 0.12),0 5px 5px -3px rgba(0, 0, 0, 0.2);border:1px solid black;display:block;}",
+        }
+      }
+      data-emotion="css mt3xud"
+    />
+    <img
+      alt="Crusader Kings III"
+      aria-label={null}
+      aria-labelledby={null}
+      className=" css-mt3xud"
+      data-mui-internal-clone-element={true}
+      id="1158310"
+      name="Crusader Kings III"
+      onBlur={[Function]}
+      onFocus={[Function]}
+      onMouseLeave={[Function]}
+      onMouseOver={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css pnutvq-MuiTooltip-popper"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+        }
+      }
+      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+    />
+  </a>,
+]
+`;
