@@ -1,7 +1,11 @@
-import { Typography } from "@mui/material"
-import { Link } from "react-router-dom"
+import { Stack, Typography } from "@mui/material"
+import Link from "./Link"
 import { getRelativeTime } from "@/dayjsUtilities"
 import BorderedImage from "./BorderedImage"
+import SkeletonList from "./SkeletonList"
+import { useQuery } from "graphql-hooks"
+import { playerGames } from "@/api/documents"
+import { unwrapEdges } from "@/api/utils"
 
 const RecentlyPlayedGame = ({
     player,
@@ -31,34 +35,43 @@ const RecentlyPlayedGame = ({
     )
 }
 
-const RecentlyPlayedGames = ({
-    player,
-    games,
-}: {
-    player: string
-    games: PlayerOwnedGame[]
-}) => (
-    <ul
-        style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-        }}
-    >
-        {games.map((ownedGame) => (
-            <li key={ownedGame.game.id}>
-                <RecentlyPlayedGame player={player} ownedGame={ownedGame} />
-            </li>
-        ))}
-        <li>
-            <Link to={`/Player/${player}/RecentGames`}>
-                <Typography fontSize={"small"}>more...</Typography>
-            </Link>
-        </li>
-    </ul>
-)
+const RecentlyPlayedGames = ({ player }: { player: string }) => {
+    const { data } = useQuery<PlayerQueryResponse>(playerGames, {
+        variables: { player, orderBy: "-lastPlayed", limit: 6 },
+    })
+
+    const games = data && unwrapEdges(data.player?.games)
+
+    return (
+        <>
+            <Typography variant="subtitle1" textTransform="uppercase">
+                Recently Played
+            </Typography>
+            <Stack
+                direction="row"
+                useFlexGap
+                gap={1}
+                justifyContent="space-between"
+                alignItems="center"
+            >
+                {games ? (
+                    games.map((ownedGame) => (
+                        <RecentlyPlayedGame
+                            key={ownedGame.game?.id ?? ""}
+                            player={player}
+                            ownedGame={ownedGame}
+                        />
+                    ))
+                ) : (
+                    <SkeletonList count={6} />
+                )}
+
+                <Link to={`/Player/${player}/RecentGames`}>
+                    <Typography fontSize={"small"}>more...</Typography>
+                </Link>
+            </Stack>
+        </>
+    )
+}
 
 export default RecentlyPlayedGames
