@@ -58,7 +58,7 @@ test("player query error", async () => {
         query: player,
         variables: { player: 1 },
     })
-    expect((resp.data as PlayerQueryResponse).player).toBeNull()
+    expect((resp.data as PlayerQueryResponse).player).toBeUndefined()
     expect(resp.error).toBeUndefined()
 })
 
