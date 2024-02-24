@@ -2,9 +2,6 @@ name: ❓Check Backend
 
 on:
   pull_request:
-  push:
-    paths:
-      - src/**
 
 jobs:
   formatting:

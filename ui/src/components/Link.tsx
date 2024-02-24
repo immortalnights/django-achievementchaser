@@ -1,27 +1,19 @@
-import { ReactNode } from "react"
-import { Link as MaterialLink, TypographyVariant } from "@mui/material"
+import { forwardRef } from "react"
+import { LinkProps, Link as MaterialLink } from "@mui/material"
 import { Link as RouterLink } from "react-router-dom"
 
-const Link = ({
-    to,
-    title,
-    variant = "h4",
-    children,
-}: {
-    to: string
-    title?: string
-    variant?: TypographyVariant
-    children: ReactNode | string | number
-}) => (
-    <MaterialLink
-        component={RouterLink}
-        to={to}
-        title={title}
-        variant={variant}
-        underline="none"
-    >
-        {children}
-    </MaterialLink>
+const Link = forwardRef<HTMLAnchorElement, LinkProps & { to: string }>(
+    (props, ref) => (
+        <MaterialLink
+            component={RouterLink}
+            underline="none"
+            {...props}
+            href={props.to}
+            ref={ref}
+        >
+            {props.children}
+        </MaterialLink>
+    )
 )
 
 export default Link

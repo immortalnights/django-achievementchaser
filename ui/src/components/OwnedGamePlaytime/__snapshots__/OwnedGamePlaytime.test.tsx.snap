@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`snapshot 1`] = `
+<div>
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-1daqgxn-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:1rem;line-height:1.75;letter-spacing:0.00938em;text-transform:uppercase;}",
+      }
+    }
+    data-emotion="css 1daqgxn-MuiTypography-root"
+  />
+  <h6
+    className="MuiTypography-root MuiTypography-subtitle1 css-1daqgxn-MuiTypography-root"
+  >
+    Play Time
+  </h6>
+  <div>
+    7.8 hours
+  </div>
+</div>
+`;
