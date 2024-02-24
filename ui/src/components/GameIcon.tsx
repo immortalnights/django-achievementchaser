@@ -1,18 +1,15 @@
-import { LegacyRef, ForwardedRef } from "react"
+import { forwardRef } from "react"
 import BorderedImage from "./BorderedImage"
 
-const GameIcon = ({
-    id,
-    name,
-    innerRef,
-    ...rest
-}: Game & { innerRef?: ForwardedRef<unknown> }) => (
-    <BorderedImage
-        alt={name}
-        src={`https://media.steampowered.com/steam/apps/${id}/capsule_184x69.jpg`}
-        {...rest}
-        ref={innerRef ? (innerRef as LegacyRef<HTMLImageElement>) : undefined}
-    />
+const GameIcon = forwardRef<HTMLImageElement, { id: string; name?: string }>(
+    (props, ref) => (
+        <BorderedImage
+            alt={props.name}
+            src={`https://media.steampowered.com/steam/apps/${props.id}/capsule_184x69.jpg`}
+            {...props}
+            ref={ref}
+        />
+    )
 )
 
 export default GameIcon

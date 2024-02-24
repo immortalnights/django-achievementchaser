@@ -19,12 +19,12 @@ interface BaseQueryResponse {
 
 interface Game {
     id: string
-    name?: string
+    name: string
     imgIconUrl?: string
     difficultyPercentage: number
     achievementCount: number
     achievements?: Achievement[]
-    owners?: Connection<PlayerOwnedGame>
+    owners?: Connection<Omit<PlayerOwnedGame, "game">>
     playerAchievements?: Connection<PlayerUnlockedAchievement>
     playerPlaytime?: Connection<PlayerGamePlaytime>
 }
@@ -58,7 +58,7 @@ interface Player {
 
 interface PlayerOwnedGame {
     player?: Player
-    game?: Game
+    game: Game
     lastPlayed: string | null
     playtimeForever?: number
     completionPercentage?: number
