@@ -7,7 +7,6 @@ import Link from "./Link"
 
 const PlayerGameDetails = ({
     player,
-
     color,
     lastPlayed,
     playtimeForever,

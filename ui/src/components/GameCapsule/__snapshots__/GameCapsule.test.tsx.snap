@@ -20,7 +20,7 @@ exports[`snapshot 1`] = `
   />,
   <a
     className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
-    href="/"
+    href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
@@ -89,7 +89,7 @@ exports[`snapshot 2`] = `
   />,
   <a
     className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
-    href="/"
+    href="/Player/1234/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
@@ -158,7 +158,7 @@ exports[`snapshot 3`] = `
   />,
   <a
     className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
-    href="/"
+    href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
@@ -227,7 +227,7 @@ exports[`snapshot 4`] = `
   />,
   <a
     className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
-    href="/"
+    href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
@@ -296,7 +296,7 @@ exports[`snapshot 5`] = `
   />,
   <a
     className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
-    href="/"
+    href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
