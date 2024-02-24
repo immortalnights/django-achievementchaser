@@ -1,7 +1,7 @@
-import GameAchievements from "./GameAchievements"
 import { Alert } from "@mui/material"
-import GameAchievementsCompare from "./GameAchievementsCompare"
-import GameAchievementsPlayer from "./GameAchievementsPlayer"
+import GameAchievements from "@/components/GameAchievements"
+import GameAchievementsCompare from "../GameAchievementsCompare"
+import GameAchievementsPlayer from "../GameAchievementsPlayer"
 
 const GameAchievementsContainer = ({
     game,

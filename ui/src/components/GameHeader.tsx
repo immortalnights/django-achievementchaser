@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BorderedImage from "./BorderedImage"
-import GameOwners from "./GameOwners"
+import GameOwners from "./GameOwnersTable"
 import GameTitle from "./GameTitle"
 
 const GameHeader = ({ game }: { game: Game }) => {

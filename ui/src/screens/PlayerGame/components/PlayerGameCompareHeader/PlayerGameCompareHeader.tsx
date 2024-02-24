@@ -1,9 +1,9 @@
 import { Circle } from "@mui/icons-material"
 import { Box, Stack, SvgIconProps, Typography } from "@mui/material"
 import { getRelativeTime, duration, formatDateTime } from "@/dayjsUtilities"
-import BorderedImage from "./BorderedImage"
-import CircularProgressWithLabel from "./CircularProgressWithLabel"
-import Link from "./Link"
+import BorderedImage from "@/components/BorderedImage"
+import CircularProgressWithLabel from "@/components/CircularProgressWithLabel"
+import Link from "@/components/Link"
 
 const PlayerGameDetails = ({
     player,
