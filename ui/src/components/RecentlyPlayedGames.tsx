@@ -17,13 +17,18 @@ const RecentlyPlayedGame = ({
     const lastPlayed = ownedGame.lastPlayed
         ? getRelativeTime(ownedGame.lastPlayed)
         : "Never"
-    const gameName = ownedGame.game?.name ?? ""
+
+    const game = ownedGame.game
+
+    if (!game || game.name === undefined || game.imgIconUrl === undefined) {
+        throw Error("Owned game missing game information")
+    }
 
     return (
-        <Link to={`/Player/${player}/Game/${ownedGame.game?.id ?? ""}`}>
+        <Link to={`/Player/${player}/Game/${game.id}`}>
             <BorderedImage
-                title={`${gameName} last played ${lastPlayed}`}
-                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${ownedGame.game?.id}/${ownedGame.game?.imgIconUrl}.jpg`}
+                title={`${game.name} last played ${lastPlayed}`}
+                src={`http://media.steampowered.com/steamcommunity/public/images/apps/${game.id}/${game.imgIconUrl}.jpg`}
                 style={{ display: "block" }}
             />
         </Link>
