@@ -17,7 +17,7 @@ const GameOwnerInformation = ({
     ownedGame,
 }: {
     game: Game
-    ownedGame: PlayerOwnedGame
+    ownedGame: Omit<PlayerOwnedGame, "game">
 }) => {
     const {
         player,

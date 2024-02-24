@@ -9,6 +9,62 @@ import UnlockedAchievementIcon from "@/components/UnlockedAchievementIcon"
 import { NavigateBefore, NavigateNext } from "@mui/icons-material"
 import GameCapsule from "@/components/GameCapsule"
 
+const UnlockedAchievements = ({
+    player,
+    achievements,
+}: {
+    player: string
+    achievements: PlayerUnlockedAchievement[]
+}) => (
+    <>
+        {achievements.length > 0 ? (
+            achievements.map((item) => (
+                <UnlockedAchievementIcon
+                    key={`${item.id}`}
+                    player={player}
+                    unlockedAchievement={item}
+                    size="md"
+                />
+            ))
+        ) : (
+            <div
+                style={{
+                    backgroundColor: "lightgray",
+                    textAlign: "center",
+                    padding: 4,
+                }}
+            >
+                None
+            </div>
+        )}
+    </>
+)
+
+const PerfectGames = ({
+    player,
+    games,
+}: {
+    player: string
+    games: PlayerOwnedGame[]
+}) => {
+    const filteredGames = useMemo(() => {
+        return games.filter((item) => item.game)
+    }, [games]) as WithRequired<PlayerOwnedGame, "game">[]
+
+    return (
+        <>
+            {filteredGames.map((ownedGame) => (
+                <GameCapsule
+                    key={ownedGame.game?.id}
+                    player={player}
+                    game={ownedGame.game}
+                    ownedGame={ownedGame}
+                />
+            ))}
+        </>
+    )
+}
+
 const DailyAchievements = ({
     player,
     fromDate,
@@ -22,12 +78,6 @@ const DailyAchievements = ({
     achievements: PlayerUnlockedAchievement[]
     perfectGames: PlayerOwnedGame[]
 }) => {
-    // console.log(
-    //     formatDate(fromDate),
-    //     formatDate(toDate),
-    //     toDate.diff(fromDate, "days")
-    // )
-
     const groups = useMemo(() => {
         const dates = Array(Math.abs(fromDate.diff(toDate, "days")) + 1)
             .fill(0)
@@ -56,10 +106,10 @@ const DailyAchievements = ({
             }
         })
 
-        perfectGames.forEach((game) => {
-            const key = dayjs(game.completed).format("YYYY-MM-DD")
+        perfectGames.forEach((ownedGame) => {
+            const key = dayjs(ownedGame.completed).format("YYYY-MM-DD")
             if (groups[key]) {
-                groups[key].perfectGames.push(game)
+                groups[key].perfectGames.push(ownedGame)
             }
         })
 
@@ -80,34 +130,14 @@ const DailyAchievements = ({
                             gap={1.05}
                             alignItems="center"
                         >
-                            {achievements.length > 0 ? (
-                                achievements.map((item) => (
-                                    <UnlockedAchievementIcon
-                                        key={`${item.id}`}
-                                        player={player}
-                                        unlockedAchievement={item}
-                                        size="md"
-                                    />
-                                ))
-                            ) : (
-                                <div
-                                    style={{
-                                        backgroundColor: "lightgray",
-                                        textAlign: "center",
-                                        padding: 4,
-                                    }}
-                                >
-                                    None
-                                </div>
-                            )}
-                            {perfectGames.map((ownedGame) => (
-                                <GameCapsule
-                                    key={ownedGame.game.id}
-                                    player={player}
-                                    game={ownedGame.game}
-                                    ownedGame={ownedGame}
-                                />
-                            ))}
+                            <UnlockedAchievements
+                                player={player}
+                                achievements={achievements}
+                            />
+                            <PerfectGames
+                                player={player}
+                                games={perfectGames}
+                            />
                         </Stack>
                     </Box>
                 )

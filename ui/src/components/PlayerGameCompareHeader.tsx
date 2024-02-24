@@ -14,7 +14,7 @@ const PlayerGameDetails = ({
 }: {
     player: Player
     color: SvgIconProps["color"]
-    lastPlayed?: string
+    lastPlayed: string | null
     playtimeForever?: number
 }) => {
     const playtime = playtimeForever
@@ -34,7 +34,7 @@ const PlayerGameDetails = ({
                 <>
                     <Typography
                         fontSize={12}
-                        title={lastPlayed && formatDateTime(lastPlayed)}
+                        title={lastPlayed ? formatDateTime(lastPlayed) : ""}
                     >
                         {lastPlayed
                             ? `Last played ${getRelativeTime(lastPlayed)}`
@@ -63,8 +63,8 @@ const PlayerGameCompareHeader = ({
     player2Owner,
 }: {
     gameAchievementCount: number
-    player1Owner: PlayerOwnedGame
-    player2Owner: PlayerOwnedGame
+    player1Owner: Omit<PlayerOwnedGame, "game">
+    player2Owner: Omit<PlayerOwnedGame, "game">
 }) => {
     const player1 = player1Owner.player!
     const player2 = player2Owner.player!

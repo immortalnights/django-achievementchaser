@@ -17,7 +17,7 @@ const PlayerOwnedGames = ({
         >
             {ownedGames.map((ownedGame) => (
                 <GameCapsule
-                    key={ownedGame.game.id}
+                    key={ownedGame.game?.id}
                     player={player}
                     game={ownedGame.game}
                     ownedGame={ownedGame}

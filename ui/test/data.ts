@@ -7,6 +7,12 @@ export const neverPlayedOwnedGame = {
         avatarMediumUrl:
             "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
     },
+    game: {
+        id: "8500",
+        name: "EVE Online",
+        difficultyPercentage: 0.0,
+        achievementCount: 0,
+    },
     lastPlayed: null,
     playtimeForever: 0,
     unlockedAchievementCount: 0,
@@ -22,6 +28,13 @@ export const perfectPlayerOwnedGame = {
         avatarMediumUrl:
             "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
     },
+    game: {
+        name: "Orcs Must Die!",
+        id: "102600",
+        imgIconUrl: "0d14a70abb580146741de26bbad46d0ad81a67c7",
+        achievementCount: 27,
+        difficultyPercentage: 3.200000047683716,
+    },
     lastPlayed: "2015-03-09T01:18:04+00:00",
     playtimeForever: 2007,
     unlockedAchievementCount: 27,
@@ -36,6 +49,12 @@ export const playedPlayerOwnedGame = {
             "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91.jpg",
         avatarMediumUrl:
             "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
+    },
+    game: {
+        id: "262280",
+        name: "Dungeons 2",
+        difficultyPercentage: 2.0,
+        achievementCount: 25,
     },
     lastPlayed: "2024-02-11T00:00:00+00:00",
     playtimeForever: 466,

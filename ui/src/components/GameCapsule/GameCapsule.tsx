@@ -97,7 +97,7 @@ const GameCapsule = ({
         : `/Game/${game.id}`
 
     return (
-        <Link href={linkTo}>
+        <Link to={linkTo}>
             <GameIconWithTooltip
                 game={game}
                 tooltip={<TooltipContent game={game} ownedGame={ownedGame} />}
