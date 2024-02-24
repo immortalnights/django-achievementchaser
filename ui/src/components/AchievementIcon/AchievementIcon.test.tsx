@@ -13,7 +13,7 @@ test("snapshot", () => {
         <AchievementIcon
             game="Test Game"
             achievement={achievement}
-            unlockedDatetime="2015-03-09T01:17:41+00:00"
+            unlocked="2015-03-09T01:17:41+00:00"
         />
     )
     expect(unlockedAchievementIcon.toJSON()).toMatchSnapshot()

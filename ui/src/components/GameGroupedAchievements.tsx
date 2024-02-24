@@ -27,14 +27,15 @@ const GameAchievementSet = ({
     achievements: MaybeUnlockedAchievement[]
 }) => (
     <>
-        <GameCapsule player={player} game={game} />
-        <Stack flexDirection="row" flexWrap="wrap" gap={1}>
+        <Stack flexDirection="row" gap={1} alignItems="center">
+            <GameCapsule player={player} game={game} />
+
             {achievements.slice(0, 2).map((item) => (
                 <AchievementIcon
                     key={`${game.id}-${item.id}`}
                     game={game.id}
                     achievement={item}
-                    unlockedDatetime={item.datetime}
+                    unlocked={true}
                 />
             ))}
             {achievements.length > 2 && (
@@ -48,9 +49,7 @@ const GameAchievementSet = ({
     </>
 )
 
-const groupAchievements = (
-    achievements: Achievement[] | PlayerUnlockedAchievement[]
-) => {
+const groupAchievements = (achievements: AchievementWithGame[]) => {
     const games: GameAchievementIndex = {}
 
     achievements.forEach((item) => {
@@ -65,12 +64,13 @@ const groupAchievements = (
                 }
             }
 
-            if ("datetime" in item) {
-                games[key].achievements.push({
-                    datetime: item.datetime,
-                    ...item.achievement,
-                })
-            } else if ("displayName" in item) {
+            // if ("datetime" in item) {
+            //     games[key].achievements.push({
+            //         datetime: item.datetime,
+            //         ...item.achievement,
+            //     })
+            // } else
+            if ("displayName" in item) {
                 games[key].achievements.push({
                     datetime: undefined,
                     ...(rest as Achievement),
@@ -88,7 +88,7 @@ const GameGroupedAchievements = ({
     rows,
 }: {
     player: string
-    achievements: Achievement[] | PlayerUnlockedAchievement[]
+    achievements: AchievementWithGame[]
     rows: number
 }) => {
     const groupedAchievements = useMemo(
