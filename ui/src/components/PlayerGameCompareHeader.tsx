@@ -62,8 +62,8 @@ const PlayerGameCompareHeader = ({
     player2Owner,
 }: {
     gameAchievementCount: number
-    player1Owner: GameOwner
-    player2Owner: GameOwner
+    player1Owner: PlayerOwnedGameWithPlayer
+    player2Owner: PlayerOwnedGameWithPlayer
 }) => {
     const player1 = player1Owner.player
     const player2 = player2Owner.player

@@ -17,7 +17,7 @@ const GameOwnerInformation = ({
     ownedGame,
 }: {
     game: Game
-    ownedGame: GameOwner
+    ownedGame: PlayerOwnedGame
 }) => {
     const {
         player,

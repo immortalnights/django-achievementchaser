@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material"
 import { duration } from "@/dayjsUtilities"
 
-const OwnedGamePlaytime = ({ playtimeForever }: GameOwner) => {
+const OwnedGamePlaytime = ({ playtimeForever }: PlayerOwnedGame) => {
     const value = playtimeForever
         ? `${duration(playtimeForever).asHours().toFixed(1)} hours`
         : "None"

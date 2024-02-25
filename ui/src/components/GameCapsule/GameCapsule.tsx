@@ -24,7 +24,7 @@ const TooltipContent = ({
     ownedGame,
 }: {
     game: Game
-    ownedGame?: GameOwner
+    ownedGame?: PlayerOwnedGame
 }) => {
     let completionTitle: string | undefined
     let lastPlayedTitle: string | undefined
@@ -90,7 +90,7 @@ const GameCapsule = ({
 }: {
     game: Game
     player?: string
-    ownedGame?: GameOwner
+    ownedGame?: PlayerOwnedGame
 }) => {
     const linkTo = player
         ? `/Player/${player}/Game/${game.id}`

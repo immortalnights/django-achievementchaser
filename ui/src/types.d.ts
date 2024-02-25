@@ -17,13 +17,17 @@ interface BaseQueryResponse {
     errors?: ResponseError[]
 }
 
-interface GameOwner {
-    player: Pick<Player, "id" | "name" | "avatarSmallUrl" | "avatarMediumUrl">
+interface PlayerOwnedGame {
+    player?: Pick<Player, "id" | "name" | "avatarSmallUrl" | "avatarMediumUrl">
+    game?: Game
     lastPlayed: string | null
     playtimeForever: number
     unlockedAchievementCount: number
     completed: string | null
 }
+
+type PlayerOwnedGameWithGame = WithRequired<PlayerOwnedGame, "game">
+type PlayerOwnedGameWithPlayer = WithRequired<PlayerOwnedGame, "player">
 
 interface Game {
     id: string
@@ -31,12 +35,8 @@ interface Game {
     imgIconUrl: string
     achievementCount: number
     difficultyPercentage: number
-    owners?: Connection<GameOwner>
+    owners?: Connection<PlayerOwnedGameWithPlayer>
     achievements?: Achievement[]
-}
-
-interface PlayerOwnedGame extends Omit<GameOwner, "player"> {
-    game: Game
 }
 
 interface Achievement {
@@ -68,7 +68,7 @@ interface Player {
     avatarMediumUrl: string
     avatarLargeUrl?: string
     profile?: PlayerProfile
-    games?: Connection<PlayerOwnedGame>
+    games?: Connection<PlayerOwnedGameWithGame>
     unlockedAchievements?: Connection<PlayerUnlockedAchievement>
     availableAchievements?: Connection<AchievementWithGame>
 }

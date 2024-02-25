@@ -1,12 +1,12 @@
 export const neverPlayedOwnedGame = {
-    player: {
-        id: "76561197993451745",
-        name: "ImmortalNights",
-        avatarSmallUrl:
-            "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91.jpg",
-        avatarMediumUrl:
-            "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
-    },
+    // player: {
+    //     id: "76561197993451745",
+    //     name: "ImmortalNights",
+    //     avatarSmallUrl:
+    //         "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91.jpg",
+    //     avatarMediumUrl:
+    //         "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
+    // },
     game: {
         id: "8500",
         name: "EVE Online",
@@ -21,14 +21,14 @@ export const neverPlayedOwnedGame = {
 } satisfies PlayerOwnedGame
 
 export const perfectPlayerOwnedGame = {
-    player: {
-        id: "76561197993451745",
-        name: "ImmortalNights",
-        avatarSmallUrl:
-            "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91.jpg",
-        avatarMediumUrl:
-            "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
-    },
+    // player: {
+    //     id: "76561197993451745",
+    //     name: "ImmortalNights",
+    //     avatarSmallUrl:
+    //         "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91.jpg",
+    //     avatarMediumUrl:
+    //         "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
+    // },
     game: {
         name: "Orcs Must Die!",
         id: "102600",
@@ -43,14 +43,6 @@ export const perfectPlayerOwnedGame = {
 } satisfies PlayerOwnedGame
 
 export const playedPlayerOwnedGame = {
-    player: {
-        id: "76561197993451745",
-        name: "ImmortalNights",
-        avatarSmallUrl:
-            "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91.jpg",
-        avatarMediumUrl:
-            "https://avatars.steamstatic.com/50fce2d4fbfcc53e9f64a0990964be08d4867f91_medium.jpg",
-    },
     game: {
         id: "262280",
         name: "Dungeons 2",
