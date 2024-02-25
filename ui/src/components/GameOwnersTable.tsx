@@ -12,7 +12,7 @@ import CircularProgressWithLabel from "./CircularProgressWithLabel"
 import Link from "./Link"
 import { unwrapEdges } from "@/api/utils"
 
-const GameOwnerInformation = ({
+const OwnerRow = ({
     game,
     ownedGame,
 }: {
@@ -89,10 +89,10 @@ const GameOwnerInformation = ({
     )
 }
 
-const GameOwners = ({ game }: { game: Game }) => {
+const GameOwnersTable = ({ game }: { game: Game }) => {
     const owners = unwrapEdges(game.owners)
 
-    return (
+    return owners.length > 0 ? (
         <Table size="small" sx={{ width: "100%" }}>
             <TableHead>
                 <TableRow>
@@ -104,24 +104,16 @@ const GameOwners = ({ game }: { game: Game }) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {owners.length > 0 ? (
-                    owners.map((ownedGame) => (
-                        <GameOwnerInformation
-                            key={ownedGame?.player?.id}
-                            game={game}
-                            ownedGame={ownedGame}
-                        />
-                    ))
-                ) : (
-                    <TableRow>
-                        <TableCell colSpan={5} align="center">
-                            No owners
-                        </TableCell>
-                    </TableRow>
-                )}
+                {owners.map((ownedGame) => (
+                    <OwnerRow
+                        key={ownedGame?.player?.id}
+                        game={game}
+                        ownedGame={ownedGame}
+                    />
+                ))}
             </TableBody>
         </Table>
-    )
+    ) : undefined
 }
 
-export default GameOwners
+export default GameOwnersTable

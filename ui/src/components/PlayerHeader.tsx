@@ -28,7 +28,9 @@ const Title = ({
 
     return (
         <Box sx={{ display: "flex", marginBottom: "0.25em" }}>
-            <Link to={`/Player/${id}`}>{name}</Link>
+            <Link to={`/Player/${id}`} variant="h4">
+                {name}
+            </Link>
             <Box sx={{ display: "flex", paddingX: 1, alignItems: "flex-end" }}>
                 <ExternalLink href={url} title="Steam Profile" />
             </Box>

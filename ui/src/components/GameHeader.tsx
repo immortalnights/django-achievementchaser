@@ -1,7 +1,8 @@
 import { Box, Stack, Typography } from "@mui/material"
 import BorderedImage from "./BorderedImage"
-import GameOwners from "./GameOwners"
+import GameOwners from "./GameOwnersTable"
 import GameTitle from "./GameTitle"
+import GameDifficulty from "./GameDifficulty"
 
 const GameHeader = ({ game }: { game: Game }) => {
     return (
@@ -18,17 +19,9 @@ const GameHeader = ({ game }: { game: Game }) => {
                         spacing={3}
                         borderBottom="1px solid lightgray"
                     >
-                        <Box>
-                            <Typography
-                                variant="subtitle1"
-                                textTransform="uppercase"
-                            >
-                                Difficulty
-                            </Typography>
-                            <Typography variant="body1">
-                                {`${game.difficultyPercentage.toFixed(2)}%`}
-                            </Typography>
-                        </Box>
+                        <GameDifficulty
+                            difficulty={game.difficultyPercentage}
+                        />
                         <Box>
                             <Typography
                                 variant="subtitle1"

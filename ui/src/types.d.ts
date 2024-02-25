@@ -42,11 +42,11 @@ interface Game {
 interface Achievement {
     id: string
     displayName: string
-    description: string
+    description?: string
     iconUrl: string
     iconGrayUrl: string
-    globalPercentage: number
     hidden?: boolean
+    globalPercentage?: number
 }
 
 interface AchievementWithGame extends Achievement {
@@ -56,7 +56,7 @@ interface AchievementWithGame extends Achievement {
 interface PlayerUnlockedAchievement {
     id: string
     datetime: string
-    game: Omit<Game, "owners" | "achievement">
+    game: Pick<Game, "id" | "name" | "imgIconUrl">
     achievement: Achievement
 }
 

@@ -1,6 +1,6 @@
-import { useAchievementFilter, useLoadPlayerAchievements } from "@/api/utils"
-import GameAchievements from "./GameAchievements"
 import { Alert } from "@mui/material"
+import { useAchievementFilter, useLoadPlayerAchievements } from "@/api/utils"
+import GameAchievements from "@/components/GameAchievements"
 
 const GameAchievementsPlayer = ({
     game,

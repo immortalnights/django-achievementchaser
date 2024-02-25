@@ -1,5 +1,5 @@
 import { useLoadPlayerAchievements, useAchievementFilter } from "@/api/utils"
-import GameAchievements from "./GameAchievements"
+import GameAchievements from "@/components/GameAchievements"
 
 const GameAchievementsCompare = ({
     game,
