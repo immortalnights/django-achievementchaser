@@ -80,6 +80,7 @@ export const Compare: Story = {
 
             const contextValue: AchievementDisplayContextValue = {
                 filter: "",
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
                 setFilter: () => {},
                 otherPlayer: comparePlayer,
                 setOtherPlayer: (value: string | undefined) =>
