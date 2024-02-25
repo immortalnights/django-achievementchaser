@@ -8,11 +8,11 @@ import Details from "../Details"
 const GameHeader = ({
     game,
     owner,
-    compare,
+    compare = false,
 }: {
     game: Game
     owner?: PlayerOwnedGameWithPlayer
-    compare: boolean
+    compare?: boolean
 }) => {
     const gameAchievementCount = game.achievements?.length ?? 0
 
