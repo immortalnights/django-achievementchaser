@@ -31,13 +31,14 @@ interface Game {
     imgIconUrl: string
     achievementCount: number
     difficultyPercentage: number
-    owners?: Connection<OwnedGame>
+    owners?: Connection<GameOwner>
     achievements?: Achievement[]
 }
 
-interface PlayerOwnedGame extends Omit<OwnedGame, "player"> {
+interface PlayerOwnedGame extends Omit<GameOwner, "player"> {
     game: Game
 }
+
 interface Achievement {
     id: string
     displayName: string

@@ -1,7 +1,7 @@
 import { Typography } from "@mui/material"
 import { formatDate, getRelativeTime } from "@/dayjsUtilities"
 
-const OwnedGameLastPlayed = ({ lastPlayed }: Omit<PlayerOwnedGame, "game">) => (
+const OwnedGameLastPlayed = ({ lastPlayed }: GameOwner) => (
     <div>
         <Typography variant="subtitle1" textTransform="uppercase">
             Last Played

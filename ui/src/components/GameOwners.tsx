@@ -17,15 +17,20 @@ const GameOwnerInformation = ({
     ownedGame,
 }: {
     game: Game
-    ownedGame: Omit<PlayerOwnedGame, "game">
+    ownedGame: GameOwner
 }) => {
     const {
         player,
-        completed,
-        completionPercentage,
         lastPlayed,
         playtimeForever,
+        unlockedAchievementCount,
+        completed,
     } = ownedGame
+
+    const completionPercentage =
+        game.achievementCount > 0
+            ? (unlockedAchievementCount / game.achievementCount) * 100
+            : 0
 
     return (
         <TableRow>

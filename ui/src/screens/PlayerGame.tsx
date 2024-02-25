@@ -25,7 +25,7 @@ const PlayerGameDetails = ({
     owner,
 }: {
     game: Game
-    owner: Omit<PlayerOwnedGame, "game">
+    owner: GameOwner
 }) => {
     const gameAchievementCount = game.achievements?.length ?? 0
     const playerAchievements = owner.unlockedAchievementCount ?? 0
@@ -59,7 +59,7 @@ const PlayerGameControls = ({
     owner,
 }: {
     game: Game
-    owner: Omit<PlayerOwnedGame, "game">
+    owner: GameOwner
 }) => {
     const { otherPlayer, setOtherPlayer } = useContext(PlayerCompareContext)
 
@@ -96,7 +96,7 @@ const GameHeader = ({
     compare,
 }: {
     game: Game
-    owner?: Omit<PlayerOwnedGame, "game">
+    owner?: GameOwner
     compare: boolean
 }) => {
     const gameAchievementCount = game.achievements?.length ?? 0
