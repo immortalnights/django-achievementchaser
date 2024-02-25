@@ -16,10 +16,9 @@ const PlayerGameDetails = ({
     return (
         <Stack
             direction="row"
-            justifyContent="space-around"
             alignItems="center"
-            flexGrow={1}
-            gap={5}
+            flexGrow={0.5}
+            gap={2}
             useFlexGap
         >
             <OwnedGameLastPlayed {...owner} />

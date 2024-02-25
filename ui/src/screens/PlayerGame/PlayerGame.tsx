@@ -1,8 +1,8 @@
 import { useLoaderData, useRouteLoaderData } from "react-router-dom"
 import { useEffect, useMemo, useState } from "react"
-import PlayerCompareContext, {
-    PlayerCompareContextValue,
-} from "./context/PlayerCompareContext"
+import AchievementDisplayContext, {
+    AchievementDisplayContextValue,
+} from "./context/AchievementDisplayContext"
 import { unwrapEdges } from "@/api/utils"
 import PlayerGameCompareHeader from "./components/PlayerGameCompareHeader"
 import GameAchievementsContainer from "./components/GameAchievementsContainer"
@@ -16,14 +16,18 @@ const PlayerGameContainer = () => {
         throw "Failed to load game"
     }
 
+    const [filter, setFilter] = useState<string>()
     const [comparePlayer, setComparePlayer] = useState<string>()
 
-    const contextValue: PlayerCompareContextValue = {
+    const contextValue: AchievementDisplayContextValue = {
+        filter,
+        setFilter: (value: string) => setFilter(value),
         otherPlayer: comparePlayer,
         setOtherPlayer: (value: string | undefined) => setComparePlayer(value),
     }
 
     useEffect(() => {
+        setFilter(undefined)
         setComparePlayer(undefined)
     }, [game])
 
@@ -34,8 +38,24 @@ const PlayerGameContainer = () => {
     )
     const compare = !!player2Owner
 
+    const gameWithFilteredAchievements = useMemo(() => {
+        const filterLower = filter?.toLowerCase()
+        const copy = { ...game }
+
+        copy.achievements = game.achievements?.filter((achievement) => {
+            return filterLower
+                ? achievement.displayName.toLowerCase().includes(filterLower) ||
+                      achievement.description
+                          ?.toLowerCase()
+                          .includes(filterLower)
+                : true
+        })
+
+        return copy
+    }, [game, filter])
+
     return (
-        <PlayerCompareContext.Provider value={contextValue}>
+        <AchievementDisplayContext.Provider value={contextValue}>
             <GameHeader game={game} owner={player1Owner} compare={compare} />
 
             {player1Owner && player2Owner && (
@@ -47,11 +67,11 @@ const PlayerGameContainer = () => {
             )}
 
             <GameAchievementsContainer
-                game={game}
+                game={gameWithFilteredAchievements}
                 player1={player1Owner?.player}
                 player2={player2Owner?.player}
             />
-        </PlayerCompareContext.Provider>
+        </AchievementDisplayContext.Provider>
     )
 }
 

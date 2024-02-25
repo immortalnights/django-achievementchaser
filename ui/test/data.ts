@@ -161,24 +161,8 @@ export const antenna = {
                     completed: "2018-04-19T21:13:26+00:00",
                 },
             },
-            {
-                node: {
-                    player: {
-                        id: "76561198013854782",
-                        name: "Darabel",
-                        avatarSmallUrl:
-                            "https://avatars.steamstatic.com/0a91dcdfc53ba8d0758f000b05946fb5c4324324.jpg",
-                        avatarMediumUrl:
-                            "https://avatars.steamstatic.com/0a91dcdfc53ba8d0758f000b05946fb5c4324324_medium.jpg",
-                    },
-                    lastPlayed: null,
-                    playtimeForever: 0,
-                    unlockedAchievementCount: 0,
-                    completed: null,
-                },
-            },
         ],
-    },
+    } as Connection<PlayerOwnedGameWithPlayer>,
     achievements: [
         {
             id: "first_signal",
@@ -237,6 +221,24 @@ export const antenna = {
         },
     ],
 } satisfies Game
+
+export const antennaMultipleOwners = { ...antenna }
+antennaMultipleOwners.owners.edges.push({
+    node: {
+        player: {
+            id: "76561198013854782",
+            name: "Darabel",
+            avatarSmallUrl:
+                "https://avatars.steamstatic.com/0a91dcdfc53ba8d0758f000b05946fb5c4324324.jpg",
+            avatarMediumUrl:
+                "https://avatars.steamstatic.com/0a91dcdfc53ba8d0758f000b05946fb5c4324324_medium.jpg",
+        },
+        lastPlayed: null,
+        playtimeForever: 0,
+        unlockedAchievementCount: 0,
+        completed: null,
+    },
+})
 
 export const antennaPlayerCompleted = [
     {

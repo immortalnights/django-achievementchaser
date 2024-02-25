@@ -1,7 +1,6 @@
 import { useState, ChangeEvent, KeyboardEvent } from "react"
 import { InputBase, alpha, styled } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
-import { useNavigate } from "react-router-dom"
 
 const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -37,9 +36,23 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         transition: theme.transitions.create("width"),
         width: "100%",
         [theme.breakpoints.up("sm")]: {
-            width: "18ch",
+            width: "20ch",
+        },
+    },
+}))
+
+const ExandableInputBase = styled(InputBase)(({ theme }) => ({
+    color: "inherit",
+    "& .MuiInputBase-input": {
+        padding: theme.spacing(1, 1, 1, 0),
+        // vertical padding + font size from searchIcon
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        transition: theme.transitions.create("width"),
+        width: "100%",
+        [theme.breakpoints.up("sm")]: {
+            width: "8ch",
             "&:focus": {
-                width: "24ch",
+                width: "22ch",
             },
         },
     },
@@ -48,22 +61,32 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const SearchField = ({
     placeholder,
     ariaLabel,
+    value: defaultValue,
+    onSubmit,
+    submitOnEnter = true,
+    expandOnFocus = false,
 }: {
     placeholder: string
     ariaLabel: string
+    value?: string
+    onSubmit: (value: string) => void
+    submitOnEnter?: boolean
+    expandOnFocus?: boolean
 }) => {
-    const navigate = useNavigate()
-    const [value, setValue] = useState("")
+    const [value, setValue] = useState<string>(defaultValue ?? "")
 
     const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setValue(event.target.value)
+        const val = event.target.value
+        setValue(val)
+        if (!submitOnEnter) {
+            onSubmit(val)
+        }
     }
 
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Enter" && value) {
-            const val = value
+        if (submitOnEnter && event.key === "Enter" && value) {
             setValue("")
-            navigate(`/Search/${val}`)
+            onSubmit(value)
         }
     }
 
@@ -72,14 +95,25 @@ const SearchField = ({
             <SearchIconWrapper>
                 <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase
-                name="name"
-                onChange={handleOnChange}
-                value={value}
-                placeholder={placeholder}
-                inputProps={{ "aria-label": ariaLabel }}
-                onKeyDown={handleKeyDown}
-            />
+            {expandOnFocus ? (
+                <ExandableInputBase
+                    name="name"
+                    onChange={handleOnChange}
+                    value={value}
+                    placeholder={placeholder}
+                    inputProps={{ "aria-label": ariaLabel }}
+                    onKeyDown={handleKeyDown}
+                />
+            ) : (
+                <StyledInputBase
+                    name="name"
+                    onChange={handleOnChange}
+                    value={value}
+                    placeholder={placeholder}
+                    inputProps={{ "aria-label": ariaLabel }}
+                    onKeyDown={handleKeyDown}
+                />
+            )}
         </Search>
     )
 }
