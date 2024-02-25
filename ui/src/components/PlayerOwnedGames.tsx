@@ -6,7 +6,7 @@ const PlayerOwnedGames = ({
     ownedGames,
 }: {
     player: string
-    ownedGames: PlayerOwnedGame[]
+    ownedGames: PlayerOwnedGameWithGame[]
 }) => {
     return (
         <Stack

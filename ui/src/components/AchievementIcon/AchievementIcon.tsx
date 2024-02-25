@@ -30,11 +30,11 @@ const AchievementTitle = ({
 
 const AchievementIcon = ({
     achievement,
-    unlockedDatetime,
+    unlocked,
 }: {
     game: string
     achievement: Achievement
-    unlockedDatetime?: string
+    unlocked?: boolean | string
 }) => {
     const getAchievementIcon = (unlocked: boolean, achievement: Achievement) =>
         unlocked ? achievement.iconUrl : achievement.iconGrayUrl
@@ -44,14 +44,16 @@ const AchievementIcon = ({
             title={
                 <AchievementTitle
                     achievement={achievement}
-                    unlockedDatetime={unlockedDatetime}
+                    unlockedDatetime={
+                        typeof unlocked === "string" ? unlocked : undefined
+                    }
                 />
             }
             arrow
         >
             <div>
                 <BorderedImage
-                    src={getAchievementIcon(!!unlockedDatetime, achievement)}
+                    src={getAchievementIcon(!!unlocked, achievement)}
                     style={{
                         width: 64,
                         height: 64,

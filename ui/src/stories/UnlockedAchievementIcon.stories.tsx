@@ -31,9 +31,6 @@ export const Icon: Story = {
         player: "12345",
         unlockedAchievement: {
             id: "1",
-            player: {
-                id: "12345",
-            },
             game: gameWithAchievements,
             achievement: gameWithAchievements.achievements[0],
             datetime: "2024-01-01T12:00:00Z",

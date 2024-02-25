@@ -45,15 +45,11 @@ const PerfectGames = ({
     games,
 }: {
     player: string
-    games: PlayerOwnedGame[]
+    games: PlayerOwnedGameWithGame[]
 }) => {
-    const filteredGames = useMemo(() => {
-        return games.filter((item) => item.game)
-    }, [games]) as WithRequired<PlayerOwnedGame, "game">[]
-
     return (
         <>
-            {filteredGames.map((ownedGame) => (
+            {games.map((ownedGame) => (
                 <GameCapsule
                     key={ownedGame.game?.id}
                     player={player}
@@ -76,7 +72,7 @@ const DailyAchievements = ({
     fromDate: Dayjs
     toDate: Dayjs
     achievements: PlayerUnlockedAchievement[]
-    perfectGames: PlayerOwnedGame[]
+    perfectGames: PlayerOwnedGameWithGame[]
 }) => {
     const groups = useMemo(() => {
         const dates = Array(Math.abs(fromDate.diff(toDate, "days")) + 1)
@@ -86,7 +82,7 @@ const DailyAchievements = ({
         interface GroupedAchievements {
             [key: string]: {
                 achievements: PlayerUnlockedAchievement[]
-                perfectGames: PlayerOwnedGame[]
+                perfectGames: PlayerOwnedGameWithGame[]
             }
         }
 
@@ -156,7 +152,7 @@ const PlayerUnlockedAchievements = ({
 }: {
     player: string
     achievements: PlayerUnlockedAchievement[]
-    perfectGames: PlayerOwnedGame[]
+    perfectGames: PlayerOwnedGameWithGame[]
     selectedDate: Dayjs
     fromDate: Dayjs
     toDate: Dayjs
