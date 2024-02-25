@@ -1,6 +1,6 @@
-import CircularProgressWithLabel from "./CircularProgressWithLabel"
+import CircularProgressWithLabel from "@/components/CircularProgressWithLabel"
 
-export const GameCompletionProgress = ({
+const GameCompletionProgress = ({
     achievements,
     playerAchievements,
 }: {
@@ -20,3 +20,5 @@ export const GameCompletionProgress = ({
         </div>
     </div>
 )
+
+export default GameCompletionProgress

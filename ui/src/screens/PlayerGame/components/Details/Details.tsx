@@ -1,7 +1,7 @@
 import { Stack } from "@mui/material"
-import { GameCompletionProgress } from "@/components/GameCompletionProgress"
-import OwnedGameLastPlayed from "@/components/OwnedGameLastPlayed"
-import OwnedGamePlaytime from "@/components/OwnedGamePlaytime"
+import GameCompletionProgress from "../GameCompletionProgress"
+import OwnedGameLastPlayed from "../OwnedGameLastPlayed"
+import OwnedGamePlaytime from "../OwnedGamePlaytime"
 
 const PlayerGameDetails = ({
     game,
