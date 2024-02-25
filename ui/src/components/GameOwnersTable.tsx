@@ -29,7 +29,7 @@ const OwnerRow = ({
 
     const completionPercentage =
         game.achievementCount > 0
-            ? (unlockedAchievementCount / game.achievementCount) * 100
+            ? unlockedAchievementCount / game.achievementCount
             : 0
 
     return (
