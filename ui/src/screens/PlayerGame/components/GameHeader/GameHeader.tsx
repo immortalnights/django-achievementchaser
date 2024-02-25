@@ -107,7 +107,7 @@ const GameHeader = ({
                     justifyContent="flex-end"
                     alignItems="center"
                 >
-                    {showSearch && <Search game={game} />}
+                    {showSearch && <Search />}
 
                     {canCompare && (
                         <Compare game={game} owner={owner?.player.id} />
