@@ -8,13 +8,13 @@ const GameAchievementsContainer = ({
     player1,
     player2,
 }: {
-    game?: Game
+    game: Game
     player1?: Player
     player2?: Player
 }) => {
     let content
 
-    if (game && game.achievements) {
+    if (game.achievements && game.achievements.length > 0) {
         const gameWithAchievements: GameWithAchievements = {
             ...game,
             achievements: game.achievements ?? [],

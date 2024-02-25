@@ -1,10 +1,10 @@
 import { useContext } from "react"
 import { IconButton } from "@mui/material"
 import { HighlightOffRounded } from "@mui/icons-material"
-import PlayerCompareContext from "../../context/PlayerCompareContext"
+import AchievementDisplayContext from "../../context/AchievementDisplayContext"
 
 const ClearComparisonButton = () => {
-    const { setOtherPlayer } = useContext(PlayerCompareContext)
+    const { setOtherPlayer } = useContext(AchievementDisplayContext)
 
     const handleClick = () => setOtherPlayer(undefined)
 

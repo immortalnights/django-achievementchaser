@@ -1,12 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react"
-
-import GameHeader from "."
-import { antenna, gameWithAchievements } from "@test/data"
-import { MemoryRouter } from "react-router-dom"
-import PlayerCompareContext, {
-    PlayerCompareContextValue,
-} from "../../context/PlayerCompareContext"
 import { useState } from "react"
+import { MemoryRouter } from "react-router-dom"
+import {
+    antenna,
+    antennaMultipleOwners,
+    gameWithoutAchievements,
+} from "@test/data"
+import AchievementDisplayContext, {
+    AchievementDisplayContextValue,
+} from "../../context/AchievementDisplayContext"
+import GameHeader from "."
 
 const meta = {
     title: "Game Header 2",
@@ -28,15 +31,23 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Header: Story = {
+/**
+ * Game with achievements, but no owner.
+ * Displays title, icon, difficulty and search.
+ */
+export const WithAchievementsNotOwned: Story = {
     args: {
-        game: gameWithAchievements,
+        game: antenna,
         owner: undefined,
         compare: false,
     },
 }
 
-export const Owned: Story = {
+/**
+ * Game with achievements and single owner.
+ * Displays title, icon, difficultly, owner stats, search and filtering.
+ */
+export const WithAchievementsOwned: Story = {
     args: {
         game: antenna,
         owner: antenna.owners.edges[0].node,
@@ -44,6 +55,22 @@ export const Owned: Story = {
     },
 }
 
+/**
+ * Game with achievements and multiple owners.
+ * Displays title, icon, difficulty, owner stats, search, compare and filtering.
+ */
+export const WithAchievementsCompare: Story = {
+    args: {
+        game: antennaMultipleOwners,
+        owner: antennaMultipleOwners.owners.edges[0].node,
+        compare: false,
+    },
+}
+
+/**
+ * Game with achievement comparison.
+ * Displays title, icon, search, clear compare and filtering.
+ */
 export const Compare: Story = {
     decorators: [
         (Story) => {
@@ -51,22 +78,48 @@ export const Compare: Story = {
                 string | undefined
             >("76561198013854782")
 
-            const contextValue: PlayerCompareContextValue = {
+            const contextValue: AchievementDisplayContextValue = {
+                filter: "",
+                setFilter: () => {},
                 otherPlayer: comparePlayer,
                 setOtherPlayer: (value: string | undefined) =>
                     setComparePlayer(value),
             }
 
             return (
-                <PlayerCompareContext.Provider value={contextValue}>
+                <AchievementDisplayContext.Provider value={contextValue}>
                     <Story />
-                </PlayerCompareContext.Provider>
+                </AchievementDisplayContext.Provider>
             )
         },
     ],
     args: {
-        game: antenna,
-        owner: antenna.owners.edges[0].node,
+        game: antennaMultipleOwners,
+        owner: antennaMultipleOwners.owners.edges[0].node,
         compare: true,
+    },
+}
+
+/**
+ * Game without achievements or owner.
+ * Displays title and icon.
+ */
+export const WithoutAchievementsNotOwned: Story = {
+    args: {
+        game: gameWithoutAchievements,
+        owner: undefined,
+        compare: false,
+    },
+}
+
+/**
+ * Game without achievements with owner.
+ * Displays title, icon and owner stats.
+ */
+export const WithoutAchievementsOwned: Story = {
+    args: {
+        game: gameWithoutAchievements,
+        owner: antenna.owners.edges[0].node,
+        compare: false,
     },
 }
