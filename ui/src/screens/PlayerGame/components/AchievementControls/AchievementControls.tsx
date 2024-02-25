@@ -2,11 +2,11 @@ import { useContext, useMemo } from "react"
 import { Box } from "@mui/material"
 import { unwrapEdges } from "@/api/utils"
 import {
-    ClearComparisonButton,
     HideUnlockedAchievementsButton,
     OrderAchievementsButton,
     PlayerSelect,
 } from "@/components/controls"
+import ClearComparisonButton from "../ClearComparisonButton"
 import PlayerCompareContext from "../../context/PlayerCompareContext"
 
 const AchievementControls = ({
@@ -14,7 +14,7 @@ const AchievementControls = ({
     owner,
 }: {
     game: Game
-    owner: Omit<PlayerOwnedGame, "game">
+    owner: PlayerOwnedGameWithPlayer
 }) => {
     const { otherPlayer, setOtherPlayer } = useContext(PlayerCompareContext)
 
@@ -23,7 +23,7 @@ const AchievementControls = ({
             unwrapEdges(game.owners)
                 .map((owner) => owner.player)
                 .filter(
-                    (player) => player && owner?.player?.id !== player.id
+                    (player) => player && owner.player?.id !== player.id
                 ) as Player[],
         [game, owner]
     )

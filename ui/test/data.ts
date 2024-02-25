@@ -140,8 +140,9 @@ export const achievement = {
 export const antenna = {
     id: "443580",
     name: "Antenna",
-    difficultyPercentage: 18.5,
+    imgIconUrl: "26b470dcd32bbeb0a8383f18c0fa2c0b56926b44",
     achievementCount: 5,
+    difficultyPercentage: 18.5,
     owners: {
         edges: [
             {
@@ -158,6 +159,22 @@ export const antenna = {
                     playtimeForever: 56,
                     unlockedAchievementCount: 5,
                     completed: "2018-04-19T21:13:26+00:00",
+                },
+            },
+            {
+                node: {
+                    player: {
+                        id: "76561198013854782",
+                        name: "Darabel",
+                        avatarSmallUrl:
+                            "https://avatars.steamstatic.com/0a91dcdfc53ba8d0758f000b05946fb5c4324324.jpg",
+                        avatarMediumUrl:
+                            "https://avatars.steamstatic.com/0a91dcdfc53ba8d0758f000b05946fb5c4324324_medium.jpg",
+                    },
+                    lastPlayed: null,
+                    playtimeForever: 0,
+                    unlockedAchievementCount: 0,
+                    completed: null,
                 },
             },
         ],
@@ -219,7 +236,7 @@ export const antenna = {
             globalPercentage: 18.5,
         },
     ],
-}
+} satisfies Game
 
 export const antennaPlayerCompleted = [
     {

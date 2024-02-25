@@ -5,8 +5,6 @@ import {
     antenna,
     antennaPlayerCompleted,
     antennaPlayerPartial,
-    gameWithAchievements,
-    gameWithoutAchievements,
 } from "@test/data"
 
 const meta = {
@@ -20,23 +18,36 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const WithAchievements: Story = {
+export const Antenna: Story = {
     args: {
         achievements: antenna.achievements,
     },
 }
 
-export const AntennaOwned: Story = {
+export const AntennaOwnedIncomplete: Story = {
     args: {
         achievements: antenna.achievements,
-        player1Achievements: antennaPlayerCompleted
+        player1Achievements: [],
+    },
+}
+
+export const AntennaOwnedComplete: Story = {
+    args: {
+        achievements: antenna.achievements,
+        player1Achievements: antennaPlayerCompleted,
+    },
+}
+
+export const AntennaComparison: Story = {
+    args: {
+        achievements: antenna.achievements,
+        player1Achievements: antennaPlayerCompleted,
+        player2Achievements: antennaPlayerPartial,
     },
 }
 
 export const WithoutAchievements: Story = {
     args: {
         achievements: [],
-        player1Achievements: antennaPlayerCompleted
-        player2Achievements: antennaPlayerPartial
     },
 }

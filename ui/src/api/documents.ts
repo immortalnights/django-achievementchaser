@@ -189,10 +189,8 @@ export const playerAvailableAchievements = gql`
                     node {
                         id
                         displayName
-                        description
                         iconUrl
                         iconGrayUrl
-                        globalPercentage
                         game {
                             id
                             name
@@ -235,9 +233,9 @@ export const gameComplete = gql`
                 id
                 displayName
                 description
-                hidden
                 iconUrl
                 iconGrayUrl
+                hidden
                 globalPercentage
             }
         }

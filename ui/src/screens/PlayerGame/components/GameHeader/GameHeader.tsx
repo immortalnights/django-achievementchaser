@@ -11,7 +11,7 @@ const GameHeader = ({
     compare,
 }: {
     game: Game
-    owner?: Omit<PlayerOwnedGame, "game">
+    owner?: PlayerOwnedGameWithPlayer
     compare: boolean
 }) => {
     const gameAchievementCount = game.achievements?.length ?? 0
