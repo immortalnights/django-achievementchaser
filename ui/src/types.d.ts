@@ -17,70 +17,63 @@ interface BaseQueryResponse {
     errors?: ResponseError[]
 }
 
+interface PlayerOwnedGame {
+    player?: Pick<Player, "id" | "name" | "avatarSmallUrl" | "avatarMediumUrl">
+    game?: Game
+    lastPlayed: string | null
+    playtimeForever: number
+    unlockedAchievementCount: number
+    completed: string | null
+}
+
+type PlayerOwnedGameWithGame = WithRequired<PlayerOwnedGame, "game">
+type PlayerOwnedGameWithPlayer = WithRequired<PlayerOwnedGame, "player">
+
 interface Game {
     id: string
     name: string
-    imgIconUrl?: string
-    difficultyPercentage: number
+    imgIconUrl: string
     achievementCount: number
+    difficultyPercentage: number
+    owners?: Connection<PlayerOwnedGameWithPlayer>
     achievements?: Achievement[]
-    owners?: Connection<Omit<PlayerOwnedGame, "game">>
-    playerAchievements?: Connection<PlayerUnlockedAchievement>
-    playerPlaytime?: Connection<PlayerGamePlaytime>
 }
-
-type GameWithAchievements = WithRequired<Game, "achievements">
 
 interface Achievement {
     id: string
-    displayName?: string
-    description?: string
-    iconUrl?: string
-    iconGrayUrl?: string
-    globalPercentage?: number
+    displayName: string
+    description: string
+    iconUrl: string
+    iconGrayUrl: string
+    globalPercentage: number
     hidden?: boolean
-    game?: Game
 }
 
-interface Player {
-    id: string
-    name?: string
-    profileUrl?: string
-    avatarSmallUrl?: string
-    avatarMediumUrl?: string
-    avatarLargeUrl?: string
-    profile?: PlayerProfile
-    game?: PlayerOwnedGame
-    games?: Connection<PlayerOwnedGame>
-    unlockedAchievements?: Connection<PlayerUnlockedAchievement>
-    availableAchievements?: Connection<Achievement>
-}
-
-interface PlayerOwnedGame {
-    player?: Player
-    game: Game
-    lastPlayed: string | null
-    playtimeForever?: number
-    completionPercentage?: number
-    completed: string | null
-    unlockedAchievements?: Connection<PlayerUnlockedAchievement>
-    unlockedAchievementCount?: number
-}
-
-interface PlayerGamePlaytime {
-    player: Player
-    game: Game
-    playtime: number
-    datetime: string
+interface AchievementWithGame extends Achievement {
+    game: Omit<Game, "owners" | "achievement">
 }
 
 interface PlayerUnlockedAchievement {
     id: string
-    player: Player
-    game: Game
-    achievement: Achievement
     datetime: string
+    game: Omit<Game, "owners" | "achievement">
+    achievement: Achievement
 }
+
+interface Player {
+    id: string
+    name: string
+    profileUrl?: string
+    avatarSmallUrl: string
+    avatarMediumUrl: string
+    avatarLargeUrl?: string
+    profile?: PlayerProfile
+    games?: Connection<PlayerOwnedGameWithGame>
+    unlockedAchievements?: Connection<PlayerUnlockedAchievement>
+    availableAchievements?: Connection<AchievementWithGame>
+}
+
+type GameWithAchievements = WithRequired<Game, "achievements">
 
 interface PlayerProfile {
     ownedGames: number

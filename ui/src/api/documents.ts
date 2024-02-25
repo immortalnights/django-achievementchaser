@@ -59,16 +59,16 @@ export const playerGames = gql`
                 edges {
                     node {
                         game {
-                            name
                             id
+                            name
                             imgIconUrl
                             achievementCount
                             difficultyPercentage
                         }
-                        completed
                         lastPlayed
                         playtimeForever
                         unlockedAchievementCount
+                        completed
                     }
                 }
             }
@@ -104,15 +104,16 @@ export const playerPerfectGames = gql`
                 edges {
                     node {
                         game {
-                            name
                             id
+                            name
                             imgIconUrl
                             achievementCount
                             difficultyPercentage
                         }
-                        completed
                         lastPlayed
                         playtimeForever
+                        unlockedAchievementCount
+                        completed
                     }
                 }
             }
@@ -154,6 +155,8 @@ export const playerUnlockedAchievements = gql`
                             id
                             name
                             imgIconUrl
+                            achievementCount
+                            difficultyPercentage
                         }
                         achievement {
                             id
@@ -187,14 +190,15 @@ export const playerAvailableAchievements = gql`
                         id
                         displayName
                         description
-                        globalPercentage
+                        iconUrl
                         iconGrayUrl
+                        globalPercentage
                         game {
                             id
                             name
                             imgIconUrl
-                            difficultyPercentage
                             achievementCount
+                            difficultyPercentage
                         }
                     }
                 }
@@ -208,8 +212,9 @@ export const gameComplete = gql`
         game(id: $game) {
             id
             name
-            difficultyPercentage
+            imgIconUrl
             achievementCount
+            difficultyPercentage
             owners {
                 edges {
                     node {
