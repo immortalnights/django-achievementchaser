@@ -68,9 +68,9 @@ jobs:
         working-directory: ui
         run: npm ci
 
-      - name: build-storybook
+      - name: Build storybook
         working-directory: ui
-        run: npm run test
+        run: npm run build-storybook
 
   build:
     runs-on: ubuntu-latest
