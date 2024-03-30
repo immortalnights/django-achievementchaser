@@ -43,6 +43,7 @@ class PlayerOwnedGameResponse:
     playtime_windows_forever: int = 0
     playtime_mac_forever: int = 0
     playtime_linux_forever: int = 0
+    playtime_deck_forever: int = 0
     rtime_last_played: Optional[int] = None
     playtime_disconnected: int = 0
     has_leaderboards: Optional[bool] = None
