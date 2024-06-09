@@ -4,6 +4,7 @@ from django.db import models
 class Achievement(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=["game", "name"], name="unique_game_achievement")]
+        ordering = ["name"]
 
     # Cannot use the "name" as the primary key because it is not globally unique.
     name = models.CharField(max_length=255)
@@ -23,6 +24,9 @@ class Achievement(models.Model):
 
 
 class Game(models.Model):
+    class Meta:
+        ordering = ["name"]
+
     id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=255)
     img_icon_url = models.CharField(max_length=255)

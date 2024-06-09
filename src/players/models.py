@@ -31,6 +31,7 @@ class Player(models.Model):
 class PlayerOwnedGame(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")]
+        ordering = ["player", "game"]
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="games")
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="owners")
@@ -57,6 +58,7 @@ class PlayerUnlockedAchievement(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["player", "game", "achievement"], name="unique_player_achievement")
         ]
+        ordering = ["player", "game"]
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="unlocked_achievements")
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_achievements")
