@@ -1,16 +1,16 @@
 [project]
 name = "achievementchaser"
-version = "0.1.0"
+version = "1.0.0"
 description = "Achievement Chaser"
 requires-python = ">=3.8.16"
 dependencies = [
     "gunicorn",
     "psycopg2",
-    "django",
-    "django-environ",
-    "django_filter",
-    "graphene_django",
-    "django-cors-headers",
+    "django==5.0.6",
+    "django-environ==0.11.2",
+    "django_filter==24.2",
+    "graphene_django==3.2.1",
+    "django-cors-headers==4.3.1",
     "loguru",
 ]
 
