@@ -100,10 +100,12 @@ const GameGroupedAchievements = ({
         <Grid container>
             {Object.entries(groupedAchievements).map(([_, item]) => (
                 <Grid
-                    xs={12}
-                    sm={6}
-                    md={12 / rows}
-                    lg={12 / rows}
+                    size={{
+                        xs: 12,
+                        sm: 6,
+                        md: 12 / rows,
+                        lg: 12 / rows,
+                    }}
                     display="flex"
                     alignItems="flex-start"
                     gap={1}
