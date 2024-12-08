@@ -33,7 +33,7 @@ interface Game {
     id: string
     name: string
     imgIconUrl: string
-    achievementCount: number
+    achievementCount?: number
     difficultyPercentage: number
     owners?: Connection<PlayerOwnedGameWithPlayer>
     achievements?: Achievement[]

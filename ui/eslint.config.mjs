@@ -52,7 +52,10 @@ export default tseslint.config(
                     caughtErrorsIgnorePattern: "^_",
                 },
             ],
-            "@typescript-eslint/restrict-template-expressions": "warn",
+            "@typescript-eslint/restrict-template-expressions": [
+                "warn",
+                { allowNumber: true },
+            ],
             "@typescript-eslint/no-unnecessary-condition": "warn",
             "@typescript-eslint/no-unnecessary-template-expression": "warn",
             "@typescript-eslint/no-confusing-void-expression": [
