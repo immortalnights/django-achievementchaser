@@ -1,5 +1,5 @@
 import { useMemo } from "react"
-import Grid from "@mui/material/Unstable_Grid2"
+import Grid from "@mui/material/Grid2"
 import GameCapsule from "./GameCapsule"
 import AchievementIcon from "./AchievementIcon"
 import { Box, Stack, Typography } from "@mui/material"
@@ -55,8 +55,9 @@ const groupAchievements = (achievements: AchievementWithGame[]) => {
     achievements.forEach((item) => {
         const { game, ...rest } = item
 
-        if (game && game.id) {
+        if (game.id) {
             const key = String(game.id as keyof typeof games)
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!games[key]) {
                 games[key] = {
                     game,
@@ -100,10 +101,12 @@ const GameGroupedAchievements = ({
         <Grid container>
             {Object.entries(groupedAchievements).map(([_, item]) => (
                 <Grid
-                    xs={12}
-                    sm={6}
-                    md={12 / rows}
-                    lg={12 / rows}
+                    size={{
+                        xs: 12,
+                        sm: 6,
+                        md: 12 / rows,
+                        lg: 12 / rows,
+                    }}
                     display="flex"
                     alignItems="flex-start"
                     gap={1}

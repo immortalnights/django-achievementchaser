@@ -50,7 +50,7 @@ const PlayerContainer = () => {
         saveToLocalStorage(contextState)
     }, [contextState])
 
-    const player = useLoaderData() as Player
+    const player = useLoaderData<Player>()
 
     return (
         <PlayerSettingsContext.Provider value={contextValue}>

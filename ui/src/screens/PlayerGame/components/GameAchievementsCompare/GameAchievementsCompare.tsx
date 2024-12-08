@@ -24,7 +24,7 @@ const GameAchievementsCompare = ({
 
     const mutatedAchievements = useAchievementFilter(
         game.achievements,
-        player1Achievements ?? []
+        player1Achievements
     )
 
     return (

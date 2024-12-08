@@ -66,7 +66,9 @@ export const useLoadPlayerAchievements = (variables: {
                     cursor: unlockedAchievements?.pageInfo?.endCursor ?? "",
                 },
                 updateData: updateUnlockedAchievementData,
-            }).catch(() => console.error("Refetch failed"))
+            }).catch(() => {
+                console.error("Refetch failed")
+            })
         }
     }, [variables, response, refetch])
 
@@ -94,7 +96,9 @@ export const useLoadPlayerPerfectGames = (variables: {
                     cursor: perfectGames?.pageInfo?.endCursor ?? "",
                 },
                 updateData: updatePerfectGameData,
-            }).catch(() => console.error("Refetch failed"))
+            }).catch(() => {
+                console.error("Refetch failed")
+            })
         }
     }, [variables, response, refetch])
 

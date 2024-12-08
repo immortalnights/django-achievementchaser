@@ -4,7 +4,7 @@ import SearchGameResults from "@/components/SearchGameResults"
 import SearchPlayerResults from "@/components/SearchPlayerResults"
 
 const SearchResults = () => {
-    const results = useLoaderData() as SearchQueryResults
+    const results = useLoaderData<SearchQueryResults>()
 
     const players: Player[] = []
     const games: Game[] = []

@@ -11,7 +11,9 @@ const UndecoratedLink = styled(Link)`
 const Header = () => {
     const navigate = useNavigate()
 
-    const handleSearch = (value: string) => navigate(`/Search/${value}`)
+    const handleSearch = (value: string) => {
+        void navigate(`/Search/${value}`)
+    }
 
     return (
         <AppBar position="sticky">
