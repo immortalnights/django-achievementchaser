@@ -17,7 +17,7 @@ const HomeScreen = () => {
         if (inputValue) {
             const { data } = await query({ variables: { name: inputValue } })
             if (data?.player?.id) {
-                navigate(`/Player/${data.player.id}`)
+                void navigate(`/Player/${data.player.id}`)
             }
         }
     }

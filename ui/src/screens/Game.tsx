@@ -3,10 +3,10 @@ import { useLoaderData } from "react-router-dom"
 import GameAchievements from "@/components/GameAchievements"
 
 const GameScreen = () => {
-    const game = useLoaderData() as Game
+    const game = useLoaderData<Game | undefined>()
 
     if (!game) {
-        throw "Failed to load game"
+        throw new Error("Failed to load game")
     }
 
     return (

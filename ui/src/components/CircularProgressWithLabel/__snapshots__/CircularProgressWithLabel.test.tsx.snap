@@ -16,14 +16,14 @@ exports[`snapshot 1`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-1ake8e4-MuiCircularProgress-root{display:inline-block;-webkit-transition:-webkit-transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;color:#1976d2;position:absolute;color:lightgray;}",
+          "__html": ".css-173x2r1-MuiCircularProgress-root{display:inline-block;-webkit-transition:-webkit-transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;color:#1976d2;position:absolute;color:lightgray;}",
         }
       }
-      data-emotion="css 1ake8e4-MuiCircularProgress-root"
+      data-emotion="css 173x2r1-MuiCircularProgress-root"
     />
     <span
       aria-valuenow={100}
-      className="MuiCircularProgress-root MuiCircularProgress-determinate MuiCircularProgress-colorPrimary css-1ake8e4-MuiCircularProgress-root"
+      className="MuiCircularProgress-root MuiCircularProgress-determinate MuiCircularProgress-colorPrimary css-173x2r1-MuiCircularProgress-root"
       role="progressbar"
       style={
         {
@@ -36,25 +36,25 @@ exports[`snapshot 1`] = `
       <style
         dangerouslySetInnerHTML={
           {
-            "__html": ".css-1idz92c-MuiCircularProgress-svg{display:block;}",
+            "__html": ".css-54pwck-MuiCircularProgress-svg{display:block;}",
           }
         }
-        data-emotion="css 1idz92c-MuiCircularProgress-svg"
+        data-emotion="css 54pwck-MuiCircularProgress-svg"
       />
       <svg
-        className="MuiCircularProgress-svg css-1idz92c-MuiCircularProgress-svg"
+        className="MuiCircularProgress-svg css-54pwck-MuiCircularProgress-svg"
         viewBox="22 22 44 44"
       >
         <style
           dangerouslySetInnerHTML={
             {
-              "__html": ".css-oxts8u-MuiCircularProgress-circle{stroke:currentColor;-webkit-transition:stroke-dashoffset 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:stroke-dashoffset 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}",
+              "__html": ".css-eorpq6-MuiCircularProgress-circle{stroke:currentColor;-webkit-transition:stroke-dashoffset 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:stroke-dashoffset 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;}",
             }
           }
-          data-emotion="css oxts8u-MuiCircularProgress-circle"
+          data-emotion="css eorpq6-MuiCircularProgress-circle"
         />
         <circle
-          className="MuiCircularProgress-circle MuiCircularProgress-circleDeterminate css-oxts8u-MuiCircularProgress-circle"
+          className="MuiCircularProgress-circle MuiCircularProgress-circleDeterminate css-eorpq6-MuiCircularProgress-circle"
           cx={44}
           cy={44}
           fill="none"
@@ -72,14 +72,14 @@ exports[`snapshot 1`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-1rn30mb-MuiCircularProgress-root{display:inline-block;-webkit-transition:-webkit-transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;color:#1976d2;}",
+          "__html": ".css-1b6zgcx-MuiCircularProgress-root{display:inline-block;-webkit-transition:-webkit-transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:transform 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;color:#1976d2;}",
         }
       }
-      data-emotion="css 1rn30mb-MuiCircularProgress-root"
+      data-emotion="css 1b6zgcx-MuiCircularProgress-root"
     />
     <span
       aria-valuenow={50}
-      className="MuiCircularProgress-root MuiCircularProgress-determinate MuiCircularProgress-colorPrimary css-1rn30mb-MuiCircularProgress-root"
+      className="MuiCircularProgress-root MuiCircularProgress-determinate MuiCircularProgress-colorPrimary css-1b6zgcx-MuiCircularProgress-root"
       role="progressbar"
       style={
         {
@@ -90,11 +90,11 @@ exports[`snapshot 1`] = `
       }
     >
       <svg
-        className="MuiCircularProgress-svg css-1idz92c-MuiCircularProgress-svg"
+        className="MuiCircularProgress-svg css-54pwck-MuiCircularProgress-svg"
         viewBox="22 22 44 44"
       >
         <circle
-          className="MuiCircularProgress-circle MuiCircularProgress-circleDeterminate css-oxts8u-MuiCircularProgress-circle"
+          className="MuiCircularProgress-circle MuiCircularProgress-circleDeterminate css-eorpq6-MuiCircularProgress-circle"
           cx={44}
           cy={44}
           fill="none"
@@ -123,13 +123,14 @@ exports[`snapshot 1`] = `
       <style
         dangerouslySetInnerHTML={
           {
-            "__html": ".css-ol7wxs-MuiTypography-root{margin:0;font-family:\\"Roboto\\",\\"Helvetica\\",\\"Arial\\",sans-serif;font-weight:400;font-size:0.75rem;line-height:1.66;letter-spacing:0.03333em;color:rgba(0, 0, 0, 0.6);}",
+            "__html": ".css-1374baf-MuiTypography-root{margin:0;font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:0.75rem;line-height:1.66;letter-spacing:0.03333em;color:rgba(0, 0, 0, 0.6);}",
           }
         }
-        data-emotion="css ol7wxs-MuiTypography-root"
+        data-emotion="css 1374baf-MuiTypography-root"
       />
       <div
-        className="MuiTypography-root MuiTypography-caption css-ol7wxs-MuiTypography-root"
+        className="MuiTypography-root MuiTypography-caption css-1374baf-MuiTypography-root"
+        style={{}}
       >
         50%
       </div>

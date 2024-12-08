@@ -15,7 +15,7 @@ const PlayerSelect = ({
     value?: string
     onChange: (value: string) => void
 }) => {
-    const handleChange = (event: SelectChangeEvent<string>) => {
+    const handleChange = (event: SelectChangeEvent) => {
         onChange(event.target.value)
     }
 

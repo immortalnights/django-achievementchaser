@@ -22,7 +22,7 @@ interface PlayerOwnedGame {
     game?: Game
     lastPlayed: string | null
     playtimeForever: number
-    unlockedAchievementCount: number
+    unlockedAchievementCount?: number
     completed: string | null
 }
 
@@ -33,7 +33,7 @@ interface Game {
     id: string
     name: string
     imgIconUrl: string
-    achievementCount: number
+    achievementCount?: number
     difficultyPercentage: number
     owners?: Connection<PlayerOwnedGameWithPlayer>
     achievements?: Achievement[]

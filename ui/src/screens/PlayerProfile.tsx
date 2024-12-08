@@ -27,7 +27,7 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
             data={data}
             renderer={(response) => {
                 const achievements = unwrapEdges(
-                    response?.player?.availableAchievements
+                    response.player?.availableAchievements
                 )
                 return (
                     <GameGroupedAchievements

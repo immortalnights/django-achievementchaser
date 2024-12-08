@@ -23,14 +23,14 @@ const OwnerRow = ({
         player,
         lastPlayed,
         playtimeForever,
-        unlockedAchievementCount,
+        unlockedAchievementCount = 0,
         completed,
     } = ownedGame
 
+    const achievementCount = game.achievementCount ?? 0
+
     const completionPercentage =
-        game.achievementCount > 0
-            ? unlockedAchievementCount / game.achievementCount
-            : 0
+        achievementCount > 0 ? unlockedAchievementCount / achievementCount : 0
 
     return (
         <TableRow>
@@ -55,12 +55,11 @@ const OwnerRow = ({
                 </Link>
             </TableCell>
             <TableCell align="center">
-                {game.achievementCount > 0 &&
-                    completionPercentage !== undefined && (
-                        <CircularProgressWithLabel
-                            value={completionPercentage * 100}
-                        />
-                    )}
+                {achievementCount > 0 && (
+                    <CircularProgressWithLabel
+                        value={completionPercentage * 100}
+                    />
+                )}
             </TableCell>
             <TableCell>
                 {lastPlayed ? (
@@ -106,7 +105,7 @@ const GameOwnersTable = ({ game }: { game: Game }) => {
             <TableBody>
                 {owners.map((ownedGame) => (
                     <OwnerRow
-                        key={ownedGame?.player?.id}
+                        key={ownedGame.player.id}
                         game={game}
                         ownedGame={ownedGame}
                     />

@@ -20,7 +20,7 @@ const UnlockedAchievements = ({
         {achievements.length > 0 ? (
             achievements.map((item) => (
                 <UnlockedAchievementIcon
-                    key={`${item.id}`}
+                    key={item.id}
                     player={player}
                     unlockedAchievement={item}
                     size="md"
@@ -51,7 +51,7 @@ const PerfectGames = ({
         <>
             {games.map((ownedGame) => (
                 <GameCapsule
-                    key={ownedGame.game?.id}
+                    key={ownedGame.game.id}
                     player={player}
                     game={ownedGame.game}
                     ownedGame={ownedGame}
@@ -86,17 +86,21 @@ const DailyAchievements = ({
             }
         }
 
-        const groups = dates.reduce((previousValue, currentValue) => {
-            previousValue[currentValue] = {
-                achievements: [],
-                perfectGames: [],
-            }
+        const groups = dates.reduce<GroupedAchievements>(
+            (previousValue, currentValue) => {
+                previousValue[currentValue] = {
+                    achievements: [],
+                    perfectGames: [],
+                }
 
-            return previousValue
-        }, {} as GroupedAchievements)
+                return previousValue
+            },
+            {}
+        )
 
         achievements.forEach((achievement) => {
             const key = dayjs(achievement.datetime).format("YYYY-MM-DD")
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (groups[key]) {
                 groups[key].achievements.push(achievement)
             }
@@ -104,6 +108,7 @@ const DailyAchievements = ({
 
         perfectGames.forEach((ownedGame) => {
             const key = dayjs(ownedGame.completed).format("YYYY-MM-DD")
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (groups[key]) {
                 groups[key].perfectGames.push(ownedGame)
             }
@@ -241,7 +246,7 @@ const PlayerAchievements = () => {
 
     useMemo(() => {
         if (!loading) {
-            setCache(unwrapEdges(data?.player?.unlockedAchievements) ?? [])
+            setCache(unwrapEdges(data?.player?.unlockedAchievements))
         }
     }, [loading, data])
 

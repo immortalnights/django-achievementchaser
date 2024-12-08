@@ -8,10 +8,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ui/package.json
 
       - name: Install Dependencies
         working-directory: ui
@@ -25,10 +26,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ui/package.json
 
       - name: Install Dependencies
         working-directory: ui
@@ -42,10 +44,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ui/package.json
 
       - name: Install Dependencies
         working-directory: ui
@@ -59,10 +62,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ui/package.json
 
       - name: Install Dependencies
         working-directory: ui
@@ -76,10 +80,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Set up Node
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ui/package.json
 
       - name: Install Dependencies
         working-directory: ui

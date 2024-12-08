@@ -167,7 +167,7 @@ const Calendar = ({
 
     const handleClickTimelineDay = useCallback(
         (date: string) => {
-            navigate(`/Player/${player}/Achievements/${date}`)
+            void navigate(`/Player/${player}/Achievements/${date}`)
         },
         [navigate, player]
     )

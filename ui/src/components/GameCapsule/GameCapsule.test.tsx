@@ -18,6 +18,7 @@ test("snapshot", () => {
     } satisfies Game
 
     // game
+    // eslint-disable-next-line
     const gameCapsule = renderer.create(
         <MemoryRouter>
             <GameCapsule game={game} />
@@ -26,6 +27,7 @@ test("snapshot", () => {
     expect(gameCapsule.toJSON()).toMatchSnapshot()
 
     // game, link to player
+    // eslint-disable-next-line
     const gameLinkToPlayer = renderer.create(
         <MemoryRouter>
             <GameCapsule game={game} player="1234" />
@@ -34,6 +36,7 @@ test("snapshot", () => {
     expect(gameLinkToPlayer.toJSON()).toMatchSnapshot()
 
     // game with owned game information
+    // eslint-disable-next-line
     const neverPlayedGame = renderer.create(
         <MemoryRouter>
             <GameCapsule game={game} ownedGame={neverPlayedOwnedGame} />
@@ -41,6 +44,7 @@ test("snapshot", () => {
     )
     expect(neverPlayedGame.toJSON()).toMatchSnapshot()
 
+    // eslint-disable-next-line
     const perfectGame = renderer.create(
         <MemoryRouter>
             <GameCapsule game={game} ownedGame={perfectPlayerOwnedGame} />
@@ -49,6 +53,7 @@ test("snapshot", () => {
     expect(perfectGame.toJSON()).toMatchSnapshot()
 
     // game with owned game information
+    // eslint-disable-next-line
     const playedGame = renderer.create(
         <MemoryRouter>
             <GameCapsule game={game} ownedGame={playedPlayerOwnedGame} />

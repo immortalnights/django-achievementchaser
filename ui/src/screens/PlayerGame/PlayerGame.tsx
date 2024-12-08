@@ -10,10 +10,10 @@ import GameHeader from "./components/GameHeader"
 
 const PlayerGameContainer = () => {
     const player = useRouteLoaderData("player") as Player
-    const game = useLoaderData() as Game
+    const game = useLoaderData<Game | undefined>()
 
     if (!game) {
-        throw "Failed to load game"
+        throw new Error("Failed to load game")
     }
 
     const [filter, setFilter] = useState<string>()
@@ -32,9 +32,9 @@ const PlayerGameContainer = () => {
     }, [game])
 
     const owners = useMemo(() => unwrapEdges(game.owners), [game])
-    const player1Owner = owners.find((owner) => owner.player?.id === player.id)
+    const player1Owner = owners.find((owner) => owner.player.id === player.id)
     const player2Owner = owners.find(
-        (owner) => owner.player?.id === comparePlayer
+        (owner) => owner.player.id === comparePlayer
     )
     const compare = !!player2Owner
 
