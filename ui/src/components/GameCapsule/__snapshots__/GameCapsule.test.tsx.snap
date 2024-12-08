@@ -5,25 +5,27 @@ exports[`snapshot 1`] = `
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-13v0ye7-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 1qdg4h9-MuiLink-root"
+    data-emotion="css 13v0ye7-MuiLink-root"
   />,
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-18rqtra-MuiTypography-root-MuiLink-root{margin:0;font:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+    data-emotion="css 18rqtra-MuiTypography-root-MuiLink-root"
   />,
   <a
-    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-18rqtra-MuiTypography-root-MuiLink-root"
+    data-discover="true"
     href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
+    style={{}}
   >
     <style
       dangerouslySetInnerHTML={
@@ -37,7 +39,7 @@ exports[`snapshot 1`] = `
       alt="Crusader Kings III"
       aria-label={null}
       aria-labelledby={null}
-      className=" css-mt3xud"
+      className="css-mt3xud"
       data-mui-internal-clone-element={true}
       id="1158310"
       name="Crusader Kings III"
@@ -52,18 +54,18 @@ exports[`snapshot 1`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-gq6qa3-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css pnutvq-MuiTooltip-popper"
+      data-emotion="css gq6qa3-MuiTooltip-popper"
     />
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-s8pgp9-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+      data-emotion="css s8pgp9-MuiPopper-root-MuiTooltip-popper"
     />
   </a>,
 ]
@@ -74,25 +76,27 @@ exports[`snapshot 2`] = `
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-13v0ye7-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 1qdg4h9-MuiLink-root"
+    data-emotion="css 13v0ye7-MuiLink-root"
   />,
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-18rqtra-MuiTypography-root-MuiLink-root{margin:0;font:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+    data-emotion="css 18rqtra-MuiTypography-root-MuiLink-root"
   />,
   <a
-    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-18rqtra-MuiTypography-root-MuiLink-root"
+    data-discover="true"
     href="/Player/1234/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
+    style={{}}
   >
     <style
       dangerouslySetInnerHTML={
@@ -106,7 +110,7 @@ exports[`snapshot 2`] = `
       alt="Crusader Kings III"
       aria-label={null}
       aria-labelledby={null}
-      className=" css-mt3xud"
+      className="css-mt3xud"
       data-mui-internal-clone-element={true}
       id="1158310"
       name="Crusader Kings III"
@@ -121,18 +125,18 @@ exports[`snapshot 2`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-gq6qa3-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css pnutvq-MuiTooltip-popper"
+      data-emotion="css gq6qa3-MuiTooltip-popper"
     />
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-s8pgp9-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+      data-emotion="css s8pgp9-MuiPopper-root-MuiTooltip-popper"
     />
   </a>,
 ]
@@ -143,25 +147,27 @@ exports[`snapshot 3`] = `
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-13v0ye7-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 1qdg4h9-MuiLink-root"
+    data-emotion="css 13v0ye7-MuiLink-root"
   />,
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-18rqtra-MuiTypography-root-MuiLink-root{margin:0;font:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+    data-emotion="css 18rqtra-MuiTypography-root-MuiLink-root"
   />,
   <a
-    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-18rqtra-MuiTypography-root-MuiLink-root"
+    data-discover="true"
     href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
+    style={{}}
   >
     <style
       dangerouslySetInnerHTML={
@@ -175,7 +181,7 @@ exports[`snapshot 3`] = `
       alt="Crusader Kings III"
       aria-label={null}
       aria-labelledby={null}
-      className=" css-mt3xud"
+      className="css-mt3xud"
       data-mui-internal-clone-element={true}
       id="1158310"
       name="Crusader Kings III"
@@ -190,18 +196,18 @@ exports[`snapshot 3`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-gq6qa3-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css pnutvq-MuiTooltip-popper"
+      data-emotion="css gq6qa3-MuiTooltip-popper"
     />
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-s8pgp9-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+      data-emotion="css s8pgp9-MuiPopper-root-MuiTooltip-popper"
     />
   </a>,
 ]
@@ -212,25 +218,27 @@ exports[`snapshot 4`] = `
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-13v0ye7-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 1qdg4h9-MuiLink-root"
+    data-emotion="css 13v0ye7-MuiLink-root"
   />,
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-18rqtra-MuiTypography-root-MuiLink-root{margin:0;font:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+    data-emotion="css 18rqtra-MuiTypography-root-MuiLink-root"
   />,
   <a
-    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-18rqtra-MuiTypography-root-MuiLink-root"
+    data-discover="true"
     href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
+    style={{}}
   >
     <style
       dangerouslySetInnerHTML={
@@ -244,7 +252,7 @@ exports[`snapshot 4`] = `
       alt="Crusader Kings III"
       aria-label={null}
       aria-labelledby={null}
-      className=" css-mt3xud"
+      className="css-mt3xud"
       data-mui-internal-clone-element={true}
       id="1158310"
       name="Crusader Kings III"
@@ -259,18 +267,18 @@ exports[`snapshot 4`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-gq6qa3-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css pnutvq-MuiTooltip-popper"
+      data-emotion="css gq6qa3-MuiTooltip-popper"
     />
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-s8pgp9-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+      data-emotion="css s8pgp9-MuiPopper-root-MuiTooltip-popper"
     />
   </a>,
 ]
@@ -281,25 +289,27 @@ exports[`snapshot 5`] = `
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-1qdg4h9-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-13v0ye7-MuiLink-root{-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 1qdg4h9-MuiLink-root"
+    data-emotion="css 13v0ye7-MuiLink-root"
   />,
   <style
     dangerouslySetInnerHTML={
       {
-        "__html": ".css-4m5fmp-MuiTypography-root-MuiLink-root{margin:0;font-family:inherit;font-weight:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
+        "__html": ".css-18rqtra-MuiTypography-root-MuiLink-root{margin:0;font:inherit;line-height:inherit;letter-spacing:inherit;color:#1976d2;-webkit-text-decoration:none;text-decoration:none;}",
       }
     }
-    data-emotion="css 4m5fmp-MuiTypography-root-MuiLink-root"
+    data-emotion="css 18rqtra-MuiTypography-root-MuiLink-root"
   />,
   <a
-    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-4m5fmp-MuiTypography-root-MuiLink-root"
+    className="MuiTypography-root MuiTypography-inherit MuiLink-root MuiLink-underlineNone css-18rqtra-MuiTypography-root-MuiLink-root"
+    data-discover="true"
     href="/Game/1158310"
     onBlur={[Function]}
     onClick={[Function]}
     onFocus={[Function]}
+    style={{}}
   >
     <style
       dangerouslySetInnerHTML={
@@ -313,7 +323,7 @@ exports[`snapshot 5`] = `
       alt="Crusader Kings III"
       aria-label={null}
       aria-labelledby={null}
-      className=" css-mt3xud"
+      className="css-mt3xud"
       data-mui-internal-clone-element={true}
       id="1158310"
       name="Crusader Kings III"
@@ -328,18 +338,18 @@ exports[`snapshot 5`] = `
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-pnutvq-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-pnutvq-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-gq6qa3-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-gq6qa3-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css pnutvq-MuiTooltip-popper"
+      data-emotion="css gq6qa3-MuiTooltip-popper"
     />
     <style
       dangerouslySetInnerHTML={
         {
-          "__html": ".css-viryjt-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"bottom\\"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"top\\"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"right\\"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;height:1em;width:0.71em;}.css-viryjt-MuiPopper-root-MuiTooltip-popper[data-popper-placement*=\\"left\\"] .MuiTooltip-arrow::before{transform-origin:0 0;}",
+          "__html": ".css-s8pgp9-MuiPopper-root-MuiTooltip-popper{z-index:1500;pointer-events:none;pointer-events:auto;pointer-events:none;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow{top:0;margin-top:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="bottom"] .MuiTooltip-arrow::before{transform-origin:0 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow{bottom:0;margin-bottom:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="top"] .MuiTooltip-arrow::before{transform-origin:100% 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow::before{transform-origin:100% 100%;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{height:1em;width:0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow::before{transform-origin:0 0;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="right"] .MuiTooltip-arrow{left:0;margin-left:-0.71em;}.css-s8pgp9-MuiPopper-root-MuiTooltip-popper[data-popper-placement*="left"] .MuiTooltip-arrow{right:0;margin-right:-0.71em;}",
         }
       }
-      data-emotion="css viryjt-MuiPopper-root-MuiTooltip-popper"
+      data-emotion="css s8pgp9-MuiPopper-root-MuiTooltip-popper"
     />
   </a>,
 ]
