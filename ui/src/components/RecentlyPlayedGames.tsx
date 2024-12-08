@@ -57,7 +57,7 @@ const RecentlyPlayedGames = ({ player }: { player: string }) => {
                 {games ? (
                     games.map((ownedGame) => (
                         <RecentlyPlayedGame
-                            key={ownedGame.game?.id ?? ""}
+                            key={ownedGame.game.id ?? ""}
                             player={player}
                             ownedGame={ownedGame}
                         />

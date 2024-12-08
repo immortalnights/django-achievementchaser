@@ -20,7 +20,7 @@ const UnlockedAchievements = ({
         {achievements.length > 0 ? (
             achievements.map((item) => (
                 <UnlockedAchievementIcon
-                    key={`${item.id}`}
+                    key={item.id}
                     player={player}
                     unlockedAchievement={item}
                     size="md"
@@ -51,7 +51,7 @@ const PerfectGames = ({
         <>
             {games.map((ownedGame) => (
                 <GameCapsule
-                    key={ownedGame.game?.id}
+                    key={ownedGame.game.id}
                     player={player}
                     game={ownedGame.game}
                     ownedGame={ownedGame}

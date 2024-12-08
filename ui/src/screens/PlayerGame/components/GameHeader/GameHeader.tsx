@@ -68,7 +68,7 @@ const GameHeader = ({
             unwrapEdges(game.owners)
                 .map((owner) => owner.player)
                 .filter(
-                    (player) => player && owner?.player?.id !== player.id
+                    (player) => player && owner?.player.id !== player.id
                 ) as Player[],
         [game, owner]
     )
@@ -110,7 +110,7 @@ const GameHeader = ({
                     {showSearch && <Search />}
 
                     {canCompare && (
-                        <Compare game={game} owner={owner?.player.id} />
+                        <Compare game={game} owner={owner.player.id} />
                     )}
                 </Box>
 

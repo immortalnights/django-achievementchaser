@@ -106,7 +106,7 @@ const GameOwnersTable = ({ game }: { game: Game }) => {
             <TableBody>
                 {owners.map((ownedGame) => (
                     <OwnerRow
-                        key={ownedGame?.player?.id}
+                        key={ownedGame.player.id}
                         game={game}
                         ownedGame={ownedGame}
                     />
