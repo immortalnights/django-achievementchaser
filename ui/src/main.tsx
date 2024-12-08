@@ -11,6 +11,7 @@ import router from "./router.tsx"
 import { ClientContext } from "graphql-hooks"
 import { client } from "./api/client"
 
+// eslint-disable-next-line
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <CssBaseline>

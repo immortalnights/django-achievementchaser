@@ -22,7 +22,7 @@ interface PlayerOwnedGame {
     game?: Game
     lastPlayed: string | null
     playtimeForever: number
-    unlockedAchievementCount: number
+    unlockedAchievementCount?: number
     completed: string | null
 }
 

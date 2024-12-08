@@ -86,14 +86,17 @@ const DailyAchievements = ({
             }
         }
 
-        const groups = dates.reduce((previousValue, currentValue) => {
-            previousValue[currentValue] = {
-                achievements: [],
-                perfectGames: [],
-            }
+        const groups = dates.reduce<GroupedAchievements>(
+            (previousValue, currentValue) => {
+                previousValue[currentValue] = {
+                    achievements: [],
+                    perfectGames: [],
+                }
 
-            return previousValue
-        }, {} as GroupedAchievements)
+                return previousValue
+            },
+            {}
+        )
 
         achievements.forEach((achievement) => {
             const key = dayjs(achievement.datetime).format("YYYY-MM-DD")

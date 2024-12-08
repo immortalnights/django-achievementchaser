@@ -10,10 +10,10 @@ import GameHeader from "./components/GameHeader"
 
 const PlayerGameContainer = () => {
     const player = useRouteLoaderData("player") as Player
-    const game = useLoaderData() as Game
+    const game = useLoaderData<Game | undefined>()
 
     if (!game) {
-        throw "Failed to load game"
+        throw new Error("Failed to load game")
     }
 
     const [filter, setFilter] = useState<string>()
