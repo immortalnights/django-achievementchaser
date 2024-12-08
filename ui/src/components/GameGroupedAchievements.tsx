@@ -55,8 +55,9 @@ const groupAchievements = (achievements: AchievementWithGame[]) => {
     achievements.forEach((item) => {
         const { game, ...rest } = item
 
-        if (game && game.id) {
+        if (game.id) {
             const key = String(game.id as keyof typeof games)
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!games[key]) {
                 games[key] = {
                     game,

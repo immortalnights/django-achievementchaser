@@ -44,7 +44,7 @@ const UnlockedAchievementIcon = ({
         <Link to={`/Player/${player}/Game/${unlockedAchievement.game.id}`}>
             <Tooltip title={title} arrow enterDelay={500} leaveDelay={0}>
                 <BorderedImage
-                    src={unlockedAchievement.achievement.iconUrl ?? ""}
+                    src={unlockedAchievement.achievement.iconUrl}
                     style={{
                         width: widthHeight,
                         height: widthHeight,

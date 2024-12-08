@@ -12,7 +12,7 @@ const Header = () => {
     const navigate = useNavigate()
 
     const handleSearch = (value: string) => {
-        navigate(`/Search/${value}`)
+        void navigate(`/Search/${value}`)
     }
 
     return (

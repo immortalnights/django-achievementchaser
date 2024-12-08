@@ -20,7 +20,7 @@ const RecentlyPlayedGame = ({
 
     const game = ownedGame.game
 
-    if (!game || game.name === undefined || game.imgIconUrl === undefined) {
+    if (!game) {
         throw Error("Owned game missing game information")
     }
 
@@ -57,7 +57,7 @@ const RecentlyPlayedGames = ({ player }: { player: string }) => {
                 {games ? (
                     games.map((ownedGame) => (
                         <RecentlyPlayedGame
-                            key={ownedGame.game.id ?? ""}
+                            key={ownedGame.game.id}
                             player={player}
                             ownedGame={ownedGame}
                         />

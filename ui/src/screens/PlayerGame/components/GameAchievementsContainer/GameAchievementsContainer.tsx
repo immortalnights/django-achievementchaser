@@ -38,7 +38,7 @@ const GameAchievementsContainer = ({
         } else {
             content = (
                 <GameAchievements
-                    achievements={gameWithAchievements.achievements ?? []}
+                    achievements={gameWithAchievements.achievements}
                 />
             )
         }

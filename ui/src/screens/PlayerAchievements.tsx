@@ -100,6 +100,7 @@ const DailyAchievements = ({
 
         achievements.forEach((achievement) => {
             const key = dayjs(achievement.datetime).format("YYYY-MM-DD")
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (groups[key]) {
                 groups[key].achievements.push(achievement)
             }
@@ -107,6 +108,7 @@ const DailyAchievements = ({
 
         perfectGames.forEach((ownedGame) => {
             const key = dayjs(ownedGame.completed).format("YYYY-MM-DD")
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (groups[key]) {
                 groups[key].perfectGames.push(ownedGame)
             }
@@ -244,7 +246,7 @@ const PlayerAchievements = () => {
 
     useMemo(() => {
         if (!loading) {
-            setCache(unwrapEdges(data?.player?.unlockedAchievements) ?? [])
+            setCache(unwrapEdges(data?.player?.unlockedAchievements))
         }
     }, [loading, data])
 

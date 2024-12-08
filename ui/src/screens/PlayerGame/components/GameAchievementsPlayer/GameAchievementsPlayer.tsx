@@ -17,7 +17,7 @@ const GameAchievementsPlayer = ({
 
     const mutatedAchievements = useAchievementFilter(
         game.achievements,
-        player1Achievements ?? []
+        player1Achievements
     )
 
     let content
