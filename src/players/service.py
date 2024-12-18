@@ -3,7 +3,7 @@ from datetime import datetime, date, timedelta
 from loguru import logger
 from django.db import models
 from django.utils import timezone
-from games.models import Game, Achievement
+from games.models import Game
 from games.service import resynchronize_game
 from .models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
 from .steam import resolve_vanity_url, load_player_summary, get_owned_games, get_player_achievements_for_game
