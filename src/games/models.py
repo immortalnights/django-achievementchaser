@@ -42,3 +42,6 @@ class Game(models.Model):
 
     def has_achievements(self):
         return Achievement.objects.filter(game_id=self.id).count() > 0
+
+    def get_achievements(self):
+        return Achievement.objects.filter(game_id=self.id)

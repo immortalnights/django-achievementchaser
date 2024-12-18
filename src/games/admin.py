@@ -17,8 +17,8 @@ class GameAdmin(admin.ModelAdmin):
         return not obj.resynchronization_required
 
     @admin.display(description="Achievements")
-    def achievements(self, obj):
-        return Achievement.objects.filter(game=obj).count()
+    def achievements(self, obj: Game):
+        return obj.get_achievements().count()
 
 
 @admin.register(Achievement)
