@@ -9,7 +9,8 @@ from .models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedA
 from .steam import resolve_vanity_url, load_player_summary, get_owned_games, get_player_achievements_for_game
 
 
-def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
+def resolve_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
+    """Resolve a player id, url or friendly name to a Steam ID integer"""
     player_id = None
     resolved_identity: typing.Union[str, int, None] = None
 
@@ -36,7 +37,7 @@ def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
         player_id = int(resolved_identity)
     except ValueError:
         # logger.debug(f"Could not convert identity '{resolved_identity}' to Steam ID")
-        player_id = resolve_vanity_url(resolved_identity)
+        player_id = resolve_vanity_url(str(resolved_identity))
 
     return player_id
 
@@ -84,7 +85,7 @@ def player_from_identity(identity: typing.Union[str, int]) -> typing.Optional["P
     """Resolves a player identity and then loads the player (by ID) from the database"""
     instance = None
 
-    player_id = parse_identity(identity)
+    player_id = resolve_identity(identity)
 
     if player_id is not None:
         try:
