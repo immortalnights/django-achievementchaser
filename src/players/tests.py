@@ -2,54 +2,8 @@ from django.test import TestCase
 from graphene_django.utils.testing import GraphQLTestCase
 from unittest.mock import patch
 from .models import Player
-from .service import parse_identity
-from .testdata import mock_vanity_response, mock_player_summary, mock_player_owned_games
+from .testdata import mock_player_summary, mock_player_owned_games
 from .responsedata import PlayerSummaryResponse
-
-
-class PlayerIdentityTests(TestCase):
-    """Test parse_identity utility"""
-
-    def test_player_from_id(self):
-        """Given a valid Steam ID, return a Player ID"""
-        player_id = parse_identity("10000000000000001")
-        self.assertEqual(player_id, 10000000000000001)
-
-    def test_player_from_friendly_name(self):
-        """Given a valid Friendly Name, create a new Player"""
-        player_id = None
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_vanity_response
-            player_id = parse_identity("anonymous")
-            mock_request.assert_called_once()
-
-        self.assertEqual(player_id, 10000000000000001)
-
-    def test_player_from_url(self):
-        """Given a valid user URL, create a new Player"""
-        player_id = parse_identity("https://steamcommunity.com/profiles/76561197993451745")
-        self.assertEqual(player_id, 76561197993451745)
-
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_vanity_response
-            player_id = parse_identity("https://steamcommunity.com/id/anonymous/")
-            mock_request.assert_called_once()
-
-        self.assertEqual(player_id, 10000000000000001)
-
-    def test_player_from_friendly_name_existing(self):
-        """Given a valid Friend Name, fetch the existing Player"""
-
-        Player.objects.create(id=10000000000000001)
-
-        player = None
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_vanity_response
-            player_id = parse_identity("https://steamcommunity.com/id/anonymous/")
-            mock_request.assert_called_once()
-
-            player = Player.objects.get(id=player_id)
-            self.assertIsNotNone(player)
 
 
 class PlayerTests(TestCase):
