@@ -81,7 +81,7 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
             else:
                 logger.error(f"Expected root object '{response_data_key}' is not a dictionary; {response_json}")
         else:
-            logger.error(f"Expected root object '{response_data_key}' missing; {response_json}")
+            logger.error(f"Expected root object '{response_data_key}' missing in: {response_json}")
     else:
         logger.error(f"Request '{mask_key(url)}' failed")
 
