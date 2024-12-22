@@ -221,7 +221,7 @@ def resynchronize_player_games(player: Player) -> bool:
         if last_played_time is not None:
             changes["last_played"] = last_played_time
 
-        changes["resynchronization_required"] = False
+        changes["resynchronization_required"] = True if game_created else False
 
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
@@ -234,25 +234,37 @@ def resynchronize_player_games(player: Player) -> bool:
 
 def resynchronize_player_owned_games(player: Player, *, required_only=False) -> bool:
     """Resynchronize player owned games (from the database)"""
-    ok = False
+    ok = True
 
     filter = {}
     if required_only:
         filter = {"resynchronization_required": True}
 
+    owned_games = []
     try:
         owned_games = PlayerOwnedGame.objects.filter(player=player, **filter)
         logger.debug(f"Resynchronizing {len(owned_games)} owned games for {player.name}")
-
-        for record in owned_games:
-            game = record.game
-            resynchronize_game(game)
-            resynchronize_player_achievements_for_game(player, game)
-
-            record.resynchronization_required = False
-            record.save(update_fields=["resynchronization_required"])
     except Exception:
-        logger.exception(f"Failed to resynchronize player '{player.name}'")
+        logger.exception(f"Failed to filter player '{player.name}' owned games")
+
+    for record in owned_games:
+        ok &= resynchronize_player_owned_game(player, record)
+
+    return ok
+
+
+def resynchronize_player_owned_game(player: Player, owned_game: PlayerOwnedGame) -> bool:
+    ok = False
+    try:
+        game = owned_game.game
+        resynchronize_game(game)
+        resynchronize_player_achievements_for_game(player, game)
+
+        owned_game.resynchronization_required = False
+        owned_game.save(update_fields=["resynchronization_required"])
+        ok = True
+    except Exception:
+        logger.exception(f"Failed to resynchronize player '{player.name}' game {owned_game.game.name}")
 
     return ok
 
