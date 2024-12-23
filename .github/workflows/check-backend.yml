@@ -71,16 +71,6 @@ jobs:
           python -m pip install pip build --upgrade
           pip install .[dev]
 
-      - name: Check db connection
-        env:
-          PGHOST: postgres
-          PGPORT: 5432
-          PGUSER: postgres
-          PGPASSWORD: postgres
-        run: |
-          apt-get install -y postgresql-client
-          psql -c "SELECT 1"
-
       - name: Test
         working-directory: src/
         env:
