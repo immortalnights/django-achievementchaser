@@ -73,4 +73,4 @@ jobs:
           PGPORT: 5432
           PGUSER: postgres
           PGPASSWORD: postgres
-        run: python manage.py test
+        run: python manage.py test achievementchaser
