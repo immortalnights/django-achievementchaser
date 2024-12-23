@@ -70,9 +70,12 @@ jobs:
 
       - name: Check db connection
         env:
-          POSTGRES_PASSWORD: postgres
-          PGPASSWORD: postgres
-        run: psql -h postgres -U postgres -c "SELECT 1"
+          PGHOST: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+        run: psql -c "SELECT 1"
 
       - name: Test
         working-directory: src/
