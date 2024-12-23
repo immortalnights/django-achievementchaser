@@ -159,7 +159,7 @@ mock_game_255520_schema = {
                     "defaultvalue": 0,
                     "displayName": "Mr. Two Million Dollars",
                     "hidden": 0,
-                    "description": "Collect the two million dollars of cold hard cash all at once and bring it back to your office using the Trunk",
+                    "description": "Collect the two million dollars of cold ...",
                     "icon": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/255520/5b5103fa5072b6dfeb5fad4923028692bfafb108.jpg",
                     "icongray": "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/apps/255520/aea9c6d0ecabf415f8bef423f056f5dab2137c03.jpg",
                 },
