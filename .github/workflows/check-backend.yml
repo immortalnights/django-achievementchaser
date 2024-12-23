@@ -77,7 +77,9 @@ jobs:
           PGPORT: 5432
           PGUSER: postgres
           PGPASSWORD: postgres
-        run: psql -c "SELECT 1"
+        run: |
+          apt-get install -y postgresql-client
+          psql -c "SELECT 1"
 
       - name: Test
         working-directory: src/
