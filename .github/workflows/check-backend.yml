@@ -73,14 +73,14 @@ jobs:
           PGHOST: postgres
           PGPORT: 5432
           PGUSER: postgres
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
+          PGPASSWORD: postgres
         run: psql -c "SELECT 1"
 
       - name: Test
         working-directory: src/
         env:
-          POSTGRES_PASSWORD: postgres
-          PGPASSWORD: postgres
           PGHOST: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
         run: python manage.py test
