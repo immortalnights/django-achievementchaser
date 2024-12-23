@@ -54,7 +54,7 @@ jobs:
 
       - name: Start postgresql
         env:
-          POSTGRES_PASSWORD: password
+          POSTGRES_PASSWORD: postgres
         run: |
           sudo systemctl start postgresql.service
           pg_isready
