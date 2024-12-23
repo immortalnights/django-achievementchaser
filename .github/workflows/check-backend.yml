@@ -59,6 +59,12 @@ jobs:
           sudo systemctl start postgresql.service
           pg_isready
 
+      - name: Check db connection
+        env:
+          POSTGRES_PASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -c "SELECT 1"
+
       - name: Test
         working-directory: src/
         env:
