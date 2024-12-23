@@ -40,7 +40,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    container: nikolaik/python-nodejs
+    container: python:3.12.8-bookworm
 
     # Service containers to run with `container-job`
     services:
