@@ -61,4 +61,6 @@ jobs:
 
       - name: Test
         working-directory: src/
+        env:
+          POSTGRES_PASSWORD: postgres
         run: python manage.py test
