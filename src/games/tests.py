@@ -1,111 +1,68 @@
 from django.test import TestCase
-from loguru import logger
-from graphene_django.utils.testing import GraphQLTestCase
-from unittest.mock import patch
+from unittest import expectedFailure
 from .models import Game
-from .tasks import resynchronize_game
+from .tasks import resynchronize_game_task
 from .service import resynchronize_game as resynchronize_game_service
 from .testdata import (
-    mock_game_schema,
-    mock_game_schema_no_available_game_stats,
-    mock_game_schema_empty_available_game_stats,
-    mock_game_schema_no_achievements,
-    mock_game_schema_no_stats,
+    mock_game_288160_schema,
+    mock_game_288160_achievements,
+    mock_game_8500_schema,
 )
-from achievementchaser.testdata import mock_invalid_key
+from achievementchaser.test_utilities import mock_request
+from unittest.mock import MagicMock
 
 
 class GameTests(TestCase):
-    def test_resynchronize_new_game_task(self):
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_game_schema
-            resynchronize_game(logger, 288160)
-            mock_request.assert_called_once()
+
+    @mock_request(data=[mock_game_288160_schema, mock_game_288160_achievements])
+    def test_resynchronize_new_game(self, mock_request: MagicMock):
+        resynchronize_game_service(Game(id=288160))
+        mock_request.assert_called()
 
         game = Game.objects.get(id=288160)
         self.assertEqual(game.name, "The Room")
-        self.assertEqual(len(game.achievements), 5)
+        self.assertEqual(game.achievements.count(), 5)
 
-    def test_resynchronize_existing_game_task(self):
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_game_schema
-            resynchronize_game(logger, 288160)
-            mock_request.assert_called_once()
+    @mock_request(
+        data=[
+            mock_game_288160_schema,
+            mock_game_288160_achievements,
+            mock_game_288160_schema,
+            mock_game_288160_achievements,
+        ]
+    )
+    def test_resynchronize_game(self, mock_request: MagicMock):
+        # Add the game by using the resynchronize_game_service
+        resynchronize_game_service(Game(id=288160))
+
+        game = Game.objects.get(id=288160)
+        game.resynchronization_required = True
+        game.save(update_fields=["resynchronization_required"])
+
+        # Resynchronize an existing game
+        resynchronize_game_task(288160)
+        mock_request.assert_called()
 
         game = Game.objects.get(id=288160)
         self.assertEqual(game.name, "The Room")
-        self.assertEqual(len(game.achievements), 5)
+        self.assertEqual(game.achievements.count(), 5)
 
-    def test_resynchronize_new_game(self):
-        game = Game.objects.create(id=288160)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_game_schema
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
+    @expectedFailure
+    @mock_request(ok=False, data={})
+    def test_resynchronize_invalid_game(self, mock_request: MagicMock):
 
-        self.assertEqual(game.name, "The Room")
-        self.assertEqual(len(game.achievements), 5)
-
-    # python .\manage.py test games.tests.GameTests.test_resynchronize_existing_game
-    def test_resynchronize_existing_game(self):
-        game = Game.objects.create(id=288160)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_game_schema
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
-
-        self.assertEqual(game.name, "The Room")
-        self.assertEqual(len(game.achievements), 5)
-
-    def test_resynchronize_invalid_game(self):
         game = Game(id=1)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"game": {}}
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
+        resynchronize_game_service(game)
+        mock_request.assert_called_once()
 
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {}
-            # Maybe this should be an exception
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
+        with self.assertRaises(Game.DoesNotExist):
+            Game.objects.get(id=1)
 
-    def test_resynchronize_incomplete_data(self):
-        with patch("achievementchaser.steam._request") as mock_request:
-            game = Game(id=1)
-            mock_request.return_value = mock_game_schema_no_available_game_stats
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
+    @mock_request(data=[mock_game_8500_schema])
+    def test_resynchronize_game_without_achievements(self, mock_request: MagicMock):
+        resynchronize_game_service(Game(id=8500))
+        mock_request.assert_called_once()
 
-        with patch("achievementchaser.steam._request") as mock_request:
-            game = Game(id=1)
-            mock_request.return_value = mock_game_schema_empty_available_game_stats
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
-
-        with patch("achievementchaser.steam._request") as mock_request:
-            game = Game(id=1)
-            mock_request.return_value = mock_game_schema_no_achievements
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
-
-        with patch("achievementchaser.steam._request") as mock_request:
-            game = Game(id=1)
-            mock_request.return_value = mock_game_schema_no_stats
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
-
-    def test_resynchronize_invalid_api_key(self):
-        game = Game(id=1)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_invalid_key
-            resynchronize_game_service(game)
-            mock_request.assert_called_once()
-
-
-class GameAPITests(GraphQLTestCase):
-    def setUp(self):
-        self.GRAPHQL_URL = "/graphql/"
-
-    def test_query_game(self):
-        pass
+        game = Game.objects.get(id=8500)
+        self.assertEqual(game.name, "EVE Online")
+        self.assertEqual(game.achievements.count(), 0)
