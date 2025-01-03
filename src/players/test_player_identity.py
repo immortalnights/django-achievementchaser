@@ -1,10 +1,11 @@
 from django.test import TestCase
 from .service import resolve_identity
-from .testdata import mock_vanity_response
 from achievementchaser.test_utilities import mock_request
 
 
-# @patch("achievementchaser.steam._request")
+mock_vanity_response = {"response": {"steamid": "10000000000000001", "success": 1}}
+
+
 class TestResolveIdentity(TestCase):
     """Test resolve_identity utility"""
 

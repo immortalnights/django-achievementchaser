@@ -1,6 +1,5 @@
 from unittest.mock import patch
 from typing import Any
-from loguru import logger
 
 
 def patch_request():

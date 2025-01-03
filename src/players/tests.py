@@ -1,140 +1,103 @@
 from django.test import TestCase
-from graphene_django.utils.testing import GraphQLTestCase
-from unittest.mock import patch
+from unittest.mock import MagicMock
 from .models import Player
-from .testdata import mock_player_summary, mock_player_owned_games
-from .responsedata import PlayerSummaryResponse
+from .service import resynchronize_player, resynchronize_player_profile
+from achievementchaser.test_utilities import mock_request
+
+
+player_summary = {
+    "response": {
+        "players": [
+            {
+                "steamid": "10000000000000001",
+                "communityvisibilitystate": 3,
+                "profilestate": 1,
+                "personaname": "New Name",
+                "profileurl": "https://steamcommunity.com/id/newURL/",
+                "avatar": "",
+                "avatarmedium": "",
+                "avatarfull": "",
+                "avatarhash": "",
+                "personastate": 0,
+                "primaryclanid": "",
+                "timecreated": 1279812300,
+                "personastateflags": 0,
+                "lastlogoff": 0,
+            }
+        ]
+    }
+}
+
+player_games = {"response": {}}
 
 
 class PlayerTests(TestCase):
-    def test_player_from_invalid_id(self):
-        """Given an invalid Steam ID, return None"""
-        player = Player.from_identity("0")
-        self.assertIsNone(player)
 
-    def test_player_from_invalid_friendly_name(self):
-        """Given an invalid Friendly Name, return None"""
-        player = None
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"success": 42, "message": "No match"}}
-            player = Player.from_identity("invalid")
-            mock_request.assert_called_once()
+    @mock_request(data=[player_summary, player_games])
+    def test_player_changed_name(self, mock_request: MagicMock):
+        Player.objects.create(
+            id=10000000000000001, name="Old Name", profile_url="https://steamcommunity.com/id/oldURL/"
+        )
 
-        self.assertIsNone(player)
+        player = Player.objects.get(id=10000000000000001)
+        # persona name isn't updated unless the player is resynchronized
+        self.assertEqual(player.name, "Old Name")
+        self.assertEqual(player.profile_url, "https://steamcommunity.com/id/oldURL/")
 
-    def test_player_from_invalid_url(self):
-        """Given an invalid user URL, return an error"""
-        self.assertRaises(RuntimeError, Player.from_identity, "https://google.com")
+        resynchronize_player(player)
 
-    def test_player_existing_true(self):
-        Player.objects.create(id=1, name="rndTest", profile_url="https://example.com/id/1")
-
-        player = Player.find_existing(1)
-        self.assertIsNotNone(player)
-
-        player = Player.find_existing("rndTest")
-        self.assertIsNotNone(player)
-
-        player = Player.find_existing("https://example.com/id/1")
-        self.assertIsNotNone(player)
-
-    def test_player_existing_false(self):
-        player = Player.find_existing(1)
-        self.assertIsNone(player)
-
-    def test_player_changed_name(self):
-        Player.objects.create(id=1, name="oldName", profile_url="https://example.com/profiles/oldURL")
-
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"steamid": "1", "success": 1}}
-            instance = Player.load("newName")
-            mock_request.assert_called_once()
-
-            self.assertIsNotNone(instance)
-            # persona name isn't updated unless the player is resynchronized
-
-    def test_player_changed_url(self):
-        Player.objects.create(id=1, name="oldName", profile_url="https://example.com/profiles/oldURL")
-
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"steamid": "1", "success": 1}}
-            instance = Player.load("https://steamcommunity.com/profiles/newURL/")
-            mock_request.assert_called_once()
-
-            self.assertIsNotNone(instance)
+        player.refresh_from_db()
+        self.assertEqual(player.name, "New Name")
+        self.assertEqual(player.profile_url, "https://steamcommunity.com/id/newURL/")
 
 
 class PlayerSummaryTests(TestCase):
     """Test resynchronization/parsing player summary"""
 
-    def test_parse_summary(self):
-        player = Player(id=2)
-        # Raises due to missing "steamid"
-        self.assertRaises(AttributeError, player._apply_summary, {})
-        # Raises due to mismatching Player IDs
-        self.assertRaises(AssertionError, player._apply_summary, PlayerSummaryResponse(**mock_player_summary))
-
+    @mock_request(data={})
+    def test_resynchronize_player_profile_empty_response(self, mock_request: MagicMock):
+        """Invalid response data does not raise an exceptions and are silently ignored"""
         player = Player(id=1)
-        player._apply_summary(PlayerSummaryResponse(**mock_player_summary))
-        self.assertEqual(player.name, "testName")
-        self.assertEqual(player.profile_url, "testURL")
-        self.assertEqual(player.avatar_large_url, "testAvatarL")
-        self.assertEqual(player.avatar_medium_url, "testAvatarM")
-        self.assertEqual(player.avatar_small_url, "testAvatarS")
+        resynchronize_player_profile(player)
+        mock_request.assert_called_once()
+        self.assertIsNone(player.resynchronized)
 
-    def test_resynchronize_profile_invalid_player(self):
-        player = Player.objects.create(id=1)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"players": []}}
-            player.resynchronize_profile()
-            mock_request.assert_called_once()
+    @mock_request(data={"response": {}})
+    def test_resynchronize_player_profile_empty_response_object(self, mock_request: MagicMock):
+        """Invalid response data does not raise an exceptions and are silently ignored"""
+        player = Player(id=1)
+        resynchronize_player_profile(player)
+        mock_request.assert_called_once()
+        self.assertIsNone(player.resynchronized)
 
-            # Player should not have been resynchronized
-            self.assertIsNone(player.resynchronized)
+    @mock_request(data={"response": {"players": []}})
+    def test_resynchronize_player_profile_empty_players(self, mock_request: MagicMock):
+        """Invalid response data does not raise an exceptions and are silently ignored"""
+        player = Player(id=1)
+        resynchronize_player_profile(player)
+        mock_request.assert_called_once()
+        self.assertIsNone(player.resynchronized)
 
-    def test_resynchronize_profile_player(self):
-        player = Player.objects.create(id=1)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = {"response": {"players": [mock_player_summary]}}
-            player.resynchronize_profile()
-            mock_request.assert_called_once()
+    @mock_request(data={"response": {"players": [{}, {}]}})
+    def test_resynchronize_player_profile_multiple_players(self, mock_request: MagicMock):
+        """Invalid response data does not raise an exceptions and are silently ignored"""
+        player = Player(id=1)
+        resynchronize_player_profile(player)
+        mock_request.assert_called_once()
+        self.assertIsNone(player.resynchronized)
 
-            self.assertEqual(player.name, "testName")
-            self.assertEqual(player.profile_url, "testURL")
-            self.assertEqual(player.avatar_small_url, "testAvatarS")
-            self.assertEqual(player.avatar_medium_url, "testAvatarM")
-            self.assertEqual(player.avatar_large_url, "testAvatarL")
+    @mock_request(data={"response": {"players": [{}]}})
+    def test_resynchronize_player_profile_no_attributes(self, mock_request: MagicMock):
+        """Player missing (any) data raises a TypeError which is caught and ignored"""
+        player = Player(id=1)
+        resynchronize_player_profile(player)
+        mock_request.assert_called_once()
+        self.assertIsNone(player.resynchronized)
 
-
-class TestPlayerResynchronizeGames(TestCase):
-    """Test resynchronization/parsing player games"""
-
-    pass
-
-
-class TestPlayerResynchronizeAchievements(TestCase):
-    """Test resynchronization/parsing player achievements"""
-
-    pass
-
-
-class TestPlayerResynchronize(TestCase):
-    """Test resynchronization of player"""
-
-    pass
-
-
-class PlayerAPITests(GraphQLTestCase):
-    def setUp(self):
-        self.GRAPHQL_URL = "/graphql/"
-
-    def test_query_player(self):
-        pass
-
-
-class PlayerOwnedGamesTests(TestCase):
-    def test_load_owned_games(self):
-        player = Player.objects.create(id=1)
-        with patch("achievementchaser.steam._request") as mock_request:
-            mock_request.return_value = mock_player_owned_games
-            player.resynchronize_games()
+    @mock_request(data=player_summary)
+    def test_resynchronize_player_profile(self, mock_request: MagicMock):
+        """Resynchronizing the player profile succeeded, but the player ius not considered resynchronized"""
+        player = Player(id=1)
+        resynchronize_player_profile(player)
+        mock_request.assert_called_once()
+        self.assertIsNone(player.resynchronized)

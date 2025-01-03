@@ -105,22 +105,25 @@ def resynchronize_player(player: Player) -> bool:
             logger.error(f"Failed to resynchronize player {player.name} profile")
             error = True
 
+        # Resynchronize games from Steam
         if not resynchronize_player_games(player):
             logger.error(f"Failed to resynchronize player {player.name} games")
             error = True
 
-        if not resynchronize_recent_player_game_achievements(player):
+        # Resynchronize recently played games
+        if not resynchronize_player_recently_played_games(player):
             logger.error(f"Failed to resynchronize player {player.name} game achievements")
             error = True
 
+        # Resynchronize owned games marked for resynchronization
         if not resynchronize_player_owned_games(player, required_only=True):
-            logger.error(f"Failed to resynchronize player {player.name} game achievements")
+            logger.error(f"Failed to resynchronize player {player.name} owned game")
             error = True
 
         if not error:
             player.resynchronized = timezone.now()
             player.resynchronization_required = False
-            player.save()
+            player.save(update_fields=["resynchronized", "resynchronization_required"])
             ok = True
     except Exception:
         logger.exception(f"Failed to resynchronize player '{player.name}'")
@@ -229,7 +232,8 @@ def resynchronize_player_games(player: Player) -> bool:
             defaults=changes,
         )
 
-    return len(owned_games) > 0
+    # FIXME what would be considered a failure...
+    return True
 
 
 def resynchronize_player_owned_games(player: Player, *, required_only=False) -> bool:
@@ -269,8 +273,8 @@ def resynchronize_player_owned_game(player: Player, owned_game: PlayerOwnedGame)
     return ok
 
 
-def resynchronize_recent_player_game_achievements(player: Player) -> bool:
-    """Resynchronize player achievements for recently played games"""
+def resynchronize_player_recently_played_games(player: Player) -> bool:
+    """Resynchronize players recently played games"""
     ok = True
 
     threshold = 4
