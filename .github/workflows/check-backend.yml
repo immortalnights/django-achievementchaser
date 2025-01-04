@@ -40,26 +40,34 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    container: python:3.12.8-bookworm
 
-    if: ${{ false }}
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
 
       - name: Install Dependencies
         run: |
           python -m pip install pip build --upgrade
           pip install .[dev]
 
-      - name: Start postgresql
-        env:
-          POSTGRES_PASSWORD: password
-        run: |
-          sudo systemctl start postgresql.service
-          pg_isready
-
       - name: Test
         working-directory: src/
+        env:
+          PGHOST: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          # Actual key is not required for tests
+          STEAM_API_KEY: ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF
         run: python manage.py test

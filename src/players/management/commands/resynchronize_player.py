@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from achievementchaser.management.lib.command_output import CommandOutput
-from players.service import query_player, resynchronize_player, parse_identity
+from players.service import query_player, resynchronize_player, resolve_identity
 from players.models import Player
 
 
@@ -20,7 +20,7 @@ class Command(BaseCommand):
         player = query_player(identity)
 
         if player is None and create is True:
-            player_id = parse_identity(identity)
+            player_id = resolve_identity(identity)
             if player_id is not None:
                 output.info(f"Creating new player {player_id}")
                 player = Player(id=player_id)

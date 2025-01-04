@@ -15,6 +15,7 @@ def query_game(identity: Union[int, str]) -> Optional[Game]:
     except ValueError:
         query = Q(name__iexact=identity)
 
+    instance = None
     try:
         instance = Game.objects.get(query)
     except Game.DoesNotExist:
@@ -58,6 +59,9 @@ def resynchronize_game(game: Game) -> bool:
 
         # If the number of achievements have changes, some players may no longer have all achievements unlocked
         if original_achievement_count != updated_achievement_count:
+            logger.debug(
+                f"Game '{game.name}' has changed achievement count, marking all owned games for resynchronization"
+            )
             owned_games = PlayerOwnedGame.objects.filter(game=game)
             for owned_game in owned_games:
                 owned_game.resynchronization_required = True
@@ -117,6 +121,9 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
     logger.debug(f"Loading global achievement percentages for game '{game.name}' ({game.id})")
     achievement_percentages = load_game_achievement_percentages(game.id)
 
+    # FIXME If a game schema includes an achievement but the global percentage data does not
+    # nothing is done. This could be an API data issue, but should be handled better.
+
     if achievement_percentages is not None:
         total_percentage = 0.0
         lowest_percentage = 0.0
@@ -132,6 +139,8 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
                 instance.global_percentage = achievement.percent
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
+                # Achievement existed in global percentage data, but not in the game schema.
+                # This would suggest an issue with the API data.
                 logger.error(f"Achievement {achievement.name} not found for game '{game.name}' ({game.id})")
 
         average_difficulty = total_percentage / len(achievement_percentages.achievements)
