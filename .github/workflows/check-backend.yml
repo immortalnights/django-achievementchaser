@@ -70,4 +70,4 @@ jobs:
           PGPASSWORD: postgres
           # Actual key is not required for tests
           STEAM_API_KEY: ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF
-        run: python manage.py test achievementchaser
+        run: python manage.py test
