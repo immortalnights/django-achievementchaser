@@ -14,6 +14,10 @@ def _get_api_key():
     return os.environ["STEAM_API_KEY"] if "STEAM_API_KEY" in os.environ else ""
 
 
+def mask_key(url: str):
+    return url  # url.replace(_get_api_key(), "################################")
+
+
 # urllib_response cannot be used as a type, but is also an expected input type
 def _parse_response(resp: Union[error.HTTPError], cache: bool) -> Optional[Dict]:
     response_json = None
@@ -34,6 +38,7 @@ def _parse_response(resp: Union[error.HTTPError], cache: bool) -> Optional[Dict]
 
 
 def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
+    """Internal request wrapper, good for test mocking"""
     response_json = None
     ok = False
 
@@ -66,6 +71,7 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
 
     url = f"http://{STEAM_API_URL}/{path}?{parse.urlencode(query_parameters)}"
     ok, response_json = _request(url, cache=True)
+    logger.debug(f"Request {mask_key(url)}; Response: {ok}, {response_json}")
     response_data = None
 
     if ok is True and response_json is not None:
@@ -75,9 +81,9 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
             else:
                 logger.error(f"Expected root object '{response_data_key}' is not a dictionary; {response_json}")
         else:
-            logger.error(f"Expected root object '{response_data_key}' missing; {response_json}")
+            logger.error(f"Expected root object '{response_data_key}' missing in: {response_json}")
     else:
-        logger.error(f"Request '{url}' failed")
+        logger.error(f"Request '{mask_key(url)}' failed")
 
     return ok, response_data
 

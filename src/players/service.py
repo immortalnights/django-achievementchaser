@@ -3,13 +3,14 @@ from datetime import datetime, date, timedelta
 from loguru import logger
 from django.db import models
 from django.utils import timezone
-from games.models import Game, Achievement
+from games.models import Game
 from games.service import resynchronize_game
 from .models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
 from .steam import resolve_vanity_url, load_player_summary, get_owned_games, get_player_achievements_for_game
 
 
-def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
+def resolve_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
+    """Resolve a player id, url or friendly name to a Steam ID integer"""
     player_id = None
     resolved_identity: typing.Union[str, int, None] = None
 
@@ -36,7 +37,7 @@ def parse_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
         player_id = int(resolved_identity)
     except ValueError:
         # logger.debug(f"Could not convert identity '{resolved_identity}' to Steam ID")
-        player_id = resolve_vanity_url(resolved_identity)
+        player_id = resolve_vanity_url(str(resolved_identity))
 
     return player_id
 
@@ -84,7 +85,7 @@ def player_from_identity(identity: typing.Union[str, int]) -> typing.Optional["P
     """Resolves a player identity and then loads the player (by ID) from the database"""
     instance = None
 
-    player_id = parse_identity(identity)
+    player_id = resolve_identity(identity)
 
     if player_id is not None:
         try:
@@ -99,14 +100,31 @@ def resynchronize_player(player: Player) -> bool:
     ok = False
 
     try:
-        ok = resynchronize_player_profile(player)
-        ok &= resynchronize_player_games(player)
-        ok &= resynchronize_recent_player_game_achievements(player)
+        error = False
+        if not resynchronize_player_profile(player):
+            logger.error(f"Failed to resynchronize player {player.name} profile")
+            error = True
 
-        if ok is True:
+        # Resynchronize games from Steam
+        if not resynchronize_player_games(player):
+            logger.error(f"Failed to resynchronize player {player.name} games")
+            error = True
+
+        # Resynchronize recently played games
+        if not resynchronize_player_recently_played_games(player):
+            logger.error(f"Failed to resynchronize player {player.name} game achievements")
+            error = True
+
+        # Resynchronize owned games marked for resynchronization
+        if not resynchronize_player_owned_games(player, required_only=True):
+            logger.error(f"Failed to resynchronize player {player.name} owned game")
+            error = True
+
+        if not error:
             player.resynchronized = timezone.now()
             player.resynchronization_required = False
-            player.save()
+            player.save(update_fields=["resynchronized", "resynchronization_required"])
+            ok = True
     except Exception:
         logger.exception(f"Failed to resynchronize player '{player.name}'")
 
@@ -148,6 +166,7 @@ def should_save_playtime_record(playtime: PlayerGamePlaytime, new_playtime: int,
 
 
 def resynchronize_player_games(player: Player) -> bool:
+    """Resynchronize player games from Steam data"""
     owned_games = get_owned_games(player.id, player.api_key)
     logger.info(f"Player {player.name} has {len(owned_games)} games")
 
@@ -205,32 +224,57 @@ def resynchronize_player_games(player: Player) -> bool:
         if last_played_time is not None:
             changes["last_played"] = last_played_time
 
+        changes["resynchronization_required"] = True if game_created else False
+
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
             player=player,
             defaults=changes,
         )
 
-    return len(owned_games) > 0
+    # FIXME what would be considered a failure...
+    return True
 
 
-def resynchronize_all_player_game_achievements(player: Player) -> bool:
-    """Resynchronize player achievements for recently played games"""
-    ok = False
+def resynchronize_player_owned_games(player: Player, *, required_only=False) -> bool:
+    """Resynchronize player owned games (from the database)"""
+    ok = True
 
-    player_games = PlayerOwnedGame.objects.filter(player=player)
-    logger.debug(f"Resynchronizing achievements for {len(player_games)} games for {player.name}")
+    filter = {}
+    if required_only:
+        filter = {"resynchronization_required": True}
 
-    for record in player_games:
-        game = record.game
-        resynchronize_game(game)
-        resynchronize_player_achievements_for_game(player, game)
+    owned_games = []
+    try:
+        owned_games = PlayerOwnedGame.objects.filter(player=player, **filter)
+        logger.debug(f"Resynchronizing {len(owned_games)} owned games for {player.name}")
+    except Exception:
+        logger.exception(f"Failed to filter player '{player.name}' owned games")
+
+    for record in owned_games:
+        ok &= resynchronize_player_owned_game(player, record)
 
     return ok
 
 
-def resynchronize_recent_player_game_achievements(player: Player) -> bool:
-    """Resynchronize player achievements for recently played games"""
+def resynchronize_player_owned_game(player: Player, owned_game: PlayerOwnedGame) -> bool:
+    ok = False
+    try:
+        game = owned_game.game
+        resynchronize_game(game)
+        resynchronize_player_achievements_for_game(player, game)
+
+        owned_game.resynchronization_required = False
+        owned_game.save(update_fields=["resynchronization_required"])
+        ok = True
+    except Exception:
+        logger.exception(f"Failed to resynchronize player '{player.name}' game {owned_game.game.name}")
+
+    return ok
+
+
+def resynchronize_player_recently_played_games(player: Player) -> bool:
+    """Resynchronize players recently played games"""
     ok = True
 
     threshold = 4
@@ -249,8 +293,10 @@ def resynchronize_recent_player_game_achievements(player: Player) -> bool:
     return ok
 
 
-def resynchronize_player_achievements_for_game(player: Player, game: Game):
-    game_achievements = game_achievements = Achievement.objects.filter(game=game.id)
+def resynchronize_player_achievements_for_game(player: Player, game: Game) -> bool:
+    ok = False
+
+    game_achievements = game.get_achievements()
     logger.debug(f"Collecting player {player.name} achievements for '{game.name}'")
     player_achievements = get_player_achievements_for_game(player.id, game.id)
     unlocked = list(filter(lambda achievement: achievement.achieved == 1, player_achievements))
@@ -331,5 +377,6 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game):
             "resynchronization_required",
         ]
     )
+    ok = True
 
-    return True
+    return ok

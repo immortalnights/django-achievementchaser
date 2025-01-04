@@ -1,4 +1,4 @@
-mock_game_schema = {
+mock_game_288160_schema = {
     "game": {
         "gameName": "The Room",
         "gameVersion": "8",
@@ -54,33 +54,22 @@ mock_game_schema = {
     }
 }
 
-mock_game_schema_no_available_game_stats = {
-    "game": {
-        "gameName": "Fake Game",
-        "gameVersion": "1",
+
+mock_game_288160_achievements = {
+    "achievementpercentages": {
+        "achievements": [
+            {"name": "ACHIEVE_CHAP_1_COMPLETE", "percent": 86.5999984741211},
+            {"name": "ACHIEVE_CHAP_2_COMPLETE", "percent": 77.9000015258789},
+            {"name": "ACHIEVE_CHAP_3_COMPLETE", "percent": 72},
+            {"name": "ACHIEVE_CHAP_4_COMPLETE", "percent": 69.6999969482422},
+            {"name": "ACHIEVE_CHAP_5_COMPLETE", "percent": 65.1999969482422},
+        ]
     }
 }
 
-mock_game_schema_empty_available_game_stats = {
+mock_game_8500_schema = {
     "game": {
-        "gameName": "Fake Game",
+        "gameName": "EVE Online",
         "gameVersion": "1",
-        "availableGameStats": {},
-    }
-}
-
-mock_game_schema_no_achievements = {
-    "game": {
-        "gameName": "Fake Game",
-        "gameVersion": "1",
-        "availableGameStats": {"stats": []},
-    }
-}
-
-mock_game_schema_no_stats = {
-    "game": {
-        "gameName": "Fake Game",
-        "gameVersion": "1",
-        "availableGameStats": {"achievements": []},
     }
 }

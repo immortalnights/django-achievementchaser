@@ -37,7 +37,6 @@ extend-exclude = '''
 '''
 
 [tool.ruff]
-select = ["E", "F"]
 line-length = 120
 extend-exclude = [
     "src/**/migrations/"

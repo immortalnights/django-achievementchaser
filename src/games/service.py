@@ -5,6 +5,7 @@ from django.utils import timezone
 from .responsedata import GameAchievementResponse
 from .models import Game, Achievement
 from .steam import load_game_schema, load_game_achievement_percentages
+from players.models import PlayerOwnedGame
 
 
 def query_game(identity: Union[int, str]) -> Optional[Game]:
@@ -14,6 +15,7 @@ def query_game(identity: Union[int, str]) -> Optional[Game]:
     except ValueError:
         query = Q(name__iexact=identity)
 
+    instance = None
     try:
         instance = Game.objects.get(query)
     except Game.DoesNotExist:
@@ -32,23 +34,39 @@ def load_game(identity: Union[int, str]) -> Game:
     return game
 
 
-def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -> bool:
+def resynchronize_game(game: Game) -> bool:
     ok = False
 
     try:
         logger.debug(f"Resynchronizing game '{game.name}' ({game.id})")
+
+        original_achievement_count = len(game.get_achievements())
+
         resynchronize_game_schema(game)
 
-        if resynchronize_achievements:
-            if game.has_achievements():
-                resynchronize_game_achievements(game)
-            else:
-                logger.debug(f"Game '{game.name}' does not have any achievements")
+        updated_achievement_count = len(game.get_achievements())
+
+        # The achievement percentages can change, even if the number of achievements remain the same
+        if updated_achievement_count > 0:
+            resynchronize_game_achievement_percentages(game)
+        else:
+            logger.debug(f"Game '{game.name}' does not have any achievements")
 
         # Resynchronization completed successful
         game.resynchronized = timezone.now()
         game.resynchronization_required = False
         game.save()
+
+        # If the number of achievements have changes, some players may no longer have all achievements unlocked
+        if original_achievement_count != updated_achievement_count:
+            logger.debug(
+                f"Game '{game.name}' has changed achievement count, marking all owned games for resynchronization"
+            )
+            owned_games = PlayerOwnedGame.objects.filter(game=game)
+            for owned_game in owned_games:
+                owned_game.resynchronization_required = True
+                owned_game.save(update_fields=["resynchronization_required"])
+
         ok = True
     except Exception:
         logger.exception(f"Failed to resynchronize game '{game.name}'")
@@ -57,6 +75,7 @@ def resynchronize_game(game: Game, *, resynchronize_achievements: bool = True) -
 
 
 def resynchronize_game_schema(game: Game) -> bool:
+    """Updates the db game with data from Steam, including game achievements"""
     ok = False
 
     schema = load_game_schema(game.id)
@@ -97,10 +116,13 @@ def save_achievements(game: Game, achievements: List[GameAchievementResponse]) -
         )
 
 
-def resynchronize_game_achievements(game: Game) -> bool:
+def resynchronize_game_achievement_percentages(game: Game) -> bool:
     ok = False
     logger.debug(f"Loading global achievement percentages for game '{game.name}' ({game.id})")
     achievement_percentages = load_game_achievement_percentages(game.id)
+
+    # FIXME If a game schema includes an achievement but the global percentage data does not
+    # nothing is done. This could be an API data issue, but should be handled better.
 
     if achievement_percentages is not None:
         total_percentage = 0.0
@@ -117,6 +139,8 @@ def resynchronize_game_achievements(game: Game) -> bool:
                 instance.global_percentage = achievement.percent
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
+                # Achievement existed in global percentage data, but not in the game schema.
+                # This would suggest an issue with the API data.
                 logger.error(f"Achievement {achievement.name} not found for game '{game.name}' ({game.id})")
 
         average_difficulty = total_percentage / len(achievement_percentages.achievements)
