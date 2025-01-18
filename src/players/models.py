@@ -64,6 +64,7 @@ class PlayerUnlockedAchievement(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_achievements")
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE, related_name="unlocked_by")
     datetime = models.DateTimeField()
+    playtime = models.PositiveIntegerField(null=True)
 
 
 class Friend(models.Model):
