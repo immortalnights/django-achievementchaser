@@ -151,6 +151,7 @@ export const playerUnlockedAchievements = gql`
                     node {
                         id
                         datetime
+                        playtime
                         game {
                             id
                             name
