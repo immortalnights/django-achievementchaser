@@ -260,9 +260,8 @@ def resynchronize_player_owned_games(player: Player, *, required_only=False) -> 
 def resynchronize_player_owned_game(player: Player, owned_game: PlayerOwnedGame) -> bool:
     ok = False
     try:
-        game = owned_game.game
-        resynchronize_game(game)
-        resynchronize_player_achievements_for_game(player, game)
+        resynchronize_game(owned_game.game)
+        resynchronize_player_achievements_for_game(player, owned_game)
 
         owned_game.resynchronization_required = False
         owned_game.save(update_fields=["resynchronization_required"])
@@ -286,16 +285,20 @@ def resynchronize_player_recently_played_games(player: Player) -> bool:
     )
 
     for record in recent_played_games:
-        game = record.game
-        resynchronize_game(game)
-        resynchronize_player_achievements_for_game(player, game)
+        try:
+            owned_game = PlayerOwnedGame.objects.get(player=player, game=record.game)
+            resynchronize_game(record.game)
+            resynchronize_player_achievements_for_game(player, owned_game)
+        except PlayerOwnedGame.DoesNotExist:
+            logger.error(f"Player {player.name} does not own game {record.game.name}")
 
     return ok
 
 
-def resynchronize_player_achievements_for_game(player: Player, game: Game) -> bool:
+def resynchronize_player_achievements_for_game(player: Player, owned_game: PlayerOwnedGame) -> bool:
     ok = False
 
+    game = owned_game.game
     game_achievements = game.get_achievements()
     logger.debug(f"Collecting player {player.name} achievements for '{game.name}'")
     player_achievements = get_player_achievements_for_game(player.id, game.id)
@@ -332,11 +335,14 @@ def resynchronize_player_achievements_for_game(player: Player, game: Game) -> bo
                 )
 
                 if game_achievement is not None:
-                    PlayerUnlockedAchievement.objects.update_or_create(
+                    PlayerUnlockedAchievement.objects.get_or_create(
                         player=player,
                         game=game,
                         achievement=game_achievement,
-                        datetime=timezone.make_aware(datetime.utcfromtimestamp(player_achievement.unlocktime)),
+                        defaults={
+                            "datetime": timezone.make_aware(datetime.utcfromtimestamp(player_achievement.unlocktime)),
+                            "playtime": owned_game.playtime_forever,
+                        },
                     )
                 else:
                     game_resynchronization_required = True
