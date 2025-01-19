@@ -106,7 +106,7 @@ def resynchronize_player_game_task(
         owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
         if can_resynchronize_model(owned_game):
             resynchronize_game(game)
-            resynchronize_player_achievements_for_game(player, game)
+            resynchronize_player_achievements_for_game(player, owned_game)
 
             owned_game.refresh_from_db()
             ok = True

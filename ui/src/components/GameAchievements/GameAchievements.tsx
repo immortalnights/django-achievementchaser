@@ -1,5 +1,5 @@
 import { Box, Stack, SvgIconProps, Typography, styled } from "@mui/material"
-import { formatDateTime, getRelativeTime } from "@/dayjsUtilities"
+import { duration, formatDateTime, getRelativeTime } from "@/dayjsUtilities"
 import { Circle } from "@mui/icons-material"
 import { ReactNode, useState } from "react"
 
@@ -23,12 +23,18 @@ const UnlockedAchievementRelative = ({
 }) => {
     return (
         <Box sx={{ margin: "auto 0.5em", minWidth: "11em" }}>
-            <Typography>{`Unlocked ${getRelativeTime(
+            <Typography variant="body2">{`Unlocked ${getRelativeTime(
                 unlockedAchievement.datetime
             )}`}</Typography>
-            <Typography fontSize="small">
+            <Typography fontSize="0.75rem">
                 {formatDateTime(unlockedAchievement.datetime)}
             </Typography>
+            {unlockedAchievement.playtime && (
+                <Typography fontSize="0.75rem">
+                    Playtime{" "}
+                    {`${duration(unlockedAchievement.playtime).asHours().toFixed(1)} hours`}
+                </Typography>
+            )}
         </Box>
     )
 }

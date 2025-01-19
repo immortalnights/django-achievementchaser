@@ -73,7 +73,7 @@ admin.site.register(Friend)
 class PlayerUnlockedAchievementAdmin(admin.ModelAdmin):
     """"""
 
-    list_display = ("edit", "achievement", "game", "player", "datetime")
+    list_display = ("edit", "achievement", "game", "player", "playtime", "datetime")
     search_fields = ["game__name"]
 
     @admin.display(description="Edit")

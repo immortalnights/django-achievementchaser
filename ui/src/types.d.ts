@@ -56,6 +56,7 @@ interface AchievementWithGame extends Achievement {
 interface PlayerUnlockedAchievement {
     id: string
     datetime: string
+    playtime?: number
     game: Pick<Game, "id" | "name" | "imgIconUrl">
     achievement: Achievement
 }

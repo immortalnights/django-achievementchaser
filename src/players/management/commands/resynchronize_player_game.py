@@ -31,19 +31,16 @@ class Command(BaseCommand):
             owned_games = PlayerOwnedGame.objects.filter(Q(player=player) & identity_query).select_related("game")
 
             if len(owned_games) == 1:
-                owned_game = owned_games.first().game
+                owned_game = owned_games.first()
+                game = owned_games.game
 
                 if can_resynchronize_model(owned_game):
-                    if resynchronize_game(owned_game) and resynchronize_player_achievements_for_game(
-                        player, owned_game
-                    ):
-                        output.info(f"Resynchronization of player game '{owned_game.name}' succeeded")
+                    if resynchronize_game(game) and resynchronize_player_achievements_for_game(player, owned_game):
+                        output.info(f"Resynchronization of player game '{game.name}' succeeded")
                     else:
-                        output.info(f"Resynchronization of player game '{owned_game.name}' failed")
+                        output.info(f"Resynchronization of player game '{game.name}' failed")
                 else:
-                    output.warning(
-                        f"Resynchronization of player {player.name} owned game game {owned_game.name} blocked"
-                    )
+                    output.warning(f"Resynchronization of player {player.name} owned game {game.name} blocked")
             elif len(owned_games) == 0:
                 output.error(
                     f"Game '{game_identity}' for {player.name} did not resolve to any games. "
@@ -51,7 +48,7 @@ class Command(BaseCommand):
                 )
             else:
                 output.error(
-                    f"Game '{game_identity}' for {player.name} resolved to multiple games {len(owned_games)}, "
+                    f"Game '{game_identity}' for {player.name} resolved to {len(owned_games)} games, "
                     f"must specify one game"
                 )
 
