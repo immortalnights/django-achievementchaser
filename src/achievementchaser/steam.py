@@ -1,11 +1,9 @@
 """Steam Interface layer"""
 
 import os
-from typing import Tuple, Union, Optional, Dict, cast, Any
-from urllib import parse, error
+from typing import Tuple, Optional, cast, Any
 import requests
 from requests import Response
-import json
 from loguru import logger
 from django.conf import settings
 
