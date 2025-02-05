@@ -15,7 +15,7 @@ def _get_api_key():
 
 
 def mask_key(url: str):
-    return url  # url.replace(_get_api_key(), "################################")
+    return url.replace(_get_api_key(), "################################") if os.getenv("CI") == "true" else url
 
 
 # urllib_response cannot be used as a type, but is also an expected input type
@@ -46,6 +46,7 @@ def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
 
     try:
         logger.debug(f"GET {url}")
+        # FIXME use requests instead of urllib so the data can be gzip'd
         with urllib_request.urlopen(url) as resp:
             response_json = _parse_response(resp, cache)
             ok = True
