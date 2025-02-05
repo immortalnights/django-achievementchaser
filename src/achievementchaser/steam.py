@@ -6,6 +6,10 @@ import requests
 from requests import Response
 from loguru import logger
 from django.conf import settings
+import logging
+
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 STEAM_API_URL = "api.steampowered.com"
 
@@ -15,13 +19,19 @@ def _get_api_key():
 
 
 def mask_key(url: str):
-    return url.replace(_get_api_key(), "################################") if os.getenv("CI") == "true" else url
+    return url.replace(_get_api_key(), "################################") if settings.DEBUG else url
 
 
 def _request(url: str, *, params: Any) -> Response:
     """Internal request wrapper, used for test mocking"""
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
-    return requests.get(url, params=params)
+    req = requests.get(url, params=params)
+    logger.debug(f"{req.request.method} {mask_key(req.url)} {req.status_code} {req.headers["content-length"]}")
+
+    if not req.ok:
+        logger.error(f"Request failed: {req.url} {req.status_code} {req.text}")
+
+    return req.ok, req.json() if "application/json" in req.headers["Content-Type"] else None
 
 
 def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optional[dict]]:
@@ -35,14 +45,11 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
     if "key" not in query_parameters or not query_parameters["key"]:
         raise KeyError("Steam API 'key' missing from query parameters")
 
-    req = _request(f"https://{STEAM_API_URL}/{path}", params=query_parameters)
-    logger.debug(f"{req.request.headers}; {req.headers}")
-    logger.debug(f"Request {mask_key(req.url)}; Response: {req.status_code}, {req.text}")
+    ok, response_json = _request(f"https://{STEAM_API_URL}/{path}", params=query_parameters)
 
     response_data = None
 
-    if req.ok is True:
-        response_json = req.json()
+    if ok and response_json:
         if response_data_key in response_json:
             if isinstance(response_json[response_data_key], dict):
                 response_data = cast(dict, response_json[response_data_key])
@@ -50,11 +57,9 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
                 logger.error(f"Expected root object '{response_data_key}' is not a dictionary; {response_json}")
         else:
             logger.error(f"Expected root object '{response_data_key}' missing in: {response_json}")
-    else:
-        logger.error(f"Request '{mask_key(req.url)}' failed")
 
     return (
-        req.ok,
+        ok,
         response_data,
     )
 
