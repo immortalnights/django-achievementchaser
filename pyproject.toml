@@ -12,6 +12,7 @@ dependencies = [
     "graphene_django",
     "django-cors-headers",
     "loguru",
+    "requests",
 ]
 
 [project.optional-dependencies]
