@@ -1,11 +1,15 @@
 """Steam Interface layer"""
 
 import os
-from typing import Tuple, Union, Optional, Dict, cast
-from urllib import request as urllib_request, parse, error
-import json
+from typing import Tuple, Optional, cast, Any
+import requests
+from requests import Response
 from loguru import logger
 from django.conf import settings
+import logging
+
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 STEAM_API_URL = "api.steampowered.com"
 
@@ -15,47 +19,19 @@ def _get_api_key():
 
 
 def mask_key(url: str):
-    return url  # url.replace(_get_api_key(), "################################")
+    return url.replace(_get_api_key(), "################################") if settings.DEBUG else url
 
 
-# urllib_response cannot be used as a type, but is also an expected input type
-def _parse_response(resp: Union[error.HTTPError], cache: bool) -> Optional[Dict]:
-    response_json = None
-
-    if resp.headers.get_content_type() == "application/json":
-        try:
-            response_json = json.loads(resp.read().decode("utf8"))
-        except json.JSONDecodeError:
-            logger.exception("Failed to parse JSON response data")
-
-    if cache and response_json is not None:
-        file_name = parse.quote(resp.url, safe="")
-        os.makedirs("_request_cache", exist_ok=True)
-        with open(os.path.join("_request_cache", file_name + ".json"), "w") as f:
-            f.write(json.dumps(response_json, indent=2))
-
-    return response_json
-
-
-def _request(url: str, *, cache: bool = False) -> Tuple[bool, Optional[dict]]:
-    """Internal request wrapper, good for test mocking"""
-    response_json = None
-    ok = False
-
+def _request(url: str, *, params: Any) -> Response:
+    """Internal request wrapper, used for test mocking"""
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
+    req = requests.get(url, params=params)
+    logger.debug(f"{req.request.method} {mask_key(req.url)} {req.status_code} {req.headers["content-length"]}")
 
-    try:
-        logger.debug(f"GET {url}")
-        with urllib_request.urlopen(url) as resp:
-            response_json = _parse_response(resp, cache)
-            ok = True
+    if not req.ok:
+        logger.error(f"Request failed: {req.url} {req.status_code} {req.text}")
 
-    except error.HTTPError as err:
-        response_json = _parse_response(err, cache)
-    except error.URLError:
-        logger.exception("Steam request failed (URL ERROR)")
-
-    return ok, response_json
+    return req.ok, req.json() if "application/json" in req.headers["Content-Type"] else None
 
 
 def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optional[dict]]:
@@ -69,12 +45,11 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
     if "key" not in query_parameters or not query_parameters["key"]:
         raise KeyError("Steam API 'key' missing from query parameters")
 
-    url = f"http://{STEAM_API_URL}/{path}?{parse.urlencode(query_parameters)}"
-    ok, response_json = _request(url, cache=True)
-    logger.debug(f"Request {mask_key(url)}; Response: {ok}, {response_json}")
+    ok, response_json = _request(f"https://{STEAM_API_URL}/{path}", params=query_parameters)
+
     response_data = None
 
-    if ok is True and response_json is not None:
+    if ok and response_json:
         if response_data_key in response_json:
             if isinstance(response_json[response_data_key], dict):
                 response_data = cast(dict, response_json[response_data_key])
@@ -82,10 +57,11 @@ def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optio
                 logger.error(f"Expected root object '{response_data_key}' is not a dictionary; {response_json}")
         else:
             logger.error(f"Expected root object '{response_data_key}' missing in: {response_json}")
-    else:
-        logger.error(f"Request '{mask_key(url)}' failed")
 
-    return ok, response_data
+    return (
+        ok,
+        response_data,
+    )
 
 
 def is_player_id(identity: str):
