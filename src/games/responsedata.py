@@ -68,4 +68,6 @@ class AchievementPercentagesResponse:
         self.achievements = []
 
         for achievement in achievements:
+            # Steam is returning the percentage as a string
+            achievement["percent"] = float(achievement["percent"])
             self.achievements.append(AchievementPercentageResponse(**achievement))
