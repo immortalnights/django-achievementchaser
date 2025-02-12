@@ -32,6 +32,7 @@ def load_game_achievement_percentages(id: int) -> Optional[AchievementPercentage
                 "gameid": id,
             },
             "achievementpercentages",
+            key=False,
         )
 
         if ok and response and "achievements" in response:

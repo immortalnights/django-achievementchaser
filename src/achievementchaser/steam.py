@@ -19,7 +19,7 @@ def _get_api_key():
 
 
 def mask_key(url: str):
-    return url.replace(_get_api_key(), "################################") if settings.DEBUG else url
+    return url.replace(_get_api_key(), "################################") if not settings.DEBUG else url
 
 
 def _request(url: str, *, params: Any) -> Response:
@@ -34,16 +34,8 @@ def _request(url: str, *, params: Any) -> Response:
     return req.ok, req.json() if "application/json" in req.headers["Content-Type"] else None
 
 
-def request(path: str, query: dict, response_data_key: str) -> Tuple[bool, Optional[dict]]:
-    # Always add the API key and response format
-    query_parameters = {
-        "key": _get_api_key(),
-        "format": "json",
-    }
-    query_parameters.update(query)
-
-    if "key" not in query_parameters or not query_parameters["key"]:
-        raise KeyError("Steam API 'key' missing from query parameters")
+def request(path: str, query: dict, response_data_key: str, key: bool = True) -> Tuple[bool, Optional[dict]]:
+    query_parameters = {**({"key": _get_api_key()} if key else {}), "format": "json", **query}
 
     ok, response_json = _request(f"https://{STEAM_API_URL}/{path}", params=query_parameters)
 
