@@ -143,9 +143,13 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
                 # This would suggest an issue with the API data.
                 logger.error(f"Achievement {achievement.name} not found for game '{game.name}' ({game.id})")
 
-        average_difficulty = total_percentage / len(achievement_percentages.achievements)
-        logger.debug(f"Game '{game.name}' difficulty is {lowest_percentage}, {average_difficulty} average")
-        game.difficulty_percentage = lowest_percentage
+        if total_percentage < 0 and len(achievement_percentages.achievements) < 0:
+            average_difficulty = total_percentage / len(achievement_percentages.achievements)
+            logger.debug(f"Game '{game.name}' difficulty is {lowest_percentage}, {average_difficulty} average")
+            game.difficulty_percentage = lowest_percentage
+        else:
+            game.difficulty_percentage = None
+
         game.save(update_fields=["difficulty_percentage"])
 
         ok = True
