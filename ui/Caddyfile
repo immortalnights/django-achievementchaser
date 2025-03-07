@@ -2,7 +2,7 @@
     debug
 }
 
-127.0.0.1, steam.seventh.space {
+127.0.0.1, vite-frontend-copy-production.up.railway.app, steam.seventh.space {
     encode gzip
 
     handle /graphql/* {
