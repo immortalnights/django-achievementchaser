@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc && vite build",
-    "start": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://$BACKEND_HOSTNAME:$BACKEND_PORT",
-    "start-test": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://127.0.0.1:8000 --push-state",
+    "start": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://$BACKEND_HOSTNAME:$BACKEND_PORT -d",
+    "start-test": "npx http-server ./dist -a 0.0.0.0 -p 0 --proxy http://127.0.0.1:8000 --push-state -d",
+    "caddy": "set BACKEND_HOSTNAME=127.0.0.1 && set BACKEND_PORT=8000 && caddy run",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "lint": "eslint --exit-on-fatal-error --max-warnings 0 .",

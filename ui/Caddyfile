@@ -1,0 +1,17 @@
+{
+    debug
+}
+
+127.0.0.1, steam.seventh.space {
+    encode gzip
+
+    handle /graphql/* {
+        reverse_proxy {$BACKEND_HOSTNAME}:{$BACKEND_PORT}
+    }
+
+    handle {
+        root * ./dist
+        try_files {path} ./index.html
+        file_server
+    }
+}
