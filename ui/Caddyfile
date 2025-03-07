@@ -6,6 +6,6 @@
     reverse_proxy /graphql/ {$BACKEND_HOSTNAME}:{$BACKEND_PORT}
     encode gzip
     root * ./dist
-    try_files {path} ./dist/index.html
+    try_files {path} /index.html
     file_server
 }
