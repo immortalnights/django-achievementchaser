@@ -2,10 +2,16 @@
     debug
 }
 
-127.0.0.1, *.up.railway.app, steam.seventh.space {
-    reverse_proxy /graphql/ {$BACKEND_HOSTNAME}:{$BACKEND_PORT}
+:443 {
     encode gzip
-    root * ./dist
-    try_files {path} /index.html
-    file_server
+
+    handle /graphql/ {
+        reverse_proxy django-achievementchaser.railway.internal:8000
+    }
+
+    handle {
+        root * ./dist
+        try_files {path} /index.html
+        file_server
+    }
 }
