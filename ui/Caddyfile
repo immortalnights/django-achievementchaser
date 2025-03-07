@@ -2,16 +2,10 @@
     debug
 }
 
-127.0.0.1, vite-frontend-copy-production.up.railway.app, steam.seventh.space {
+127.0.0.1, *.up.railway.app, steam.seventh.space {
+    reverse_proxy /graphql/ {$BACKEND_HOSTNAME}:{$BACKEND_PORT}
     encode gzip
-
-    handle /graphql/* {
-        reverse_proxy {$BACKEND_HOSTNAME}:{$BACKEND_PORT}
-    }
-
-    handle {
-        root * ./dist
-        try_files {path} ./dist/index.html
-        file_server
-    }
+    root * ./dist
+    try_files {path} ./dist/index.html
+    file_server
 }
