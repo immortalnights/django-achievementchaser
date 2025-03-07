@@ -2,11 +2,16 @@
     debug
 }
 
-:443 {
+127.0.0.1 {
     encode gzip
 
     handle /graphql/ {
-        reverse_proxy django-achievementchaser.railway.internal:8000
+        reverse_proxy {$BACKEND_HOSTNAME}:{$BACKEND_PORT} {
+            transport http {
+                tls
+                tls_insecure_skip_verify
+            }
+        }
     }
 
     handle {
