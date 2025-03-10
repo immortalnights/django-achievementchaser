@@ -3,7 +3,7 @@
     admin off
 }
 
-localhost, 127.0.0.1, vite-frontend-copy-production.up.railway.app, steam.seventh.space {
+:{$PORT} {
     root * ./dist
     file_server
     reverse_proxy /graphql/ :8000 {
