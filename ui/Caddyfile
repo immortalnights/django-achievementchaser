@@ -1,22 +1,7 @@
-{
-    debug
-}
-
-127.0.0.1 {
-    encode gzip
-
-    handle /graphql/ {
-        reverse_proxy {$BACKEND_HOSTNAME}:{$BACKEND_PORT} {
-            transport http {
-                tls
-                tls_insecure_skip_verify
-            }
-        }
-    }
-
-    handle {
-        root * ./dist
-        try_files {path} /index.html
-        file_server
+localhost, 127.0.0.1, *.up.railway.app, steam.seventh.space {
+    root * ./dist
+    file_server
+    reverse_proxy /graphql/ :8000 {
+        # disable_redirects
     }
 }
