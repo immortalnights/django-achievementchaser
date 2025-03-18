@@ -124,14 +124,15 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
     # FIXME If a game schema includes an achievement but the global percentage data does not
     # nothing is done. This could be an API data issue, but should be handled better.
 
-    if achievement_percentages is not None:
+    if achievement_percentages is not None and len(achievement_percentages.achievements) > 0:
         total_percentage = 0.0
-        lowest_percentage = 0.0
+        lowest_percentage = None
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
             total_percentage += achievement.percent
+            # logger.debug(f"Achievement {achievement.name} has a percentage of {achievement.percent}")
 
-            if lowest_percentage == 0.0 or achievement.percent < lowest_percentage:
+            if lowest_percentage is None or achievement.percent < lowest_percentage:
                 lowest_percentage = achievement.percent
 
             try:
@@ -143,15 +144,17 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
                 # This would suggest an issue with the API data.
                 logger.error(f"Achievement {achievement.name} not found for game '{game.name}' ({game.id})")
 
-        if total_percentage < 0 and len(achievement_percentages.achievements) < 0:
-            average_difficulty = total_percentage / len(achievement_percentages.achievements)
-            logger.debug(f"Game '{game.name}' difficulty is {lowest_percentage}, {average_difficulty} average")
-            game.difficulty_percentage = lowest_percentage
-        else:
-            game.difficulty_percentage = None
+        if total_percentage > 0:
+            average_difficulty = round(total_percentage / len(achievement_percentages.achievements), 3)
+            logger.debug(
+                f"Game '{game.name}' difficulty is {lowest_percentage}, {average_difficulty} average for {len(achievement_percentages.achievements)} achievements"
+            )
 
+        game.difficulty_percentage = lowest_percentage
         game.save(update_fields=["difficulty_percentage"])
 
         ok = True
+    else:
+        logger.debug(f"Game '{game.name}' does not include any achievements")
 
     return ok
