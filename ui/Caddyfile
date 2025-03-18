@@ -6,7 +6,7 @@
 :{$PORT} {
     root * ./dist
     file_server
-    reverse_proxy /graphql/ {$BACKEND_HOSTNAME}:{$BACKEND_PORT} {
+    reverse_proxy /graphql/ http://{$BACKEND_HOSTNAME}:{$BACKEND_PORT} {
         # disable_redirects
     }
 }
