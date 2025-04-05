@@ -31,8 +31,7 @@ def resynchronize_players_task():
     due = timezone.now() - timedelta(minutes=10)
 
     logger.debug(f"Find players last resynchronized before {due}")
-    query = Q(resynchronization_required=True) | Q(resynchronized__lt=due)
-    players = Player.objects.filter(query)
+    players = Player.objects.filter(Q(resynchronization_required=True) | Q(resynchronized__lt=due))
     logger.debug(f"Found {players.count()} players which require resynchronization")
 
     # Prevent excessive work if, somehow, there are many players
@@ -48,7 +47,7 @@ def resynchronize_players_owned_games_task():
     """Resynchronize player owned games that are flagged for resynchronization.
     Intended for when a new player is added.
     """
-    logger.debug("Begin resynchronization of players owned games")
+    logger.debug("Begin resynchronization of player owned games")
     owned_games = PlayerOwnedGame.objects.filter(resynchronization_required=True)
     logger.debug(f"Found {owned_games.count()} owned games which require resynchronization")
 
