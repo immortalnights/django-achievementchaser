@@ -48,6 +48,9 @@ def resynchronize_game(game: Game) -> bool:
 
         # The achievement percentages can change, even if the number of achievements remain the same
         if updated_achievement_count > 0:
+            logger.debug(
+                f"Game '{game.name}' has {updated_achievement_count} achievements (previously {original_achievement_count})"
+            )
             resynchronize_game_achievement_percentages(game)
         else:
             logger.debug(f"Game '{game.name}' does not have any achievements")
@@ -58,14 +61,15 @@ def resynchronize_game(game: Game) -> bool:
         game.save()
 
         # If the number of achievements have changes, some players may no longer have all achievements unlocked
-        if original_achievement_count != updated_achievement_count:
-            logger.debug(
-                f"Game '{game.name}' has changed achievement count, marking all owned games for resynchronization"
-            )
-            owned_games = PlayerOwnedGame.objects.filter(game=game)
-            for owned_game in owned_games:
-                owned_game.resynchronization_required = True
-                owned_game.save(update_fields=["resynchronization_required"])
+        if updated_achievement_count > 0:
+            if original_achievement_count != updated_achievement_count:
+                logger.debug(
+                    f"Game '{game.name}' has changed the number of achievements, marking all owned games for resynchronization"
+                )
+                owned_games = PlayerOwnedGame.objects.filter(game=game)
+                for owned_game in owned_games:
+                    owned_game.resynchronization_required = True
+                    owned_game.save(update_fields=["resynchronization_required"])
 
         ok = True
     except Exception:
@@ -144,13 +148,14 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
                 # This would suggest an issue with the API data.
                 logger.error(f"Achievement {achievement.name} not found for game '{game.name}' ({game.id})")
 
+        average_difficulty = 0.0
         if total_percentage > 0:
             average_difficulty = round(total_percentage / len(achievement_percentages.achievements), 3)
-            logger.debug(
-                f"Game '{game.name}' difficulty is {lowest_percentage}, {average_difficulty} average for {len(achievement_percentages.achievements)} achievements"
-            )
 
         game.difficulty_percentage = lowest_percentage
+        logger.debug(
+            f"Saving game difficulty percentage {lowest_percentage}, {average_difficulty} average for game '{game.name}' ({game.id})"
+        )
         game.save(update_fields=["difficulty_percentage"])
 
         ok = True
