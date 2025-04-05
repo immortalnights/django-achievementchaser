@@ -214,6 +214,8 @@ const PlayerAchievements = () => {
     //     )}`
     // )
 
+    document.title = `${player.name} · Achievements · Achievement Chaser`
+
     const { loading, data } = useQuery<PlayerQueryResponse>(
         playerUnlockedAchievements,
         {

@@ -44,6 +44,8 @@ const PlayerGameAchievementList = ({ player }: { player: string }) => {
 const PlayerProfileScreen = () => {
     const player = useRouteLoaderData("player") as Player
 
+    document.title = `${player.name} · Achievement Chaser`
+
     return (
         <>
             <Typography variant="h5">Almost There</Typography>

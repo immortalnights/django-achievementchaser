@@ -27,6 +27,8 @@ const HomeScreen = () => {
         submitPlayer().catch(() => console.error("Submission failed"))
     }
 
+    document.title = `Achievement Chaser`
+
     return (
         <Box sx={{ paddingTop: "8rem", paddingBottom: "8rem" }}>
             <form onSubmit={handleSubmit}>

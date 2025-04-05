@@ -11,6 +11,8 @@ const PlayerPerfectGames = () => {
         orderBy: "-completed",
     })
 
+    document.title = `${player.name} · Perfect Games · Achievement Chaser`
+
     return (
         <>
             <Typography variant="h5">Perfect Games</Typography>
