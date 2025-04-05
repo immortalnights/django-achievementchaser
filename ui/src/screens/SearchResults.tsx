@@ -17,6 +17,8 @@ const SearchResults = () => {
         }
     })
 
+    document.title = `Search Results · Achievement Chaser`
+
     return (
         <div>
             <Typography variant="h4">Search</Typography>

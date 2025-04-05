@@ -5,6 +5,8 @@ import LoadPlayerOwnedGames from "@/components/LoadPlayerOwnedGames"
 const PlayerRecentGames = () => {
     const player = useRouteLoaderData("player") as Player
 
+    document.title = `${player.name} · Recent Games · Achievement Chaser`
+
     return (
         <>
             <Typography variant="h5">Recent Games</Typography>

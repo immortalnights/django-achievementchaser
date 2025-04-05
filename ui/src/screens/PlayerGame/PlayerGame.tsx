@@ -16,6 +16,8 @@ const PlayerGameContainer = () => {
         throw new Error("Failed to load game")
     }
 
+    document.title = `${player.name} · ${game.name} · Achievement Chaser`
+
     const [filter, setFilter] = useState<string>()
     const [comparePlayer, setComparePlayer] = useState<string>()
 
