@@ -34,7 +34,7 @@ DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development"
 
 TESTING = "test" in sys.argv
 
-ALLOWED_HOSTS: List[str] = ["127.0.0.1", ".railway.internal"]
+ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", ".up.railway.app", ".railway.internal", "steam.seventh.space"]
 
 CSRF_TRUSTED_ORIGINS: List[str] = []
 CORS_ALLOWED_ORIGINS: List[str] = []
