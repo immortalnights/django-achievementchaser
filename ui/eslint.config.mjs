@@ -38,7 +38,6 @@ export default tseslint.config(
             "react-refresh": reactRefresh,
         },
         rules: {
-            // eslint-disable-next-line
             ...reactHooks.configs.recommended.rules,
         },
     },

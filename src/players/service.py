@@ -224,7 +224,9 @@ def resynchronize_player_games(player: Player) -> bool:
         if last_played_time is not None:
             changes["last_played"] = last_played_time
 
-        changes["resynchronization_required"] = True if game_created else False
+        # Don't overwrite the resynchronization flag if the game already exists
+        if game_created:
+            changes["resynchronization_required"] = True
 
         owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
             game=game_instance,

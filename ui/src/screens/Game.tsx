@@ -9,6 +9,8 @@ const GameScreen = () => {
         throw new Error("Failed to load game")
     }
 
+    document.title = `${game.name} · Achievement Chaser`
+
     return (
         <>
             <GameHeader game={game} />
