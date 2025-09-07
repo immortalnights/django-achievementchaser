@@ -7,9 +7,10 @@ from django_filters import (
 from django.forms import IntegerField
 from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Achievement
+from typing import List
 
 
-def filter_name_matches(key: [str], name: str):
+def filter_name_matches(key: List[str], name: str):
     first_key = key[0]
     return first_key == name or first_key[1:] == name
 

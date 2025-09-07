@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import { gql } from "graphql-request"
 
 export const searchPlayers = gql`
@@ -22,7 +23,7 @@ export const player = gql`
 `
 
 export const playerProfile = gql`
-    query PlayerProfile($player: BigInt!) {
+    query PlayerProfile($player: BigInt!, $year: Int = ${dayjs().year()}) {
         player(id: $player) {
             id
             name
@@ -35,6 +36,8 @@ export const playerProfile = gql`
                 totalPlaytime
                 lockedAchievements
                 unlockedAchievements
+                unlockedAchievementForYear(year: $year)
+                perfectGamesForYear(year: $year)
             }
         }
     }
