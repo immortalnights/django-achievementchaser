@@ -60,7 +60,6 @@ class ProfileType(graphene.ObjectType):
     unlocked_achievements = graphene.Int()
     locked_achievements = graphene.Int()
 
-    total_playtime_for_year = graphene.Int(year=graphene.Int(required=True))
     played_games_for_year = graphene.Int(year=graphene.Int(required=True))
     perfect_games_for_year = graphene.Int(year=graphene.Int(required=True))
     unlocked_achievement_for_year = graphene.Int(year=graphene.Int(required=True))
@@ -83,10 +82,6 @@ class ProfileType(graphene.ObjectType):
 
     def resolve_locked_achievements(root, info):
         return root.player.available_achievements.count()
-
-    def resolve_total_playtime_for_year(root, info, year: int):
-        res = root.player.games.filter(last_played__year=year).aggregate(Sum("playtime_forever"))
-        return res["playtime_forever__sum"]
 
     def resolve_played_games_for_year(root, info, year: int):
         return root.player.games.filter(last_played__year=year, playtime_forever__gt=0).count()

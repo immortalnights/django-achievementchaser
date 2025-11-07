@@ -23,7 +23,7 @@ export const player = gql`
 `
 
 export const playerProfile = gql`
-    query PlayerProfile($player: BigInt!, $year: Decimal = ${dayjs().year()}) {
+    query PlayerProfile($player: BigInt!, $year: Int = ${dayjs().year()}) {
         player(id: $player) {
             id
             name
