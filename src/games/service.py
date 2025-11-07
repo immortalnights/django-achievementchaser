@@ -130,10 +130,10 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
 
     if achievement_percentages is not None and len(achievement_percentages.achievements) > 0:
         total_percentage = 0.0
-        lowest_percentage = None
+        lowest_percentage: Optional[float] = None
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
-            total_percentage += achievement.percent
+            total_percentage += achievement.percent or 0.0
             # logger.debug(f"Achievement {achievement.name} has a percentage of {achievement.percent}")
 
             if lowest_percentage is None or achievement.percent < lowest_percentage:
@@ -141,7 +141,7 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
 
             try:
                 instance = Achievement.objects.get(name=achievement.name, game=game)
-                instance.global_percentage = achievement.percent
+                instance.global_percentage = achievement.percent or 0.0
                 instance.save(update_fields=["global_percentage"])
             except Achievement.DoesNotExist:
                 # Achievement existed in global percentage data, but not in the game schema.

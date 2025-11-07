@@ -28,12 +28,10 @@ player_summary = {
     }
 }
 
-player_games = {"response": {}}
-
 
 class PlayerTests(TestCase):
 
-    @mock_request(data=[player_summary, player_games])
+    @mock_request(data=[player_summary, {"response": {}}])
     def test_player_changed_name(self, mock_request: MagicMock):
         Player.objects.create(
             id=10000000000000001, name="Old Name", profile_url="https://steamcommunity.com/id/oldURL/"

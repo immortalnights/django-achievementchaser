@@ -85,11 +85,11 @@ def get_owned_games(steam_id: int, api_key: Optional[str] = None) -> typing.List
         )
 
         if ok and response and "games" in response and isinstance(response["games"], list):
-            try:
-                for game in response["games"]:
+            for game in response["games"]:
+                try:
                     owned_games.append(PlayerOwnedGameResponse(**game))
-            except TypeError:
-                logger.exception(f"Failed to parse game\n{game}")
+                except TypeError:
+                    logger.exception(f"Failed to parse game\n{game}")
     except Exception:
         logger.exception(f"Failed to get player games for {steam_id}")
 
@@ -110,11 +110,11 @@ def get_player_achievements_for_game(steam_id: int, game_id: int) -> typing.List
 
         if ok and response and "success" in response:
             if "achievements" in response and isinstance(response["achievements"], list):
-                try:
-                    for achievement in response["achievements"]:
+                for achievement in response["achievements"]:
+                    try:
                         achievements.append(PlayerUnlockedAchievementResponse(**achievement))
-                except TypeError:
-                    logger.exception(f"Failed to parse game\n{achievement}")
+                    except TypeError:
+                        logger.exception(f"Failed to parse game\n{achievement}")
     except Exception:
         logger.exception(f"Failed to get player games for {steam_id}")
 

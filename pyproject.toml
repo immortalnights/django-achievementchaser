@@ -13,6 +13,7 @@ dependencies = [
     "django-cors-headers",
     "loguru",
     "requests",
+    "django-stubs-ext>=5.2.7",
 ]
 
 [project.optional-dependencies]
@@ -41,4 +42,19 @@ extend-exclude = '''
 line-length = 120
 extend-exclude = [
     "src/**/migrations/"
+]
+
+[tool.pyrefly]
+project-includes = ["**/*"]
+project-excludes = [
+    "**/node_modules",
+    "**/__pycache__",
+    '**/*venv/**\*',
+]
+
+[dependency-groups]
+dev = [
+    "django-types>=0.22.0",
+    "pyrefly>=0.31.1",
+    "types-requests>=2.32.4.20250913",
 ]

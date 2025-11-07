@@ -23,7 +23,7 @@ export const player = gql`
 `
 
 export const playerProfile = gql`
-    query PlayerProfile($player: BigInt!, $year: Int = ${dayjs().year()}) {
+    query PlayerProfile($player: BigInt!, $year: Decimal = ${dayjs().year()}) {
         player(id: $player) {
             id
             name
@@ -127,7 +127,7 @@ export const playerPerfectGames = gql`
 export const playerUnlockedAchievements = gql`
     query PlayerUnlockedAchievements(
         $player: BigInt!
-        $game: Int
+        $game: Decimal
         $year: Decimal
         $range: [DateTime]
         $orderBy: String
@@ -210,7 +210,7 @@ export const playerAvailableAchievements = gql`
 `
 
 export const gameComplete = gql`
-    query Game($game: Int!) {
+    query Game($game: Decimal!) {
         game(id: $game) {
             id
             name

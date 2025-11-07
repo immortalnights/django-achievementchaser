@@ -1,7 +1,10 @@
-class CommandOutput:
-    cmd = None
+from django.core.management.base import BaseCommand
 
-    def __init__(self, cmd):
+
+class CommandOutput:
+    cmd: BaseCommand
+
+    def __init__(self, cmd: BaseCommand):
         self.cmd = cmd
 
     def debug(self, message: str) -> None:

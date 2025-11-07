@@ -50,27 +50,33 @@ export const useLoadPlayerAchievements = (variables: {
     year?: number
     orderBy?: string
 }) => {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { data: response, refetch } = useQuery<PlayerQueryResponse>(
-        playerUnlockedAchievements,
-        { variables, limit: 100 }
-    )
+    const {
+        data: response,
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        refetch,
+        error,
+    } = useQuery<PlayerQueryResponse>(playerUnlockedAchievements, {
+        variables,
+        limit: 100,
+    })
 
     useEffect(() => {
         const unlockedAchievements = response?.player?.unlockedAchievements
-        if (!response || unlockedAchievements?.pageInfo?.hasNextPage) {
-            refetch({
+
+        if (
+            (!response && !error) ||
+            unlockedAchievements?.pageInfo?.hasNextPage
+        ) {
+            void refetch({
                 variables: {
                     ...variables,
                     limit: 100,
                     cursor: unlockedAchievements?.pageInfo?.endCursor ?? "",
                 },
                 updateData: updateUnlockedAchievementData,
-            }).catch(() => {
-                console.error("Refetch failed")
             })
         }
-    }, [variables, response, refetch])
+    }, [variables, response, refetch, error])
 
     return unwrapEdges(response?.player?.unlockedAchievements)
 }
@@ -80,27 +86,29 @@ export const useLoadPlayerPerfectGames = (variables: {
     year?: number
     orderBy?: string
 }) => {
-    // eslint-disable-next-line @typescript-eslint/unbound-method
-    const { data: response, refetch } = useQuery<PlayerQueryResponse>(
-        playerPerfectGames,
-        { ...variables, limit: 100 }
-    )
+    const {
+        data: response,
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        refetch,
+        error,
+    } = useQuery<PlayerQueryResponse>(playerPerfectGames, {
+        ...variables,
+        limit: 100,
+    })
 
     useEffect(() => {
         const perfectGames = response?.player?.games
-        if (!response || perfectGames?.pageInfo?.hasNextPage) {
-            refetch({
+        if ((!response && !error) || perfectGames?.pageInfo?.hasNextPage) {
+            void refetch({
                 variables: {
                     ...variables,
                     limit: 100,
                     cursor: perfectGames?.pageInfo?.endCursor ?? "",
                 },
                 updateData: updatePerfectGameData,
-            }).catch(() => {
-                console.error("Refetch failed")
             })
         }
-    }, [variables, response, refetch])
+    }, [variables, response, refetch, error])
 
     return unwrapEdges(response?.player?.games)
 }
