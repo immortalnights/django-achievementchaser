@@ -1,3 +1,4 @@
+from typing import Any
 import typing
 from datetime import datetime, date, timedelta
 from loguru import logger
@@ -216,7 +217,7 @@ def resynchronize_player_games(player: Player) -> bool:
                 if owned_game_playtime is None or owned_game.playtime_2weeks > owned_game_playtime.playtime:
                     last_played_time = timezone.make_aware(datetime.combine(date.today(), datetime.min.time()))
 
-        changes = {
+        changes: dict[str, Any] = {
             "playtime_forever": owned_game.playtime_forever,
         }
 

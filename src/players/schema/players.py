@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 import graphene
 from django.db.models import Q
 from .types import PlayerType
@@ -21,5 +21,5 @@ class Query(graphene.ObjectType):
 
         return player
 
-    def resolve_players(root, info) -> List[Player]:
-        return Player.objects.all()
+    def resolve_players(root, info) -> list[Player]:
+        return list(Player.objects.all())

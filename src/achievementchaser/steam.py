@@ -3,7 +3,6 @@
 import os
 from typing import Tuple, Optional, cast, Any
 import requests
-from requests import Response
 from loguru import logger
 from django.conf import settings
 import logging
@@ -22,7 +21,7 @@ def mask_key(url: str):
     return url.replace(_get_api_key(), "################################") if not settings.DEBUG else url
 
 
-def _request(url: str, *, params: Any) -> Response:
+def _request(url: str, *, params: Any):
     """Internal request wrapper, used for test mocking"""
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
     req = requests.get(url, params=params)

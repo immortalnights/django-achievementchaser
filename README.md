@@ -21,6 +21,18 @@ cd ui
 npm run dev
 ```
 
+GraphQL UI
+
+http://127.0.0.1:8000/graphql/
+
+Django Admin
+
+http://127.0.0.1:8000/admin/login/
+
+pgAdmin
+
+http://127.0.0.1:8080/
+
 ## Requirements
 
 - python

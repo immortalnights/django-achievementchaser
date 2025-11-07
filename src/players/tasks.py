@@ -12,12 +12,12 @@ from games.models import Game
 
 
 ResynchronizePlayerResponse = TypedDict(
-    "ResynchronizePlayerResponse", {"ok": bool, "player": "Player", "error": Optional[str]}, total=False
+    "ResynchronizePlayerResponse", {"ok": bool, "player": Player, "error": Optional[str]}, total=False
 )
 
 ResynchronizePlayerGameResponse = TypedDict(
     "ResynchronizePlayerGameResponse",
-    {"ok": bool, "player": "Player", "owned_game": "PlayerOwnedGame", "error": Optional[str]},
+    {"ok": bool, "player": Player, "owned_game": PlayerOwnedGame, "error": Optional[str]},
     total=False,
 )
 
@@ -57,7 +57,10 @@ def resynchronize_players_owned_games_task():
 
     logger.debug(f"Resynchronizing {owned_games.count()} owned games")
     for owned_game in owned_games:
-        resynchronize_player_game_task(owned_game.player_id, owned_game.game_id)
+        try:
+            resynchronize_player_game_task(owned_game.player_id, owned_game.game_id)
+        except Exception as e:
+            logger.error(f"Failed to resynchronize player {owned_game.player_id} owned game {owned_game.game_id}: {e}")
 
         # Prevent overwhelming the Steam API
         time.sleep(1)
@@ -99,28 +102,36 @@ def resynchronize_player_game_task(
 
     try:
         player = load_player(player_identifier)
+    except Player.DoesNotExist as e:
+        logger.error(f"Failed to find player {player_identifier}")
+        raise e
+
+    try:
         game = load_game(game_identifier)
+    except Game.DoesNotExist as e:
+        logger.error(f"Failed to find game {game_identifier}")
+        raise e
 
-        # Use owned game to prevent spam
-        owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
-        if can_resynchronize_model(owned_game):
-            resynchronize_game(game)
-            resynchronize_player_achievements_for_game(player, owned_game)
+    try:
+        if player is not None and game is not None:
+            # Use owned game to prevent spam
+            owned_game = PlayerOwnedGame.objects.get(player=player.id, game=game.id)
+            if can_resynchronize_model(owned_game):
+                resynchronize_game(game)
+                resynchronize_player_achievements_for_game(player, owned_game)
 
-            owned_game.refresh_from_db()
-            ok = True
+                owned_game.refresh_from_db()
+                ok = True
         else:
             logger.warning(f"Resynchronization of player {player.name} owned game '{game.name}' blocked")
-    except Player.DoesNotExist:
-        logger.error(f"Failed to find player {player}")
-    except Game.DoesNotExist:
-        logger.error(f"Failed to find game {game}")
-    except PlayerOwnedGame.DoesNotExist:
+
+    except PlayerOwnedGame.DoesNotExist as e:
         logger.error(f"Failed to find player {player.name} game '{game.name}'")
+        raise e
 
     return {
         "ok": ok,
         "player": player,
-        "owned_game": game,
+        "owned_game": game,  # owned_game ?
         "error": None,
     }

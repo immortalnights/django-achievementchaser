@@ -1,4 +1,4 @@
-from typing import Optional, List, TypedDict
+from typing import Optional, TypedDict
 from loguru import logger
 from django.db.models import Q, Sum
 from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
@@ -16,7 +16,7 @@ PlayerGameOptions = TypedDict(
 )
 
 
-def get_player_recent_games(player: Player, limit: Optional[int] = None) -> List[PlayerOwnedGame]:
+def get_player_recent_games(player: Player, limit: Optional[int] = None) -> list[PlayerOwnedGame]:
     q = PlayerGamePlaytime.objects.filter(player=player).order_by("-datetime")
 
     # distinct doesn't work well here as it cannot order by "datetime" without distinct representing the the pair of
@@ -24,9 +24,9 @@ def get_player_recent_games(player: Player, limit: Optional[int] = None) -> List
     # are `limit` items.
     # If `limit` is None, return the complete results, with duplicates.
 
-    results = None
+    results: Optional[list[PlayerGamePlaytime]] = None
     if limit is None:
-        results = q
+        results = list(q)
     else:
         unique_games = {}
         results = []
@@ -41,7 +41,7 @@ def get_player_recent_games(player: Player, limit: Optional[int] = None) -> List
     return results
 
 
-def get_player_unlocked_achievements(player: Player, limit: Optional[int] = None) -> List[PlayerUnlockedAchievement]:
+def get_player_unlocked_achievements(player: Player, limit: Optional[int] = None) -> list[PlayerUnlockedAchievement]:
     res = (
         PlayerUnlockedAchievement.objects.select_related("game", "achievement")
         .filter(player=player)
@@ -51,12 +51,12 @@ def get_player_unlocked_achievements(player: Player, limit: Optional[int] = None
     if limit:
         res = res[:limit]
 
-    return res
+    return list(res)
 
 
-def get_player_achievements(player: Player, limit: Optional[int] = None) -> List[PlayerOwnedGame]:
+def get_player_achievements(player: Player, limit: Optional[int] = None) -> list[Achievement]:
     owned_games = PlayerOwnedGame.objects.filter(player=player)
-    res = Achievement.objects.filter(game__in=owned_games.values("game"))
+    res = list(Achievement.objects.filter(game__in=owned_games.values("game")))
 
     if limit:
         res = res[:limit]

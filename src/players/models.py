@@ -33,7 +33,9 @@ class PlayerOwnedGame(models.Model):
         constraints = [models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")]
         ordering = ["player", "game"]
 
+    player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="games")
+    game_id: int
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="owners")
     playtime_forever = models.PositiveIntegerField()
     completion_percentage = models.FloatField(default=0)
@@ -47,7 +49,9 @@ class PlayerOwnedGame(models.Model):
 
 
 class PlayerGamePlaytime(models.Model):
+    player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="playtime")
+    game_id: int
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_playtime")
     playtime = models.PositiveIntegerField()
     datetime = models.DateTimeField(auto_now_add=True)
@@ -60,7 +64,9 @@ class PlayerUnlockedAchievement(models.Model):
         ]
         ordering = ["player", "game"]
 
+    player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="unlocked_achievements")
+    game_id: int
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="player_achievements")
     achievement = models.ForeignKey(Achievement, on_delete=models.CASCADE, related_name="unlocked_by")
     datetime = models.DateTimeField()
@@ -71,5 +77,7 @@ class Friend(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=["player", "friend"], name="unique_player_friend")]
 
+    player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_friend")
+    friend_id: int
     friend = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="friend_to_player")

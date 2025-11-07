@@ -50,7 +50,7 @@ class PlayerGamePlaytimeNode(DjangoObjectType):
 
 
 class ProfileType(graphene.ObjectType):
-    player: "Player"
+    player: "PlayerType"
     total_playtime = graphene.Int()
 
     owned_games = graphene.Int()

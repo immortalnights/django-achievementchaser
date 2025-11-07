@@ -11,6 +11,7 @@ dependencies = [
     { name = "django-cors-headers" },
     { name = "django-environ" },
     { name = "django-filter" },
+    { name = "django-stubs-ext" },
     { name = "graphene-django" },
     { name = "gunicorn" },
     { name = "loguru" },
@@ -27,6 +28,13 @@ dev = [
     { name = "ruff" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "django-types" },
+    { name = "pyrefly" },
+    { name = "types-requests" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "black", marker = "extra == 'dev'" },
@@ -34,6 +42,7 @@ requires-dist = [
     { name = "django-cors-headers" },
     { name = "django-environ" },
     { name = "django-filter" },
+    { name = "django-stubs-ext", specifier = ">=5.2.7" },
     { name = "graphene-django" },
     { name = "gunicorn" },
     { name = "loguru" },
@@ -45,6 +54,13 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'" },
 ]
 provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "django-types", specifier = ">=0.22.0" },
+    { name = "pyrefly", specifier = ">=0.31.1" },
+    { name = "types-requests", specifier = ">=2.32.4.20250913" },
+]
 
 [[package]]
 name = "asgiref"
@@ -190,6 +206,31 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/50/bc/dc19ae39c235332926dd0efe0951f663fa1a9fc6be8430737ff7fd566b20/django_filter-24.3.tar.gz", hash = "sha256:d8ccaf6732afd21ca0542f6733b11591030fa98669f8d15599b358e24a2cd9c3", size = 144444 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/09/b1/92f1c30b47c1ebf510c35a2ccad9448f73437e5891bbd2b4febe357cc3de/django_filter-24.3-py3-none-any.whl", hash = "sha256:c4852822928ce17fb699bcfccd644b3574f1a2d80aeb2b4ff4f16b02dd49dc64", size = 95011 },
+]
+
+[[package]]
+name = "django-stubs-ext"
+version = "5.2.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9b/6f/a0bab0e6a7676ab3ca02d51b459444e9bd6dd747e3a43b9c24cae6d0a1c6/django_stubs_ext-5.2.7.tar.gz", hash = "sha256:b690655bd4cb8a44ae57abb314e0995dc90414280db8f26fff0cb9fb367d1cac", size = 6524 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f8/c9/60445606e26706d3fccadf3b80ee1a9f32c1012683ff2ada7580937b2da9/django_stubs_ext-5.2.7-py3-none-any.whl", hash = "sha256:0466a7132587d49c5bbe12082ac9824d117a0dedcad5d0ada75a6e0d3aca6f60", size = 9979 },
+]
+
+[[package]]
+name = "django-types"
+version = "0.22.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "types-psycopg2" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3d/26/5f2873f7208dee0791710fda494a8d3ef7fb1d34785069b55168a23e2ac2/django_types-0.22.0.tar.gz", hash = "sha256:4cecc9eee846e7ff2a398bec9dfe6543e76efb922a7a58c5d6064bcb0e6a3dc5", size = 187214 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/82/3a/0ecbaab07cfe7b0a4fd72dfde4be8e7c11aad2b88c816cfcbb800c14cbda/django_types-0.22.0-py3-none-any.whl", hash = "sha256:ba15c756c7a732e58afd0737e54489f1c5e6f1bd24132e9199c637b1f88b057c", size = 376869 },
 ]
 
 [[package]]
@@ -415,6 +456,22 @@ wheels = [
 ]
 
 [[package]]
+name = "pyrefly"
+version = "0.31.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/74/c4/4b45120c1af9698909fb5e771170566959bad43530f2f0ac434674789e14/pyrefly-0.31.1.tar.gz", hash = "sha256:79609735d2683c9fda12b14e74a0643477984216297fc8786086cc29f964901d", size = 1342496 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/49/26/1c8699516f2d67456df729df2996a5957e6f27693db00219252e7be514dd/pyrefly-0.31.1-py3-none-macosx_10_12_x86_64.whl", hash = "sha256:b251a502a3d7c435361fa66449b0d3eaafd9e5b7bd16802e626ae28fa8972e54", size = 6622774 },
+    { url = "https://files.pythonhosted.org/packages/b4/fe/1d63007e29494894bee8e56a8e3631f5a1ecdbbf99fce233ebbc5c13e6dc/pyrefly-0.31.1-py3-none-macosx_11_0_arm64.whl", hash = "sha256:3f9ca929a9a259c3c2d2d10b7639e68a6ec11f227cf0f5525a53ceb720b065ea", size = 6162225 },
+    { url = "https://files.pythonhosted.org/packages/19/bc/8f67f8a68b1d35c87b170d8c11619d01d7769c7f206d72954ed80c44c675/pyrefly-0.31.1-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:68cf8e4b4abbdb0f50919caf1310e82fc7f2b09ba5152bfcedd8fda189b0cf42", size = 6410448 },
+    { url = "https://files.pythonhosted.org/packages/ee/e6/755de7c249a6a497542f21e61e94b3afbfc096fa480678e87e7c02410b4a/pyrefly-0.31.1-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a3f7c67586f506910248cc410b5232418635604c8cc2f4d61d6432418c6a5647", size = 7204044 },
+    { url = "https://files.pythonhosted.org/packages/39/be/4ca0a3e8f78357e6846fb367ad00790c74c7bc80928171ce0e34d33aabc8/pyrefly-0.31.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3c0d809af388144cb148eb11c6ebc33f8e5c6adafc22a7f0da99d9b555123e42", size = 6890396 },
+    { url = "https://files.pythonhosted.org/packages/01/1a/9c3381910d51d64a26726c6111ac5a1ee90e5de9e92b4827be352610c5b8/pyrefly-0.31.1-py3-none-win32.whl", hash = "sha256:8bde23e37fb68367b691b7491880e0ce95e150d879fe43e3a86e78f3cf911a23", size = 6383610 },
+    { url = "https://files.pythonhosted.org/packages/c4/ab/f99cf8f7acebc0ddf0718ca4f33786e78353019903e5888de133c67863f5/pyrefly-0.31.1-py3-none-win_amd64.whl", hash = "sha256:bec49618d2574ccd200de515480c4b60740926f3a7a4b1804fdae49b72665719", size = 6800276 },
+    { url = "https://files.pythonhosted.org/packages/02/53/b02648724846a3bd676410261f2d980a260a16e337fe978028429fc712d1/pyrefly-0.31.1-py3-none-win_arm64.whl", hash = "sha256:370d2b7fab9cab0de937f44638cf6666322e27b6d2c84c4b82cba0e868c6d437", size = 6421184 },
+]
+
+[[package]]
 name = "pytest"
 version = "8.3.4"
 source = { registry = "https://pypi.org/simple" }
@@ -506,6 +563,27 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ab/e2/e9a00f0ccb71718418230718b3d900e71a5d16e701a3dae079a21e9cd8f8/text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93", size = 76885 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a6/a5/c0b6468d3824fe3fde30dbb5e1f687b291608f9473681bbf7dabbf5a87d7/text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8", size = 78154 },
+]
+
+[[package]]
+name = "types-psycopg2"
+version = "2.9.21.20251012"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9b/b3/2d09eaf35a084cffd329c584970a3fa07101ca465c13cad1576d7c392587/types_psycopg2-2.9.21.20251012.tar.gz", hash = "sha256:4cdafd38927da0cfde49804f39ab85afd9c6e9c492800e42f1f0c1a1b0312935", size = 26710 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/0c/05feaf8cb51159f2c0af04b871dab7e98a2f83a3622f5f216331d2dd924c/types_psycopg2-2.9.21.20251012-py3-none-any.whl", hash = "sha256:712bad5c423fe979e357edbf40a07ca40ef775d74043de72bd4544ca328cc57e", size = 24883 },
+]
+
+[[package]]
+name = "types-requests"
+version = "2.32.4.20250913"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "urllib3" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/27/489922f4505975b11de2b5ad07b4fe1dca0bca9be81a703f26c5f3acfce5/types_requests-2.32.4.20250913.tar.gz", hash = "sha256:abd6d4f9ce3a9383f269775a9835a4c24e5cd6b9f647d64f88aa4613c33def5d", size = 23113 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2a/20/9a227ea57c1285986c4cf78400d0a91615d25b24e257fd9e2969606bdfae/types_requests-2.32.4.20250913-py3-none-any.whl", hash = "sha256:78c9c1fffebbe0fa487a418e0fa5252017e9c60d1a2da394077f1780f655d7e1", size = 20658 },
 ]
 
 [[package]]
