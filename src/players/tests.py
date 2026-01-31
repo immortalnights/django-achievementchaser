@@ -30,7 +30,6 @@ player_summary = {
 
 
 class PlayerTests(TestCase):
-
     @mock_request(data=[player_summary, {"response": {}}])
     def test_player_changed_name(self, mock_request: MagicMock):
         Player.objects.create(

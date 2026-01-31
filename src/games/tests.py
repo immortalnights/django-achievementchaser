@@ -13,7 +13,6 @@ from unittest.mock import MagicMock
 
 
 class GameTests(TestCase):
-
     @mock_request(data=[mock_game_288160_schema, mock_game_288160_achievements])
     def test_resynchronize_new_game(self, mock_request: MagicMock):
         resynchronize_game_service(Game(id=288160))
@@ -50,7 +49,6 @@ class GameTests(TestCase):
     @expectedFailure
     @mock_request(ok=False, data={})
     def test_resynchronize_invalid_game(self, mock_request: MagicMock):
-
         game = Game(id=1)
         resynchronize_game_service(game)
         mock_request.assert_called_once()
