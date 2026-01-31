@@ -7,7 +7,10 @@ from achievementchaser.management.lib.command_output import CommandOutput
 
 
 def import_player(logger: CommandOutput, identity: str):
+    # pyrefly: ignore[missing-import]
     from pymongo.mongo_client import MongoClient
+
+    # pyrefly: ignore[missing-import]
     from pymongo.errors import ConnectionFailure
 
     host = "localhost"

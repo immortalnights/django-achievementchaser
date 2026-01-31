@@ -8,35 +8,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v5
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install pip build --upgrade
-          pip install .[dev]
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Check Formatting
-        run: python -m black . --check
+        run: uv run ruff format --check
 
   lint:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Python
         uses: actions/setup-python@v5
 
-      - name: Install Dependencies
-        run: |
-          python -m pip install pip build --upgrade
-          pip install .[dev]
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Check Style
-        run: python -m ruff check ./src
+        run: uv run ruff check ./src
 
   test:
     runs-on: ubuntu-latest
@@ -54,12 +50,13 @@ jobs:
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
 
       - name: Install Dependencies
-        run: |
-          python -m pip install pip build --upgrade
-          pip install .[dev]
+        run: uv sync --all-groups
 
       - name: Test
         working-directory: src/
@@ -70,4 +67,4 @@ jobs:
           PGPASSWORD: postgres
           # Actual key is not required for tests
           STEAM_API_KEY: ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF
-        run: python manage.py test
+        run: uv run manage.py test

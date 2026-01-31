@@ -10,4 +10,4 @@ class Queries(
     pass
 
 
-__all__ = ["GameType", "AchievementType", "GameMinimalType"]
+__all__ = ["GameType", "AchievementType"]

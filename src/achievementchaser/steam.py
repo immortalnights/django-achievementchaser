@@ -25,7 +25,7 @@ def _request(url: str, *, params: Any):
     """Internal request wrapper, used for test mocking"""
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
     req = requests.get(url, params=params)
-    logger.debug(f"{req.request.method} {mask_key(req.url)} {req.status_code} {req.headers["content-length"]}")
+    logger.debug(f"{req.request.method} {mask_key(req.url)} {req.status_code} {req.headers['content-length']}")
 
     if not req.ok:
         logger.error(f"Request failed: {req.url} {req.status_code} {req.text}")
