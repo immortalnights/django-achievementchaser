@@ -5,8 +5,9 @@ import reactRefresh from "eslint-plugin-react-refresh"
 import reactHooks from "eslint-plugin-react-hooks"
 
 const configFiles = ["*.config.ts", "*.config.?(m)js"]
+import { defineConfig } from "eslint/config"
 
-export default tseslint.config(
+export default defineConfig(
     {
         ignores: ["node_modules", "dist", "build", ".storybook"],
     },
@@ -19,7 +20,6 @@ export default tseslint.config(
         },
         plugins: {
             import: {
-                // eslint-disable-next-line
                 rules: importPlugin.rules,
             },
         },
