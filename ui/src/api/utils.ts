@@ -92,7 +92,7 @@ export const useLoadPlayerPerfectGames = (variables: {
         refetch,
         error,
     } = useQuery<PlayerQueryResponse>(playerPerfectGames, {
-        ...variables,
+        variables,
         limit: 100,
     })
 
