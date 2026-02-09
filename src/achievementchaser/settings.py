@@ -44,7 +44,7 @@ DEBUG = _env_bool("DEBUG", True)
 
 TESTING = "test" in sys.argv
 
-SECURE_SSL_REDIRECT = False # Seems to cause infinite redirects
+SECURE_SSL_REDIRECT = False  # Seems to cause infinite redirects
 SESSION_COOKIE_SECURE = not DEBUG
 
 ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", ".up.railway.app", ".railway.internal", "steam.seventh.space"]
