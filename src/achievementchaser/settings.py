@@ -10,12 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-from pathlib import Path
-import environ
 import os
 import sys
+from pathlib import Path
 from typing import List
+
 import django_stubs_ext
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,16 +28,24 @@ django_stubs_ext.monkeypatch()
 env = environ.Env()
 environ.Env.read_env()
 
+
+def _env_bool(var_name: str, default: bool = False) -> bool:
+    return os.getenv(var_name, str(default)).lower() in ("true", "1", "yes")
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#0^@64$gr8toevxq2617haw%=^diz6ozsx%m3ye4nwl603$9ce"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-development-only-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if (os.getenv("CI") == "true" or os.getenv("MODE") == "development") else False
+DEBUG = _env_bool("DEBUG", True)
 
 TESTING = "test" in sys.argv
+
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
 
 ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", ".up.railway.app", ".railway.internal", "steam.seventh.space"]
 
