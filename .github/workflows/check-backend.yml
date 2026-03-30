@@ -68,3 +68,10 @@ jobs:
           # Actual key is not required for tests
           STEAM_API_KEY: ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF
         run: uv run manage.py test
+
+      - name: pytest
+        working-directory: tests/
+        env:
+          # Actual key is not required for tests
+          STEAM_API_KEY: ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF
+        run: uv run pytest --maxfail=1 --disable-warnings -q
