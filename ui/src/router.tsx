@@ -5,14 +5,52 @@ import PlayerLayout from "./layouts/Player"
 import { throwExpression } from "./utilities"
 import { client } from "./api/client"
 import { player, gameComplete, search } from "./api/documents"
+import { redirect } from "react-router"
+
+const playerLoader = async ({ params }: { params: Params }) => {
+    const { id = throwExpression("missing param") } = params
+
+    const { data, error } = await client.request<PlayerQueryResponse>({
+        query: player,
+        variables: { player: id },
+    })
+
+    if (error) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw redirect(`/`)
+    }
+
+    return data?.player
+}
+
+const playerGameLoader = async ({ params }: { params: Params }) => {
+    const { gameId = throwExpression("missing param") } = params
+
+    const { data, error } = await client.request<GameQueryResponse>({
+        query: gameComplete,
+        variables: { game: Number(gameId) },
+    })
+
+    if (error) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw redirect(`/Player/${params.id}`)
+    }
+
+    return data?.game
+}
 
 const gameLoader = async ({ params }: { params: Params }) => {
     const { gameId = throwExpression("missing param") } = params
 
-    const { data } = await client.request<GameQueryResponse>({
+    const { data, error } = await client.request<GameQueryResponse>({
         query: gameComplete,
         variables: { game: Number(gameId) },
     })
+
+    if (error) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
+        throw redirect(`/`)
+    }
 
     return data?.game
 }
@@ -20,15 +58,7 @@ const gameLoader = async ({ params }: { params: Params }) => {
 const playerRoutes = {
     path: "/Player/:id/*",
     id: "player",
-    loader: async ({ params }) => {
-        const { id = throwExpression("missing param") } = params
-
-        const { data } = await client.request<PlayerQueryResponse>({
-            query: player,
-            variables: { player: id },
-        })
-        return data?.player
-    },
+    loader: playerLoader,
     Component: PlayerLayout,
     children: [
         {
@@ -62,7 +92,7 @@ const playerRoutes = {
         },
         {
             path: "Game/:gameId",
-            loader: gameLoader,
+            loader: playerGameLoader,
             async lazy() {
                 const { PlayerGame } = await import("./screens/player")
                 return { Component: PlayerGame }
