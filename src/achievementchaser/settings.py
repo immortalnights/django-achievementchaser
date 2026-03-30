@@ -111,6 +111,9 @@ DATABASES = {
         "NAME": os.getenv("PGDATABASE") or "achievementchaser",
         "HOSTNAME": os.getenv("PGHOST") or "127.0.0.1",
         "PORT": os.getenv("PGPORT") or 5432,
+        "TEST": {
+            "ENGINE": "django.db.backends.sqlite3",
+        },
     }
 }
 

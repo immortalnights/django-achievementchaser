@@ -1,21 +1,27 @@
 {
   "editor.tabSize": 4,
   "files.eol": "\n",
+  "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-  "python.testing.pytestArgs": ["src/achievementchaser"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "python.testing.pytestArgs": ["tests"],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
   "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
-    "editor.formatOnPaste": false
+    "editor.insertSpaces": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
   },
+  "ruff.importStrategy": "fromEnvironment",
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": false,
   "search.exclude": {
     "**/node_modules": true,
     "**/bower_components": true,

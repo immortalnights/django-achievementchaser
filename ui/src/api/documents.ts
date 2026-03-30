@@ -210,7 +210,7 @@ export const playerAvailableAchievements = gql`
 `
 
 export const gameComplete = gql`
-    query Game($game: Decimal!) {
+    query Game($game: Int!) {
         game(id: $game) {
             id
             name
