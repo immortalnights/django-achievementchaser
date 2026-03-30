@@ -1,12 +1,15 @@
 import typing
-from loguru import logger
-from achievementchaser import steam
 from typing import Optional, Union
+
+from loguru import logger
+
+from achievementchaser import steam
+
 from .responsedata import (
-    VanityResponse,
-    PlayerSummaryResponse,
     PlayerOwnedGameResponse,
+    PlayerSummaryResponse,
     PlayerUnlockedAchievementResponse,
+    VanityResponse,
 )
 
 
@@ -50,7 +53,11 @@ def load_player_summary(steam_id: int) -> typing.Optional[PlayerSummaryResponse]
         )
 
         if ok and response and "players" in response and len(response["players"]) == 1:
-            summary = PlayerSummaryResponse(**response["players"][0])
+            data = response["players"][0]
+            try:
+                summary = PlayerSummaryResponse(**data)
+            except TypeError:
+                logger.error(f"Failed to parse player summary for {steam_id},\nResponse data:\n{data}")
     except Exception:
         logger.exception(f"Failed to load player summary for {steam_id}")
 
@@ -89,7 +96,7 @@ def get_owned_games(steam_id: int, api_key: Optional[str] = None) -> typing.List
                 try:
                     owned_games.append(PlayerOwnedGameResponse(**game))
                 except TypeError:
-                    logger.exception(f"Failed to parse game\n{game}")
+                    logger.exception(f"Failed to parse owned games for {steam_id}\n{game}")
     except Exception:
         logger.exception(f"Failed to get player games for {steam_id}")
 
@@ -114,8 +121,8 @@ def get_player_achievements_for_game(steam_id: int, game_id: int) -> typing.List
                     try:
                         achievements.append(PlayerUnlockedAchievementResponse(**achievement))
                     except TypeError:
-                        logger.exception(f"Failed to parse game\n{achievement}")
+                        logger.exception(f"Failed to parse game {game_id} achievements\n{achievement}")
     except Exception:
-        logger.exception(f"Failed to get player games for {steam_id}")
+        logger.exception(f"Failed to get player achievements for game {game_id} and player {steam_id}")
 
     return achievements
