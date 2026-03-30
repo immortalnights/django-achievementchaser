@@ -112,6 +112,12 @@ exports[`snapshot 1`] = `
       id="443580"
       name="Antenna"
       src="https://media.steampowered.com/steam/apps/443580/capsule_184x69.jpg"
+      style={
+        {
+          "height": "71px",
+          "width": "186px",
+        }
+      }
     />
     <div
       style={

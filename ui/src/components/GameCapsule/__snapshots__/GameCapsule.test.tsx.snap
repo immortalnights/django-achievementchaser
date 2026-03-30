@@ -50,6 +50,12 @@ exports[`snapshot 1`] = `
       onTouchEnd={[Function]}
       onTouchStart={[Function]}
       src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+      style={
+        {
+          "height": "71px",
+          "width": "186px",
+        }
+      }
     />
     <style
       dangerouslySetInnerHTML={
@@ -121,6 +127,12 @@ exports[`snapshot 2`] = `
       onTouchEnd={[Function]}
       onTouchStart={[Function]}
       src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+      style={
+        {
+          "height": "71px",
+          "width": "186px",
+        }
+      }
     />
     <style
       dangerouslySetInnerHTML={
@@ -192,6 +204,12 @@ exports[`snapshot 3`] = `
       onTouchEnd={[Function]}
       onTouchStart={[Function]}
       src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+      style={
+        {
+          "height": "71px",
+          "width": "186px",
+        }
+      }
     />
     <style
       dangerouslySetInnerHTML={
@@ -263,6 +281,12 @@ exports[`snapshot 4`] = `
       onTouchEnd={[Function]}
       onTouchStart={[Function]}
       src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+      style={
+        {
+          "height": "71px",
+          "width": "186px",
+        }
+      }
     />
     <style
       dangerouslySetInnerHTML={
@@ -334,6 +358,12 @@ exports[`snapshot 5`] = `
       onTouchEnd={[Function]}
       onTouchStart={[Function]}
       src="https://media.steampowered.com/steam/apps/1158310/capsule_184x69.jpg"
+      style={
+        {
+          "height": "71px",
+          "width": "186px",
+        }
+      }
     />
     <style
       dangerouslySetInnerHTML={

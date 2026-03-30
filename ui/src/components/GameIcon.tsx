@@ -8,6 +8,7 @@ const GameIcon = forwardRef<HTMLImageElement, { id: string; name?: string }>(
             src={`https://media.steampowered.com/steam/apps/${props.id}/capsule_184x69.jpg`}
             {...props}
             ref={ref}
+            style={{ width: "186px", height: "71px" }}
         />
     )
 )
