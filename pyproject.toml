@@ -27,6 +27,10 @@ extend-exclude = [
 ]
 
 [tool.pyrefly]
+search-paths = [
+    "src/",
+    "tests/",
+]
 project-includes = ["**/*"]
 project-excludes = [
     "**/node_modules",
@@ -34,11 +38,24 @@ project-excludes = [
     '**/*venv/**\*',
 ]
 
+[tool.pytest]
+DJANGO_SETTINGS_MODULE="achievementchaser.settings"
+testpaths = [
+    "tests/",
+]
+log_cli_level = "DEBUG"
+addopts = [
+    "--strict-markers",
+    "--durations=10",
+]
+
 [dependency-groups]
 dev = [
     "django-types>=0.22.0",
     "pyrefly>=0.31.1",
     "pytest>=9.0.2",
+    "pytest-django>=4.11.1",
+    "pytest-watcher>=0.6.3",
     "ruff>=0.14.14",
     "types-requests>=2.32.4.20250913",
 ]
