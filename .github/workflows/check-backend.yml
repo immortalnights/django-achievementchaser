@@ -72,6 +72,10 @@ jobs:
       - name: pytest
         working-directory: tests/
         env:
+          PGHOST: postgres
+          PGPORT: 5432
+          PGUSER: postgres
+          PGPASSWORD: postgres
           # Actual key is not required for tests
           STEAM_API_KEY: ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF
         run: uv run pytest --maxfail=1 --disable-warnings -q
