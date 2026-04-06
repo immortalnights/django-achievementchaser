@@ -1,11 +1,14 @@
-from typing import Optional, Union, List
-from loguru import logger
+from typing import List, Optional, Union
+
 from django.db.models import Q
 from django.utils import timezone
-from .responsedata import GameAchievementResponse
-from .models import Game, Achievement
-from .steam import load_game_schema, load_game_achievement_percentages
+from loguru import logger
+
 from players.models import PlayerOwnedGame
+
+from .models import Achievement, Game
+from .responsedata import GameAchievementResponse
+from .steam import load_game_achievement_percentages, load_game_schema
 
 
 def query_game(identity: Union[int, str]) -> Optional[Game]:
@@ -89,7 +92,7 @@ def resynchronize_game_schema(game: Game) -> bool:
         if not game.name:
             game.name = schema.gameName
         elif game.name != schema.gameName:
-            logger.warning(f"Game name mismatch '{game.name}' vs {schema.gameName} ({game.id})")
+            logger.warning(f"Game name mismatch '{game.name}' vs '{schema.gameName}' ({game.id})")
 
         # Save the changes to the game
         game.save()

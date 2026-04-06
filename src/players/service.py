@@ -1,3 +1,4 @@
+import datetime as dt
 import typing
 from datetime import date, datetime, timedelta
 from typing import Any
@@ -346,9 +347,7 @@ def resynchronize_player_achievements_for_game(player: Player, owned_game: Playe
                         game=game,
                         achievement=game_achievement,
                         defaults={
-                            "datetime": timezone.make_aware(
-                                datetime.fromtimestamp(player_achievement.unlocktime, tz=timezone.utc)
-                            ),
+                            "datetime": datetime.fromtimestamp(player_achievement.unlocktime, tz=dt.timezone.utc),
                             "playtime": owned_game.playtime_forever,
                         },
                     )
