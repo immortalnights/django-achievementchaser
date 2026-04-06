@@ -1,15 +1,17 @@
-from loguru import logger
-from typing import TypedDict, Union, Optional
-from datetime import timedelta
 import time
+from datetime import timedelta
+from typing import Optional, TypedDict, Union
+
 from django.db.models import Q
 from django.utils import timezone
+from loguru import logger
+
+from achievementchaser.utilities import can_resynchronize_model
+from games.models import Game
+from games.service import load_game, resynchronize_game
+
 from .models import Player, PlayerOwnedGame
 from .service import load_player, resynchronize_player, resynchronize_player_achievements_for_game
-from achievementchaser.utilities import can_resynchronize_model
-from games.service import load_game, resynchronize_game
-from games.models import Game
-
 
 ResynchronizePlayerResponse = TypedDict(
     "ResynchronizePlayerResponse", {"ok": bool, "player": Player, "error": Optional[str]}, total=False
@@ -112,6 +114,7 @@ def resynchronize_player_game_task(
         logger.error(f"Failed to find game {game_identifier}")
         raise e
 
+    owned_game = None
     try:
         if player is not None and game is not None:
             # Use owned game to prevent spam

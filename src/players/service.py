@@ -1,13 +1,17 @@
-from typing import Any
+import datetime as dt
 import typing
-from datetime import datetime, date, timedelta
-from loguru import logger
+from datetime import date, datetime, timedelta
+from typing import Any
+
 from django.db import models
 from django.utils import timezone
+from loguru import logger
+
 from games.models import Game
 from games.service import resynchronize_game
-from .models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
-from .steam import resolve_vanity_url, load_player_summary, get_owned_games, get_player_achievements_for_game
+
+from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
+from .steam import get_owned_games, get_player_achievements_for_game, load_player_summary, resolve_vanity_url
 
 
 def resolve_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
@@ -343,7 +347,7 @@ def resynchronize_player_achievements_for_game(player: Player, owned_game: Playe
                         game=game,
                         achievement=game_achievement,
                         defaults={
-                            "datetime": timezone.make_aware(datetime.utcfromtimestamp(player_achievement.unlocktime)),
+                            "datetime": datetime.fromtimestamp(player_achievement.unlocktime, tz=dt.timezone.utc),
                             "playtime": owned_game.playtime_forever,
                         },
                     )
