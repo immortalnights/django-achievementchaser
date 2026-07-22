@@ -56,7 +56,7 @@ const groupAchievements = (achievements: AchievementWithGame[]) => {
         const { game, ...rest } = item
 
         if (game.id) {
-            const key = String(game.id as keyof typeof games)
+            const key = game.id
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             if (!games[key]) {
                 games[key] = {
@@ -74,7 +74,7 @@ const groupAchievements = (achievements: AchievementWithGame[]) => {
             if ("displayName" in item) {
                 games[key].achievements.push({
                     datetime: undefined,
-                    ...(rest as Achievement),
+                    ...rest,
                 })
             }
         }
