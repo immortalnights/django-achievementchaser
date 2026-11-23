@@ -1,7 +1,10 @@
 from typing import Optional
+
 from loguru import logger
+
 from achievementchaser import steam
-from .responsedata import GameSchemaResponse, AchievementPercentagesResponse
+
+from .responsedata import AchievementPercentagesResponse, GameSchemaResponse
 
 
 def load_game_schema(id: int) -> Optional[GameSchemaResponse]:

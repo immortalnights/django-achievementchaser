@@ -25,17 +25,29 @@ def mask_key(url: str):
 def _request(url: str, *, params: dict[str, Any]) -> Tuple[bool, Optional[dict]]:
     """Internal request wrapper, used for test mocking"""
     assert settings.TESTING is False, "Cannot make Steam requests when testing"
-    req = requests.get(url, params=params)
 
-    content_length = req.headers.get("content-length", 0)
-    content_type = req.headers.get("content-type", "")
+    try:
+        req = requests.get(url, params=params)
 
-    logger.debug(f"{req.request.method} {mask_key(req.url)} {req.status_code} {content_length}")
+        content_length = req.headers.get("content-length", 0)
+        content_type = req.headers.get("content-type", "")
 
-    if not req.ok:
-        logger.error(f"Request failed: {req.url} {req.status_code} {req.text}")
+        logger.debug(f"{req.request.method} {mask_key(req.url)} {req.status_code} {content_length}")
 
-    return req.ok, req.json() if "application/json" in content_type else None
+        if not req.ok:
+            logger.error(f"Request failed: {req.url} {req.status_code} {req.text}")
+
+        return req.ok, req.json() if "application/json" in content_type else None
+    except requests.exceptions.SSLError as e:
+        # Don't output the stack trace for known request exceptions
+        logger.error(f"SSL error while making Steam API request: {e}")
+    except requests.exceptions.RequestException as e:
+        # Don't output the stack trace for known request exceptions
+        logger.error(f"Request exception while making Steam API request: {e}")
+    except Exception as e:
+        raise e
+
+    return False, None
 
 
 def request(path: str, query: dict, response_data_key: str, key: bool = True) -> Tuple[bool, Optional[dict]]:
