@@ -1,6 +1,6 @@
-from loguru import logger
 from dataclasses import dataclass
-from typing import List, Dict, Optional
+
+from loguru import logger
 
 
 @dataclass
@@ -18,15 +18,15 @@ class GameAchievementResponse:
     hidden: bool
     icon: str
     icongray: str
-    description: Optional[str] = ""
+    description: str | None = ""
 
 
 @dataclass
 class AvailableGameStatsResponse:
-    stats: List[GameStat]
-    achievements: List[GameAchievementResponse]
+    stats: list[GameStat]
+    achievements: list[GameAchievementResponse]
 
-    def __init__(self, achievements: Optional[List] = None, stats: Optional[List] = None):
+    def __init__(self, achievements: list | None = None, stats: list | None = None):
         self.achievements = []
         self.stats = []
 
@@ -43,7 +43,7 @@ class GameSchemaResponse:
     gameVersion: str
     availableGameStats: AvailableGameStatsResponse
 
-    def __init__(self, gameName: str, gameVersion: str, availableGameStats: Optional[Dict] = None):
+    def __init__(self, gameName: str, gameVersion: str, availableGameStats: dict | None = None):
         self.gameName = gameName
         self.gameVersion = gameVersion
 
@@ -62,9 +62,9 @@ class AchievementPercentageResponse:
 
 @dataclass
 class AchievementPercentagesResponse:
-    achievements: List[AchievementPercentageResponse]
+    achievements: list[AchievementPercentageResponse]
 
-    def __init__(self, achievements: Dict):
+    def __init__(self, achievements: dict):
         self.achievements = []
 
         for achievement in achievements:

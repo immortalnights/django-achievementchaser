@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
+
 from achievementchaser.management.lib.command_output import CommandOutput
-from players.tasks import resynchronize_players_task, resynchronize_players_owned_games_task
+from players.tasks import resynchronize_players_owned_games_task, resynchronize_players_task
 
 
 class Command(BaseCommand):

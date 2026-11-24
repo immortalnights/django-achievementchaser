@@ -1,4 +1,3 @@
-from typing import Optional
 
 from loguru import logger
 
@@ -7,7 +6,7 @@ from achievementchaser import steam
 from .responsedata import AchievementPercentagesResponse, GameSchemaResponse
 
 
-def load_game_schema(id: int) -> Optional[GameSchemaResponse]:
+def load_game_schema(id: int) -> GameSchemaResponse | None:
     schema = None
     try:
         ok, response = steam.request(
@@ -26,7 +25,7 @@ def load_game_schema(id: int) -> Optional[GameSchemaResponse]:
     return schema
 
 
-def load_game_achievement_percentages(id: int) -> Optional[AchievementPercentagesResponse]:
+def load_game_achievement_percentages(id: int) -> AchievementPercentagesResponse | None:
     schema = None
     try:
         ok, response = steam.request(

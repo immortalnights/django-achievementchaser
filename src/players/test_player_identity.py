@@ -1,7 +1,8 @@
 from django.test import TestCase
-from .service import resolve_identity
+
 from achievementchaser.test_utilities import mock_request
 
+from .service import resolve_identity
 
 mock_vanity_response = {"response": {"steamid": "10000000000000001", "success": 1}}
 

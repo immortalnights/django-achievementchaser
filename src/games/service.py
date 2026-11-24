@@ -1,4 +1,3 @@
-from typing import List, Optional, Union
 
 from django.db.models import Q
 from django.utils import timezone
@@ -11,7 +10,7 @@ from .responsedata import GameAchievementResponse
 from .steam import load_game_achievement_percentages, load_game_schema
 
 
-def query_game(identity: Union[int, str]) -> Optional[Game]:
+def query_game(identity: int | str) -> Game | None:
     query = None
     try:
         query = Q(id=int(identity))
@@ -27,7 +26,7 @@ def query_game(identity: Union[int, str]) -> Optional[Game]:
     return instance
 
 
-def load_game(identity: Union[int, str]) -> Game:
+def load_game(identity: int | str) -> Game:
     game = query_game(identity)
 
     if not game:
@@ -105,7 +104,7 @@ def resynchronize_game_schema(game: Game) -> bool:
     return ok
 
 
-def save_achievements(game: Game, achievements: List[GameAchievementResponse]) -> None:
+def save_achievements(game: Game, achievements: list[GameAchievementResponse]) -> None:
     logger.debug(f"Saving {len(achievements)} achievements for game '{game.name}' ({game.id})")
 
     for achievement in achievements:
@@ -133,7 +132,7 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
 
     if achievement_percentages is not None and len(achievement_percentages.achievements) > 0:
         total_percentage = 0.0
-        lowest_percentage: Optional[float] = None
+        lowest_percentage: float | None = None
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
             total_percentage += achievement.percent or 0.0

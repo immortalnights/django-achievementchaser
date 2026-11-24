@@ -1,5 +1,5 @@
-from unittest.mock import patch
 from typing import Any
+from unittest.mock import patch
 
 
 def patch_request():

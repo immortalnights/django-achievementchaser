@@ -1,15 +1,18 @@
-from django.test import TestCase
 from unittest import expectedFailure
-from .models import Game
-from .tasks import resynchronize_game_task
-from .service import resynchronize_game as resynchronize_game_service
-from .testdata import (
-    mock_game_288160_schema,
-    mock_game_288160_achievements,
-    mock_game_8500_schema,
-)
-from achievementchaser.test_utilities import mock_request
 from unittest.mock import MagicMock
+
+from django.test import TestCase
+
+from achievementchaser.test_utilities import mock_request
+
+from .models import Game
+from .service import resynchronize_game as resynchronize_game_service
+from .tasks import resynchronize_game_task
+from .testdata import (
+    mock_game_8500_schema,
+    mock_game_288160_achievements,
+    mock_game_288160_schema,
+)
 
 
 class GameTests(TestCase):

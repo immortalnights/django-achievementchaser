@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from graphene_django.utils.testing import graphql_query
@@ -39,11 +39,11 @@ def graphql_dataset():
         created=0,
     )
 
-    completed_at_older = datetime(2025, 1, 15, 12, 0, tzinfo=timezone.utc)
-    completed_at_newer = datetime(2025, 2, 10, 9, 30, tzinfo=timezone.utc)
-    last_played_incomplete = datetime(2025, 3, 1, 18, 45, tzinfo=timezone.utc)
-    unlocked_at_older = datetime(2025, 1, 16, 8, 0, tzinfo=timezone.utc)
-    unlocked_at_newer = datetime(2025, 1, 18, 20, 15, tzinfo=timezone.utc)
+    completed_at_older = datetime(2025, 1, 15, 12, 0, tzinfo=UTC)
+    completed_at_newer = datetime(2025, 2, 10, 9, 30, tzinfo=UTC)
+    last_played_incomplete = datetime(2025, 3, 1, 18, 45, tzinfo=UTC)
+    unlocked_at_older = datetime(2025, 1, 16, 8, 0, tzinfo=UTC)
+    unlocked_at_newer = datetime(2025, 1, 18, 20, 15, tzinfo=UTC)
 
     perfect_game = Game.objects.create(
         id=10,

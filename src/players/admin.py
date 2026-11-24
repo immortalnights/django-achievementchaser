@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement, Friend
+
+from .models import Friend, Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
 
 
 @admin.register(Player)

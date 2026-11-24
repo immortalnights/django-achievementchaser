@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional, List
 
 
 @dataclass
@@ -21,17 +20,17 @@ class PlayerSummaryResponse:
     avatarhash: str
     personastate: int
     lastlogoff: int
-    realname: Optional[str] = None
-    primaryclanid: Optional[int] = None
-    timecreated: Optional[int] = None
-    personastateflags: Optional[int] = None
-    loccountrycode: Optional[str] = None
-    locstatecode: Optional[str] = None
-    loccityid: Optional[int] = None
-    gameid: Optional[str] = None
-    lobbysteamid: Optional[str] = None
-    gameextrainfo: Optional[str] = None
-    gameserverip: Optional[str] = None
+    realname: str | None = None
+    primaryclanid: int | None = None
+    timecreated: int | None = None
+    personastateflags: int | None = None
+    loccountrycode: str | None = None
+    locstatecode: str | None = None
+    loccityid: int | None = None
+    gameid: str | None = None
+    lobbysteamid: str | None = None
+    gameextrainfo: str | None = None
+    gameserverip: str | None = None
 
 
 @dataclass
@@ -44,12 +43,12 @@ class PlayerOwnedGameResponse:
     playtime_mac_forever: int = 0
     playtime_linux_forever: int = 0
     playtime_deck_forever: int = 0
-    rtime_last_played: Optional[int] = None
+    rtime_last_played: int | None = None
     playtime_disconnected: int = 0
-    has_leaderboards: Optional[bool] = None
-    playtime_2weeks: Optional[int] = None
-    has_community_visible_stats: Optional[bool] = None
-    content_descriptorids: Optional[List[int]] = None
+    has_leaderboards: bool | None = None
+    playtime_2weeks: int | None = None
+    has_community_visible_stats: bool | None = None
+    content_descriptorids: list[int] | None = None
 
 
 @dataclass

@@ -1,5 +1,4 @@
 import datetime as dt
-import typing
 from datetime import date, datetime, timedelta
 from typing import Any
 
@@ -14,10 +13,10 @@ from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedA
 from .steam import get_owned_games, get_player_achievements_for_game, load_player_summary, resolve_vanity_url
 
 
-def resolve_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
+def resolve_identity(identity: str | int) -> int | None:
     """Resolve a player id, url or friendly name to a Steam ID integer"""
     player_id = None
-    resolved_identity: typing.Union[str, int, None] = None
+    resolved_identity: str | int | None = None
 
     if isinstance(identity, str) and identity.startswith("https"):
         url = identity if not identity.endswith("/") else identity[:-1]
@@ -47,7 +46,7 @@ def resolve_identity(identity: typing.Union[str, int]) -> typing.Optional[int]:
     return player_id
 
 
-def query_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
+def query_player(identity: str | int) -> Player | None:
     """
     Attempt to identify the user from existing data.
     This may fail if the player has changed their persona name
@@ -57,7 +56,7 @@ def query_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
     return find_existing_player(identity) or player_from_identity(identity)
 
 
-def load_player(identity: typing.Union[str, int]) -> Player:
+def load_player(identity: str | int) -> Player:
     player = query_player(identity)
 
     if not player:
@@ -67,7 +66,7 @@ def load_player(identity: typing.Union[str, int]) -> Player:
     return player
 
 
-def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Player]:
+def find_existing_player(identity: str | int) -> Player | None:
     """Loads an existing player from the database given a player identity"""
     player_id = None
     try:
@@ -86,7 +85,7 @@ def find_existing_player(identity: typing.Union[str, int]) -> typing.Optional[Pl
     return instance
 
 
-def player_from_identity(identity: typing.Union[str, int]) -> typing.Optional["Player"]:
+def player_from_identity(identity: str | int) -> Player | None:
     """Resolves a player identity and then loads the player (by ID) from the database"""
     instance = None
 
@@ -130,7 +129,7 @@ def resynchronize_player(player: Player) -> bool:
             player.resynchronization_required = False
             player.save(update_fields=["resynchronized", "resynchronization_required"])
             ok = True
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to resynchronize player '{player.name}'")
 
     return ok
@@ -204,7 +203,6 @@ def resynchronize_player_games(player: Player) -> bool:
                 )
             except PlayerGamePlaytime.DoesNotExist:
                 logger.debug(f"Recording first playtime for game {game_instance.name} ({game_instance.id})")
-                pass
 
             if owned_game_playtime is None or should_save_playtime_record(
                 owned_game_playtime, owned_game.playtime_2weeks
@@ -233,7 +231,7 @@ def resynchronize_player_games(player: Player) -> bool:
         if game_created:
             changes["resynchronization_required"] = True
 
-        owned_game_instance, owned_game_created = PlayerOwnedGame.objects.update_or_create(
+        PlayerOwnedGame.objects.update_or_create(
             game=game_instance,
             player=player,
             defaults=changes,
@@ -273,7 +271,7 @@ def resynchronize_player_owned_game(player: Player, owned_game: PlayerOwnedGame)
         owned_game.resynchronization_required = False
         owned_game.save(update_fields=["resynchronization_required"])
         ok = True
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to resynchronize player '{player.name}' game {owned_game.game.name}")
 
     return ok
@@ -347,7 +345,7 @@ def resynchronize_player_achievements_for_game(player: Player, owned_game: Playe
                         game=game,
                         achievement=game_achievement,
                         defaults={
-                            "datetime": datetime.fromtimestamp(player_achievement.unlocktime, tz=dt.timezone.utc),
+                            "datetime": datetime.fromtimestamp(player_achievement.unlocktime, tz=dt.UTC),
                             "playtime": owned_game.playtime_forever,
                         },
                     )

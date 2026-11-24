@@ -1,9 +1,11 @@
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from .filters import PlayerOwnedGameFilter, PlayerUnlockedAchievementFilter
-from ..models import Game, Achievement
+
 from players.schema.types import PlayerOwnedGameNode, PlayerUnlockedAchievementNode
+
+from ..models import Achievement, Game
+from .filters import PlayerOwnedGameFilter, PlayerUnlockedAchievementFilter
 
 
 class AchievementType(DjangoObjectType):

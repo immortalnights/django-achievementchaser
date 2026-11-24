@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+
 from achievementchaser.management.lib.command_output import CommandOutput
 from games.models import Game
 from games.tasks import resynchronize_game_task

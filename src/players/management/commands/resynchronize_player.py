@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand
+
 from achievementchaser.management.lib.command_output import CommandOutput
-from players.service import query_player, resynchronize_player, resolve_identity
 from players.models import Player
+from players.service import query_player, resolve_identity, resynchronize_player
 
 
 class Command(BaseCommand):

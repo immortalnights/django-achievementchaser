@@ -1,9 +1,11 @@
-from django.test import TestCase
 from unittest.mock import MagicMock
-from .models import Player
-from .service import resynchronize_player, resynchronize_player_profile
+
+from django.test import TestCase
+
 from achievementchaser.test_utilities import mock_request
 
+from .models import Player
+from .service import resynchronize_player, resynchronize_player_profile
 
 player_summary = {
     "response": {

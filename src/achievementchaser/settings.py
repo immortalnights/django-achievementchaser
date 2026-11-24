@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 import sys
 from pathlib import Path
-from typing import List
 
 import django_stubs_ext
 import environ
@@ -47,10 +46,10 @@ TESTING = "test" in sys.argv
 SECURE_SSL_REDIRECT = False  # Seems to cause infinite redirects
 SESSION_COOKIE_SECURE = not DEBUG
 
-ALLOWED_HOSTS: List[str] = ["localhost", "127.0.0.1", ".up.railway.app", ".railway.internal", "steam.seventh.space"]
+ALLOWED_HOSTS: list[str] = ["localhost", "127.0.0.1", ".up.railway.app", ".railway.internal", "steam.seventh.space"]
 
-CSRF_TRUSTED_ORIGINS: List[str] = []
-CORS_ALLOWED_ORIGINS: List[str] = []
+CSRF_TRUSTED_ORIGINS: list[str] = []
+CORS_ALLOWED_ORIGINS: list[str] = []
 
 # Application definition
 

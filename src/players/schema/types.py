@@ -1,11 +1,13 @@
-from django.db.models import Sum
 import graphene
+from django.db.models import Sum
 from graphene.relay import Node
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from ..models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
-from .filters import PlayerOwnedGameFilterSet, PlayerUnlockedAchievementFilterSet, PlayerAvailableAchievementFilterSet
+
 from games.models import Achievement
+
+from ..models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
+from .filters import PlayerAvailableAchievementFilterSet, PlayerOwnedGameFilterSet, PlayerUnlockedAchievementFilterSet
 
 
 class AchievementNode(DjangoObjectType):
@@ -50,7 +52,7 @@ class PlayerGamePlaytimeNode(DjangoObjectType):
 
 
 class ProfileType(graphene.ObjectType):
-    player: "PlayerType"
+    player: PlayerType
     total_playtime = graphene.Int()
 
     owned_games = graphene.Int()

@@ -1,6 +1,3 @@
-import typing
-from typing import Optional, Union
-
 from loguru import logger
 
 from achievementchaser import steam
@@ -13,7 +10,7 @@ from .responsedata import (
 )
 
 
-def resolve_vanity_url(name: str) -> typing.Union[int, None]:
+def resolve_vanity_url(name: str) -> int | None:
     steam_id = None
     try:
         ok, response = steam.request(
@@ -41,7 +38,7 @@ def resolve_vanity_url(name: str) -> typing.Union[int, None]:
     return steam_id
 
 
-def load_player_summary(steam_id: int) -> typing.Optional[PlayerSummaryResponse]:
+def load_player_summary(steam_id: int) -> PlayerSummaryResponse | None:
     summary = None
     try:
         ok, response = steam.request(
@@ -58,7 +55,7 @@ def load_player_summary(steam_id: int) -> typing.Optional[PlayerSummaryResponse]
                 summary = PlayerSummaryResponse(**data)
             except TypeError:
                 logger.error(f"Failed to parse player summary for {steam_id},\nResponse data:\n{data}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to load player summary for {steam_id}")
 
     return summary
@@ -68,14 +65,14 @@ def get_friends(steam_id: int):
     pass
 
 
-def get_owned_games(steam_id: int, api_key: Optional[str] = None) -> typing.List[PlayerOwnedGameResponse]:
+def get_owned_games(steam_id: int, api_key: str | None = None) -> list[PlayerOwnedGameResponse]:
     """Fetch Player owned games.
     Allow the API key to be overwritten so that the player specific key can be used to retrieve all player owned
     game data (I.E., last playtime for games).
     """
     owned_games = []
     try:
-        query_properties: dict[str, Union[str, int]] = {
+        query_properties: dict[str, str | int] = {
             "steamid": steam_id,
             "include_appinfo": 1,
             "include_played_free_games": 1,
@@ -97,13 +94,13 @@ def get_owned_games(steam_id: int, api_key: Optional[str] = None) -> typing.List
                     owned_games.append(PlayerOwnedGameResponse(**game))
                 except TypeError:
                     logger.exception(f"Failed to parse owned games for {steam_id}\n{game}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to get player games for {steam_id}")
 
     return owned_games
 
 
-def get_player_achievements_for_game(steam_id: int, game_id: int) -> typing.List[PlayerUnlockedAchievementResponse]:
+def get_player_achievements_for_game(steam_id: int, game_id: int) -> list[PlayerUnlockedAchievementResponse]:
     achievements = []
     try:
         ok, response = steam.request(
@@ -122,7 +119,7 @@ def get_player_achievements_for_game(steam_id: int, game_id: int) -> typing.List
                         achievements.append(PlayerUnlockedAchievementResponse(**achievement))
                     except TypeError:
                         logger.exception(f"Failed to parse game {game_id} achievements\n{achievement}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to get player achievements for game {game_id} and player {steam_id}")
 
     return achievements

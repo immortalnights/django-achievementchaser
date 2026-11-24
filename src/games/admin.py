@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Game, Achievement
+
+from .models import Achievement, Game
 
 
 @admin.register(Game)

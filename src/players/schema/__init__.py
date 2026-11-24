@@ -1,6 +1,7 @@
 from graphene import ObjectType
-from .types import PlayerType
+
 from .players import Query as PlayerQuery
+from .types import PlayerType
 
 
 class Queries(

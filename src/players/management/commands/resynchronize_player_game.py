@@ -1,13 +1,14 @@
 from django.core.management.base import BaseCommand
 from django.db.models import Q
+
 from achievementchaser.management.lib.command_output import CommandOutput
 from achievementchaser.utilities import can_resynchronize_model
+from games.service import resynchronize_game
+from players.models import Player, PlayerOwnedGame
 from players.service import (
     load_player,
     resynchronize_player_achievements_for_game,
 )
-from players.models import Player, PlayerOwnedGame
-from games.service import resynchronize_game
 
 
 class Command(BaseCommand):

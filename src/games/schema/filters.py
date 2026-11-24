@@ -1,4 +1,5 @@
-from django_filters import FilterSet, OrderingFilter, ModelMultipleChoiceFilter
+from django_filters import FilterSet, ModelMultipleChoiceFilter, OrderingFilter
+
 from players.models import Player, PlayerUnlockedAchievement
 
 

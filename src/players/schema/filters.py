@@ -1,16 +1,17 @@
+
 from django_filters import (
-    FilterSet,
-    OrderingFilter,
-    NumberFilter,
     BooleanFilter,
+    FilterSet,
+    NumberFilter,
+    OrderingFilter,
 )
 
-from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 from games.models import Achievement
-from typing import List
+
+from ..models import PlayerOwnedGame, PlayerUnlockedAchievement
 
 
-def filter_name_matches(key: List[str], name: str):
+def filter_name_matches(key: list[str], name: str):
     first_key = key[0]
     return first_key == name or first_key[1:] == name
 
