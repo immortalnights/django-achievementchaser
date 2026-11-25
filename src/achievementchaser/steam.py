@@ -15,7 +15,7 @@ STEAM_API_URL = "api.steampowered.com"
 
 
 def _get_api_key():
-    return os.environ["STEAM_API_KEY"] if "STEAM_API_KEY" in os.environ else ""
+    return os.environ.get("STEAM_API_KEY", "")
 
 
 def mask_key(url: str):
@@ -44,8 +44,8 @@ def _request(url: str, *, params: dict[str, Any]) -> tuple[bool, dict | None]:
     except requests.exceptions.RequestException as e:
         # Don't output the stack trace for known request exceptions
         logger.error(f"Request exception while making Steam API request: {e}")
-    except Exception as e:
-        raise e
+    except Exception:
+        raise
 
     return False, None
 

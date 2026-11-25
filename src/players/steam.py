@@ -32,7 +32,7 @@ def resolve_vanity_url(name: str) -> int | None:
         else:
             message = response["message"] if response and "message" in response else "Unspecified"
             logger.error(f"Failed to resolve name '{name}': {message}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception("Failed to resolve vanity name")
 
     return steam_id
@@ -112,13 +112,18 @@ def get_player_achievements_for_game(steam_id: int, game_id: int) -> list[Player
             "playerstats",
         )
 
-        if ok and response and "success" in response:
-            if "achievements" in response and isinstance(response["achievements"], list):
-                for achievement in response["achievements"]:
-                    try:
-                        achievements.append(PlayerUnlockedAchievementResponse(**achievement))
-                    except TypeError:
-                        logger.exception(f"Failed to parse game {game_id} achievements\n{achievement}")
+        if (
+            ok
+            and response
+            and "success" in response
+            and "achievements" in response
+            and isinstance(response["achievements"], list)
+        ):
+            for achievement in response["achievements"]:
+                try:
+                    achievements.append(PlayerUnlockedAchievementResponse(**achievement))
+                except TypeError:
+                    logger.exception(f"Failed to parse game {game_id} achievements\n{achievement}")
     except Exception:  # noqa: BLE001
         logger.exception(f"Failed to get player achievements for game {game_id} and player {steam_id}")
 

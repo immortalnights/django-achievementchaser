@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import graphene
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
@@ -11,7 +13,7 @@ from .filters import PlayerOwnedGameFilter, PlayerUnlockedAchievementFilter
 class AchievementType(DjangoObjectType):
     class Meta:
         model = Achievement
-        exclude = ["default_value", "name", "updated", "added", "unlocked_by"]
+        exclude: ClassVar[list[str]] = ["default_value", "name", "updated", "added", "unlocked_by"]
 
     id = graphene.NonNull(graphene.ID)
 
@@ -26,9 +28,9 @@ class AchievementType(DjangoObjectType):
 class GameType(DjangoObjectType):
     class Meta:
         model = Game
-        filter_fields = ["id", "name"]
+        filter_fields: ClassVar[list[str]] = ["id", "name"]
         interfaces = (graphene.relay.Node,)
-        exclude = [
+        exclude: ClassVar[list[str]] = [
             "updated",
             "resynchronized",
             "resynchronization_required",

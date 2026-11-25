@@ -253,7 +253,7 @@ def resynchronize_player_owned_games(player: Player, *, required_only=False) -> 
     try:
         owned_games = PlayerOwnedGame.objects.filter(player=player, **filter)
         logger.debug(f"Resynchronizing {len(owned_games)} owned games for {player.name}")
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to filter player '{player.name}' owned games")
 
     for record in owned_games:

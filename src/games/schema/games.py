@@ -1,4 +1,3 @@
-
 import graphene
 from django.db.models import Q
 from graphene_django.filter import DjangoFilterConnectionField

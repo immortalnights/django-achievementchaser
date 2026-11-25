@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 import graphene
 from django.db.models import Sum
 from graphene.relay import Node
@@ -14,8 +16,8 @@ class AchievementNode(DjangoObjectType):
     class Meta:
         model = Achievement
         interfaces = (Node,)
-        filter_fields: list[str] = []
-        exclude = ["default_value", "name", "updated", "added", "unlocked_by"]
+        filter_fields: ClassVar[list[str]] = []
+        exclude: ClassVar[list[str]] = ["default_value", "name", "updated", "added", "unlocked_by"]
 
     id = graphene.NonNull(graphene.ID)
 
@@ -27,16 +29,16 @@ class PlayerUnlockedAchievementNode(DjangoObjectType):
     class Meta:
         model = PlayerUnlockedAchievement
         interfaces = (Node,)
-        filter_fields: list[str] = []
-        exclude: list[str] = []
+        filter_fields: ClassVar[list[str]] = []
+        exclude: ClassVar[list[str]] = []
 
 
 class PlayerOwnedGameNode(DjangoObjectType):
     class Meta:
         model = PlayerOwnedGame
         interfaces = (Node,)
-        filter_fields: list[str] = []
-        exclude = ["added", "updated", "resynchronized", "resynchronization_required"]
+        filter_fields: ClassVar[list[str]] = []
+        exclude: ClassVar[list[str]] = ["added", "updated", "resynchronized", "resynchronization_required"]
 
     unlocked_achievement_count = graphene.Int()
 
@@ -98,7 +100,7 @@ class ProfileType(graphene.ObjectType):
 class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
-        exclude = [
+        exclude: ClassVar[list[str]] = [
             "updated",
             "resynchronized",
             "api_key",

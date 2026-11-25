@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.db import models
 
 from games.models import Achievement, Game
@@ -31,8 +33,10 @@ class Player(models.Model):
 
 class PlayerOwnedGame(models.Model):
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")]
-        ordering = ["player", "game"]
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")
+        ]
+        ordering: ClassVar[list[str]] = ["player", "game"]
 
     player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="games")
@@ -60,10 +64,10 @@ class PlayerGamePlaytime(models.Model):
 
 class PlayerUnlockedAchievement(models.Model):
     class Meta:
-        constraints = [
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
             models.UniqueConstraint(fields=["player", "game", "achievement"], name="unique_player_achievement")
         ]
-        ordering = ["player", "game"]
+        ordering: ClassVar[list[str]] = ["player", "game"]
 
     player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="unlocked_achievements")
@@ -76,7 +80,9 @@ class PlayerUnlockedAchievement(models.Model):
 
 class Friend(models.Model):
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["player", "friend"], name="unique_player_friend")]
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["player", "friend"], name="unique_player_friend")
+        ]
 
     player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_friend")

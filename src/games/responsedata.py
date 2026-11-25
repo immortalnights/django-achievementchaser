@@ -31,10 +31,10 @@ class AvailableGameStatsResponse:
         self.stats = []
 
         if achievements:
-            self.achievements = list(map(lambda achievement: GameAchievementResponse(**achievement), achievements))
+            self.achievements = [GameAchievementResponse(**achievement) for achievement in achievements]
 
         if stats:
-            self.stats = list(map(lambda stat: GameStat(**stat), stats))
+            self.stats = [GameStat(**stat) for stat in stats]
 
 
 @dataclass

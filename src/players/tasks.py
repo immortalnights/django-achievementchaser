@@ -61,7 +61,7 @@ def resynchronize_players_owned_games_task():
     for owned_game in owned_games:
         try:
             resynchronize_player_game_task(owned_game.player_id, owned_game.game_id)
-        except Exception as e:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             logger.exception(f"Failed to resynchronize player {owned_game.player_id} owned game {owned_game.game_id}")
 
         # Prevent overwhelming the Steam API

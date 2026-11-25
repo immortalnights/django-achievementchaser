@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django_filters import FilterSet, ModelMultipleChoiceFilter, OrderingFilter
 
 from players.models import Player, PlayerUnlockedAchievement
@@ -16,7 +18,7 @@ class NonNullModelMultipleChoiceFilter(ModelMultipleChoiceFilter):
 class PlayerOwnedGameFilter(FilterSet):
     class Meta:
         model = PlayerUnlockedAchievement
-        fields: list[str] = []
+        fields: ClassVar[list[str]] = []
 
     order_by = OrderingFilter(fields=("last_played",))
     player = ModelMultipleChoiceFilter(queryset=Player.objects.all())
@@ -25,7 +27,7 @@ class PlayerOwnedGameFilter(FilterSet):
 class PlayerUnlockedAchievementFilter(FilterSet):
     class Meta:
         model = PlayerUnlockedAchievement
-        fields: list[str] = []
+        fields: ClassVar[list[str]] = []
 
     order_by = OrderingFilter(fields=("datetime",))
     player = NonNullModelMultipleChoiceFilter(queryset=Player.objects.all())

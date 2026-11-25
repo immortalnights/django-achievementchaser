@@ -1,3 +1,4 @@
+from typing import ClassVar
 
 from django_filters import (
     BooleanFilter,
@@ -29,9 +30,8 @@ class PlayerOwnedGameOrderingFilter(OrderingFilter):
 
 class AchievementOrderingFilter(OrderingFilter):
     def filter(self, qs, value):
-        if value and len(value) > 0:
-            if filter_name_matches(value, "global_percentage"):
-                qs = qs.exclude(global_percentage=0.0)
+        if value and len(value) > 0 and filter_name_matches(value, "global_percentage"):
+            qs = qs.exclude(global_percentage=0.0)
 
         return OrderingFilter.filter(self, qs, value)
 
@@ -50,7 +50,7 @@ class StartedGameFilter(BooleanFilter):
 class PlayerUnlockedAchievementFilterSet(FilterSet):
     class Meta:
         model = PlayerUnlockedAchievement
-        fields = {
+        fields: ClassVar[dict[str, list[str]]] = {
             "datetime": ["range"],
         }
 
@@ -62,7 +62,7 @@ class PlayerUnlockedAchievementFilterSet(FilterSet):
 class PlayerAvailableAchievementFilterSet(FilterSet):
     class Meta:
         model = Achievement
-        fields: list[str] = []
+        fields: ClassVar[list[str]] = []
 
     order_by = AchievementOrderingFilter(fields=("global_percentage",))
     game = NumberFilter(field_name="game_id")
@@ -71,7 +71,7 @@ class PlayerAvailableAchievementFilterSet(FilterSet):
 class PlayerOwnedGameFilterSet(FilterSet):
     class Meta:
         model = PlayerOwnedGame
-        fields = {"completed": ["range", "isnull"]}
+        fields: ClassVar[dict[str, list[str]]] = {"completed": ["range", "isnull"]}
 
     order_by = PlayerOwnedGameOrderingFilter(
         fields=("completed", "last_played", "completion_percentage", "game__difficulty_percentage")

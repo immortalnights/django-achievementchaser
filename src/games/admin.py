@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.contrib import admin
 
 from .models import Achievement, Game
@@ -5,10 +7,8 @@ from .models import Achievement, Game
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    """"""
-
     list_display = ("name_with_id", "achievements", "resynchronized", "up_to_date", "added")
-    search_fields = ["name"]
+    search_fields: ClassVar[list[str]] = ["name"]
 
     def name_with_id(self, obj):
         return f"{obj.name} ({obj.id})"
@@ -24,10 +24,8 @@ class GameAdmin(admin.ModelAdmin):
 
 @admin.register(Achievement)
 class AchievementAdmin(admin.ModelAdmin):
-    """"""
-
     list_display = ("display_name", "game_name", "description", "percentage", "added", "updated")
-    search_fields = ["display_name", "game__name"]
+    search_fields: ClassVar[list[str]] = ["display_name", "game__name"]
 
     @admin.display(description="Game")
     def game_name(self, obj):
