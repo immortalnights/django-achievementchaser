@@ -1,11 +1,11 @@
-from typing import Union
-from loguru import logger
 from django.utils import timezone
-from players.models import Player, PlayerOwnedGame
+from loguru import logger
+
 from games.models import Game
+from players.models import Player, PlayerOwnedGame
 
 
-def can_resynchronize_model(model: Union[Player, PlayerOwnedGame, Game], rate_limit: int = 60):
+def can_resynchronize_model(model: Player | PlayerOwnedGame | Game, rate_limit: int = 60):
     ok = False
 
     delta = (timezone.now() - model.resynchronized) if model.resynchronized is not None else None

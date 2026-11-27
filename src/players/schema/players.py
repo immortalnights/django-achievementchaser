@@ -1,15 +1,15 @@
-from typing import Optional
 import graphene
 from django.db.models import Q
-from .types import PlayerType
+
 from ..models import Player
+from .types import PlayerType
 
 
 class Query(graphene.ObjectType):
     player = graphene.Field(PlayerType, id=graphene.BigInt(), name=graphene.String())
     players = graphene.List(PlayerType)
 
-    def resolve_player(root, info, id: Optional[int] = None, name: Optional[str] = None) -> Optional[Player]:
+    def resolve_player(root, info, id: int | None = None, name: str | None = None) -> Player | None:
         player = None
         result = Player.objects.filter(Q(id=id) | Q(name__iexact=name))
         if len(result) == 0:

@@ -1,8 +1,11 @@
 from datetime import timedelta
+
 from django.test import TestCase
 from django.utils import timezone
-from . import steam
+
 from players.models import Player
+
+from . import steam
 from .utilities import can_resynchronize_model
 
 

@@ -1,6 +1,7 @@
 from graphene import ObjectType
-from .types import GameType, AchievementType
+
 from .games import Query as GameQuery
+from .types import AchievementType, GameType
 
 
 class Queries(
@@ -10,4 +11,4 @@ class Queries(
     pass
 
 
-__all__ = ["GameType", "AchievementType"]
+__all__ = ["AchievementType", "GameType"]

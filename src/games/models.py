@@ -1,10 +1,12 @@
+from typing import ClassVar
+
 from django.db import models
 
 
 class Achievement(models.Model):
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["game", "name"], name="unique_game_achievement")]
-        ordering = ["name"]
+        constraints: ClassVar[list] = [models.UniqueConstraint(fields=["game", "name"], name="unique_game_achievement")]
+        ordering: ClassVar[list[str]] = ["name"]
 
     # Cannot use the "name" as the primary key because it is not globally unique.
     name = models.CharField(max_length=255)
@@ -25,7 +27,7 @@ class Achievement(models.Model):
 
 class Game(models.Model):
     class Meta:
-        ordering = ["name"]
+        ordering: ClassVar[list[str]] = ["name"]
 
     id = models.PositiveIntegerField(primary_key=True)
     name = models.CharField(max_length=255)

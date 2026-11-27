@@ -1,5 +1,8 @@
+from typing import ClassVar
+
 from django.db import models
-from games.models import Game, Achievement
+
+from games.models import Achievement, Game
 
 
 class Player(models.Model):
@@ -20,18 +23,20 @@ class Player(models.Model):
         return f"{self.name} ({self.id})"
 
     @property
-    def available_achievements(self: "Player"):
+    def available_achievements(self: Player):
         return Achievement.objects.filter(game__in=self.games.values("game"))
 
     @property
-    def locked_achievements(self: "Player"):
+    def locked_achievements(self: Player):
         return self.exclude(id__in=self.unlocked_achievements.values("achievement__id"))
 
 
 class PlayerOwnedGame(models.Model):
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")]
-        ordering = ["player", "game"]
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["player", "game"], name="unique_player_game")
+        ]
+        ordering: ClassVar[list[str]] = ["player", "game"]
 
     player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="games")
@@ -59,10 +64,10 @@ class PlayerGamePlaytime(models.Model):
 
 class PlayerUnlockedAchievement(models.Model):
     class Meta:
-        constraints = [
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
             models.UniqueConstraint(fields=["player", "game", "achievement"], name="unique_player_achievement")
         ]
-        ordering = ["player", "game"]
+        ordering: ClassVar[list[str]] = ["player", "game"]
 
     player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="unlocked_achievements")
@@ -75,7 +80,9 @@ class PlayerUnlockedAchievement(models.Model):
 
 class Friend(models.Model):
     class Meta:
-        constraints = [models.UniqueConstraint(fields=["player", "friend"], name="unique_player_friend")]
+        constraints: ClassVar[list[models.UniqueConstraint]] = [
+            models.UniqueConstraint(fields=["player", "friend"], name="unique_player_friend")
+        ]
 
     player_id: int
     player = models.ForeignKey(Player, on_delete=models.CASCADE, related_name="player_to_friend")

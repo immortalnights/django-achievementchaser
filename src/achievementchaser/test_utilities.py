@@ -1,5 +1,5 @@
-from unittest.mock import patch
 from typing import Any
+from unittest.mock import patch
 
 
 def patch_request():
@@ -12,7 +12,7 @@ def mock_request(*, ok=True, data: Any = None):
             _patch = patch_request()
             mock_request = _patch.start()
             if isinstance(data, list):
-                side_effect = map(lambda data: (ok, data), data)
+                side_effect = [(ok, d) for d in data]
                 mock_request.side_effect = side_effect
             else:
                 mock_request.return_value = (ok, data)

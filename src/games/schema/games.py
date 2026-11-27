@@ -1,16 +1,16 @@
 import graphene
-from graphene_django.filter import DjangoFilterConnectionField
-from typing import Optional
 from django.db.models import Q
-from .types import GameType
+from graphene_django.filter import DjangoFilterConnectionField
+
 from ..models import Game
+from .types import GameType
 
 
 class Query(graphene.ObjectType):
     game = graphene.Field(GameType, id=graphene.Int(), name=graphene.String())
     games = DjangoFilterConnectionField(GameType)
 
-    def resolve_game(root, info, id: Optional[int] = None, name: Optional[str] = None):
+    def resolve_game(root, info, id: int | None = None, name: str | None = None):
         game = None
         result = Game.objects.filter(Q(id=id) | Q(name__iexact=name))
         if len(result) == 0:

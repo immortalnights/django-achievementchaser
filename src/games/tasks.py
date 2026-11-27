@@ -1,16 +1,18 @@
-from loguru import logger
-from typing import TypedDict, Optional, Union
-from datetime import timedelta
 import time
+from datetime import timedelta
+from typing import TypedDict
+
 from django.db.models import Q
 from django.utils import timezone
-from .models import Game
-from .service import load_game, resynchronize_game
+from loguru import logger
+
 from achievementchaser.utilities import can_resynchronize_model
 
+from .models import Game
+from .service import load_game, resynchronize_game
 
 ResynchronizeGameResponse = TypedDict(
-    "ResynchronizeGameResponse", {"ok": bool, "game": Optional[Game], "error": Optional[str]}, total=False
+    "ResynchronizeGameResponse", {"ok": bool, "game": Game | None, "error": str | None}, total=False
 )
 
 
@@ -37,7 +39,7 @@ def resynchronize_games_task():
         time.sleep(1)
 
 
-def resynchronize_game_task(identity: Union[int, str]) -> ResynchronizeGameResponse:
+def resynchronize_game_task(identity: int | str) -> ResynchronizeGameResponse:
     """Resolves `identity` to a Game and attempts to resynchronize it.
 
     The resolution is done here so it's in the worker thread."""

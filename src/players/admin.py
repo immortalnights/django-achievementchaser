@@ -1,11 +1,12 @@
+from typing import ClassVar
+
 from django.contrib import admin
-from .models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement, Friend
+
+from .models import Friend, Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
 
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    """"""
-
     list_display = (
         "name_with_id",
         "profile_url",
@@ -30,8 +31,6 @@ class PlayerAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerOwnedGame)
 class PlayerOwnedGameAdmin(admin.ModelAdmin):
-    """"""
-
     list_display = (
         "edit",
         "game",
@@ -43,7 +42,7 @@ class PlayerOwnedGameAdmin(admin.ModelAdmin):
         "added",
         "updated",
     )
-    search_fields = ["game__name"]
+    search_fields: ClassVar[list[str]] = ["game__name"]
 
     @admin.display(description="Edit")
     def edit(self, obj):
@@ -56,10 +55,8 @@ class PlayerOwnedGameAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerGamePlaytime)
 class PlayerGamePlaytimeAdmin(admin.ModelAdmin):
-    """"""
-
     list_display = ("edit", "game", "player", "playtime", "datetime")
-    search_fields = ["game__name"]
+    search_fields: ClassVar[list[str]] = ["game__name"]
 
     @admin.display(description="Edit")
     def edit(self, obj):
@@ -71,10 +68,8 @@ admin.site.register(Friend)
 
 @admin.register(PlayerUnlockedAchievement)
 class PlayerUnlockedAchievementAdmin(admin.ModelAdmin):
-    """"""
-
     list_display = ("edit", "achievement", "game", "player", "playtime", "datetime")
-    search_fields = ["game__name"]
+    search_fields: ClassVar[list[str]] = ["game__name"]
 
     @admin.display(description="Edit")
     def edit(self, obj):

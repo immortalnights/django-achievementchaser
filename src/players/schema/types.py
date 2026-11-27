@@ -1,19 +1,23 @@
-from django.db.models import Sum
+from typing import ClassVar
+
 import graphene
+from django.db.models import Sum
 from graphene.relay import Node
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-from ..models import Player, PlayerOwnedGame, PlayerGamePlaytime, PlayerUnlockedAchievement
-from .filters import PlayerOwnedGameFilterSet, PlayerUnlockedAchievementFilterSet, PlayerAvailableAchievementFilterSet
+
 from games.models import Achievement
+
+from ..models import Player, PlayerGamePlaytime, PlayerOwnedGame, PlayerUnlockedAchievement
+from .filters import PlayerAvailableAchievementFilterSet, PlayerOwnedGameFilterSet, PlayerUnlockedAchievementFilterSet
 
 
 class AchievementNode(DjangoObjectType):
     class Meta:
         model = Achievement
         interfaces = (Node,)
-        filter_fields: list[str] = []
-        exclude = ["default_value", "name", "updated", "added", "unlocked_by"]
+        filter_fields: ClassVar[list[str]] = []
+        exclude: ClassVar[list[str]] = ["default_value", "name", "updated", "added", "unlocked_by"]
 
     id = graphene.NonNull(graphene.ID)
 
@@ -25,16 +29,16 @@ class PlayerUnlockedAchievementNode(DjangoObjectType):
     class Meta:
         model = PlayerUnlockedAchievement
         interfaces = (Node,)
-        filter_fields: list[str] = []
-        exclude: list[str] = []
+        filter_fields: ClassVar[list[str]] = []
+        exclude: ClassVar[list[str]] = []
 
 
 class PlayerOwnedGameNode(DjangoObjectType):
     class Meta:
         model = PlayerOwnedGame
         interfaces = (Node,)
-        filter_fields: list[str] = []
-        exclude = ["added", "updated", "resynchronized", "resynchronization_required"]
+        filter_fields: ClassVar[list[str]] = []
+        exclude: ClassVar[list[str]] = ["added", "updated", "resynchronized", "resynchronization_required"]
 
     unlocked_achievement_count = graphene.Int()
 
@@ -50,7 +54,7 @@ class PlayerGamePlaytimeNode(DjangoObjectType):
 
 
 class ProfileType(graphene.ObjectType):
-    player: "PlayerType"
+    player: PlayerType
     total_playtime = graphene.Int()
 
     owned_games = graphene.Int()
@@ -96,7 +100,7 @@ class ProfileType(graphene.ObjectType):
 class PlayerType(DjangoObjectType):
     class Meta:
         model = Player
-        exclude = [
+        exclude: ClassVar[list[str]] = [
             "updated",
             "resynchronized",
             "api_key",

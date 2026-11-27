@@ -1,6 +1,6 @@
 import time
 from datetime import timedelta
-from typing import Optional, TypedDict, Union
+from typing import TypedDict
 
 from django.db.models import Q
 from django.utils import timezone
@@ -14,12 +14,12 @@ from .models import Player, PlayerOwnedGame
 from .service import load_player, resynchronize_player, resynchronize_player_achievements_for_game
 
 ResynchronizePlayerResponse = TypedDict(
-    "ResynchronizePlayerResponse", {"ok": bool, "player": Player, "error": Optional[str]}, total=False
+    "ResynchronizePlayerResponse", {"ok": bool, "player": Player, "error": str | None}, total=False
 )
 
 ResynchronizePlayerGameResponse = TypedDict(
     "ResynchronizePlayerGameResponse",
-    {"ok": bool, "player": Player, "owned_game": PlayerOwnedGame, "error": Optional[str]},
+    {"ok": bool, "player": Player, "owned_game": PlayerOwnedGame, "error": str | None},
     total=False,
 )
 
@@ -61,14 +61,14 @@ def resynchronize_players_owned_games_task():
     for owned_game in owned_games:
         try:
             resynchronize_player_game_task(owned_game.player_id, owned_game.game_id)
-        except Exception as e:
-            logger.error(f"Failed to resynchronize player {owned_game.player_id} owned game {owned_game.game_id}: {e}")
+        except Exception:  # noqa: BLE001
+            logger.exception(f"Failed to resynchronize player {owned_game.player_id} owned game {owned_game.game_id}")
 
         # Prevent overwhelming the Steam API
         time.sleep(1)
 
 
-def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
+def resynchronize_player_task(identity: str | int) -> bool | None:
     """Resolves `identity` to a Player and attempts to resynchronize them.
 
     The resolution is done here so it's in the worker thread."""
@@ -94,7 +94,7 @@ def resynchronize_player_task(identity: Union[str, int]) -> Optional[bool]:
 
 
 def resynchronize_player_game_task(
-    player_identifier: Union[str, int], game_identifier: Union[str, int]
+    player_identifier: str | int, game_identifier: str | int
 ) -> ResynchronizePlayerGameResponse:
     """TODO: Resolves `player` to a Player and `game` to a Game and attempts
     to resynchronize them.
@@ -104,15 +104,15 @@ def resynchronize_player_game_task(
 
     try:
         player = load_player(player_identifier)
-    except Player.DoesNotExist as e:
+    except Player.DoesNotExist:
         logger.error(f"Failed to find player {player_identifier}")
-        raise e
+        raise
 
     try:
         game = load_game(game_identifier)
-    except Game.DoesNotExist as e:
+    except Game.DoesNotExist:
         logger.error(f"Failed to find game {game_identifier}")
-        raise e
+        raise
 
     owned_game = None
     try:
@@ -128,9 +128,9 @@ def resynchronize_player_game_task(
         else:
             logger.warning(f"Resynchronization of player {player.name} owned game '{game.name}' blocked")
 
-    except PlayerOwnedGame.DoesNotExist as e:
+    except PlayerOwnedGame.DoesNotExist:
         logger.error(f"Failed to find player {player.name} game '{game.name}'")
-        raise e
+        raise
 
     return {
         "ok": ok,

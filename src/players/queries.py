@@ -1,4 +1,4 @@
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from django.db.models import Q, Sum
 
@@ -16,7 +16,7 @@ PlayerGameOptions = TypedDict(
 )
 
 
-def get_player_achievements(player: Player, limit: Optional[int] = None) -> list[Achievement]:
+def get_player_achievements(player: Player, limit: int | None = None) -> list[Achievement]:
     owned_games = PlayerOwnedGame.objects.filter(player=player)
     res = list(Achievement.objects.filter(game__in=owned_games.values("game")))
 
@@ -30,15 +30,15 @@ def get_player_friends(player: Player):
     pass
 
 
-def get_player_games(player: Player, options: Optional[PlayerGameOptions] = None, limit: Optional[int] = None):
+def get_player_games(player: Player, options: PlayerGameOptions | None = None, limit: int | None = None):
     """Player games"""
     q = Q(player=player)
 
     if options:
-        if "played_only" in options and options["played_only"]:
+        if options.get("played_only"):
             q &= Q(playtime_forever__gt=0)
 
-        if "perfect_only" in options and options["perfect_only"]:
+        if options.get("perfect_only"):
             q &= Q(completion_percentage=1)
 
     if limit is not None:

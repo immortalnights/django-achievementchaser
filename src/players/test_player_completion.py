@@ -1,10 +1,12 @@
+from copy import deepcopy
+
 from django.test import TestCase
+from loguru import logger
+
 from achievementchaser.test_utilities import patch_request
+from games.service import load_game, resynchronize_game
 from players.models import Player, PlayerOwnedGame
 from players.service import resynchronize_player, resynchronize_player_owned_game
-from games.service import load_game, resynchronize_game
-from loguru import logger
-from copy import deepcopy
 
 
 class TestPlayerCompletion(TestCase):

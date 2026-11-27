@@ -1,5 +1,3 @@
-from typing import List, Optional, Union
-
 from django.db.models import Q
 from django.utils import timezone
 from loguru import logger
@@ -11,7 +9,7 @@ from .responsedata import GameAchievementResponse
 from .steam import load_game_achievement_percentages, load_game_schema
 
 
-def query_game(identity: Union[int, str]) -> Optional[Game]:
+def query_game(identity: int | str) -> Game | None:
     query = None
     try:
         query = Q(id=int(identity))
@@ -27,7 +25,7 @@ def query_game(identity: Union[int, str]) -> Optional[Game]:
     return instance
 
 
-def load_game(identity: Union[int, str]) -> Game:
+def load_game(identity: int | str) -> Game:
     game = query_game(identity)
 
     if not game:
@@ -64,18 +62,17 @@ def resynchronize_game(game: Game) -> bool:
         game.save()
 
         # If the number of achievements have changes, some players may no longer have all achievements unlocked
-        if updated_achievement_count > 0:
-            if original_achievement_count != updated_achievement_count:
-                logger.debug(
-                    f"Game '{game.name}' has changed the number of achievements, marking all owned games for resynchronization"
-                )
-                owned_games = PlayerOwnedGame.objects.filter(game=game)
-                for owned_game in owned_games:
-                    owned_game.resynchronization_required = True
-                    owned_game.save(update_fields=["resynchronization_required"])
+        if updated_achievement_count > 0 and original_achievement_count != updated_achievement_count:
+            logger.debug(
+                f"Game '{game.name}' has changed the number of achievements, marking all owned games for resynchronization"
+            )
+            owned_games = PlayerOwnedGame.objects.filter(game=game)
+            for owned_game in owned_games:
+                owned_game.resynchronization_required = True
+                owned_game.save(update_fields=["resynchronization_required"])
 
         ok = True
-    except Exception:
+    except Exception:  # noqa: BLE001
         logger.exception(f"Failed to resynchronize game '{game.name}'")
 
     return ok
@@ -105,11 +102,11 @@ def resynchronize_game_schema(game: Game) -> bool:
     return ok
 
 
-def save_achievements(game: Game, achievements: List[GameAchievementResponse]) -> None:
+def save_achievements(game: Game, achievements: list[GameAchievementResponse]) -> None:
     logger.debug(f"Saving {len(achievements)} achievements for game '{game.name}' ({game.id})")
 
     for achievement in achievements:
-        achievement_instance, achievement_created = Achievement.objects.update_or_create(
+        Achievement.objects.update_or_create(
             name=achievement.name,
             game=game,
             defaults={
@@ -133,7 +130,7 @@ def resynchronize_game_achievement_percentages(game: Game) -> bool:
 
     if achievement_percentages is not None and len(achievement_percentages.achievements) > 0:
         total_percentage = 0.0
-        lowest_percentage: Optional[float] = None
+        lowest_percentage: float | None = None
         # Save achievement percentages
         for achievement in achievement_percentages.achievements:
             total_percentage += achievement.percent or 0.0
